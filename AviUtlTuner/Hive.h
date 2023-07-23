@@ -17,6 +17,7 @@ namespace aut
 			WCHAR path[MAX_PATH] = {};
 			::GetModuleFileNameW(fp->dll_hinst, path, std::size(path));
 			::PathRemoveExtensionW(path);
+			::StringCbCatW(path, sizeof(path), L"Config");
 			::PathAppendW(path, fileName);
 			return path;
 		}
