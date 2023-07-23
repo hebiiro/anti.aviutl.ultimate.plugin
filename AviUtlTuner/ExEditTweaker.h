@@ -189,48 +189,6 @@ namespace aut
 			}; Tools::Hook<Separator> separator;
 		} layer;
 
-		struct EditBox {
-			int delta;
-			struct Font {
-				_bstr_t name;
-				int height;
-				int pitch;
-				HFONT handle;
-			} font;
-
-			static LRESULT CALLBACK subclassproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR id, DWORD_PTR)
-			{
-				switch (msg) {
-				case WM_SETFONT:
-					MY_TRACE(_T("WM_SETFONT, 0x%08X, 0x%08X\n"), wparam, lparam);
-					wparam = reinterpret_cast<WPARAM>(exedit_tweaker.editbox.font.handle); // handle is not null here.
-				//[[fallthrough]];
-				case WM_DESTROY:
-					::RemoveWindowSubclass(hwnd, subclassproc, id);
-					break;
-				}
-
-				return ::DefSubclassProc(hwnd, msg, wparam, lparam);
-			}
-
-			//
-			// 拡張編集内の複数行エディットボックスを作成する関数(::CreateWindowExW())と置き換えられます。
-			//
-			static HWND WINAPI hook(DWORD exStyle, LPCWSTR className, LPCWSTR windowName, DWORD style,
-				int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
-			{
-				MY_TRACE(_T("CreateWindowExW(%ws, %d, %d)\n"), className, w, h);
-
-				HWND hwnd = exedit_tweaker.editbox.orig(exStyle, className, windowName,
-					style, x, y, w, h + exedit_tweaker.editbox.delta, parent, menu, instance, param);
-
-				if (exedit_tweaker.editbox.font.handle != nullptr)
-					::SetWindowSubclass(hwnd, subclassproc, 0, 0);
-
-				return hwnd;
-			}
-		}; Tools::Hook<EditBox> editbox;
-
 		//
 		// コンストラクタです。
 		// コンフィグの初期値を設定します。
@@ -254,11 +212,6 @@ namespace aut
 			layer.bound.top.color = CLR_NONE;
 			layer.bound.bottom.color = CLR_NONE;
 			layer.separator.color = CLR_NONE;
-
-			editbox.delta = 0;
-			editbox.font.name = L"";
-			editbox.font.height = 0;
-			editbox.font.pitch = 0;
 		}
 
 		//
@@ -306,24 +259,6 @@ namespace aut
 			getPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.bottom.color", layer.bound.bottom.color);
 			getPrivateProfileColor(path.c_str(), L"Config", L"layer.separator.color", layer.separator.color);
 
-			getPrivateProfileInt(path.c_str(), L"Config", L"editbox.delta", editbox.delta);
-			getPrivateProfileBSTR(path.c_str(), L"Config", L"editbox.font.name", editbox.font.name);
-			getPrivateProfileInt(path.c_str(), L"Config", L"editbox.font.height", editbox.font.height);
-			getPrivateProfileInt(path.c_str(), L"Config", L"editbox.font.pitch", editbox.font.pitch);
-
-			if (wcslen(editbox.font.name) != 0)
-			{
-				// DPI に合わせてフォントのサイズを調整します。
-				int dpi = ::GetSystemDpiForProcess(::GetCurrentProcess());
-				int height = ::MulDiv(editbox.font.height, dpi, 96);
-
-				// HFONT を作成します。
-				// 複数行エディットボックスの WM_SETFONT でこのハンドルが渡されます。
-				editbox.font.handle = ::CreateFontW(height, 0,
-					0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
-					0, 0, 0, editbox.font.pitch, editbox.font.name);
-			}
-
 			return TRUE;
 		}
 
@@ -365,26 +300,15 @@ namespace aut
 			if (layer.bound.bottom.color != CLR_NONE) layer.bound.bottom.attach_to_call(exedit_auf + 0x000388DA);
 			if (layer.separator.color != CLR_NONE) layer.separator.attach_to_call(exedit_auf + 0x00037A1F);
 
-			// 拡張編集内の ::CreateWindowExW() の呼び出しをフックします。
-			// コンスト値も書き換えます。
-			if (editbox.delta != 0 || editbox.font.handle != nullptr) {
-				editbox.attach_to_abs_call(exedit_auf + 0x0008C46E);
-				editbox.attach_to_abs_call(exedit_auf + 0x00087658);
-				add_int32(exedit_auf + 0x0008CC56 + 1, editbox.delta);
-				add_int32(exedit_auf + 0x000876DE + 1, editbox.delta);
-			}
-
 			return DetourTransactionCommit() == NO_ERROR;
 		}
 
 		//
 		// 後始末処理です。
+		// 特に何もしません。
 		//
 		BOOL exit()
 		{
-			if (editbox.font.handle)
-				::DeleteObject(editbox.font.handle), editbox.font.handle = 0;
-
 			return TRUE;
 		}
 	} exedit_tweaker;

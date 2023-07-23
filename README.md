@@ -20,8 +20,12 @@ AviUtl を起動する前に EditBoxTweaker.ini をテキストエディタで�
 
 ```ini
 [Config]
-unicodeInput=0 ; 複数行エディットボックスで UNICODE 文字を入力したい場合は 1 を指定します。
-crlA=0 ; 複数行エディットボックスで Ctrl+A を有効にしたい場合は 1 を指定します。
+unicodeInput=1 ; 複数行エディットボックスで UNICODE 文字を入力したい場合は 1 を指定します。
+crlA=1 ; 複数行エディットボックスで Ctrl+A を有効にしたい場合は 1 を指定します。
+delta=200 ; エディットボックスの高さに加算する値を指定します。例えば、200 を指定するとエディットボックスの高さが通常より 200 ピクセル高くなります。
+font.name=Segoe UI ; エディットボックスで使用するフォントのフォント名を指定します。
+font.height=14 ; フォントのサイズを指定します。
+font.pitch=1 ; 固定幅を指定する場合は 1 を指定します。
 ```
 
 # 拡張編集ツイーカー
@@ -34,10 +38,10 @@ AviUtl を起動する前に ExEditTweaker.ini をテキストエディタで編
 ```ini
 [Config]
 gradientFill=0 ; グラデーション描画を変更する場合は 1 を指定します。ただし、patch.aul のグラデーション描画を無効にしている場合のみ有効になります。
-gradientFill.inner.color=#ffffff ; 内側の枠の色。
+gradientFill.inner.color=255, 255, 255 ; 内側の枠の色。
 gradientFill.inner.size.cx=1 ; 内側の枠の横幅。0以下なら枠の左右は描画しない。
 gradientFill.inner.size.cy=1 ; 内側の枠の縦幅。0以下なら枠の上下は描画しない。
-gradientFill.outer.color=#ffffff ; 外側の枠の色。指定の仕方は内側の枠と同じ。
+gradientFill.outer.color=0, 0, 0 ; 外側の枠の色。指定の仕方は内側の枠と同じ。
 gradientFill.outer.size.cx=1
 gradientFill.outer.size.cy=1
 selection.fill.color= ; 選択領域の色。
@@ -48,10 +52,6 @@ layer.bound.right.color= ; レイヤー間ボーダーの右側の色。
 layer.bound.top.color= ; レイヤー間ボーダーの上側の色。
 layer.bound.bottom.color= ; レイヤー間ボーダーの下側の色。
 layer.separator.color= ; レイヤーボタンとレイヤーの間の境界線の色。
-editbox.delta=0 ; エディットボックスの高さに加算する値を指定します。例えば、200 を指定するとエディットボックスの高さが通常より 200 ピクセル高くなります。
-editbox.font.name=Segoe UI ; エディットボックスで使用するフォントのフォント名を指定します。
-editbox.font.height=14 ; フォントのサイズを指定します。
-editbox.font.pitch=1 ; 固定幅を指定する場合は 1 を指定します。
 ```
 
 ## 更新履歴
