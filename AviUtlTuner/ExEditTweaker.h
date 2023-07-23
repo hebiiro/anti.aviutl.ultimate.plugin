@@ -267,6 +267,26 @@ namespace aut
 		//
 		BOOL save()
 		{
+			std::wstring path = hive.getConfigFileName(L"ExEditTweaker.ini");
+
+			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.enable", gradientFill.enable);
+			setPrivateProfileColor(path.c_str(), L"Config", L"gradientFill.inner.color", gradientFill.inner.color);
+			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.inner.size.cx", gradientFill.inner.size.cx);
+			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.inner.size.cy", gradientFill.inner.size.cy);
+			setPrivateProfileColor(path.c_str(), L"Config", L"gradientFill.outer.color", gradientFill.outer.color);
+			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.outer.size.cx", gradientFill.outer.size.cx);
+			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.outer.size.cy", gradientFill.outer.size.cy);
+
+			setPrivateProfileColor(path.c_str(), L"Config", L"selection.fill.color", selection.fill.color);
+			setPrivateProfileColor(path.c_str(), L"Config", L"selection.stroke.color", selection.stroke.color);
+			setPrivateProfileColor(path.c_str(), L"Config", L"selection.background.color", selection.background.color);
+
+			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.left.color", layer.bound.left.color);
+			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.right.color", layer.bound.right.color);
+			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.top.color", layer.bound.top.color);
+			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.bottom.color", layer.bound.bottom.color);
+			setPrivateProfileColor(path.c_str(), L"Config", L"layer.separator.color", layer.separator.color);
+
 			return TRUE;
 		}
 

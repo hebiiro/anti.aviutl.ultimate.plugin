@@ -177,6 +177,10 @@ namespace aut
 
 			setPrivateProfileInt(path.c_str(), L"Config", L"unicodeInput", unicodeInput);
 			setPrivateProfileInt(path.c_str(), L"Config", L"ctrlA", ctrlA);
+			setPrivateProfileInt(path.c_str(), L"Config", L"delta", delta);
+			setPrivateProfileBSTR(path.c_str(), L"Config", L"font.name", font.name);
+			setPrivateProfileInt(path.c_str(), L"Config", L"font.height", font.height);
+			setPrivateProfileInt(path.c_str(), L"Config", L"font.pitch", font.pitch);
 
 			return TRUE;
 		}
