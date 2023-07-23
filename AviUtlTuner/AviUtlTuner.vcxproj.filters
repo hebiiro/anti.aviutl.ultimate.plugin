@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{28e1c815-30ae-44a9-b97b-da6f38d3f851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{d64ee86f-e357-4513-aea9-435338a248e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Servant">
+      <UniqueIdentifier>{595db6b1-07d5-4aa6-b7be-7feda4595209}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Servant\EditBoxTweaker">
+      <UniqueIdentifier>{62502c32-42e3-465e-ac38-1390641ed228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Servant\ExEditTweaker">
+      <UniqueIdentifier>{add80c83-8bc4-4c25-bb5c-0f98e01bd818}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="tools\edit_predicates.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Hive.h" />
+    <ClInclude Include="Master.h" />
+    <ClInclude Include="Story.h" />
+    <ClInclude Include="Servant.h" />
+    <ClInclude Include="Tools\Hook.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Tools.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="EditBoxTweaker.h">
+      <Filter>Servant\EditBoxTweaker</Filter>
+    </ClInclude>
+    <ClInclude Include="ExEditTweaker.h">
+      <Filter>Servant\ExEditTweaker</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AviUtlTuner.def">
+      <Filter>Framework</Filter>
+    </None>
+  </ItemGroup>
+</Project>
