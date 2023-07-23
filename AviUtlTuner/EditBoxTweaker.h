@@ -143,14 +143,20 @@ namespace aut
 		//
 		BOOL load()
 		{
-			std::wstring path = hive.getConfigFileName(L"EditBoxTweaker.ini");
+			return load(hive.getConfigFileName(L"EditBoxTweaker.ini").c_str());
+		}
 
-			getPrivateProfileInt(path.c_str(), L"Config", L"unicodeInput", unicodeInput);
-			getPrivateProfileInt(path.c_str(), L"Config", L"ctrlA", ctrlA);
-			getPrivateProfileInt(path.c_str(), L"Config", L"delta", delta);
-			getPrivateProfileBSTR(path.c_str(), L"Config", L"font.name", font.name);
-			getPrivateProfileInt(path.c_str(), L"Config", L"font.height", font.height);
-			getPrivateProfileInt(path.c_str(), L"Config", L"font.pitch", font.pitch);
+		//
+		// 設定をコンフィグファイルから読み込みます。
+		//
+		BOOL load(LPCWSTR path)
+		{
+			getPrivateProfileInt(path, L"Config", L"unicodeInput", unicodeInput);
+			getPrivateProfileInt(path, L"Config", L"ctrlA", ctrlA);
+			getPrivateProfileInt(path, L"Config", L"delta", delta);
+			getPrivateProfileBSTR(path, L"Config", L"font.name", font.name);
+			getPrivateProfileInt(path, L"Config", L"font.height", font.height);
+			getPrivateProfileInt(path, L"Config", L"font.pitch", font.pitch);
 
 			if (wcslen(font.name) != 0)
 			{
@@ -173,14 +179,20 @@ namespace aut
 		//
 		BOOL save()
 		{
-			std::wstring path = hive.getConfigFileName(L"EditBoxTweaker.ini");
+			return save(hive.getConfigFileName(L"EditBoxTweaker.ini").c_str());
+		}
 
-			setPrivateProfileInt(path.c_str(), L"Config", L"unicodeInput", unicodeInput);
-			setPrivateProfileInt(path.c_str(), L"Config", L"ctrlA", ctrlA);
-			setPrivateProfileInt(path.c_str(), L"Config", L"delta", delta);
-			setPrivateProfileBSTR(path.c_str(), L"Config", L"font.name", font.name);
-			setPrivateProfileInt(path.c_str(), L"Config", L"font.height", font.height);
-			setPrivateProfileInt(path.c_str(), L"Config", L"font.pitch", font.pitch);
+		//
+		// 設定をコンフィグファイルに保存します。
+		//
+		BOOL save(LPCWSTR path)
+		{
+			setPrivateProfileInt(path, L"Config", L"unicodeInput", unicodeInput);
+			setPrivateProfileInt(path, L"Config", L"ctrlA", ctrlA);
+			setPrivateProfileInt(path, L"Config", L"delta", delta);
+			setPrivateProfileBSTR(path, L"Config", L"font.name", font.name);
+			setPrivateProfileInt(path, L"Config", L"font.height", font.height);
+			setPrivateProfileInt(path, L"Config", L"font.pitch", font.pitch);
 
 			return TRUE;
 		}
