@@ -16,6 +16,9 @@
     <Filter Include="Servant\ExEditTweaker">
       <UniqueIdentifier>{add80c83-8bc4-4c25-bb5c-0f98e01bd818}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Servant\FilterCopy">
+      <UniqueIdentifier>{5fcc56d4-45c3-4da0-8e4f-8006e3113dce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
