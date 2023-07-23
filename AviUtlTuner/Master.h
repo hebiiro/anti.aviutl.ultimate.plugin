@@ -3,6 +3,7 @@
 #include "Servant.h"
 #include "EditBoxTweaker.h"
 #include "ExEditTweaker.h"
+#include "FilterCopy.h"
 
 namespace aut
 {
@@ -66,6 +67,7 @@ namespace aut
 
 			contract_with(&editbox_tweaker, path.c_str());
 			contract_with(&exedit_tweaker, path.c_str());
+			contract_with(&filter_copy, path.c_str());
 
 			return TRUE;
 		}

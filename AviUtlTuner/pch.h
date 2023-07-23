@@ -17,6 +17,7 @@
 #include <crtdbg.h>
 #include <locale.h>
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 #include "AviUtl/aviutl_exedit_sdk/aviutl.hpp"

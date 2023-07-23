@@ -190,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="EditBoxTweaker.h" />
     <ClInclude Include="ExEditTweaker.h" />
+    <ClInclude Include="FilterCopy.h" />
     <ClInclude Include="Hive.h" />
     <ClInclude Include="Master.h" />
     <ClInclude Include="pch.h" />

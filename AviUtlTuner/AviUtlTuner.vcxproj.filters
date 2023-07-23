@@ -43,6 +43,9 @@
     <ClInclude Include="ExEditTweaker.h">
       <Filter>Servant\ExEditTweaker</Filter>
     </ClInclude>
+    <ClInclude Include="FilterCopy.h">
+      <Filter>Servant\FilterCopy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
