@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace aut
+namespace fgo
 {
 	//
 	// このクラスはサーヴァントのスーパークラスです。

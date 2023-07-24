@@ -1,15 +1,20 @@
 ﻿#pragma once
 #include "Master.h"
 
-namespace aut
+namespace fgo
 {
+	//
+	// このクラスはこのプログラムの全体的な流れです。
+	//
 	inline struct Story
 	{
 		BOOL func_init(AviUtl::FilterPlugin* fp)
 		{
 			MY_TRACE(_T("Story::func_init()\n"));
 
-			hive.init(fp);
+			fate.init(fp);
+			master.init();
+			grand_order.init();
 
 			return TRUE;
 		}
@@ -18,7 +23,9 @@ namespace aut
 		{
 			MY_TRACE(_T("Story::func_exit()\n"));
 
-			hive.exit();
+			grand_order.exit();
+			master.exit();
+			fate.exit();
 
 			return TRUE;
 		}
@@ -38,15 +45,11 @@ namespace aut
 				{
 					MY_TRACE(_T("Story::func_WndProc(Init, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
-					master.init();
-
 					break;
 				}
 			case AviUtl::FilterPlugin::WindowMessage::Exit:
 				{
 					MY_TRACE(_T("Story::func_WndProc(Exit, 0x%08X, 0x%08X)\n"), wParam, lParam);
-
-					master.exit();
 
 					break;
 				}
@@ -71,7 +74,7 @@ namespace aut
 				{
 					MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
 
-					// この DLL の参照カウンタを増やしておく。
+					// 参照カウンタを増やしてこの DLL がアンロードされないようにします。
 					WCHAR moduleFileName[MAX_PATH] = {};
 					::GetModuleFileNameW(instance, moduleFileName, MAX_PATH);
 					::LoadLibraryW(moduleFileName);

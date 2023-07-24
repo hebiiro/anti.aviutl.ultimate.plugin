@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "Story.h"
 
-using namespace aut;
+using namespace fgo;
 
 //
 // デバッグ用コールバック関数。デバッグメッセージを出力する。

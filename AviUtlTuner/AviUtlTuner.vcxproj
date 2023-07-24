@@ -190,11 +190,12 @@
   <ItemGroup>
     <ClInclude Include="EditBoxTweaker.h" />
     <ClInclude Include="ExEditTweaker.h" />
+    <ClInclude Include="Fate\Fate.h" />
+    <ClInclude Include="Fate\GrandOrder.h" />
+    <ClInclude Include="Fate\Servant.h" />
     <ClInclude Include="FilterCopy.h" />
-    <ClInclude Include="Hive.h" />
     <ClInclude Include="Master.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Servant.h" />
     <ClInclude Include="Story.h" />
     <ClInclude Include="tools\edit_predicates.h" />
     <ClInclude Include="Tools\Hook.h" />

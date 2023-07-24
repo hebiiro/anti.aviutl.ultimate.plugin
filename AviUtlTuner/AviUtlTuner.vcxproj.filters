@@ -19,6 +19,9 @@
     <Filter Include="Servant\FilterCopy">
       <UniqueIdentifier>{5fcc56d4-45c3-4da0-8e4f-8006e3113dce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fate">
+      <UniqueIdentifier>{0dcf5f45-6699-4cef-a323-d8c80a2072f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -27,24 +30,31 @@
     <ClInclude Include="tools\edit_predicates.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Hive.h" />
-    <ClInclude Include="Master.h" />
-    <ClInclude Include="Story.h" />
-    <ClInclude Include="Servant.h" />
     <ClInclude Include="Tools\Hook.h">
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Tools\Tools.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="EditBoxTweaker.h">
-      <Filter>Servant\EditBoxTweaker</Filter>
+    <ClInclude Include="Master.h" />
+    <ClInclude Include="Story.h" />
+    <ClInclude Include="Fate\GrandOrder.h">
+      <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="ExEditTweaker.h">
-      <Filter>Servant\ExEditTweaker</Filter>
+    <ClInclude Include="Fate\Fate.h">
+      <Filter>Fate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fate\Servant.h">
+      <Filter>Fate</Filter>
     </ClInclude>
     <ClInclude Include="FilterCopy.h">
-      <Filter>Servant\FilterCopy</Filter>
+      <Filter>Servant</Filter>
+    </ClInclude>
+    <ClInclude Include="ExEditTweaker.h">
+      <Filter>Servant</Filter>
+    </ClInclude>
+    <ClInclude Include="EditBoxTweaker.h">
+      <Filter>Servant</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

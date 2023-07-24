@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include "Tools/Hook.h"
-#include "Hive.h"
-#include "Servant.h"
+#include "Fate/Fate.h"
+#include "Fate/GrandOrder.h"
 
-namespace aut
+namespace fgo::filter_copy
 {
 	//
-	// このクラスは拡張編集の設定ダイアログにフィルタのコピー・アンド・ペースト機能を追加するサーヴァントです。
+	// このクラスは拡張編集の設定ダイアログに
+	// フィルタのコピー・アンド・ペースト機能を追加するサーヴァントです。
 	//
 	inline struct FilterCopy : Servant
 	{
@@ -14,6 +15,11 @@ namespace aut
 		// このサーヴァントを識別するための名前を返します。
 		//
 		inline static LPCWSTR getServantNameStatic() { return L"FilterCopy"; }
+
+		//
+		// コンフィグファイルのフルパスを返します。
+		//
+		inline static std::wstring getConfigFileName() { return fate.getConfigFileName(L"FilterCopy.ini"); }
 
 		//
 		// コンストラクタです。
@@ -48,7 +54,7 @@ namespace aut
 		//
 		BOOL load()
 		{
-			return load(hive.getConfigFileName(L"FilterCopy.ini").c_str());
+			return load(getConfigFileName().c_str());
 		}
 
 		//
@@ -64,7 +70,7 @@ namespace aut
 		//
 		BOOL save()
 		{
-			return save(hive.getConfigFileName(L"FilterCopy.ini").c_str());
+			return save(getConfigFileName().c_str());
 		}
 
 		//
@@ -86,8 +92,8 @@ namespace aut
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			settingDialogProc.orig = hive.auin.HookSettingDialogProc(settingDialogProc.hook);
-			addAlias.attach(hive.auin.GetAddAlias());
+			settingDialogProc.orig = fate.auin.HookSettingDialogProc(settingDialogProc.hook);
+			addAlias.attach(fate.auin.GetAddAlias());
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -119,12 +125,12 @@ namespace aut
 			BOOL init()
 			{
 				// カレントオブジェクトのインデックスを取得します。
-				objectIndex = hive.auin.GetCurrentObjectIndex();
+				objectIndex = fate.auin.GetCurrentObjectIndex();
 				MY_TRACE_INT(objectIndex);
 				if (objectIndex < 0) return FALSE;
 
 				// オブジェクトを取得すします。
-				object = hive.auin.GetObject(objectIndex);
+				object = fate.auin.GetObject(objectIndex);
 				MY_TRACE_HEX(object);
 				if (!object) return FALSE;
 
@@ -143,7 +149,7 @@ namespace aut
 		//
 		// このクラスはオーダーです。
 		//
-		struct GrandOrder {
+		struct Order {
 			struct Filter {
 				int index; // フィルタのインデックス。
 				std::string fileName; // エイリアスのファイル名。
@@ -156,7 +162,7 @@ namespace aut
 			//
 			BOOL init(const Prep& prep)
 			{
-				MY_TRACE(_T("GrandOrder::init()\n"));
+				MY_TRACE(_T("Order::init()\n"));
 
 				flag = prep.object->flag;
 				filters.clear();
@@ -172,16 +178,16 @@ namespace aut
 			//
 			BOOL add(const Prep& prep, int filterIndex)
 			{
-				MY_TRACE(_T("GrandOrder::order(%d)\n"), filterIndex);
+				MY_TRACE(_T("Order::order(%d)\n"), filterIndex);
 
 				if (filterIndex == 0)
 					return FALSE; // 先頭のフィルタはコピーしません。
 
-				if (!hive.auin.IsMoveable(prep.object, filterIndex))
+				if (!fate.auin.IsMoveable(prep.object, filterIndex))
 					return FALSE; // 移動不可能なフィルタはコピーしません。
 
 				// フィルタを取得する。
-				ExEdit::Filter* filter = hive.auin.GetFilter(prep.object, filterIndex);
+				ExEdit::Filter* filter = fate.auin.GetFilter(prep.object, filterIndex);
 				if (!filter) return FALSE;
 
 				// 一時ファイルのファイル名を構築します。
@@ -192,7 +198,7 @@ namespace aut
 				MY_TRACE_STR(tempFileName);
 
 				// 一時ファイルにフィルタのエイリアスを保存します。
-				if (!hive.auin.SaveFilterAlias(prep.objectIndex, filterIndex, tempFileName))
+				if (!fate.auin.SaveFilterAlias(prep.objectIndex, filterIndex, tempFileName))
 				{
 					MY_TRACE(_T("SaveFilterAlias() が失敗しました\n"));
 
@@ -236,6 +242,7 @@ namespace aut
 			// 前準備を行います。
 			Prep prep;
 			if (!prep.init()) return FALSE;
+			if (!order.init(prep)) return FALSE;
 
 			// 戻り値です。
 			BOOL retValue = FALSE;
@@ -270,12 +277,12 @@ namespace aut
 			if (cut) // カットする場合は、ここでフィルタを削除します。
 			{
 				// カレントオブジェクトのインデックスを取得します。
-				int objectIndex = hive.auin.GetCurrentObjectIndex();
+				int objectIndex = fate.auin.GetCurrentObjectIndex();
 				MY_TRACE_INT(objectIndex);
 				if (objectIndex < 0) return FALSE;
 
 				// オブジェクトを取得します。
-				ExEdit::Object* object = hive.auin.GetObject(objectIndex);
+				ExEdit::Object* object = fate.auin.GetObject(objectIndex);
 				MY_TRACE_HEX(object);
 				if (!object) return FALSE;
 
@@ -283,13 +290,13 @@ namespace aut
 				if (object->index_midpt_leader != -1)
 					objectIndex = object->index_midpt_leader;
 
-				hive.auin.PushUndo();
-				hive.auin.CreateUndo(objectIndex, 1);
+				fate.auin.PushUndo();
+				fate.auin.CreateUndo(objectIndex, 1);
 				for (int i = order.filters.size() - 1; i >= 0; i--)
-					hive.auin.DeleteFilter(objectIndex, order.filters[i].index);
-				hive.auin.DrawSettingDialog(objectIndex);
-				hive.auin.HideControls();
-				hive.auin.ShowControls(hive.auin.GetCurrentObjectIndex());
+					fate.auin.DeleteFilter(objectIndex, order.filters[i].index);
+				fate.auin.DrawSettingDialog(objectIndex);
+				fate.auin.HideControls();
+				fate.auin.ShowControls(fate.auin.GetCurrentObjectIndex());
 			}
 
 			return retValue;
@@ -303,12 +310,12 @@ namespace aut
 			MY_TRACE(_T("pasteFilter()\n"));
 
 			// カレントオブジェクトのインデックスを取得します。
-			int objectIndex = hive.auin.GetCurrentObjectIndex();
+			int objectIndex = fate.auin.GetCurrentObjectIndex();
 			MY_TRACE_INT(objectIndex);
 			if (objectIndex < 0) return FALSE;
 
 			// オブジェクトを取得します。
-			ExEdit::Object* object = hive.auin.GetObject(objectIndex);
+			ExEdit::Object* object = fate.auin.GetObject(objectIndex);
 			MY_TRACE_HEX(object);
 			if (!object) return FALSE;
 
@@ -325,9 +332,9 @@ namespace aut
 				return FALSE; // オブジェクトのタイプが異なる場合は何もしません。
 
 			flagPasteFilter = TRUE;
-			// この中で hive.auin.AddAlias() が呼ばれるので、フラグを立ててフックします。
+			// この中で fate.auin.AddAlias() が呼ばれるので、フラグを立ててフックします。
 			// 1036 はエイリアスを追加するコマンド、0 はエイリアスのインデックスです。
-			::SendMessage(hive.auin.GetExEditWindow(), WM_COMMAND, 1036, 0);
+			::SendMessage(fate.auin.GetExEditWindow(), WM_COMMAND, 1036, 0);
 			flagPasteFilter = FALSE;
 
 			return TRUE;
@@ -346,18 +353,18 @@ namespace aut
 						MY_TRACE(_T("SettingDialogProc(WM_CREATE)\n"));
 
 						// 設定ダイアログのコンテキストメニューを拡張します。
-						for (int i = 0; i < hive.auin.GetSettingDialogMenuCount(); i++)
+						for (int i = 0; i < fate.auin.GetSettingDialogMenuCount(); i++)
 						{
-							HMENU menu = hive.auin.GetSettingDialogMenu(i);
+							HMENU menu = fate.auin.GetSettingDialogMenu(i);
 							HMENU subMenu = ::GetSubMenu(menu, 0);
 							::AppendMenu(subMenu, MF_SEPARATOR, 0, 0);
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_CUT_FILTER, _T("このフィルタを切り取り"));
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE, _T("このフィルタ以上を切り取り"));
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_CUT_FILTER_BELOW, _T("このフィルタ以下を切り取り"));
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_COPY_FILTER, _T("このフィルタをコピー"));
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE, _T("このフィルタ以上をコピー"));
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_COPY_FILTER_BELOW, _T("このフィルタ以下をコピー"));
-							::AppendMenu(subMenu, MF_STRING, Hive::CommandID::SettingDialog::ID_PASTE_FILTER, _T("フィルタを貼り付け"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER, _T("このフィルタを切り取り"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE, _T("このフィルタ以上を切り取り"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER_BELOW, _T("このフィルタ以下を切り取り"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_COPY_FILTER, _T("このフィルタをコピー"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE, _T("このフィルタ以上をコピー"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_COPY_FILTER_BELOW, _T("このフィルタ以下をコピー"));
+							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_PASTE_FILTER, _T("フィルタを貼り付け"));
 						}
 
 						break;
@@ -366,65 +373,65 @@ namespace aut
 					{
 						switch (wParam)
 						{
-						case Hive::CommandID::SettingDialog::ID_CUT_FILTER:
+						case Fate::CommandID::SettingDialog::ID_CUT_FILTER:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_CUT_FILTER\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER\n"));
 
-								int filterIndex = hive.auin.GetCurrentFilterIndex();
+								int filterIndex = fate.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
-									filter_copy.copyFilter(filterIndex, 0, TRUE);
+									servant.copyFilter(filterIndex, 0, TRUE);
 								break;
 							}
-						case Hive::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE:
+						case Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE\n"));
 
-								int filterIndex = hive.auin.GetCurrentFilterIndex();
+								int filterIndex = fate.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
-									filter_copy.copyFilter(filterIndex, -1, TRUE);
+									servant.copyFilter(filterIndex, -1, TRUE);
 								break;
 							}
-						case Hive::CommandID::SettingDialog::ID_CUT_FILTER_BELOW:
+						case Fate::CommandID::SettingDialog::ID_CUT_FILTER_BELOW:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_CUT_FILTER_BELOW\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER_BELOW\n"));
 
-								int filterIndex = hive.auin.GetCurrentFilterIndex();
+								int filterIndex = fate.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
-									filter_copy.copyFilter(filterIndex, 1, TRUE);
+									servant.copyFilter(filterIndex, 1, TRUE);
 								break;
 							}
-						case Hive::CommandID::SettingDialog::ID_COPY_FILTER:
+						case Fate::CommandID::SettingDialog::ID_COPY_FILTER:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_COPY_FILTER\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_COPY_FILTER\n"));
 
-								int filterIndex = hive.auin.GetCurrentFilterIndex();
+								int filterIndex = fate.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
-									filter_copy.copyFilter(filterIndex, 0, FALSE);
+									servant.copyFilter(filterIndex, 0, FALSE);
 								break;
 							}
-						case Hive::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE:
+						case Fate::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE\n"));
 
-								int filterIndex = hive.auin.GetCurrentFilterIndex();
+								int filterIndex = fate.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
-									filter_copy.copyFilter(filterIndex, -1, FALSE);
+									servant.copyFilter(filterIndex, -1, FALSE);
 								break;
 							}
-						case Hive::CommandID::SettingDialog::ID_COPY_FILTER_BELOW:
+						case Fate::CommandID::SettingDialog::ID_COPY_FILTER_BELOW:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_COPY_FILTER_BELOW\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_COPY_FILTER_BELOW\n"));
 
-								int filterIndex = hive.auin.GetCurrentFilterIndex();
+								int filterIndex = fate.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
-									filter_copy.copyFilter(filterIndex, 1, FALSE);
+									servant.copyFilter(filterIndex, 1, FALSE);
 								break;
 							}
-						case Hive::CommandID::SettingDialog::ID_PASTE_FILTER:
+						case Fate::CommandID::SettingDialog::ID_PASTE_FILTER:
 							{
-								MY_TRACE(_T("Hive::CommandID::SettingDialog::ID_PASTE_FILTER\n"));
+								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_PASTE_FILTER\n"));
 
-								filter_copy.pasteFilter();
+								servant.pasteFilter();
 
 								break;
 							}
@@ -434,7 +441,7 @@ namespace aut
 					}
 				}
 
-				return filter_copy.settingDialogProc.orig(hwnd, message, wParam, lParam);
+				return servant.settingDialogProc.orig(hwnd, message, wParam, lParam);
 			}
 		}; Tools::Hook<SettingDialogProc> settingDialogProc;
 
@@ -444,7 +451,7 @@ namespace aut
 			//
 			static BOOL CDECL hook(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 			{
-				return filter_copy.onAddAlias(fileName, flag1, flag2, objectIndex);
+				return servant.onAddAlias(fileName, flag1, flag2, objectIndex);
 			}
 		}; Tools::Hook<AddAlias> addAlias;
 
@@ -456,12 +463,12 @@ namespace aut
 				return addAlias.orig(fileName, flag1, flag2, objectIndex);
 
 			// オブジェクトを取得します。
-			ExEdit::Object* object = hive.auin.GetObject(objectIndex);
+			ExEdit::Object* object = fate.auin.GetObject(objectIndex);
 			MY_TRACE_HEX(object);
 			if (!object) return FALSE;
 
 			// カレントフィルタを取得します。
-			int filterIndex = hive.auin.GetCurrentFilterIndex();
+			int filterIndex = fate.auin.GetCurrentFilterIndex();
 			MY_TRACE_INT(filterIndex);
 			if (filterIndex < 0) return FALSE;
 
@@ -475,14 +482,14 @@ namespace aut
 				// フィルタを末尾に追加します。
 				int result = addAlias.orig(filter.fileName.c_str(), flag1, flag2, objectIndex);
 
-				int c = hive.auin.GetMoveableFilterCount(object);
+				int c = fate.auin.GetMoveableFilterCount(object);
 
 				// 末尾に追加されたフィルタを挿入位置まで移動します。
 				for (int i = c - 1; i > insertPos + 1; i--)
 				{
-					ExEdit::Filter* filter = hive.auin.GetFilter(object, i);
+					ExEdit::Filter* filter = fate.auin.GetFilter(object, i);
 
-					hive.auin.SwapFilter(objectIndex, i, -1);
+					fate.auin.SwapFilter(objectIndex, i, -1);
 				}
 
 				insertPos++;
@@ -491,5 +498,5 @@ namespace aut
 
 			return retValue;
 		}
-	} filter_copy;
+	} servant;
 }

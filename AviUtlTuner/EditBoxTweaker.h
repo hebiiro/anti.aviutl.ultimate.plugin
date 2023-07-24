@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "Tools/edit_predicates.h"
 #include "Tools/Hook.h"
-#include "Hive.h"
-#include "Servant.h"
+#include "Fate/Fate.h"
+#include "Fate/GrandOrder.h"
 
-namespace aut
+namespace fgo::editbox_tweaker
 {
 	//
 	// このクラスはエディットボックスを微調整するサーヴァントです。
@@ -15,6 +15,11 @@ namespace aut
 		// このサーヴァントを識別するための名前を返します。
 		//
 		inline static LPCWSTR getServantNameStatic() { return L"EditBoxTweaker"; }
+
+		//
+		// コンフィグファイルのフルパスを返します。
+		//
+		inline static std::wstring getConfigFileName() { return fate.getConfigFileName(L"EditBoxTweaker.ini"); }
 
 		BOOL unicodeInput;
 		BOOL ctrlA;
@@ -33,15 +38,15 @@ namespace aut
 			static BOOL WINAPI hook(LPMSG msg, HWND hwnd, UINT msgFilterMin, UINT msgFilterMax)
 			{
 				BOOL result = FALSE;
-				if (editbox_tweaker.unicodeInput) {
+				if (servant.unicodeInput) {
 					// ::GetMessageA() の代わりに ::GetMessageW() を呼び出す。
 					result = ::GetMessageW(msg, hwnd, msgFilterMin, msgFilterMax);
 				} else {
-					result = editbox_tweaker.getMessageA.orig(msg, hwnd, msgFilterMin, msgFilterMax);
+					result = servant.getMessageA.orig(msg, hwnd, msgFilterMin, msgFilterMax);
 				}
 
 				// Ctrl + A.
-				if (editbox_tweaker.ctrlA &&
+				if (servant.ctrlA &&
 					msg->message == WM_KEYDOWN &&
 					msg->wParam == 'A' &&
 					::GetKeyState(VK_CONTROL) < 0 &&
@@ -62,7 +67,7 @@ namespace aut
 				switch (msg) {
 				case WM_SETFONT:
 					MY_TRACE(_T("WM_SETFONT, 0x%08X, 0x%08X\n"), wparam, lparam);
-					wparam = reinterpret_cast<WPARAM>(editbox_tweaker.font.handle); // handle is not null here.
+					wparam = reinterpret_cast<WPARAM>(servant.font.handle); // handle is not null here.
 				//[[fallthrough]];
 				case WM_DESTROY:
 					::RemoveWindowSubclass(hwnd, subclassproc, id);
@@ -80,10 +85,10 @@ namespace aut
 			{
 				MY_TRACE(_T("CreateWindowExW(%ws, %d, %d)\n"), className, w, h);
 
-				HWND hwnd = editbox_tweaker.editbox.orig(exStyle, className, windowName,
-					style, x, y, w, h + editbox_tweaker.delta, parent, menu, instance, param);
+				HWND hwnd = servant.editbox.orig(exStyle, className, windowName,
+					style, x, y, w, h + servant.delta, parent, menu, instance, param);
 
-				if (editbox_tweaker.font.handle != nullptr)
+				if (servant.font.handle != nullptr)
 					::SetWindowSubclass(hwnd, subclassproc, 0, 0);
 
 				return hwnd;
@@ -143,7 +148,7 @@ namespace aut
 		//
 		BOOL load()
 		{
-			return load(hive.getConfigFileName(L"EditBoxTweaker.ini").c_str());
+			return load(getConfigFileName().c_str());
 		}
 
 		//
@@ -179,7 +184,7 @@ namespace aut
 		//
 		BOOL save()
 		{
-			return save(hive.getConfigFileName(L"EditBoxTweaker.ini").c_str());
+			return save(getConfigFileName().c_str());
 		}
 
 		//
@@ -210,7 +215,7 @@ namespace aut
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得する。
-			auto exedit = hive.auin.GetExEdit();
+			auto exedit = fate.auin.GetExEdit();
 
 			getMessageA.attach(::GetMessageA);
 
@@ -241,5 +246,5 @@ namespace aut
 
 			return TRUE;
 		}
-	} editbox_tweaker;
+	} servant;
 }

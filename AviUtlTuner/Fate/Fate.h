@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-namespace aut
+namespace fgo
 {
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
-	inline struct Hive
+	inline struct Fate
 	{
 		struct CommandID {
 			struct SettingDialog {
@@ -40,7 +40,7 @@ namespace aut
 		}
 
 		//
-		// ハイブの初期化を実行します。
+		// 初期化を実行します。
 		//
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
@@ -51,11 +51,11 @@ namespace aut
 		}
 
 		//
-		// ハイブの後始末を実行します。
+		// 後始末を実行します。
 		//
 		BOOL exit()
 		{
 			return TRUE;
 		}
-	} hive;
+	} fate;
 }

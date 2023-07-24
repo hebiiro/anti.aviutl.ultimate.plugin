@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "Tools/Hook.h"
-#include "Hive.h"
-#include "Servant.h"
+#include "Fate/Fate.h"
+#include "Fate/GrandOrder.h"
 
-namespace aut
+namespace fgo::exedit_tweaker
 {
 	//
 	// このクラスはエディットボックスを微調整するサーヴァントです。
@@ -14,6 +14,11 @@ namespace aut
 		// このサーヴァントを識別するための名前を返します。
 		//
 		inline static LPCWSTR getServantNameStatic() { return L"ExEditTweaker"; }
+
+		//
+		// コンフィグファイルのフルパスを返します。
+		//
+		inline static std::wstring getConfigFileName() { return fate.getConfigFileName(L"ExEditTweaker.ini"); }
 
 		struct Fill {
 			COLORREF color;
@@ -71,7 +76,7 @@ namespace aut
 			// 2色のグラデーションを描画する関数です
 			// http://iooiau.net/tips/web20back.html
 			//
-			BOOL TwoColorsGradient(
+			static BOOL TwoColorsGradient(
 				HDC hdc,            // 描画先のデバイスコンテキスト・ハンドルです
 				const RECT *pRect,  // 描画する範囲の矩形です
 				COLORREF Color1,    // 描画する一つ目の色です
@@ -111,13 +116,13 @@ namespace aut
 				// グラデーションで塗りつぶします。
 				COLORREF color1 = RGB(r, g, b);
 				COLORREF color2 = RGB(gr, gg, gb);
-//				TwoColorsGradient(dc, rc, color1, color2, TRUE);
+				TwoColorsGradient(dc, rc, color1, color2, TRUE);
 
 				// 矩形の枠を描画します。
 				RECT rcFrame = *rc;
-				exedit_tweaker.gradientFill.outer.draw(dc, &rcFrame);
-				exedit_tweaker.gradientFill.outer.deflate_rect(&rcFrame);
-				exedit_tweaker.gradientFill.inner.draw(dc, &rcFrame);
+				servant.gradientFill.outer.draw(dc, &rcFrame);
+				servant.gradientFill.outer.deflate_rect(&rcFrame);
+				servant.gradientFill.inner.draw(dc, &rcFrame);
 			}
 		}; Tools::Hook<GradientFill> gradientFill;
 
@@ -147,7 +152,7 @@ namespace aut
 					{
 //						MY_TRACE(_T("ExEditTweaker::Layer::Bound::Left::hook(0x%08X, %d, %d, %d, %d, 0x%08X)\n"), dc, mx, my, lx, ly, pen);
 
-						exedit_tweaker.layer.bound.left.draw(dc, mx, my, 1, ly - my, pen);
+						servant.layer.bound.left.draw(dc, mx, my, 1, ly - my, pen);
 					}
 				}; Tools::Hook<Left> left;
 
@@ -156,7 +161,7 @@ namespace aut
 					{
 //						MY_TRACE(_T("ExEditTweaker::Layer::Bound::Right::hook(0x%08X, %d, %d, %d, %d, 0x%08X)\n"), dc, mx, my, lx, ly, pen);
 
-						exedit_tweaker.layer.bound.right.draw(dc, mx, my, 1, ly - my, pen);
+						servant.layer.bound.right.draw(dc, mx, my, 1, ly - my, pen);
 					}
 				}; Tools::Hook<Right> right;
 
@@ -165,7 +170,7 @@ namespace aut
 					{
 //						MY_TRACE(_T("ExEditTweaker::Layer::Bound::Top::hook(0x%08X, %d, %d, %d, %d, 0x%08X)\n"), dc, mx, my, lx, ly, pen);
 
-						exedit_tweaker.layer.bound.left.draw(dc, mx, my, lx - mx, 1, pen);
+						servant.layer.bound.left.draw(dc, mx, my, lx - mx, 1, pen);
 					}
 				}; Tools::Hook<Top> top;
 
@@ -174,7 +179,7 @@ namespace aut
 					{
 //						MY_TRACE(_T("ExEditTweaker::Layer::Bound::Bottom::hook(0x%08X, %d, %d, %d, %d, 0x%08X)\n"), dc, mx, my, lx, ly, pen);
 
-						exedit_tweaker.layer.bound.left.draw(dc, mx, my, lx - mx, 1, pen);
+						servant.layer.bound.left.draw(dc, mx, my, lx - mx, 1, pen);
 					}
 				}; Tools::Hook<Bottom> bottom;
 			} bound;
@@ -184,7 +189,7 @@ namespace aut
 				{
 //					MY_TRACE(_T("ExEditTweaker::Layer::Separator::hook(0x%08X, %d, %d, %d, %d, 0x%08X)\n"), dc, mx, my, lx, ly, pen);
 
-					exedit_tweaker.layer.separator.draw(dc, mx, my, 1, ly - my, pen);
+					servant.layer.separator.draw(dc, mx, my, 1, ly - my, pen);
 				}
 			}; Tools::Hook<Separator> separator;
 		} layer;
@@ -239,25 +244,31 @@ namespace aut
 		//
 		BOOL load()
 		{
-			std::wstring path = hive.getConfigFileName(L"ExEditTweaker.ini");
+			return load(getConfigFileName().c_str());
+		}
 
-			getPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.enable", gradientFill.enable);
-			getPrivateProfileColor(path.c_str(), L"Config", L"gradientFill.inner.color", gradientFill.inner.color);
-			getPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.inner.size.cx", gradientFill.inner.size.cx);
-			getPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.inner.size.cy", gradientFill.inner.size.cy);
-			getPrivateProfileColor(path.c_str(), L"Config", L"gradientFill.outer.color", gradientFill.outer.color);
-			getPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.outer.size.cx", gradientFill.outer.size.cx);
-			getPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.outer.size.cy", gradientFill.outer.size.cy);
+		//
+		// 設定をコンフィグファイルから読み込みます。
+		//
+		BOOL load(LPCWSTR path)
+		{
+			getPrivateProfileInt(path, L"Config", L"gradientFill.enable", gradientFill.enable);
+			getPrivateProfileColor(path, L"Config", L"gradientFill.inner.color", gradientFill.inner.color);
+			getPrivateProfileInt(path, L"Config", L"gradientFill.inner.size.cx", gradientFill.inner.size.cx);
+			getPrivateProfileInt(path, L"Config", L"gradientFill.inner.size.cy", gradientFill.inner.size.cy);
+			getPrivateProfileColor(path, L"Config", L"gradientFill.outer.color", gradientFill.outer.color);
+			getPrivateProfileInt(path, L"Config", L"gradientFill.outer.size.cx", gradientFill.outer.size.cx);
+			getPrivateProfileInt(path, L"Config", L"gradientFill.outer.size.cy", gradientFill.outer.size.cy);
 
-			getPrivateProfileColor(path.c_str(), L"Config", L"selection.fill.color", selection.fill.color);
-			getPrivateProfileColor(path.c_str(), L"Config", L"selection.stroke.color", selection.stroke.color);
-			getPrivateProfileColor(path.c_str(), L"Config", L"selection.background.color", selection.background.color);
+			getPrivateProfileColor(path, L"Config", L"selection.fill.color", selection.fill.color);
+			getPrivateProfileColor(path, L"Config", L"selection.stroke.color", selection.stroke.color);
+			getPrivateProfileColor(path, L"Config", L"selection.background.color", selection.background.color);
 
-			getPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.left.color", layer.bound.left.color);
-			getPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.right.color", layer.bound.right.color);
-			getPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.top.color", layer.bound.top.color);
-			getPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.bottom.color", layer.bound.bottom.color);
-			getPrivateProfileColor(path.c_str(), L"Config", L"layer.separator.color", layer.separator.color);
+			getPrivateProfileColor(path, L"Config", L"layer.bound.left.color", layer.bound.left.color);
+			getPrivateProfileColor(path, L"Config", L"layer.bound.right.color", layer.bound.right.color);
+			getPrivateProfileColor(path, L"Config", L"layer.bound.top.color", layer.bound.top.color);
+			getPrivateProfileColor(path, L"Config", L"layer.bound.bottom.color", layer.bound.bottom.color);
+			getPrivateProfileColor(path, L"Config", L"layer.separator.color", layer.separator.color);
 
 			return TRUE;
 		}
@@ -267,25 +278,31 @@ namespace aut
 		//
 		BOOL save()
 		{
-			std::wstring path = hive.getConfigFileName(L"ExEditTweaker.ini");
+			return save(getConfigFileName().c_str());
+		}
 
-			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.enable", gradientFill.enable);
-			setPrivateProfileColor(path.c_str(), L"Config", L"gradientFill.inner.color", gradientFill.inner.color);
-			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.inner.size.cx", gradientFill.inner.size.cx);
-			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.inner.size.cy", gradientFill.inner.size.cy);
-			setPrivateProfileColor(path.c_str(), L"Config", L"gradientFill.outer.color", gradientFill.outer.color);
-			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.outer.size.cx", gradientFill.outer.size.cx);
-			setPrivateProfileInt(path.c_str(), L"Config", L"gradientFill.outer.size.cy", gradientFill.outer.size.cy);
+		//
+		// 設定をコンフィグファイルに保存します。
+		//
+		BOOL save(LPCWSTR path)
+		{
+			setPrivateProfileInt(path, L"Config", L"gradientFill.enable", gradientFill.enable);
+			setPrivateProfileColor(path, L"Config", L"gradientFill.inner.color", gradientFill.inner.color);
+			setPrivateProfileInt(path, L"Config", L"gradientFill.inner.size.cx", gradientFill.inner.size.cx);
+			setPrivateProfileInt(path, L"Config", L"gradientFill.inner.size.cy", gradientFill.inner.size.cy);
+			setPrivateProfileColor(path, L"Config", L"gradientFill.outer.color", gradientFill.outer.color);
+			setPrivateProfileInt(path, L"Config", L"gradientFill.outer.size.cx", gradientFill.outer.size.cx);
+			setPrivateProfileInt(path, L"Config", L"gradientFill.outer.size.cy", gradientFill.outer.size.cy);
 
-			setPrivateProfileColor(path.c_str(), L"Config", L"selection.fill.color", selection.fill.color);
-			setPrivateProfileColor(path.c_str(), L"Config", L"selection.stroke.color", selection.stroke.color);
-			setPrivateProfileColor(path.c_str(), L"Config", L"selection.background.color", selection.background.color);
+			setPrivateProfileColor(path, L"Config", L"selection.fill.color", selection.fill.color);
+			setPrivateProfileColor(path, L"Config", L"selection.stroke.color", selection.stroke.color);
+			setPrivateProfileColor(path, L"Config", L"selection.background.color", selection.background.color);
 
-			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.left.color", layer.bound.left.color);
-			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.right.color", layer.bound.right.color);
-			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.top.color", layer.bound.top.color);
-			setPrivateProfileColor(path.c_str(), L"Config", L"layer.bound.bottom.color", layer.bound.bottom.color);
-			setPrivateProfileColor(path.c_str(), L"Config", L"layer.separator.color", layer.separator.color);
+			setPrivateProfileColor(path, L"Config", L"layer.bound.left.color", layer.bound.left.color);
+			setPrivateProfileColor(path, L"Config", L"layer.bound.right.color", layer.bound.right.color);
+			setPrivateProfileColor(path, L"Config", L"layer.bound.top.color", layer.bound.top.color);
+			setPrivateProfileColor(path, L"Config", L"layer.bound.bottom.color", layer.bound.bottom.color);
+			setPrivateProfileColor(path, L"Config", L"layer.separator.color", layer.separator.color);
 
 			return TRUE;
 		}
@@ -303,7 +320,7 @@ namespace aut
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得します。
-			auto exedit = hive.auin.GetExEdit();
+			auto exedit = fate.auin.GetExEdit();
 
 			// 拡張編集内のタイムラインアイテム矩形を描画する関数をフックします。
 			if (gradientFill.enable) gradientFill.attach(exedit + 0x00036a70);
@@ -331,5 +348,5 @@ namespace aut
 		{
 			return TRUE;
 		}
-	} exedit_tweaker;
+	} servant;
 }
