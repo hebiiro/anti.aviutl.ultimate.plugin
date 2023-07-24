@@ -200,6 +200,7 @@ namespace aut
 		//
 		// 初期化処理です。
 		// 拡張編集の関数をフックします。
+		// 拡張編集のコンスト値 (コードメモリ) を書き換えます。
 		//
 		BOOL init()
 		{
@@ -209,7 +210,7 @@ namespace aut
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得する。
-			addr_t exedit_auf = (addr_t)::GetModuleHandle(_T("exedit.auf"));
+			auto exedit = hive.auin.GetExEdit();
 
 			getMessageA.attach(::GetMessageA);
 
@@ -221,10 +222,10 @@ namespace aut
 			// 拡張編集内の ::CreateWindowExW() の呼び出しをフックします。
 			// コンスト値も書き換えます。
 			if (delta != 0 || font.handle != nullptr) {
-				editbox.attach_to_abs_call(exedit_auf + 0x0008C46E);
-				editbox.attach_to_abs_call(exedit_auf + 0x00087658);
-				add_int32(exedit_auf + 0x0008CC56 + 1, delta);
-				add_int32(exedit_auf + 0x000876DE + 1, delta);
+				editbox.attach_to_abs_call(exedit + 0x0008C46E);
+				editbox.attach_to_abs_call(exedit + 0x00087658);
+				add_int32(exedit + 0x0008CC56 + 1, delta);
+				add_int32(exedit + 0x000876DE + 1, delta);
 			}
 
 			return DetourTransactionCommit() == NO_ERROR;

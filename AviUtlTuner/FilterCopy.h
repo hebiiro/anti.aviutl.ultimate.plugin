@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "Tools/edit_predicates.h"
 #include "Tools/Hook.h"
 #include "Hive.h"
 #include "Servant.h"
@@ -7,7 +6,7 @@
 namespace aut
 {
 	//
-	// このクラスはエディットボックスを微調整するサーヴァントです。
+	// このクラスは拡張編集の設定ダイアログにフィルタのコピー・アンド・ペースト機能を追加するサーヴァントです。
 	//
 	inline struct FilterCopy : Servant
 	{

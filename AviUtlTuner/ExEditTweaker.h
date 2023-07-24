@@ -303,22 +303,22 @@ namespace aut
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得します。
-			addr_t exedit_auf = (addr_t)::GetModuleHandle(_T("exedit.auf"));
+			auto exedit = hive.auin.GetExEdit();
 
 			// 拡張編集内のタイムラインアイテム矩形を描画する関数をフックします。
-			if (gradientFill.enable) gradientFill.attach(exedit_auf + 0x00036a70);
+			if (gradientFill.enable) gradientFill.attach(exedit + 0x00036a70);
 
 			// 拡張編集内の選択領域に関するコンスト値を書き換えます。
-			if (selection.fill.color != CLR_NONE) writeAbsoluteAddress(exedit_auf + 0x0003807E, &selection.fill.color);
-			if (selection.stroke.color != CLR_NONE) writeAbsoluteAddress(exedit_auf + 0x00038076, &selection.stroke.color);
-			if (selection.background.color != CLR_NONE) writeAbsoluteAddress(exedit_auf + 0x00038087, &selection.background.color);
+			if (selection.fill.color != CLR_NONE) writeAbsoluteAddress(exedit + 0x0003807E, &selection.fill.color);
+			if (selection.stroke.color != CLR_NONE) writeAbsoluteAddress(exedit + 0x00038076, &selection.stroke.color);
+			if (selection.background.color != CLR_NONE) writeAbsoluteAddress(exedit + 0x00038087, &selection.background.color);
 
 			// 拡張編集内のレイヤー境界を描画する関数をフックします。
-			if (layer.bound.left.color != CLR_NONE) layer.bound.left.attach_to_call(exedit_auf + 0x00038845);
-			if (layer.bound.right.color != CLR_NONE) layer.bound.right.attach_to_call(exedit_auf + 0x000388AA);
-			if (layer.bound.top.color != CLR_NONE) layer.bound.top.attach_to_call(exedit_auf + 0x00038871);
-			if (layer.bound.bottom.color != CLR_NONE) layer.bound.bottom.attach_to_call(exedit_auf + 0x000388DA);
-			if (layer.separator.color != CLR_NONE) layer.separator.attach_to_call(exedit_auf + 0x00037A1F);
+			if (layer.bound.left.color != CLR_NONE) layer.bound.left.attach_to_call(exedit + 0x00038845);
+			if (layer.bound.right.color != CLR_NONE) layer.bound.right.attach_to_call(exedit + 0x000388AA);
+			if (layer.bound.top.color != CLR_NONE) layer.bound.top.attach_to_call(exedit + 0x00038871);
+			if (layer.bound.bottom.color != CLR_NONE) layer.bound.bottom.attach_to_call(exedit + 0x000388DA);
+			if (layer.separator.color != CLR_NONE) layer.separator.attach_to_call(exedit + 0x00037A1F);
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
