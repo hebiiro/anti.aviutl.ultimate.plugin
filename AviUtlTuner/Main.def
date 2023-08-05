@@ -1,0 +1,4 @@
+EXPORTS
+	GetFilterTable
+	get_fate
+	get_grand_order

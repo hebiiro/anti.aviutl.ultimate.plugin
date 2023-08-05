@@ -1,7 +1,4 @@
 ﻿#pragma once
-#include "Tools/Hook.h"
-#include "Fate/Fate.h"
-#include "Fate/GrandOrder.h"
 
 namespace fgo::exedit_tweaker
 {
@@ -10,16 +7,6 @@ namespace fgo::exedit_tweaker
 	//
 	inline struct ExEditTweaker : Servant
 	{
-		//
-		// このサーヴァントを識別するための名前を返します。
-		//
-		inline static LPCWSTR getServantNameStatic() { return L"ExEditTweaker"; }
-
-		//
-		// コンフィグファイルのフルパスを返します。
-		//
-		inline static std::wstring getConfigFileName() { return fate.getConfigFileName(L"ExEditTweaker.ini"); }
-
 		struct Fill {
 			COLORREF color;
 		};
@@ -220,7 +207,15 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// マスターから呼ばれます。
+		// この仮想関数は、このサーヴァントの名前が必要なときに呼ばれます。
+		//
+		LPCWSTR get_servant_name() override
+		{
+			return L"ExEditTweaker";
+		}
+
+		//
+		// この仮想関数は、初期化のタイミングで呼ばれます。
 		//
 		BOOL on_init() override
 		{
@@ -230,7 +225,7 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// マスターから呼ばれます。
+		// この仮想関数は、後始末のタイミングで呼ばれます。
 		//
 		BOOL on_exit() override
 		{
@@ -240,7 +235,15 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// 設定をコンフィグファイルから読み込みます。
+		// コンフィグファイルのフルパスを返します。
+		//
+		inline static std::wstring getConfigFileName()
+		{
+			return fate.getConfigFileName(L"ExEditTweaker.ini");
+		}
+
+		//
+		// コンフィグファイル名を取得し、設定を読み込みます。
 		//
 		BOOL load()
 		{
@@ -248,7 +251,7 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// 設定をコンフィグファイルから読み込みます。
+		// コンフィグファイルから設定を読み込みます。
 		//
 		BOOL load(LPCWSTR path)
 		{
@@ -274,7 +277,7 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// 設定をコンフィグファイルに保存します。
+		// コンフィグファイル名を取得し、設定を保存します。
 		//
 		BOOL save()
 		{
@@ -282,7 +285,7 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// 設定をコンフィグファイルに保存します。
+		// コンフィグファイルに設定を保存します。
 		//
 		BOOL save(LPCWSTR path)
 		{

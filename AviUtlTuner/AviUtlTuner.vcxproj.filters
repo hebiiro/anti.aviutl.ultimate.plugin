@@ -4,67 +4,58 @@
     <Filter Include="Framework">
       <UniqueIdentifier>{28e1c815-30ae-44a9-b97b-da6f38d3f851}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tools">
-      <UniqueIdentifier>{d64ee86f-e357-4513-aea9-435338a248e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Servant">
-      <UniqueIdentifier>{595db6b1-07d5-4aa6-b7be-7feda4595209}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Servant\EditBoxTweaker">
-      <UniqueIdentifier>{62502c32-42e3-465e-ac38-1390641ed228}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Servant\ExEditTweaker">
-      <UniqueIdentifier>{add80c83-8bc4-4c25-bb5c-0f98e01bd818}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Servant\FilterCopy">
-      <UniqueIdentifier>{5fcc56d4-45c3-4da0-8e4f-8006e3113dce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fate">
-      <UniqueIdentifier>{0dcf5f45-6699-4cef-a323-d8c80a2072f1}</UniqueIdentifier>
+      <UniqueIdentifier>{db5d2c85-033b-45b6-9f76-034ee2280a9d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="tools\edit_predicates.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\Hook.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Tools\Tools.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Master.h" />
     <ClInclude Include="Story.h" />
-    <ClInclude Include="Fate\GrandOrder.h">
+    <ClInclude Include="..\Fate\Fate.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="Fate\Fate.h">
+    <ClInclude Include="..\Fate\GrandOrder.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="Fate\Servant.h">
+    <ClInclude Include="..\Fate\Servant.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="FilterCopy.h">
-      <Filter>Servant</Filter>
+    <ClInclude Include="..\Fate\edit_predicates.h">
+      <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="ExEditTweaker.h">
-      <Filter>Servant</Filter>
+    <ClInclude Include="..\Fate\Hook.h">
+      <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="EditBoxTweaker.h">
-      <Filter>Servant</Filter>
+    <ClInclude Include="..\Fate\Tools.h">
+      <Filter>Fate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Fate\FilterHolder.h">
+      <Filter>Fate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Fate\GdiBitmap.h">
+      <Filter>Fate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Fate\LayeredWindowInfo.h">
+      <Filter>Fate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Fate\ObjectHolder.h">
+      <Filter>Fate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Filter.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AviUtlTuner.def">
+    <None Include="..\Fate\Grand Order">
+      <Filter>Fate</Filter>
+    </None>
+    <None Include="Main.def">
       <Filter>Framework</Filter>
     </None>
   </ItemGroup>

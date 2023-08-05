@@ -27,7 +27,7 @@ namespace fgo
 		AviUtlInternal auin;
 
 		//
-		// 指定されたコンフィグファイルをフルパスにして返します。
+		// 指定されたコンフィグファイル名をフルパスにして返します。
 		//
 		std::wstring getConfigFileName(LPCWSTR fileName) const
 		{
@@ -41,6 +41,7 @@ namespace fgo
 
 		//
 		// 初期化を実行します。
+		// 内部的に使用されます。
 		//
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
@@ -52,10 +53,22 @@ namespace fgo
 
 		//
 		// 後始末を実行します。
+		// 内部的に使用されます。
 		//
 		BOOL exit()
 		{
 			return TRUE;
 		}
-	} fate;
+
+		//
+		// インスタンスを返します。
+		// 内部的に使用されます。
+		//
+		static Fate* WINAPI get_instance()
+		{
+			HMODULE module = ::GetModuleHandleW(L"AviUtlTuner.auf");
+			auto get_fate = (Fate* (WINAPI*)())::GetProcAddress(module, "get_fate");
+			return (*get_fate)();
+		}
+	} &fate = *Fate::get_instance();
 }

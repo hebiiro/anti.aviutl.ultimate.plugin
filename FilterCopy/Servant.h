@@ -1,7 +1,4 @@
 ﻿#pragma once
-#include "Tools/Hook.h"
-#include "Fate/Fate.h"
-#include "Fate/GrandOrder.h"
 
 namespace fgo::filter_copy
 {
@@ -12,16 +9,6 @@ namespace fgo::filter_copy
 	inline struct FilterCopy : Servant
 	{
 		//
-		// このサーヴァントを識別するための名前を返します。
-		//
-		inline static LPCWSTR getServantNameStatic() { return L"FilterCopy"; }
-
-		//
-		// コンフィグファイルのフルパスを返します。
-		//
-		inline static std::wstring getConfigFileName() { return fate.getConfigFileName(L"FilterCopy.ini"); }
-
-		//
 		// コンストラクタです。
 		// コンフィグの初期値を設定します。
 		//
@@ -30,7 +17,15 @@ namespace fgo::filter_copy
 		}
 
 		//
-		// マスターから呼ばれます。
+		// この仮想関数は、このサーヴァントの名前が必要なときに呼ばれます。
+		//
+		LPCWSTR get_servant_name() override
+		{
+			return L"FilterCopy";
+		}
+
+		//
+		// この仮想関数は、初期化のタイミングで呼ばれます。
 		//
 		BOOL on_init() override
 		{
@@ -40,7 +35,7 @@ namespace fgo::filter_copy
 		}
 
 		//
-		// マスターから呼ばれます。
+		// この仮想関数は、後始末のタイミングで呼ばれます。
 		//
 		BOOL on_exit() override
 		{
@@ -50,7 +45,15 @@ namespace fgo::filter_copy
 		}
 
 		//
-		// 設定をコンフィグファイルから読み込みます。
+		// コンフィグファイルのフルパスを返します。
+		//
+		inline static std::wstring getConfigFileName()
+		{
+			return fate.getConfigFileName(L"FilterCopy.ini");
+		}
+
+		//
+		// コンフィグファイル名を取得し、設定を読み込みます。
 		//
 		BOOL load()
 		{
@@ -58,7 +61,7 @@ namespace fgo::filter_copy
 		}
 
 		//
-		// 設定をコンフィグファイルから読み込みます。
+		// コンフィグファイルから設定を読み込みます。
 		//
 		BOOL load(LPCWSTR path)
 		{
@@ -66,7 +69,7 @@ namespace fgo::filter_copy
 		}
 
 		//
-		// 設定をコンフィグファイルに保存します。
+		// コンフィグファイル名を取得し、設定を保存します。
 		//
 		BOOL save()
 		{
@@ -74,7 +77,7 @@ namespace fgo::filter_copy
 		}
 
 		//
-		// 設定をコンフィグファイルに保存します。
+		// コンフィグファイルに設定を保存します。
 		//
 		BOOL save(LPCWSTR path)
 		{
@@ -94,6 +97,7 @@ namespace fgo::filter_copy
 
 			settingDialogProc.orig = fate.auin.HookSettingDialogProc(settingDialogProc.hook);
 			addAlias.attach(fate.auin.GetAddAlias());
+			unknown1.attach(fate.auin.GetUnknown1());
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -357,6 +361,15 @@ namespace fgo::filter_copy
 						{
 							HMENU menu = fate.auin.GetSettingDialogMenu(i);
 							HMENU subMenu = ::GetSubMenu(menu, 0);
+
+							if (i == 2)
+							{
+								::AppendMenu(subMenu, MF_SEPARATOR, 0, 0);
+								::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CREATE_CLONE, _T("完全な複製を隣に作成"));
+								::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE, _T("同じフィルタ効果を上に作成"));
+								::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CREATE_SAME_BELOW, _T("同じフィルタ効果を下に作成"));
+							}
+
 							::AppendMenu(subMenu, MF_SEPARATOR, 0, 0);
 							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER, _T("このフィルタを切り取り"));
 							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE, _T("このフィルタ以上を切り取り"));
@@ -373,6 +386,37 @@ namespace fgo::filter_copy
 					{
 						switch (wParam)
 						{
+						case Fate::CommandID::SettingDialog::ID_CREATE_CLONE:
+						case Fate::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE:
+						case Fate::CommandID::SettingDialog::ID_CREATE_SAME_BELOW:
+							{
+								// オブジェクトを取得する。
+								ObjectHolder object(fate.auin.GetCurrentObjectIndex());
+								MY_TRACE_OBJECT_HOLDER(object);
+								if (!object.isValid()) break;
+
+								// フィルタを取得する。
+								FilterHolder filter = FilterHolder(object, fate.auin.GetCurrentFilterIndex());
+								MY_TRACE_FILTER_HOLDER(filter);
+								if (!filter.isValid()) break;
+								MY_TRACE_STR(filter.getFilter()->name);
+								MY_TRACE_HEX(filter.getFilter()->flag);
+
+								// フィルタが複製できるものかどうかチェックする。
+								if (!filter.isMoveable())
+									break;
+
+								// フィルタ ID を取得する。
+								int filterId = object.getObject()->filter_param[filter.getFilterIndex()].id;
+								MY_TRACE_HEX(filterId);
+								if (filterId < 0) break;
+
+								// フィルタを作成するコマンドを発行する。
+								servant.unknown1.commandId = wParam;
+								LRESULT result = servant.settingDialogProc.orig(hwnd, message, 2000 + filterId, lParam);
+								servant.unknown1.commandId = 0;
+								return result;
+							}
 						case Fate::CommandID::SettingDialog::ID_CUT_FILTER:
 							{
 								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER\n"));
@@ -457,7 +501,7 @@ namespace fgo::filter_copy
 
 		BOOL onAddAlias(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 		{
-			MY_TRACE(_T("AddAlias(%s, %d, %d, %d)\n"), fileName, flag1, flag2, objectIndex);
+			MY_TRACE(_T("AddAlias(%hs, %d, %d, %d)\n"), fileName, flag1, flag2, objectIndex);
 
 			if (!flagPasteFilter) // フラグが立っていない場合はデフォルトの処理を行います。
 				return addAlias.orig(fileName, flag1, flag2, objectIndex);
@@ -498,5 +542,133 @@ namespace fgo::filter_copy
 
 			return retValue;
 		}
+
+		struct Unknown1
+		{
+			UINT commandId = 0;
+
+			void createClone(int origObjectIndex, int newFilterIndex)
+			{
+				MY_TRACE(_T("複製を作成します\n"));
+
+				int objectIndex = origObjectIndex;
+				MY_TRACE_INT(objectIndex);
+
+				int midptLeader = fate.auin.GetObject(objectIndex)->index_midpt_leader;
+				MY_TRACE_INT(midptLeader);
+				if (midptLeader >= 0)
+					objectIndex = midptLeader; // 中間点がある場合は中間点元のオブジェクト ID を取得
+
+				while (objectIndex >= 0)
+				{
+					// オブジェクトインデックスを取得する。
+					MY_TRACE_INT(objectIndex);
+					if (objectIndex < 0) break;
+
+					// オブジェクトを取得する。
+					ExEdit::Object* object = fate.auin.GetObject(objectIndex);
+					MY_TRACE_HEX(object);
+					if (!object) break;
+
+					int midptLeader2 = object->index_midpt_leader;
+					MY_TRACE_INT(midptLeader2);
+					if (midptLeader2 != midptLeader) break;
+
+					// コピー元フィルタのインデックスを取得する。
+					int srcFilterIndex = fate.auin.GetCurrentFilterIndex();
+					MY_TRACE_INT(srcFilterIndex);
+					if (srcFilterIndex < 0) break;
+
+					// コピー先フィルタのインデックスを取得する。
+					int dstFilterIndex = newFilterIndex;
+					MY_TRACE_INT(dstFilterIndex);
+					if (dstFilterIndex < 0) break;
+
+					// コピー元フィルタを取得する。
+					ExEdit::Filter* srcFilter = fate.auin.GetFilter(object, srcFilterIndex);
+					MY_TRACE_HEX(srcFilter);
+					if (!srcFilter) break;
+
+					// コピー先フィルタを取得する。
+					ExEdit::Filter* dstFilter = fate.auin.GetFilter(object, dstFilterIndex);
+					MY_TRACE_HEX(dstFilter);
+					if (!dstFilter) break;
+
+					if (commandId == Fate::CommandID::SettingDialog::ID_CREATE_CLONE)
+					{
+						// 拡張データをコピーする。
+						BYTE* srcFilterExdata = fate.auin.GetExdata(object, srcFilterIndex);
+						BYTE* dstFilterExdata = fate.auin.GetExdata(object, dstFilterIndex);
+						memcpy(dstFilterExdata, srcFilterExdata, srcFilter->exdata_size);
+
+						// トラックデータをコピーする。
+						for (int i = 0; i < srcFilter->track_n; i++)
+						{
+							int srcTrackIndex = object->filter_param[srcFilterIndex].track_begin + i;
+							int dstTrackIndex = object->filter_param[dstFilterIndex].track_begin + i;
+							object->track_value_left[dstTrackIndex] = object->track_value_left[srcTrackIndex];
+							object->track_value_right[dstTrackIndex] = object->track_value_right[srcTrackIndex];
+							object->track_mode[dstTrackIndex] = object->track_mode[srcTrackIndex];
+							object->track_param[dstTrackIndex] = object->track_param[srcTrackIndex];
+						}
+
+						// チェックデータをコピーする。
+						for (int i = 0; i < srcFilter->check_n; i++)
+						{
+							int srcCheckIndex = object->filter_param[srcFilterIndex].check_begin + i;
+							int dstCheckIndex = object->filter_param[dstFilterIndex].check_begin + i;
+							object->check_value[dstCheckIndex] = object->check_value[srcCheckIndex];
+						}
+					}
+
+					if (midptLeader < 0) break;
+
+					objectIndex = fate.auin.GetNextObjectIndex(objectIndex);
+				}
+
+				// コピー元フィルタのインデックスを取得する。
+				int srcFilterIndex = fate.auin.GetCurrentFilterIndex();
+				MY_TRACE_INT(srcFilterIndex);
+				if (srcFilterIndex < 0) return;
+
+				// コピー先フィルタのインデックスを取得する。
+				int dstFilterIndex = newFilterIndex;
+				MY_TRACE_INT(dstFilterIndex);
+				if (dstFilterIndex < 0) return;
+
+				switch (commandId)
+				{
+				case Fate::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE:
+					{
+						// コピー元のすぐ上に移動
+						int c = dstFilterIndex - srcFilterIndex;
+						for (int i = 0; i < c; i++)
+							fate.auin.SwapFilter(origObjectIndex, dstFilterIndex--, -1);
+
+						break;
+					}
+				case Fate::CommandID::SettingDialog::ID_CREATE_CLONE:
+				case Fate::CommandID::SettingDialog::ID_CREATE_SAME_BELOW:
+					{
+						// コピー元のすぐ下に移動
+						int c = dstFilterIndex - srcFilterIndex - 1;
+						for (int i = 0; i < c; i++)
+							fate.auin.SwapFilter(origObjectIndex, dstFilterIndex--, -1);
+
+						break;
+					}
+				}
+			}
+
+			static void CDECL hook(int objectIndex, int filterIndex)
+			{
+				MY_TRACE(_T("Unknown1(%d, %d)\n"), objectIndex, filterIndex);
+
+				servant.unknown1.orig(objectIndex, filterIndex);
+
+				if (servant.unknown1.commandId)
+					servant.unknown1.createClone(objectIndex, filterIndex);
+			}
+		}; Tools::Hook<Unknown1> unknown1;
 	} servant;
 }

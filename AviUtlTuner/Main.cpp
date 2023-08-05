@@ -57,7 +57,7 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 {
 	LPCSTR name = "AviUtlチューナープラグイン";
-	LPCSTR information = "AviUtlチューナープラグイン r1 By 蛇色";
+	LPCSTR information = "AviUtlチューナープラグイン r1 by 蛇色";
 
 	static AviUtl::FilterPluginDLL filter = {
 		.flag =
@@ -74,4 +74,18 @@ AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 	};
 
 	return &filter;
+}
+
+Fate* WINAPI get_fate()
+{
+	static Fate fate;
+
+	return &fate;
+}
+
+GrandOrder* WINAPI get_grand_order()
+{
+	static GrandOrder grand_order;
+
+	return &grand_order;
 }
