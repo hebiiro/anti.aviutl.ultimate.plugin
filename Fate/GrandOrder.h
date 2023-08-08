@@ -1,4 +1,7 @@
-﻿#pragma once
+﻿Test
+Test
+
+#pragma once
 #include "Servant.h"
 
 namespace fgo
@@ -78,7 +81,7 @@ namespace fgo
 		//
 		static GrandOrder* WINAPI get_instance()
 		{
-			HMODULE module = ::GetModuleHandleW(L"AviUtlTuner.auf");
+			HMODULE module = ::GetModuleHandleW(L"Last.auf");
 			auto get_grand_order = (GrandOrder* (WINAPI*)())::GetProcAddress(module, "get_grand_order");
 			return (*get_grand_order)();
 		}

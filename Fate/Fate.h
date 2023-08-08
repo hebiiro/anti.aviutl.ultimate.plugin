@@ -66,7 +66,7 @@ namespace fgo
 		//
 		static Fate* WINAPI get_instance()
 		{
-			HMODULE module = ::GetModuleHandleW(L"AviUtlTuner.auf");
+			HMODULE module = ::GetModuleHandleW(L"Last.auf");
 			auto get_fate = (Fate* (WINAPI*)())::GetProcAddress(module, "get_fate");
 			return (*get_fate)();
 		}

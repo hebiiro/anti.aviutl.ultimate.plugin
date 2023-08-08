@@ -9,8 +9,8 @@
 ## 導入方法
 
 以下のファイルを AviUtl の Plugins フォルダに入れてください。
-* AviUtlTuner.auf
-* AviUtlTuner (フォルダ)
+* Last.auf
+* Last (フォルダ)
 
 # エディットボックスツイーカー
 

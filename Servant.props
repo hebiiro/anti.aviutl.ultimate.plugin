@@ -12,7 +12,7 @@
       <ModuleDefinitionFile>Main.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\AviUtlTunerPlugin\$(TargetName).aut"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\LastPlugin\$(TargetName).aut"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

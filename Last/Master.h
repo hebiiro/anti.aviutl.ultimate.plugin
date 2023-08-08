@@ -24,7 +24,7 @@ namespace fgo
 		//
 		std::wstring getConfigFileName() const
 		{
-			return fate.getConfigFileName(L"AviUtlTuner.ini");
+			return fate.getConfigFileName(L"Last.ini");
 		}
 
 		//
