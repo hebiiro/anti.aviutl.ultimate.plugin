@@ -7,6 +7,9 @@
     <Filter Include="Fate">
       <UniqueIdentifier>{db5d2c85-033b-45b6-9f76-034ee2280a9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{753d13b5-7567-4d9d-b846-a583c9436874}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -14,35 +17,38 @@
     </ClInclude>
     <ClInclude Include="Master.h" />
     <ClInclude Include="Story.h" />
-    <ClInclude Include="..\Fate\Fate.h">
+    <ClInclude Include="..\Fate\Chaldea.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\GrandOrder.h">
+    <ClInclude Include="..\Fate\Fate.h">
       <Filter>Fate</Filter>
     </ClInclude>
     <ClInclude Include="..\Fate\Servant.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\edit_predicates.h">
+    <ClInclude Include="..\Fate\Universe.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\Hook.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="..\Tools\edit_predicates.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\Tools.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="..\Tools\FilterHolder.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\FilterHolder.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="..\Tools\GdiBitmap.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\GdiBitmap.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="..\Tools\Hook.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\LayeredWindowInfo.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="..\Tools\LayeredWindowInfo.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\ObjectHolder.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="..\Tools\ObjectHolder.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Tools\Tools.h">
+      <Filter>Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -52,11 +58,11 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Fate\Grand Order">
-      <Filter>Fate</Filter>
-    </None>
     <None Include="Main.def">
       <Filter>Framework</Filter>
+    </None>
+    <None Include="..\Fate\Grand Order">
+      <Filter>Fate</Filter>
     </None>
   </ItemGroup>
 </Project>

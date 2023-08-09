@@ -7,21 +7,20 @@
 namespace fgo::filter_drag
 {
 	//
-	// このクラスは拡張編集の設定ダイアログにフィルタのドラッグ機能を追加するサーヴァントです。
+	// このクラスは拡張編集の設定ダイアログにフィルタのドラッグ機能を追加します。
 	//
 	inline struct FilterDrag : Servant
 	{
 		std::unique_ptr<Aim> src, dst;
 		std::unique_ptr<Sight> sight;
 
-		ObjectHolder g_srcObject; // ドラッグ元のオブジェクト。
-		FilterHolder g_srcFilter; // ドラッグ元のフィルタ。
-		FilterHolder g_dstFilter; // ドラッグ先のフィルタ。
-		BOOL g_isFilterDragging = FALSE; // ドラッグ中か判定するためのフラグ。
+		ObjectHolder m_srcObject; // ドラッグ元のオブジェクト。
+		FilterHolder m_srcFilter; // ドラッグ元のフィルタ。
+		FilterHolder m_dstFilter; // ドラッグ先のフィルタ。
+		BOOL m_isFilterDragging = FALSE; // ドラッグ中か判定するためのフラグ。
 
 		//
 		// コンストラクタです。
-		// コンフィグの初期値を設定します。
 		//
 		FilterDrag()
 		{
@@ -72,29 +71,89 @@ namespace fgo::filter_drag
 		}
 
 		//
+		// コンフィグを読み込み、有効の場合は TRUE を返します。
+		//
+		inline static BOOL isEnabled(LPCWSTR path, LPCWSTR name)
+		{
+			BOOL enable = FALSE;
+			getPrivateProfileBool(path, name, L"enable", enable);
+			return enable;
+		}
+
+		//
 		// コンフィグファイルから設定を読み込みます。
 		//
 		BOOL load(LPCWSTR path)
 		{
-			getPrivateProfileBool(path, L"Sight", L"enable", sight->config.enable);
-			getPrivateProfileInt(path, L"Sight", L"alpha", sight->config.alpha);
-			getPrivateProfileColor(path, L"Sight", L"penColor", sight->config.penColor);
-			getPrivateProfileReal(path, L"Sight", L"penWidth", sight->config.penWidth);
-			getPrivateProfileColor(path, L"Sight", L"brushColor", sight->config.brushColor);
-			getPrivateProfileInt(path, L"Sight", L"base", sight->config.base);
-			getPrivateProfileInt(path, L"Sight", L"width", sight->config.width);
-			getPrivateProfileBSTR(path, L"Sight", L"fontName", sight->config.fontName);
-			getPrivateProfileReal(path, L"Sight", L"fontSize", sight->config.fontSize);
-			getPrivateProfileReal(path, L"Sight", L"rotate", sight->config.rotate);
-			getPrivateProfileInt(path, L"Sight", L"beginMoveX", sight->config.beginMove.X);
-			getPrivateProfileInt(path, L"Sight", L"beginMoveY", sight->config.beginMove.Y);
-
-			getPrivateProfileColor(path, L"Config", L"src.color", src->color);
-			getPrivateProfileColor(path, L"Config", L"dst.color", dst->color);
 			getPrivateProfileBool(path, L"Config", L"useShiftKey", keyboard_hook.useShiftKey);
 			getPrivateProfileBool(path, L"Config", L"useCtrlKey", keyboard_hook.useCtrlKey);
 			getPrivateProfileBool(path, L"Config", L"useAltKey", keyboard_hook.useAltKey);
 			getPrivateProfileBool(path, L"Config", L"useWinKey", keyboard_hook.useWinKey);
+
+			if (isEnabled(path, L"Src"))
+			{
+				src = std::make_unique<Aim>();
+				src->alpha = 96;
+				src->color = RGB(0x00, 0x00, 0xff);
+
+				getPrivateProfileInt(path, L"Src", L"alpha", src->alpha);
+				getPrivateProfileColor(path, L"Src", L"color", src->color);
+
+				src->create(fate.fp->dll_hinst);
+			}
+			else
+			{
+				src = 0;
+			}
+
+			if (isEnabled(path, L"Dst"))
+			{
+				dst = std::make_unique<Aim>();
+				dst->alpha = 96;
+				dst->color = RGB(0xff, 0x00, 0x00);
+
+				getPrivateProfileInt(path, L"Dst", L"alpha", dst->alpha);
+				getPrivateProfileColor(path, L"Dst", L"color", dst->color);
+
+				dst->create(fate.fp->dll_hinst);
+			}
+			else
+			{
+				dst = 0;
+			}
+
+			if (isEnabled(path, L"Sight"))
+			{
+				sight = std::make_unique<Sight>();
+				sight->config.alpha = 192;
+				sight->config.penColor = Color(192, 0, 0, 0);
+				sight->config.penWidth = 2.0f;
+				sight->config.brushColor = Color(255, 255, 255, 255);
+				sight->config.base = 16;
+				sight->config.width = 8;
+				sight->config.fontName = L"Segoe UI";
+				sight->config.fontSize = 32.0f;
+				sight->config.rotate = 7.77f;
+				sight->config.beginMove = Point(0, 100);
+
+				getPrivateProfileInt(path, L"Sight", L"alpha", sight->config.alpha);
+				getPrivateProfileColor(path, L"Sight", L"penColor", sight->config.penColor);
+				getPrivateProfileReal(path, L"Sight", L"penWidth", sight->config.penWidth);
+				getPrivateProfileColor(path, L"Sight", L"brushColor", sight->config.brushColor);
+				getPrivateProfileInt(path, L"Sight", L"base", sight->config.base);
+				getPrivateProfileInt(path, L"Sight", L"width", sight->config.width);
+				getPrivateProfileBSTR(path, L"Sight", L"fontName", sight->config.fontName);
+				getPrivateProfileReal(path, L"Sight", L"fontSize", sight->config.fontSize);
+				getPrivateProfileReal(path, L"Sight", L"rotate", sight->config.rotate);
+				getPrivateProfileInt(path, L"Sight", L"beginMove.X", sight->config.beginMove.X);
+				getPrivateProfileInt(path, L"Sight", L"beginMove.Y", sight->config.beginMove.Y);
+
+				sight->create(fate.fp->dll_hinst);
+			}
+			else
+			{
+				sight = 0;
+			}
 
 			return TRUE;
 		}
@@ -131,7 +190,6 @@ namespace fgo::filter_drag
 
 			settingDialogProc.orig = fate.auin.HookSettingDialogProc(settingDialogProc.hook);
 			swapFilter.attach(fate.auin.GetSwapFilter());
-			func_WndProc.replace(fate.fp->func_WndProc);
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -147,6 +205,30 @@ namespace fgo::filter_drag
 			return TRUE;
 		}
 
+		//
+		// この仮想関数は、ウィンドウの初期化のタイミングで呼ばれます。
+		//
+		BOOL on_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+			if (!load()) return FALSE;
+
+			return FALSE;
+		}
+
+		//
+		// この仮想関数は、ウィンドウの後始末のタイミングで呼ばれます。
+		//
+		BOOL on_window_exit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+			save();
+
+			src = 0;
+			dst = 0;
+			sight = 0;
+
+			return FALSE;
+		}
+
 		struct CursorPos : POINT {
 			CursorPos(HWND hwnd) {
 				::GetCursorPos(this);
@@ -158,17 +240,19 @@ namespace fgo::filter_drag
 		{
 			MY_TRACE(_T("beginDrag()\n"));
 
-			// マウスをキャプチャーする。
+			// マウスをキャプチャーします。
 			::SetCapture(layout.getDialog());
 
-			// フラグを立てる。
-			g_isFilterDragging = TRUE;
+			// フラグを立てます。
+			m_isFilterDragging = TRUE;
 
 			// ドラッグ元を表示します。
-			src->show(layout, g_srcFilter);
+			if (src)
+				src->show(layout, m_srcFilter);
 
 			// サイトを表示します。
-			sight->move(layout, g_srcFilter, TRUE);
+			if (sight)
+				sight->move(layout, m_srcFilter, TRUE);
 		}
 
 		void endDrag()
@@ -176,33 +260,36 @@ namespace fgo::filter_drag
 			MY_TRACE(_T("endDrag()\n"));
 
 			// フラグをリセットします。
-			g_isFilterDragging = FALSE;
+			m_isFilterDragging = FALSE;
 
-			src->hide();
-			dst->hide();
-			sight->hide();
+			if (src) src->hide();
+			if (dst) dst->hide();
+			if (sight) sight->hide();
 		}
 
 		void moveDrag(const Layout& layout)
 		{
 			MY_TRACE(_T("moveDrag()\n"));
 
-			if (g_dstFilter != g_srcFilter)
+			if (dst)
 			{
-				// ドラッグ先を表示します。
-				dst->show(layout, g_dstFilter);
-			}
-			else
-			{
-				// ドラッグ先の隠します。
-				dst->hide();
+				if (m_dstFilter != m_srcFilter)
+				{
+					// ドラッグ先を表示します。
+					dst->show(layout, m_dstFilter);
+				}
+				else
+				{
+					// ドラッグ先の隠します。
+					dst->hide();
+				}
 			}
 
 			// ドラッグ元の表示位置を更新します。
-			src->show(layout, g_srcFilter);
+			if (src) src->show(layout, m_srcFilter);
 
 			// サイトを動かします。
-			sight->move(layout, g_dstFilter, FALSE);
+			if (sight) sight->move(layout, m_dstFilter, FALSE);
 		}
 
 		LRESULT onSetCursor(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -250,15 +337,15 @@ namespace fgo::filter_drag
 			MY_TRACE_POINT(pos);
 
 			// オブジェクトを取得する。
-			g_srcObject = ObjectHolder(fate.auin.GetCurrentObjectIndex());
-			MY_TRACE_OBJECT_HOLDER(g_srcObject);
-			if (!g_srcObject.isValid()) return settingDialogProc.orig(hwnd, message, wParam, lParam);
+			m_srcObject = ObjectHolder(fate.auin.GetCurrentObjectIndex());
+			MY_TRACE_OBJECT_HOLDER(m_srcObject);
+			if (!m_srcObject.isValid()) return settingDialogProc.orig(hwnd, message, wParam, lParam);
 
 			// マウスカーソルの位置にあるドラッグ元フィルタを取得する。
-			g_srcFilter = layout.getSrcFilter(pos, g_srcObject);
-			MY_TRACE_FILTER_HOLDER(g_srcFilter);
-			g_dstFilter = g_srcFilter;
-			if (!g_srcFilter.isValid()) return settingDialogProc.orig(hwnd, message, wParam, lParam);
+			m_srcFilter = layout.getSrcFilter(pos, m_srcObject);
+			MY_TRACE_FILTER_HOLDER(m_srcFilter);
+			m_dstFilter = m_srcFilter;
+			if (!m_srcFilter.isValid()) return settingDialogProc.orig(hwnd, message, wParam, lParam);
 
 			MY_TRACE(_T("フィルタのドラッグを開始します\n"));
 
@@ -271,7 +358,7 @@ namespace fgo::filter_drag
 		LRESULT onLButtonUp(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			// リセットする前にフィルタをドラッグ中だったかチェックする。
-			BOOL isDragging = ::GetCapture() == hwnd && g_isFilterDragging;
+			BOOL isDragging = ::GetCapture() == hwnd && m_isFilterDragging;
 
 			// ドラッグを終了する。
 			endDrag();
@@ -281,31 +368,31 @@ namespace fgo::filter_drag
 			{
 				::ReleaseCapture(); // ここで WM_CAPTURECHANGED が呼ばれる。
 
-				MY_TRACE_FILTER_HOLDER(g_srcFilter);
-				MY_TRACE_FILTER_HOLDER(g_dstFilter);
+				MY_TRACE_FILTER_HOLDER(m_srcFilter);
+				MY_TRACE_FILTER_HOLDER(m_dstFilter);
 
 				// オブジェクトを取得する。
 				ObjectHolder object(fate.auin.GetCurrentObjectIndex());
 				MY_TRACE_OBJECT_HOLDER(object);
-				if (!object.isValid() || object != g_srcObject)
+				if (!object.isValid() || object != m_srcObject)
 				{
 					MY_TRACE(_T("ドラッグ開始時のオブジェクトではないのでフィルタの移動を中止します\n"));
 					return settingDialogProc.orig(hwnd, message, wParam, lParam);
 				}
 
 				// フィルタを取得する。
-				FilterHolder filter(g_srcObject, g_srcFilter.getFilterIndex());
+				FilterHolder filter(m_srcObject, m_srcFilter.getFilterIndex());
 				MY_TRACE_FILTER_HOLDER(filter);
-				if (!filter.isValid() || filter != g_srcFilter)
+				if (!filter.isValid() || filter != m_srcFilter)
 				{
 					MY_TRACE(_T("ドラッグ開始時のフィルタではないのでフィルタの移動を中止します\n"));
 					return settingDialogProc.orig(hwnd, message, wParam, lParam);
 				}
 
-				int srcFilterIndex = g_srcFilter.getFilterIndex();
+				int srcFilterIndex = m_srcFilter.getFilterIndex();
 				MY_TRACE_INT(srcFilterIndex);
 
-				int dstFilterIndex = g_dstFilter.getFilterIndex();
+				int dstFilterIndex = m_dstFilter.getFilterIndex();
 				MY_TRACE_INT(dstFilterIndex);
 
 				// フィルタのインデックスの差分を取得する。
@@ -328,12 +415,12 @@ namespace fgo::filter_drag
 		LRESULT onMouseMove(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			// フィルタをドラッグ中かチェックする。
-			if (::GetCapture() == hwnd && g_isFilterDragging)
+			if (::GetCapture() == hwnd && m_isFilterDragging)
 			{
 				// オブジェクトを取得する。
 				ObjectHolder object(fate.auin.GetCurrentObjectIndex());
 //				MY_TRACE_OBJECT_HOLDER(object);
-				if (!object.isValid() || object != g_srcObject)
+				if (!object.isValid() || object != m_srcObject)
 				{
 					MY_TRACE(_T("ドラッグ開始時のオブジェクトではないのでドラッグを中止します\n"));
 					::ReleaseCapture(); endDrag();
@@ -341,9 +428,9 @@ namespace fgo::filter_drag
 				}
 
 				// フィルタを取得する。
-				FilterHolder filter(g_srcObject, g_srcFilter.getFilterIndex());
+				FilterHolder filter(m_srcObject, m_srcFilter.getFilterIndex());
 //				MY_TRACE_FILTER_HOLDER(filter);
-				if (!filter.isValid() || filter != g_srcFilter)
+				if (!filter.isValid() || filter != m_srcFilter)
 				{
 					MY_TRACE(_T("ドラッグ開始時のフィルタではないのでドラッグを中止します\n"));
 					::ReleaseCapture(); endDrag();
@@ -356,14 +443,14 @@ namespace fgo::filter_drag
 				CursorPos pos(hwnd);
 //				MY_TRACE_POINT(pos);
 
-				FilterHolder oldDstFilter = g_dstFilter;
+				FilterHolder oldDstFilter = m_dstFilter;
 
 				// マウスカーソルの位置にあるドラッグ元フィルタを取得する。
-				g_dstFilter = layout.getDstFilter(pos, g_srcObject);
-				if (!g_dstFilter.isValid()) g_dstFilter = g_srcFilter;
-//				MY_TRACE_FILTER_HOLDER(g_dstFilter);
+				m_dstFilter = layout.getDstFilter(pos, m_srcObject);
+				if (!m_dstFilter.isValid()) m_dstFilter = m_srcFilter;
+//				MY_TRACE_FILTER_HOLDER(m_dstFilter);
 
-				if (g_dstFilter != oldDstFilter)
+				if (m_dstFilter != oldDstFilter)
 				{
 					// マークを動かす。
 					moveDrag(layout);
@@ -407,10 +494,10 @@ namespace fgo::filter_drag
 
 			void moveFilter(int objectIndex)
 			{
-				int srcFilterIndex = servant.g_srcFilter.getFilterIndex();
+				int srcFilterIndex = servant.m_srcFilter.getFilterIndex();
 				MY_TRACE_INT(srcFilterIndex);
 
-				int dstFilterIndex = servant.g_dstFilter.getFilterIndex();
+				int dstFilterIndex = servant.m_dstFilter.getFilterIndex();
 				MY_TRACE_INT(dstFilterIndex);
 
 				// フィルタのインデックスの差分を取得する。
@@ -440,60 +527,6 @@ namespace fgo::filter_drag
 					servant.swapFilter.orig(objectIndex, filterIndex, relativeIndex);
 			}
 		}; Tools::Hook<SwapFilter> swapFilter;
-
-		struct Func_WndProc
-		{
-			static BOOL hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
-			{
-				switch (message)
-				{
-				case AviUtl::FilterPlugin::WindowMessage::Init:
-					{
-						MY_TRACE(_T("func_WndProc(Init, 0x%08X, 0x%08X)\n"), wParam, lParam);
-
-						servant.src = std::make_unique<Aim>();
-						servant.dst = std::make_unique<Aim>();
-						servant.sight = std::make_unique<Sight>();
-
-						servant.src->color = RGB(0x00, 0x00, 0xff);
-						servant.dst->color = RGB(0xff, 0x00, 0x00);
-						servant.sight->config.enable = TRUE;
-						servant.sight->config.alpha = 192;
-						servant.sight->config.penColor = Color(192, 0, 0, 0);
-						servant.sight->config.penWidth = 2.0f;
-						servant.sight->config.brushColor = Color(255, 255, 255, 255);
-						servant.sight->config.base = 16;
-						servant.sight->config.width = 8;
-						servant.sight->config.fontName = L"Segoe UI";
-						servant.sight->config.fontSize = 32.0f;
-						servant.sight->config.rotate = 7.77f;
-						servant.sight->config.beginMove = Point(0, 100);
-
-						servant.src->create(fate.fp->dll_hinst);
-						servant.dst->create(fate.fp->dll_hinst);
-						servant.sight->create(fate.fp->dll_hinst);
-
-						break;
-					}
-				case AviUtl::FilterPlugin::WindowMessage::Exit:
-					{
-						MY_TRACE(_T("func_WndProc(Exit, 0x%08X, 0x%08X)\n"), wParam, lParam);
-
-						servant.src->destroy();
-						servant.dst->destroy();
-						servant.sight->destroy();
-
-						servant.src = 0;
-						servant.dst = 0;
-						servant.sight = 0;
-
-						break;
-					}
-				}
-
-				return servant.func_WndProc.orig(hwnd, message, wParam, lParam, editp, fp);
-			}
-		}; Tools::Hook<Func_WndProc> func_WndProc;
 
 		//
 		// このクラスはコンフィグファイルの更新を監視します。

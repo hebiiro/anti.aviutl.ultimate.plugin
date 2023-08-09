@@ -1,0 +1,19 @@
+﻿#pragma once
+
+namespace fgo
+{
+	//
+	// このクラスはメインモジュールです。
+	//
+	inline struct Chaldea
+	{
+		//
+		// 指定された名前のエクスポート関数を返します。
+		//
+		static FARPROC WINAPI get_proc(LPCSTR procName)
+		{
+			HMODULE module = ::GetModuleHandleW(L"Last.auf");
+			return ::GetProcAddress(module, procName);
+		}
+	} chaldea;
+}

@@ -4,15 +4,22 @@ namespace fgo::filter_drag
 {
 	struct Aim : Tools::Window
 	{
+		int alpha;
 		COLORREF color;
+
+		//
+		// デストラクタです。
+		//
+		~Aim()
+		{
+			destroy();
+		}
 
 		//
 		// エイムを作成します。
 		//
 		BOOL create(HINSTANCE instance)
 		{
-			MY_TRACE(_T("Sight::create()\n"));
-
 			static const LPCTSTR className = _T("FilterDrag.Aim");
 
 			WNDCLASS wc = {};
@@ -46,7 +53,7 @@ namespace fgo::filter_drag
 			POINT pos = { rc.left, rc.top };
 			SIZE size = { rc.right - rc.left, rc.bottom - rc.top };
 			::ClientToScreen(fate.auin.GetSettingDialog(), &pos);
-			::SetLayeredWindowAttributes(*this, 0, 96, LWA_ALPHA);
+			::SetLayeredWindowAttributes(*this, 0, alpha, LWA_ALPHA);
 			::SetWindowPos(*this, HWND_TOPMOST, pos.x, pos.y, size.cx, size.cy, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 		}
 

@@ -76,7 +76,7 @@ namespace Tools {
 
 	// 絶対アドレスを書き換える。
 	template<class T>
-	inline T writeAbsoluteAddress(addr_t address, T x)
+	inline T set_abs_addr(addr_t address, T x)
 	{
 		HANDLE process = ::GetCurrentProcess();
 

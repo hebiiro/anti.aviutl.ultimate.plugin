@@ -188,16 +188,17 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Fate\edit_predicates.h" />
+    <ClInclude Include="..\Fate\Chaldea.h" />
     <ClInclude Include="..\Fate\Fate.h" />
-    <ClInclude Include="..\Fate\FilterHolder.h" />
-    <ClInclude Include="..\Fate\GdiBitmap.h" />
-    <ClInclude Include="..\Fate\GrandOrder.h" />
-    <ClInclude Include="..\Fate\Hook.h" />
-    <ClInclude Include="..\Fate\LayeredWindowInfo.h" />
-    <ClInclude Include="..\Fate\ObjectHolder.h" />
     <ClInclude Include="..\Fate\Servant.h" />
-    <ClInclude Include="..\Fate\Tools.h" />
+    <ClInclude Include="..\Fate\Universe.h" />
+    <ClInclude Include="..\Tools\edit_predicates.h" />
+    <ClInclude Include="..\Tools\FilterHolder.h" />
+    <ClInclude Include="..\Tools\GdiBitmap.h" />
+    <ClInclude Include="..\Tools\Hook.h" />
+    <ClInclude Include="..\Tools\LayeredWindowInfo.h" />
+    <ClInclude Include="..\Tools\ObjectHolder.h" />
+    <ClInclude Include="..\Tools\Tools.h" />
     <ClInclude Include="Master.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Story.h" />

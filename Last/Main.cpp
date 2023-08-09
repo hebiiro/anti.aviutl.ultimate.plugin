@@ -76,6 +76,9 @@ AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 	return &filter;
 }
 
+//
+// このプロセスで唯一の Fate オブジェクトを返します。
+//
 Fate* WINAPI get_fate()
 {
 	static Fate fate;
@@ -83,9 +86,12 @@ Fate* WINAPI get_fate()
 	return &fate;
 }
 
-GrandOrder* WINAPI get_grand_order()
+//
+// このプロセスで唯一の Universe オブジェクトを返します。
+//
+Universe* WINAPI get_universe()
 {
-	static GrandOrder grand_order;
+	static Universe universe;
 
-	return &grand_order;
+	return &universe;
 }

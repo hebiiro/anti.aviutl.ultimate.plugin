@@ -5,7 +5,7 @@ namespace fgo::filter_drag
 	struct Sight : Tools::Window
 	{
 		struct Config {
-			BOOL enable;
+//			BOOL enable;
 			int alpha;
 			Color penColor;
 			REAL penWidth;
@@ -30,6 +30,9 @@ namespace fgo::filter_drag
 		static const UINT TIMER_ID = 1000;
 		static const int MAX_COUNT = 30;
 
+		//
+		// コンストラクタです。
+		//
 		Sight()
 			: m_info(600, 400)
 			, m_bitmap(m_info.GetWidth(), m_info.GetHeight())
@@ -46,6 +49,14 @@ namespace fgo::filter_drag
 //			m_graphics.SetTextRenderingHint(TextRenderingHintClearTypeGridFit);
 			m_graphics.SetInterpolationMode(InterpolationModeHighQualityBicubic);
 			m_graphics.TranslateTransform(-0.5f, -0.5f);
+		}
+
+		//
+		// デストラクタです。
+		//
+		~Sight()
+		{
+			destroy();
 		}
 
 		BOOL create(HINSTANCE instance)
@@ -73,9 +84,6 @@ namespace fgo::filter_drag
 
 		void move(const Layout& layout, FilterHolder filter, BOOL show)
 		{
-			if (!config.enable)
-				return;
-
 			LPCSTR name = filter.getName();
 //			MY_TRACE_STR(name);
 

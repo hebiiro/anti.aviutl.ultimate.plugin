@@ -1,2 +1,1 @@
-﻿#pragma once
-#include "Fate/Grand Order"
+﻿#include "Fate/Grand Order"

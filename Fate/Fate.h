@@ -23,8 +23,8 @@ namespace fgo
 			};
 		};
 
-		AviUtl::FilterPlugin* fp = 0;
-		AviUtlInternal auin;
+		AviUtl::FilterPlugin* fp = 0; // フィルタプラグインのポインタです。
+		AviUtlInternal auin; // AviUtl や拡張編集の機能にアクセスするためのオブジェクトです。
 
 		//
 		// 指定されたコンフィグファイル名をフルパスにして返します。
@@ -61,13 +61,12 @@ namespace fgo
 		}
 
 		//
-		// インスタンスを返します。
+		// このプロセスで唯一のインスタンスを返します。
 		// 内部的に使用されます。
 		//
 		static Fate* WINAPI get_instance()
 		{
-			HMODULE module = ::GetModuleHandleW(L"Last.auf");
-			auto get_fate = (Fate* (WINAPI*)())::GetProcAddress(module, "get_fate");
+			auto get_fate = (Fate* (WINAPI*)())chaldea.get_proc("get_fate");
 			return (*get_fate)();
 		}
 	} &fate = *Fate::get_instance();

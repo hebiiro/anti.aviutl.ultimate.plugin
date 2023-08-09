@@ -4,7 +4,7 @@ namespace fgo::filter_copy
 {
 	//
 	// このクラスは拡張編集の設定ダイアログに
-	// フィルタのコピー・アンド・ペースト機能を追加するサーヴァントです。
+	// フィルタのコピー・アンド・ペースト機能を追加します。
 	//
 	inline struct FilterCopy : Servant
 	{

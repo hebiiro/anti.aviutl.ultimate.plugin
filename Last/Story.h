@@ -14,7 +14,8 @@ namespace fgo
 
 			fate.init(fp);
 			master.init();
-			grand_order.init();
+
+			universe.fire_init();
 
 			return TRUE;
 		}
@@ -23,7 +24,8 @@ namespace fgo
 		{
 			MY_TRACE(_T("Story::func_exit()\n"));
 
-			grand_order.exit();
+			universe.fire_exit();
+
 			master.exit();
 			fate.exit();
 
@@ -45,13 +47,13 @@ namespace fgo
 				{
 					MY_TRACE(_T("Story::func_WndProc(Init, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
-					break;
+					return universe.fire_window_init(hwnd, message, wParam, lParam, editp, fp);
 				}
 			case AviUtl::FilterPlugin::WindowMessage::Exit:
 				{
 					MY_TRACE(_T("Story::func_WndProc(Exit, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
-					break;
+					return universe.fire_window_exit(hwnd, message, wParam, lParam, editp, fp);
 				}
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
@@ -59,7 +61,7 @@ namespace fgo
 
 					if (wParam == 0 && lParam == 0) return TRUE;
 
-					break;
+					return universe.fire_window_command(hwnd, message, wParam, lParam, editp, fp);
 				}
 			}
 

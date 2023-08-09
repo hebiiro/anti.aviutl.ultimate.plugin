@@ -43,9 +43,10 @@ namespace fgo
 		BOOL loadPlugin(LPCWSTR fileName)
 		{
 			HMODULE module = ::LoadLibraryExW(fileName, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+			if (!module) return FALSE;
 			auto get_servant = (Servant* (WINAPI*)())::GetProcAddress(module, "get_servant");
 			if (!get_servant) return FALSE;
-			return grand_order.add_servant((*get_servant)());
+			return universe.add_servant((*get_servant)());
 		}
 
 		//
