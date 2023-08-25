@@ -1,4 +1,4 @@
-﻿# AviUtlチューナープラグイン
+﻿# AviUtlアルティメットプラグイン
 
 [AviUtl](http://spring-fragrance.mints.ne.jp/aviutl/)
 のエディットボックスのサイズやフォントを変更したり、UNICODE文字列を入力できるようにしたりします。<br>
@@ -9,8 +9,9 @@
 ## 導入方法
 
 以下のファイルを AviUtl の Plugins フォルダに入れてください。
-* Last.auf
-* Last (フォルダ)
+* Ultimate.auf
+* UltimateAddin (フォルダ)
+* UltimateConfig (フォルダ) (初回もしくはコンフィグを初期化したい場合)
 
 # エディットボックスツイーカー
 

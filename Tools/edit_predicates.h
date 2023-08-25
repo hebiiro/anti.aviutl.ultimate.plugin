@@ -16,7 +16,7 @@ inline bool editbox_check_id(uint32_t id) {
 	constexpr uint32_t id_edit_base = 22100, id_diff_per_filter = 0x100,
 		id_ofs_text = 1, id_ofs_script = 0;
 	return id >= id_edit_base &&
-		(id - id_edit_base) % id_diff_per_filter <= std::max(id_ofs_text, id_ofs_script);
+		(id - id_edit_base) % id_diff_per_filter <= std::max<uint32_t>(id_ofs_text, id_ofs_script);
 }
 // ウィンドウクラスの名前一致を確認する関数．毎回 MAX_PATH 文字も確保しなくてもよい．
 template<size_t N>

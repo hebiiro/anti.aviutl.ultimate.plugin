@@ -4,14 +4,6 @@
 using namespace fgo;
 
 //
-// デバッグ用コールバック関数。デバッグメッセージを出力する。
-//
-void ___outputLog(LPCTSTR text, LPCTSTR output)
-{
-	::OutputDebugString(output);
-}
-
-//
 // 初期化
 //
 BOOL func_init(AviUtl::FilterPlugin* fp)
@@ -56,8 +48,8 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 //
 AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 {
-	LPCSTR name = "AviUtlチューナープラグイン";
-	LPCSTR information = "AviUtlチューナープラグイン r1 by 蛇色";
+	LPCSTR name = "AviUtlアルティメットプラグイン";
+	LPCSTR information = "AviUtlアルティメットプラグイン r1 by 蛇色";
 
 	static AviUtl::FilterPluginDLL filter = {
 		.flag =

@@ -188,10 +188,32 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\AviUtlInternal.h" />
+    <ClInclude Include="..\Common\AviUtl\PluginWindow.h" />
+    <ClInclude Include="..\Common\AviUtl\PluginWindowExtension.h" />
+    <ClInclude Include="..\Common\AviUtl\WindowHolderExtension.h" />
+    <ClInclude Include="..\Common\DesignBase.h" />
+    <ClInclude Include="..\Common\Dialog.h" />
+    <ClInclude Include="..\Common\FileUpdateChecker.h" />
+    <ClInclude Include="..\Common\Gdi.h" />
+    <ClInclude Include="..\Common\Gdiplus.h" />
+    <ClInclude Include="..\Common\Hook.h" />
+    <ClInclude Include="..\Common\JSON.h" />
+    <ClInclude Include="..\Common\MFC.h" />
+    <ClInclude Include="..\Common\MSXML.h" />
+    <ClInclude Include="..\Common\Profile.h" />
+    <ClInclude Include="..\Common\Tracer.h" />
+    <ClInclude Include="..\Common\Tracer2.h" />
+    <ClInclude Include="..\Common\Window.h" />
+    <ClInclude Include="..\Common\Window2.h" />
+    <ClInclude Include="..\Common\WinUtility.h" />
+    <ClInclude Include="..\Detours.4.0.1\detours.h" />
+    <ClInclude Include="..\Detours.4.0.1\detver.h" />
     <ClInclude Include="..\Fate\Chaldea.h" />
     <ClInclude Include="..\Fate\Fate.h" />
     <ClInclude Include="..\Fate\Servant.h" />
     <ClInclude Include="..\Fate\Universe.h" />
+    <ClInclude Include="..\Share\Filer.h" />
     <ClInclude Include="..\Tools\edit_predicates.h" />
     <ClInclude Include="..\Tools\FilterHolder.h" />
     <ClInclude Include="..\Tools\GdiBitmap.h" />
@@ -215,6 +237,29 @@
   <ItemGroup>
     <None Include="..\Fate\Grand Order" />
     <None Include="Main.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Detours.4.0.1\detours.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EditBoxTweaker\EditBoxTweaker.vcxproj">
+      <Project>{4864168d-b254-4632-83f9-93ca7b290000}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ExEditTweaker\ExEditTweaker.vcxproj">
+      <Project>{d899aa9c-dfe3-4563-aac1-a31a0760dc7c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FilerGui\FilerGui.vcxproj">
+      <Project>{55a5179b-d41a-4908-abaa-e81e16191d3f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Filer\Filer.vcxproj">
+      <Project>{3ccd5147-283f-4755-8637-5d58b950aa8b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FilterCopy\FilterCopy.vcxproj">
+      <Project>{2b224387-d48d-4033-ac5a-799292e625b4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FilterDrag\FilterDrag.vcxproj">
+      <Project>{fa6cc467-c0c6-4e99-a543-1cb40c83671d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

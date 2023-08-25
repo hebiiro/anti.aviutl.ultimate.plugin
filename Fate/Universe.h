@@ -112,6 +112,10 @@ namespace fgo
 		static Universe* WINAPI get_instance()
 		{
 			auto get_universe = (Universe* (WINAPI*)())chaldea.get_proc("get_universe");
+			if (!get_universe) {
+				static Universe universe;
+				return &universe;
+			}
 			return (*get_universe)();
 		}
 	} &universe = *Universe::get_instance();

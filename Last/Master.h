@@ -8,14 +8,14 @@ namespace fgo
 	inline struct Master
 	{
 		//
-		// プラグインフォルダのフルパスを返します。
+		// アドインフォルダのフルパスを返します。
 		//
-		std::wstring getPluginDirectory() const
+		std::wstring getAddinDirectory() const
 		{
 			WCHAR path[MAX_PATH] = {};
 			::GetModuleFileNameW(fate.fp->dll_hinst, path, std::size(path));
 			::PathRemoveExtensionW(path);
-			::StringCbCatW(path, sizeof(path), L"Plugin");
+			::StringCbCatW(path, sizeof(path), L"Addin");
 			return path;
 		}
 
@@ -28,9 +28,9 @@ namespace fgo
 		}
 
 		//
-		// コンフィグファイルを参照し、指定されたファイル名のプラグインが有効なら TRUE を返します。
+		// コンフィグファイルを参照し、指定されたファイル名のアドインが有効なら TRUE を返します。
 		//
-		static BOOL isPluginEnabled(LPCWSTR configFileName, LPCWSTR fileName)
+		static BOOL isAddinEnabled(LPCWSTR configFileName, LPCWSTR fileName)
 		{
 			BOOL enable = TRUE;
 			getPrivateProfileInt(configFileName, L"Enable", fileName, enable);
@@ -38,9 +38,9 @@ namespace fgo
 		}
 
 		//
-		// 指定されたファイル名のプラグインを読み込み、サーヴァントを取得します。
+		// 指定されたファイル名のアドインを読み込み、サーヴァントを取得します。
 		//
-		BOOL loadPlugin(LPCWSTR fileName)
+		BOOL loadAddin(LPCWSTR fileName)
 		{
 			HMODULE module = ::LoadLibraryExW(fileName, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
 			if (!module) return FALSE;
@@ -50,12 +50,12 @@ namespace fgo
 		}
 
 		//
-		// プラグインディレクトリ内の aut ファイルをプラグインとして読み込みます。
+		// アドインディレクトリ内の aua ファイルをアドインとして読み込みます。
 		//
-		BOOL loadPlugins()
+		BOOL loadAddins()
 		{
-			std::wstring directory = getPluginDirectory();
-			std::wstring searchPath = directory + L"\\*.aut";
+			std::wstring directory = getAddinDirectory();
+			std::wstring searchPath = directory + L"\\*.aua";
 
 			WIN32_FIND_DATAW fd;
 			HANDLE handle = ::FindFirstFileW(searchPath.c_str(), &fd);
@@ -75,13 +75,13 @@ namespace fgo
 				}
 				else
 				{
-					// ファイルの場合はプラグインファイルとして読み込みます。
+					// ファイルの場合はアドインファイルとして読み込みます。
 
-					if (isPluginEnabled(configFileName.c_str(), fd.cFileName))
+					if (isAddinEnabled(configFileName.c_str(), fd.cFileName))
 					{
 						std::wstring fileName = directory + L"\\" + fd.cFileName;
 
-						loadPlugin(fileName.c_str());
+						loadAddin(fileName.c_str());
 					}
 				}
 			}
@@ -97,7 +97,7 @@ namespace fgo
 		//
 		BOOL init()
 		{
-			if (!loadPlugins()) return FALSE;
+			if (!loadAddins()) return FALSE;
 
 			return TRUE;
 		}

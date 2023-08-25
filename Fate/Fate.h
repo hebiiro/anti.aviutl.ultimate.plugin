@@ -67,6 +67,10 @@ namespace fgo
 		static Fate* WINAPI get_instance()
 		{
 			auto get_fate = (Fate* (WINAPI*)())chaldea.get_proc("get_fate");
+			if (!get_fate) {
+				static Fate fate;
+				return &fate;
+			}
 			return (*get_fate)();
 		}
 	} &fate = *Fate::get_instance();
