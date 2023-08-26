@@ -24,7 +24,7 @@ namespace fgo
 		//
 		std::wstring getConfigFileName() const
 		{
-			return sheba.getConfigFileName(L"Last.ini");
+			return sheba.getConfigFileName(L"Ultimate.ini");
 		}
 
 		//

@@ -12,7 +12,7 @@ namespace fgo
 		//
 		static FARPROC WINAPI get_proc(LPCSTR procName)
 		{
-			HMODULE module = ::GetModuleHandleW(L"Last.auf");
+			HMODULE module = ::GetModuleHandleW(L"Ultimate.auf");
 			return ::GetProcAddress(module, procName);
 		}
 	} chaldea;
