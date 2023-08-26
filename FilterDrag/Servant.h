@@ -59,7 +59,7 @@ namespace fgo::filter_drag
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return fate.getConfigFileName(L"FilterDrag.ini");
+			return sheba.getConfigFileName(L"FilterDrag.ini");
 		}
 
 		//
@@ -99,7 +99,7 @@ namespace fgo::filter_drag
 				getPrivateProfileInt(path, L"Src", L"alpha", src->alpha);
 				getPrivateProfileColor(path, L"Src", L"color", src->color);
 
-				src->create(fate.fp->dll_hinst);
+				src->create(sheba.fp->dll_hinst);
 			}
 			else
 			{
@@ -115,7 +115,7 @@ namespace fgo::filter_drag
 				getPrivateProfileInt(path, L"Dst", L"alpha", dst->alpha);
 				getPrivateProfileColor(path, L"Dst", L"color", dst->color);
 
-				dst->create(fate.fp->dll_hinst);
+				dst->create(sheba.fp->dll_hinst);
 			}
 			else
 			{
@@ -148,7 +148,7 @@ namespace fgo::filter_drag
 				getPrivateProfileInt(path, L"Sight", L"beginMove.X", sight->config.beginMove.X);
 				getPrivateProfileInt(path, L"Sight", L"beginMove.Y", sight->config.beginMove.Y);
 
-				sight->create(fate.fp->dll_hinst);
+				sight->create(sheba.fp->dll_hinst);
 			}
 			else
 			{
@@ -188,8 +188,8 @@ namespace fgo::filter_drag
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			settingDialogProc.orig = fate.auin.HookSettingDialogProc(settingDialogProc.hook);
-			swapFilter.attach(fate.auin.GetSwapFilter());
+			settingDialogProc.orig = sheba.auin.HookSettingDialogProc(settingDialogProc.hook);
+			swapFilter.attach(sheba.auin.GetSwapFilter());
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -307,7 +307,7 @@ namespace fgo::filter_drag
 //				MY_TRACE_POINT(pos);
 
 				// オブジェクトを取得する。
-				ObjectHolder object(fate.auin.GetCurrentObjectIndex());
+				ObjectHolder object(sheba.auin.GetCurrentObjectIndex());
 //				MY_TRACE_OBJECT_HOLDER(object);
 				if (!object.isValid()) return settingDialogProc.orig(hwnd, message, wParam, lParam);
 
@@ -337,7 +337,7 @@ namespace fgo::filter_drag
 			MY_TRACE_POINT(pos);
 
 			// オブジェクトを取得する。
-			m_srcObject = ObjectHolder(fate.auin.GetCurrentObjectIndex());
+			m_srcObject = ObjectHolder(sheba.auin.GetCurrentObjectIndex());
 			MY_TRACE_OBJECT_HOLDER(m_srcObject);
 			if (!m_srcObject.isValid()) return settingDialogProc.orig(hwnd, message, wParam, lParam);
 
@@ -372,7 +372,7 @@ namespace fgo::filter_drag
 				MY_TRACE_FILTER_HOLDER(m_dstFilter);
 
 				// オブジェクトを取得する。
-				ObjectHolder object(fate.auin.GetCurrentObjectIndex());
+				ObjectHolder object(sheba.auin.GetCurrentObjectIndex());
 				MY_TRACE_OBJECT_HOLDER(object);
 				if (!object.isValid() || object != m_srcObject)
 				{
@@ -418,7 +418,7 @@ namespace fgo::filter_drag
 			if (::GetCapture() == hwnd && m_isFilterDragging)
 			{
 				// オブジェクトを取得する。
-				ObjectHolder object(fate.auin.GetCurrentObjectIndex());
+				ObjectHolder object(sheba.auin.GetCurrentObjectIndex());
 //				MY_TRACE_OBJECT_HOLDER(object);
 				if (!object.isValid() || object != m_srcObject)
 				{

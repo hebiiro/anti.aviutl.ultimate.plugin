@@ -1,4 +1,5 @@
 EXPORTS
 	GetFilterTable
+	get_sheba
 	get_fate
-	get_universe
+	get_chaldeas

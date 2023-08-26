@@ -38,9 +38,6 @@
     <ClInclude Include="..\Fate\Servant.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\Universe.h">
-      <Filter>Fate</Filter>
-    </ClInclude>
     <ClInclude Include="..\Tools\edit_predicates.h">
       <Filter>Tools</Filter>
     </ClInclude>
@@ -127,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="..\Share\Filer.h">
       <Filter>Share</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Fate\Chaldeas.h">
+      <Filter>Fate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Fate\Sheba.h">
+      <Filter>Fate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

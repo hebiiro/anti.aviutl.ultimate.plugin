@@ -3,61 +3,106 @@
 namespace fgo
 {
 	//
-	// このクラスは他クラスから共通して使用される変数を保持します。
+	// このクラスはサーヴァントを管理します。
 	//
 	inline struct Fate
 	{
-		struct CommandID {
-			struct SettingDialog {
-				static const UINT ID_CREATE_CLONE			= 12020;
-				static const UINT ID_CREATE_SAME_ABOVE		= 12021;
-				static const UINT ID_CREATE_SAME_BELOW		= 12022;
-
-				static const UINT ID_CUT_FILTER				= 12023;
-				static const UINT ID_CUT_FILTER_ABOVE		= 12024;
-				static const UINT ID_CUT_FILTER_BELOW		= 12025;
-				static const UINT ID_COPY_FILTER			= 12026;
-				static const UINT ID_COPY_FILTER_ABOVE		= 12027;
-				static const UINT ID_COPY_FILTER_BELOW		= 12028;
-				static const UINT ID_PASTE_FILTER			= 12029;
-			};
-		};
-
-		AviUtl::FilterPlugin* fp = 0; // フィルタプラグインのポインタです。
-		AviUtlInternal auin; // AviUtl や拡張編集の機能にアクセスするためのオブジェクトです。
+		//
+		// サーヴァントのコレクションです。
+		//
+		std::unordered_map<std::wstring, Servant*> servants;
 
 		//
-		// 指定されたコンフィグファイル名をフルパスにして返します。
+		// 指定された名前のサーヴァントを返します。
 		//
-		std::wstring getConfigFileName(LPCWSTR fileName) const
+		template<class T>
+		T* get_servant(LPCWSTR name) const
 		{
-			WCHAR path[MAX_PATH] = {};
-			::GetModuleFileNameW(fp->dll_hinst, path, std::size(path));
-			::PathRemoveExtensionW(path);
-			::StringCbCatW(path, sizeof(path), L"Config");
-			::PathAppendW(path, fileName);
-			return path;
+			try {
+				return static_cast<T*>(servants.at(name));
+			} catch (std::out_of_range&) {
+				return 0;
+			}
 		}
 
 		//
-		// 初期化を実行します。
+		// 指定されたサーヴァントをコレクションに追加します。
+		//
+		BOOL add_servant(Servant* servant)
+		{
+			if (!servant) return FALSE;
+			servants[servant->get_servant_name()] = servant;
+			return TRUE;
+		}
+
+		//
+		// 指定されたサーヴァントをコレクションから削除します。
+		//
+		BOOL erase_servant(Servant* servant)
+		{
+			if (!servant) return FALSE;
+			servants.erase(servant->get_servant_name());
+			return TRUE;
+		}
+
+		//
+		// サーヴァントに初期化を実行させます。
 		// 内部的に使用されます。
 		//
-		BOOL init(AviUtl::FilterPlugin* fp)
+		BOOL fire_init()
 		{
-			this->fp = fp;
-			auin.initExEditAddress();
+			for (const auto& pair : servants)
+				pair.second->on_init();
 
 			return TRUE;
 		}
 
 		//
-		// 後始末を実行します。
+		// サーヴァントに後始末を実行させます。
 		// 内部的に使用されます。
 		//
-		BOOL exit()
+		BOOL fire_exit()
 		{
+			for (const auto& pair : servants)
+				pair.second->on_exit();
+
 			return TRUE;
+		}
+
+		//
+		// サーヴァントにウィンドウの初期化を実行させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants)
+				result |= pair.second->on_window_init(hwnd, message, wParam, lParam, editp, fp);
+			return result;
+		}
+
+		//
+		// サーヴァントにウィンドウの後始末を実行させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_window_exit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants)
+				result |= pair.second->on_window_exit(hwnd, message, wParam, lParam, editp, fp);
+			return result;
+		}
+
+		//
+		// サーヴァントにウィンドウのコマンドを実行させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants)
+				result |= pair.second->on_window_command(hwnd, message, wParam, lParam, editp, fp);
+			return result;
 		}
 
 		//

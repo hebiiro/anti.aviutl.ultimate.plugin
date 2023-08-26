@@ -48,15 +48,19 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 //
 AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 {
-	LPCSTR name = "AviUtlアルティメットプラグイン";
-	LPCSTR information = "AviUtlアルティメットプラグイン r1 by 蛇色";
+	LPCSTR name = "アルティメットプラグイン";
+	LPCSTR information = "アルティメットプラグイン r1 by 蛇色";
 
 	static AviUtl::FilterPluginDLL filter = {
 		.flag =
 //			AviUtl::FilterPlugin::Flag::NoConfig | // このフラグを指定するとウィンドウが作成されなくなってしまう。
 			AviUtl::FilterPlugin::Flag::AlwaysActive | // このフラグがないと「フィルタ」に ON/OFF を切り替えるための項目が追加されてしまう。
 			AviUtl::FilterPlugin::Flag::DispFilter | // このフラグがないと「設定」の方にウィンドウを表示するための項目が追加されてしまう。
+			AviUtl::FilterPlugin::Flag::WindowThickFrame |
+			AviUtl::FilterPlugin::Flag::WindowSize |
 			AviUtl::FilterPlugin::Flag::ExInformation,
+		.x = 400,
+		.y = 400,
 		.name = name,
 //		.func_proc = func_proc,
 		.func_init = func_init,
@@ -66,6 +70,16 @@ AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 	};
 
 	return &filter;
+}
+
+//
+// このプロセスで唯一の Sheba オブジェクトを返します。
+//
+Sheba* WINAPI get_sheba()
+{
+	static Sheba sheba;
+
+	return &sheba;
 }
 
 //
@@ -79,11 +93,11 @@ Fate* WINAPI get_fate()
 }
 
 //
-// このプロセスで唯一の Universe オブジェクトを返します。
+// このプロセスで唯一の Chaldeas オブジェクトを返します。
 //
-Universe* WINAPI get_universe()
+Chaldeas* WINAPI get_chaldeas()
 {
-	static Universe universe;
+	static Chaldeas chaldeas;
 
-	return &universe;
+	return &chaldeas;
 }

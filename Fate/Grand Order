@@ -57,9 +57,10 @@ using namespace Gdiplus;
 #pragma comment(lib, "Detours.4.0.1/detours.lib")
 
 #include "Fate/Chaldea.h"
-#include "Fate/Fate.h"
+#include "Fate/Sheba.h"
 #include "Fate/Servant.h"
-#include "Fate/Universe.h"
+#include "Fate/Fate.h"
+#include "Fate/Chaldeas.h"
 
 #include "Tools/edit_predicates.h"
 #include "Tools/Tools.h"

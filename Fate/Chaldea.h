@@ -3,7 +3,7 @@
 namespace fgo
 {
 	//
-	// このクラスはメインモジュールです。
+	// このクラスはこのプラグインのモジュールです。
 	//
 	inline struct Chaldea
 	{

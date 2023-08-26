@@ -44,7 +44,7 @@ namespace fgo::filter_drag
 		BOOL checkModifier(WPARAM wParam)
 		{
 			// 設定ダイアログのウィンドウハンドルを取得する。
-			HWND hwnd = fate.auin.GetSettingDialog();
+			HWND hwnd = sheba.auin.GetSettingDialog();
 
 			// ::WindowFromPoint() の戻り値が設定ダイアログではない場合は何もしない。
 			POINT pos; ::GetCursorPos(&pos);

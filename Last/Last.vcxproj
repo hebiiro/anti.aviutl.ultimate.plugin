@@ -210,9 +210,10 @@
     <ClInclude Include="..\Detours.4.0.1\detours.h" />
     <ClInclude Include="..\Detours.4.0.1\detver.h" />
     <ClInclude Include="..\Fate\Chaldea.h" />
+    <ClInclude Include="..\Fate\Chaldeas.h" />
     <ClInclude Include="..\Fate\Fate.h" />
     <ClInclude Include="..\Fate\Servant.h" />
-    <ClInclude Include="..\Fate\Universe.h" />
+    <ClInclude Include="..\Fate\Sheba.h" />
     <ClInclude Include="..\Share\Filer.h" />
     <ClInclude Include="..\Tools\edit_predicates.h" />
     <ClInclude Include="..\Tools\FilterHolder.h" />

@@ -65,7 +65,7 @@ namespace fgo::editbox_tweaker
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return fate.getConfigFileName(L"EditBoxTweaker.ini");
+			return sheba.getConfigFileName(L"EditBoxTweaker.ini");
 		}
 
 		//
@@ -140,7 +140,7 @@ namespace fgo::editbox_tweaker
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得する。
-			auto exedit = fate.auin.GetExEdit();
+			auto exedit = sheba.auin.GetExEdit();
 
 			getMessageA.attach(::GetMessageA);
 

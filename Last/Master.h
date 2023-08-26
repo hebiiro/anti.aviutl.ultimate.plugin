@@ -13,7 +13,7 @@ namespace fgo
 		std::wstring getAddinDirectory() const
 		{
 			WCHAR path[MAX_PATH] = {};
-			::GetModuleFileNameW(fate.fp->dll_hinst, path, std::size(path));
+			::GetModuleFileNameW(sheba.fp->dll_hinst, path, std::size(path));
 			::PathRemoveExtensionW(path);
 			::StringCbCatW(path, sizeof(path), L"Addin");
 			return path;
@@ -24,7 +24,7 @@ namespace fgo
 		//
 		std::wstring getConfigFileName() const
 		{
-			return fate.getConfigFileName(L"Last.ini");
+			return sheba.getConfigFileName(L"Last.ini");
 		}
 
 		//
@@ -46,7 +46,7 @@ namespace fgo
 			if (!module) return FALSE;
 			auto get_servant = (Servant* (WINAPI*)())::GetProcAddress(module, "get_servant");
 			if (!get_servant) return FALSE;
-			return universe.add_servant((*get_servant)());
+			return fate.add_servant((*get_servant)());
 		}
 
 		//

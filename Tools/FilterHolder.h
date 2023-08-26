@@ -29,7 +29,7 @@ namespace fgo
 				this->m_filterIndex = filterIndex;
 				if (m_filterIndex >= 0)
 				{
-					m_filter = fate.auin.GetFilter(m_object.getObject(), m_filterIndex);
+					m_filter = sheba.auin.GetFilter(m_object.getObject(), m_filterIndex);
 					if (!m_filter)
 						m_filterIndex = -1;
 				}
@@ -110,7 +110,7 @@ namespace fgo
 			int id = object.getObject()->filter_param[m_filterIndex].id;
 			if (id == 79) // アニメーション効果
 			{
-				BYTE* exdata = fate.auin.GetExdata(object.getObject(), m_filterIndex);
+				BYTE* exdata = sheba.auin.GetExdata(object.getObject(), m_filterIndex);
 				LPCSTR name = (LPCSTR)(exdata + 0x04);
 				if (!name[0])
 				{

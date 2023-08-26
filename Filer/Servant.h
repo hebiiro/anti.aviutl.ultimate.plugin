@@ -50,7 +50,7 @@ namespace fgo::filer
 			}
 			catch (LPCTSTR e)
 			{
-				::MessageBox(fate.fp->hwnd, e, _T("Filer"), MB_OK);
+				::MessageBox(sheba.fp->hwnd, e, _T("Filer"), MB_OK);
 			}
 
 			return FALSE;
@@ -76,7 +76,7 @@ namespace fgo::filer
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return fate.getConfigFileName(L"Filer.xml");
+			return sheba.getConfigFileName(L"Filer.xml");
 		}
 
 		//

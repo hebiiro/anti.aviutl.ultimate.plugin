@@ -49,7 +49,7 @@ namespace fgo::filter_copy
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return fate.getConfigFileName(L"FilterCopy.ini");
+			return sheba.getConfigFileName(L"FilterCopy.ini");
 		}
 
 		//
@@ -95,9 +95,9 @@ namespace fgo::filter_copy
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			settingDialogProc.orig = fate.auin.HookSettingDialogProc(settingDialogProc.hook);
-			addAlias.attach(fate.auin.GetAddAlias());
-			unknown1.attach(fate.auin.GetUnknown1());
+			settingDialogProc.orig = sheba.auin.HookSettingDialogProc(settingDialogProc.hook);
+			addAlias.attach(sheba.auin.GetAddAlias());
+			unknown1.attach(sheba.auin.GetUnknown1());
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -129,12 +129,12 @@ namespace fgo::filter_copy
 			BOOL init()
 			{
 				// カレントオブジェクトのインデックスを取得します。
-				objectIndex = fate.auin.GetCurrentObjectIndex();
+				objectIndex = sheba.auin.GetCurrentObjectIndex();
 				MY_TRACE_INT(objectIndex);
 				if (objectIndex < 0) return FALSE;
 
 				// オブジェクトを取得すします。
-				object = fate.auin.GetObject(objectIndex);
+				object = sheba.auin.GetObject(objectIndex);
 				MY_TRACE_HEX(object);
 				if (!object) return FALSE;
 
@@ -187,11 +187,11 @@ namespace fgo::filter_copy
 				if (filterIndex == 0)
 					return FALSE; // 先頭のフィルタはコピーしません。
 
-				if (!fate.auin.IsMoveable(prep.object, filterIndex))
+				if (!sheba.auin.IsMoveable(prep.object, filterIndex))
 					return FALSE; // 移動不可能なフィルタはコピーしません。
 
 				// フィルタを取得する。
-				ExEdit::Filter* filter = fate.auin.GetFilter(prep.object, filterIndex);
+				ExEdit::Filter* filter = sheba.auin.GetFilter(prep.object, filterIndex);
 				if (!filter) return FALSE;
 
 				// 一時ファイルのファイル名を構築します。
@@ -202,7 +202,7 @@ namespace fgo::filter_copy
 				MY_TRACE_STR(tempFileName);
 
 				// 一時ファイルにフィルタのエイリアスを保存します。
-				if (!fate.auin.SaveFilterAlias(prep.objectIndex, filterIndex, tempFileName))
+				if (!sheba.auin.SaveFilterAlias(prep.objectIndex, filterIndex, tempFileName))
 				{
 					MY_TRACE(_T("SaveFilterAlias() が失敗しました\n"));
 
@@ -281,12 +281,12 @@ namespace fgo::filter_copy
 			if (cut) // カットする場合は、ここでフィルタを削除します。
 			{
 				// カレントオブジェクトのインデックスを取得します。
-				int objectIndex = fate.auin.GetCurrentObjectIndex();
+				int objectIndex = sheba.auin.GetCurrentObjectIndex();
 				MY_TRACE_INT(objectIndex);
 				if (objectIndex < 0) return FALSE;
 
 				// オブジェクトを取得します。
-				ExEdit::Object* object = fate.auin.GetObject(objectIndex);
+				ExEdit::Object* object = sheba.auin.GetObject(objectIndex);
 				MY_TRACE_HEX(object);
 				if (!object) return FALSE;
 
@@ -294,13 +294,13 @@ namespace fgo::filter_copy
 				if (object->index_midpt_leader != -1)
 					objectIndex = object->index_midpt_leader;
 
-				fate.auin.PushUndo();
-				fate.auin.CreateUndo(objectIndex, 1);
+				sheba.auin.PushUndo();
+				sheba.auin.CreateUndo(objectIndex, 1);
 				for (int i = order.filters.size() - 1; i >= 0; i--)
-					fate.auin.DeleteFilter(objectIndex, order.filters[i].index);
-				fate.auin.DrawSettingDialog(objectIndex);
-				fate.auin.HideControls();
-				fate.auin.ShowControls(fate.auin.GetCurrentObjectIndex());
+					sheba.auin.DeleteFilter(objectIndex, order.filters[i].index);
+				sheba.auin.DrawSettingDialog(objectIndex);
+				sheba.auin.HideControls();
+				sheba.auin.ShowControls(sheba.auin.GetCurrentObjectIndex());
 			}
 
 			return retValue;
@@ -314,12 +314,12 @@ namespace fgo::filter_copy
 			MY_TRACE(_T("pasteFilter()\n"));
 
 			// カレントオブジェクトのインデックスを取得します。
-			int objectIndex = fate.auin.GetCurrentObjectIndex();
+			int objectIndex = sheba.auin.GetCurrentObjectIndex();
 			MY_TRACE_INT(objectIndex);
 			if (objectIndex < 0) return FALSE;
 
 			// オブジェクトを取得します。
-			ExEdit::Object* object = fate.auin.GetObject(objectIndex);
+			ExEdit::Object* object = sheba.auin.GetObject(objectIndex);
 			MY_TRACE_HEX(object);
 			if (!object) return FALSE;
 
@@ -336,9 +336,9 @@ namespace fgo::filter_copy
 				return FALSE; // オブジェクトのタイプが異なる場合は何もしません。
 
 			flagPasteFilter = TRUE;
-			// この中で fate.auin.AddAlias() が呼ばれるので、フラグを立ててフックします。
+			// この中で sheba.auin.AddAlias() が呼ばれるので、フラグを立ててフックします。
 			// 1036 はエイリアスを追加するコマンド、0 はエイリアスのインデックスです。
-			::SendMessage(fate.auin.GetExEditWindow(), WM_COMMAND, 1036, 0);
+			::SendMessage(sheba.auin.GetExEditWindow(), WM_COMMAND, 1036, 0);
 			flagPasteFilter = FALSE;
 
 			return TRUE;
@@ -357,27 +357,27 @@ namespace fgo::filter_copy
 						MY_TRACE(_T("SettingDialogProc(WM_CREATE)\n"));
 
 						// 設定ダイアログのコンテキストメニューを拡張します。
-						for (int i = 0; i < fate.auin.GetSettingDialogMenuCount(); i++)
+						for (int i = 0; i < sheba.auin.GetSettingDialogMenuCount(); i++)
 						{
-							HMENU menu = fate.auin.GetSettingDialogMenu(i);
+							HMENU menu = sheba.auin.GetSettingDialogMenu(i);
 							HMENU subMenu = ::GetSubMenu(menu, 0);
 
 							if (i == 2)
 							{
 								::AppendMenu(subMenu, MF_SEPARATOR, 0, 0);
-								::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CREATE_CLONE, _T("完全な複製を隣に作成"));
-								::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE, _T("同じフィルタ効果を上に作成"));
-								::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CREATE_SAME_BELOW, _T("同じフィルタ効果を下に作成"));
+								::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_CREATE_CLONE, _T("完全な複製を隣に作成"));
+								::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE, _T("同じフィルタ効果を上に作成"));
+								::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_CREATE_SAME_BELOW, _T("同じフィルタ効果を下に作成"));
 							}
 
 							::AppendMenu(subMenu, MF_SEPARATOR, 0, 0);
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER, _T("このフィルタを切り取り"));
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE, _T("このフィルタ以上を切り取り"));
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_CUT_FILTER_BELOW, _T("このフィルタ以下を切り取り"));
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_COPY_FILTER, _T("このフィルタをコピー"));
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE, _T("このフィルタ以上をコピー"));
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_COPY_FILTER_BELOW, _T("このフィルタ以下をコピー"));
-							::AppendMenu(subMenu, MF_STRING, Fate::CommandID::SettingDialog::ID_PASTE_FILTER, _T("フィルタを貼り付け"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_CUT_FILTER, _T("このフィルタを切り取り"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE, _T("このフィルタ以上を切り取り"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_CUT_FILTER_BELOW, _T("このフィルタ以下を切り取り"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_COPY_FILTER, _T("このフィルタをコピー"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE, _T("このフィルタ以上をコピー"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_COPY_FILTER_BELOW, _T("このフィルタ以下をコピー"));
+							::AppendMenu(subMenu, MF_STRING, Sheba::CommandID::SettingDialog::ID_PASTE_FILTER, _T("フィルタを貼り付け"));
 						}
 
 						break;
@@ -386,17 +386,17 @@ namespace fgo::filter_copy
 					{
 						switch (wParam)
 						{
-						case Fate::CommandID::SettingDialog::ID_CREATE_CLONE:
-						case Fate::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE:
-						case Fate::CommandID::SettingDialog::ID_CREATE_SAME_BELOW:
+						case Sheba::CommandID::SettingDialog::ID_CREATE_CLONE:
+						case Sheba::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE:
+						case Sheba::CommandID::SettingDialog::ID_CREATE_SAME_BELOW:
 							{
 								// オブジェクトを取得する。
-								ObjectHolder object(fate.auin.GetCurrentObjectIndex());
+								ObjectHolder object(sheba.auin.GetCurrentObjectIndex());
 								MY_TRACE_OBJECT_HOLDER(object);
 								if (!object.isValid()) break;
 
 								// フィルタを取得する。
-								FilterHolder filter = FilterHolder(object, fate.auin.GetCurrentFilterIndex());
+								FilterHolder filter = FilterHolder(object, sheba.auin.GetCurrentFilterIndex());
 								MY_TRACE_FILTER_HOLDER(filter);
 								if (!filter.isValid()) break;
 								MY_TRACE_STR(filter.getFilter()->name);
@@ -417,63 +417,63 @@ namespace fgo::filter_copy
 								servant.unknown1.commandId = 0;
 								return result;
 							}
-						case Fate::CommandID::SettingDialog::ID_CUT_FILTER:
+						case Sheba::CommandID::SettingDialog::ID_CUT_FILTER:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_CUT_FILTER\n"));
 
-								int filterIndex = fate.auin.GetCurrentFilterIndex();
+								int filterIndex = sheba.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
 									servant.copyFilter(filterIndex, 0, TRUE);
 								break;
 							}
-						case Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE:
+						case Sheba::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_CUT_FILTER_ABOVE\n"));
 
-								int filterIndex = fate.auin.GetCurrentFilterIndex();
+								int filterIndex = sheba.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
 									servant.copyFilter(filterIndex, -1, TRUE);
 								break;
 							}
-						case Fate::CommandID::SettingDialog::ID_CUT_FILTER_BELOW:
+						case Sheba::CommandID::SettingDialog::ID_CUT_FILTER_BELOW:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_CUT_FILTER_BELOW\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_CUT_FILTER_BELOW\n"));
 
-								int filterIndex = fate.auin.GetCurrentFilterIndex();
+								int filterIndex = sheba.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
 									servant.copyFilter(filterIndex, 1, TRUE);
 								break;
 							}
-						case Fate::CommandID::SettingDialog::ID_COPY_FILTER:
+						case Sheba::CommandID::SettingDialog::ID_COPY_FILTER:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_COPY_FILTER\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_COPY_FILTER\n"));
 
-								int filterIndex = fate.auin.GetCurrentFilterIndex();
+								int filterIndex = sheba.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
 									servant.copyFilter(filterIndex, 0, FALSE);
 								break;
 							}
-						case Fate::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE:
+						case Sheba::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_COPY_FILTER_ABOVE\n"));
 
-								int filterIndex = fate.auin.GetCurrentFilterIndex();
+								int filterIndex = sheba.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
 									servant.copyFilter(filterIndex, -1, FALSE);
 								break;
 							}
-						case Fate::CommandID::SettingDialog::ID_COPY_FILTER_BELOW:
+						case Sheba::CommandID::SettingDialog::ID_COPY_FILTER_BELOW:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_COPY_FILTER_BELOW\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_COPY_FILTER_BELOW\n"));
 
-								int filterIndex = fate.auin.GetCurrentFilterIndex();
+								int filterIndex = sheba.auin.GetCurrentFilterIndex();
 								if (filterIndex >= 0)
 									servant.copyFilter(filterIndex, 1, FALSE);
 								break;
 							}
-						case Fate::CommandID::SettingDialog::ID_PASTE_FILTER:
+						case Sheba::CommandID::SettingDialog::ID_PASTE_FILTER:
 							{
-								MY_TRACE(_T("Fate::CommandID::SettingDialog::ID_PASTE_FILTER\n"));
+								MY_TRACE(_T("Sheba::CommandID::SettingDialog::ID_PASTE_FILTER\n"));
 
 								servant.pasteFilter();
 
@@ -507,12 +507,12 @@ namespace fgo::filter_copy
 				return addAlias.orig(fileName, flag1, flag2, objectIndex);
 
 			// オブジェクトを取得します。
-			ExEdit::Object* object = fate.auin.GetObject(objectIndex);
+			ExEdit::Object* object = sheba.auin.GetObject(objectIndex);
 			MY_TRACE_HEX(object);
 			if (!object) return FALSE;
 
 			// カレントフィルタを取得します。
-			int filterIndex = fate.auin.GetCurrentFilterIndex();
+			int filterIndex = sheba.auin.GetCurrentFilterIndex();
 			MY_TRACE_INT(filterIndex);
 			if (filterIndex < 0) return FALSE;
 
@@ -526,14 +526,14 @@ namespace fgo::filter_copy
 				// フィルタを末尾に追加します。
 				int result = addAlias.orig(filter.fileName.c_str(), flag1, flag2, objectIndex);
 
-				int c = fate.auin.GetMoveableFilterCount(object);
+				int c = sheba.auin.GetMoveableFilterCount(object);
 
 				// 末尾に追加されたフィルタを挿入位置まで移動します。
 				for (int i = c - 1; i > insertPos + 1; i--)
 				{
-					ExEdit::Filter* filter = fate.auin.GetFilter(object, i);
+					ExEdit::Filter* filter = sheba.auin.GetFilter(object, i);
 
-					fate.auin.SwapFilter(objectIndex, i, -1);
+					sheba.auin.SwapFilter(objectIndex, i, -1);
 				}
 
 				insertPos++;
@@ -554,7 +554,7 @@ namespace fgo::filter_copy
 				int objectIndex = origObjectIndex;
 				MY_TRACE_INT(objectIndex);
 
-				int midptLeader = fate.auin.GetObject(objectIndex)->index_midpt_leader;
+				int midptLeader = sheba.auin.GetObject(objectIndex)->index_midpt_leader;
 				MY_TRACE_INT(midptLeader);
 				if (midptLeader >= 0)
 					objectIndex = midptLeader; // 中間点がある場合は中間点元のオブジェクト ID を取得
@@ -566,7 +566,7 @@ namespace fgo::filter_copy
 					if (objectIndex < 0) break;
 
 					// オブジェクトを取得する。
-					ExEdit::Object* object = fate.auin.GetObject(objectIndex);
+					ExEdit::Object* object = sheba.auin.GetObject(objectIndex);
 					MY_TRACE_HEX(object);
 					if (!object) break;
 
@@ -575,7 +575,7 @@ namespace fgo::filter_copy
 					if (midptLeader2 != midptLeader) break;
 
 					// コピー元フィルタのインデックスを取得する。
-					int srcFilterIndex = fate.auin.GetCurrentFilterIndex();
+					int srcFilterIndex = sheba.auin.GetCurrentFilterIndex();
 					MY_TRACE_INT(srcFilterIndex);
 					if (srcFilterIndex < 0) break;
 
@@ -585,20 +585,20 @@ namespace fgo::filter_copy
 					if (dstFilterIndex < 0) break;
 
 					// コピー元フィルタを取得する。
-					ExEdit::Filter* srcFilter = fate.auin.GetFilter(object, srcFilterIndex);
+					ExEdit::Filter* srcFilter = sheba.auin.GetFilter(object, srcFilterIndex);
 					MY_TRACE_HEX(srcFilter);
 					if (!srcFilter) break;
 
 					// コピー先フィルタを取得する。
-					ExEdit::Filter* dstFilter = fate.auin.GetFilter(object, dstFilterIndex);
+					ExEdit::Filter* dstFilter = sheba.auin.GetFilter(object, dstFilterIndex);
 					MY_TRACE_HEX(dstFilter);
 					if (!dstFilter) break;
 
-					if (commandId == Fate::CommandID::SettingDialog::ID_CREATE_CLONE)
+					if (commandId == Sheba::CommandID::SettingDialog::ID_CREATE_CLONE)
 					{
 						// 拡張データをコピーする。
-						BYTE* srcFilterExdata = fate.auin.GetExdata(object, srcFilterIndex);
-						BYTE* dstFilterExdata = fate.auin.GetExdata(object, dstFilterIndex);
+						BYTE* srcFilterExdata = sheba.auin.GetExdata(object, srcFilterIndex);
+						BYTE* dstFilterExdata = sheba.auin.GetExdata(object, dstFilterIndex);
 						memcpy(dstFilterExdata, srcFilterExdata, srcFilter->exdata_size);
 
 						// トラックデータをコピーする。
@@ -623,11 +623,11 @@ namespace fgo::filter_copy
 
 					if (midptLeader < 0) break;
 
-					objectIndex = fate.auin.GetNextObjectIndex(objectIndex);
+					objectIndex = sheba.auin.GetNextObjectIndex(objectIndex);
 				}
 
 				// コピー元フィルタのインデックスを取得する。
-				int srcFilterIndex = fate.auin.GetCurrentFilterIndex();
+				int srcFilterIndex = sheba.auin.GetCurrentFilterIndex();
 				MY_TRACE_INT(srcFilterIndex);
 				if (srcFilterIndex < 0) return;
 
@@ -638,22 +638,22 @@ namespace fgo::filter_copy
 
 				switch (commandId)
 				{
-				case Fate::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE:
+				case Sheba::CommandID::SettingDialog::ID_CREATE_SAME_ABOVE:
 					{
 						// コピー元のすぐ上に移動
 						int c = dstFilterIndex - srcFilterIndex;
 						for (int i = 0; i < c; i++)
-							fate.auin.SwapFilter(origObjectIndex, dstFilterIndex--, -1);
+							sheba.auin.SwapFilter(origObjectIndex, dstFilterIndex--, -1);
 
 						break;
 					}
-				case Fate::CommandID::SettingDialog::ID_CREATE_CLONE:
-				case Fate::CommandID::SettingDialog::ID_CREATE_SAME_BELOW:
+				case Sheba::CommandID::SettingDialog::ID_CREATE_CLONE:
+				case Sheba::CommandID::SettingDialog::ID_CREATE_SAME_BELOW:
 					{
 						// コピー元のすぐ下に移動
 						int c = dstFilterIndex - srcFilterIndex - 1;
 						for (int i = 0; i < c; i++)
-							fate.auin.SwapFilter(origObjectIndex, dstFilterIndex--, -1);
+							sheba.auin.SwapFilter(origObjectIndex, dstFilterIndex--, -1);
 
 						break;
 					}

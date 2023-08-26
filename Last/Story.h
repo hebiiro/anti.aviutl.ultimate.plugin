@@ -12,10 +12,11 @@ namespace fgo
 		{
 			MY_TRACE(_T("Story::func_init()\n"));
 
-			fate.init(fp);
+			sheba.init(fp);
 			master.init();
+			chaldeas.init(fp);
 
-			universe.fire_init();
+			fate.fire_init();
 
 			return TRUE;
 		}
@@ -24,10 +25,11 @@ namespace fgo
 		{
 			MY_TRACE(_T("Story::func_exit()\n"));
 
-			universe.fire_exit();
+			fate.fire_exit();
 
+			chaldeas.exit();
 			master.exit();
-			fate.exit();
+			sheba.exit();
 
 			return TRUE;
 		}
@@ -47,13 +49,13 @@ namespace fgo
 				{
 					MY_TRACE(_T("Story::func_WndProc(Init, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
-					return universe.fire_window_init(hwnd, message, wParam, lParam, editp, fp);
+					return fate.fire_window_init(hwnd, message, wParam, lParam, editp, fp);
 				}
 			case AviUtl::FilterPlugin::WindowMessage::Exit:
 				{
 					MY_TRACE(_T("Story::func_WndProc(Exit, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
-					return universe.fire_window_exit(hwnd, message, wParam, lParam, editp, fp);
+					return fate.fire_window_exit(hwnd, message, wParam, lParam, editp, fp);
 				}
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
@@ -61,7 +63,7 @@ namespace fgo
 
 					if (wParam == 0 && lParam == 0) return TRUE;
 
-					return universe.fire_window_command(hwnd, message, wParam, lParam, editp, fp);
+					return fate.fire_window_command(hwnd, message, wParam, lParam, editp, fp);
 				}
 			}
 
