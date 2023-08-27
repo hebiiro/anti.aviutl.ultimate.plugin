@@ -10,20 +10,10 @@ namespace fgo
 		//
 		// サーヴァントのコレクションです。
 		//
-		std::unordered_map<std::wstring, Servant*> servants;
-
-		//
-		// 指定された名前のサーヴァントを返します。
-		//
-		template<class T>
-		T* get_servant(LPCWSTR name) const
-		{
-			try {
-				return static_cast<T*>(servants.at(name));
-			} catch (std::out_of_range&) {
-				return 0;
-			}
-		}
+		struct {
+			std::unordered_map<std::wstring, Servant*> map;
+			std::vector<Servant*> vector;
+		} servants;
 
 		//
 		// 指定されたサーヴァントをコレクションに追加します。
@@ -31,7 +21,8 @@ namespace fgo
 		BOOL add_servant(Servant* servant)
 		{
 			if (!servant) return FALSE;
-			servants[servant->get_servant_name()] = servant;
+			servants.map[servant->get_servant_name()] = servant;
+			servants.vector.emplace_back(servant);
 			return TRUE;
 		}
 
@@ -41,8 +32,40 @@ namespace fgo
 		BOOL erase_servant(Servant* servant)
 		{
 			if (!servant) return FALSE;
-			servants.erase(servant->get_servant_name());
+			servants.map.erase(servant->get_servant_name());
+			std::erase(servants.vector, servant);
 			return TRUE;
+		}
+
+		int get_servant_count() const
+		{
+			return (int)servants.vector.size();
+		}
+
+		//
+		// 指定された位置にあるサーヴァントを返します。
+		//
+		template<class T>
+		T* get_servant(int index) const
+		{
+			try {
+				return static_cast<T*>(servants.vector.at(index));
+			} catch (std::out_of_range&) {
+				return 0;
+			}
+		}
+
+		//
+		// 指定された名前のサーヴァントを返します。
+		//
+		template<class T>
+		T* get_servant(LPCWSTR name) const
+		{
+			try {
+				return static_cast<T*>(servants.map.at(name));
+			} catch (std::out_of_range&) {
+				return 0;
+			}
 		}
 
 		//
@@ -51,7 +74,7 @@ namespace fgo
 		//
 		BOOL fire_init()
 		{
-			for (const auto& pair : servants)
+			for (const auto& pair : servants.map)
 				pair.second->on_init();
 
 			return TRUE;
@@ -63,7 +86,7 @@ namespace fgo
 		//
 		BOOL fire_exit()
 		{
-			for (const auto& pair : servants)
+			for (const auto& pair : servants.map)
 				pair.second->on_exit();
 
 			return TRUE;
@@ -76,7 +99,7 @@ namespace fgo
 		BOOL fire_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
 			BOOL result = FALSE;
-			for (const auto& pair : servants)
+			for (const auto& pair : servants.map)
 				result |= pair.second->on_window_init(hwnd, message, wParam, lParam, editp, fp);
 			return result;
 		}
@@ -88,7 +111,7 @@ namespace fgo
 		BOOL fire_window_exit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
 			BOOL result = FALSE;
-			for (const auto& pair : servants)
+			for (const auto& pair : servants.map)
 				result |= pair.second->on_window_exit(hwnd, message, wParam, lParam, editp, fp);
 			return result;
 		}
@@ -100,7 +123,7 @@ namespace fgo
 		BOOL fire_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
 			BOOL result = FALSE;
-			for (const auto& pair : servants)
+			for (const auto& pair : servants.map)
 				result |= pair.second->on_window_command(hwnd, message, wParam, lParam, editp, fp);
 			return result;
 		}

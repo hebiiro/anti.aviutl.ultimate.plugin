@@ -207,11 +207,19 @@ namespace fgo::exedit_tweaker
 		}
 
 		//
-		// この仮想関数は、このサーヴァントの名前が必要なときに呼ばれます。
+		// この仮想関数は、このサーヴァントの識別名が必要なときに呼ばれます。
 		//
 		LPCWSTR get_servant_name() override
 		{
 			return L"ExEditTweaker";
+		}
+
+		//
+		// この仮想関数は、このサーヴァントの表示名が必要なときに呼ばれます。
+		//
+		LPCWSTR get_servant_display_name() override
+		{
+			return L"拡張編集調整";
 		}
 
 		//

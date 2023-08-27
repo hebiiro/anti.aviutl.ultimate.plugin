@@ -33,11 +33,19 @@ namespace fgo::editbox_tweaker
 		}
 
 		//
-		// この仮想関数は、このサーヴァントの名前が必要なときに呼ばれます。
+		// この仮想関数は、このサーヴァントの識別名が必要なときに呼ばれます。
 		//
 		LPCWSTR get_servant_name() override
 		{
 			return L"EditBoxTweaker";
+		}
+
+		//
+		// この仮想関数は、このサーヴァントの表示名が必要なときに呼ばれます。
+		//
+		LPCWSTR get_servant_display_name() override
+		{
+			return L"エディットボックス調整";
 		}
 
 		//

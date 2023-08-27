@@ -57,17 +57,9 @@ namespace fgo
 
 					return fate.fire_window_exit(hwnd, message, wParam, lParam, editp, fp);
 				}
-			case AviUtl::FilterPlugin::WindowMessage::Command:
-				{
-					MY_TRACE(_T("Story::func_WndProc(Command, 0x%08X, 0x%08X)\n"), wParam, lParam);
-
-					if (wParam == 0 && lParam == 0) return TRUE;
-
-					return fate.fire_window_command(hwnd, message, wParam, lParam, editp, fp);
-				}
 			}
 
-			return FALSE;
+			return chaldeas.func_WndProc(hwnd, message, wParam, lParam, editp, fp);
 		}
 
 		BOOL DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
@@ -76,6 +68,9 @@ namespace fgo
 			{
 			case DLL_PROCESS_ATTACH:
 				{
+					// 日本語が正しく表示されるように文字列のロケールを設定します。
+					_tsetlocale(LC_CTYPE, _T(""));
+
 					MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
 
 					// 参照カウンタを増やしてこの DLL がアンロードされないようにします。

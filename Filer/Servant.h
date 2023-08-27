@@ -14,11 +14,19 @@ namespace fgo::filer
 		BOOL useCommonDialog = TRUE;
 
 		//
-		// この仮想関数は、このサーヴァントの名前が必要なときに呼ばれます。
+		// この仮想関数は、このサーヴァントの識別名が必要なときに呼ばれます。
 		//
 		LPCWSTR get_servant_name() override
 		{
 			return L"Filer";
+		}
+
+		//
+		// この仮想関数は、このサーヴァントの表示名が必要なときに呼ばれます。
+		//
+		LPCWSTR get_servant_display_name() override
+		{
+			return L"ファイラ";
 		}
 
 		//
@@ -66,6 +74,24 @@ namespace fgo::filer
 				save();
 
 				hostWindow = 0;
+			}
+
+			return FALSE;
+		}
+
+		//
+		// この仮想関数は、ウィンドウのコマンドのタイミングで呼ばれます。
+		//
+		BOOL on_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+			switch (wParam)
+			{
+			case Sheba::CommandID::Plugin::ID_ADDIN:
+				{
+					Tools::AviUtl::PluginWindowExtension::show(*hostWindow);
+
+					break;
+				}
 			}
 
 			return FALSE;

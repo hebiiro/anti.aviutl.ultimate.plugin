@@ -8,6 +8,11 @@ namespace fgo
 	inline struct Sheba
 	{
 		struct CommandID {
+			struct Plugin {
+				static const UINT ID_ADDIN					= 1;
+				static const UINT ID_ADDIN_BEGIN			= 1000;
+				static const UINT ID_ADDIN_END				= 2000;
+			};
 			struct SettingDialog {
 				static const UINT ID_CREATE_CLONE			= 12020;
 				static const UINT ID_CREATE_SAME_ABOVE		= 12021;

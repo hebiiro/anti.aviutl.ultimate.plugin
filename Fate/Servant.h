@@ -15,7 +15,7 @@ namespace fgo
 		//
 		// サーヴァントの表示名を返します。
 		//
-		virtual LPCWSTR get_servant_display_name() { return L"Hoge"; }
+		virtual LPCWSTR get_servant_display_name() = 0;
 
 		//
 		// 初期化のタイミングで呼び出されます。

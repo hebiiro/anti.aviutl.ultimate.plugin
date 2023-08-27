@@ -41,7 +41,7 @@ namespace Tools::AviUtl
 		//
 		// ウィンドウの表示/非表示を切り替えます。
 		//
-		void show(HWND hwnd)
+		static void show(HWND hwnd)
 		{
 			MY_TRACE(_T("AviUtl::PluginWindowExtension::show()\n"));
 
