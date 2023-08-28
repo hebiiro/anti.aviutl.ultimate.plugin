@@ -1,0 +1,156 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 275, 159
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Nestの設定"
+FONT 11, "MS Shell Dlg", 400, 0, 0x80
+BEGIN
+    GROUPBOX        "配色",IDC_STATIC,4,4,236,32
+    LTEXT           "塗り潰し",IDC_STATIC,8,16,28,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_FILL_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,40,16,24,12,WS_EX_DLGMODALFRAME
+    LTEXT           "ボーダー",IDC_STATIC,68,16,28,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_BORDER_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,100,16,24,12,WS_EX_DLGMODALFRAME
+    LTEXT           "ホットボーダー",IDC_STATIC,128,16,44,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_HOT_BORDER_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,176,16,24,12,WS_EX_DLGMODALFRAME
+    GROUPBOX        "アクティブキャプションの配色",IDC_STATIC,4,40,116,32
+    LTEXT           "背景",IDC_STATIC,8,52,24,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_ACTIVE_CAPTION_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,36,52,24,12,WS_EX_DLGMODALFRAME
+    LTEXT           "テキスト",IDC_STATIC,64,52,24,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_ACTIVE_CAPTION_TEXT_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,92,52,24,12,WS_EX_DLGMODALFRAME
+    GROUPBOX        "非アクティブキャプションの配色",IDC_STATIC,124,40,116,32
+    LTEXT           "背景",IDC_STATIC,128,52,24,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_INACTIVE_CAPTION_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,156,52,24,12,WS_EX_DLGMODALFRAME
+    LTEXT           "テキスト",IDC_STATIC,184,52,24,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "",IDC_INACTIVE_CAPTION_TEXT_COLOR,"Button",BS_OWNERDRAW | WS_TABSTOP,212,52,24,12,WS_EX_DLGMODALFRAME
+    GROUPBOX        "その他",IDC_STATIC,4,76,268,48
+    LTEXT           "ボーダーの幅",IDC_STATIC,8,88,55,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_BORDER_WIDTH,68,88,36,12,ES_AUTOHSCROLL
+    LTEXT           "タイトルの高さ",IDC_STATIC,108,88,43,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_CAPTION_HEIGHT,156,88,36,12,ES_AUTOHSCROLL
+    LTEXT           "タブの高さ",IDC_STATIC,196,88,31,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_TAB_HEIGHT,232,88,36,12,ES_AUTOHSCROLL
+    LTEXT           "メニューの折り返し",IDC_STATIC,8,104,55,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_MENU_BREAK,68,104,36,12,ES_AUTOHSCROLL
+    LTEXT           "タブモード",IDC_STATIC,108,104,44,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_TAB_MODE,156,104,36,96,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "配色ではなくテーマを使用する",IDC_USE_THEME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,128,104,12
+    CONTROL         "マウスホイール時スクロールを優先する",IDC_FORCE_SCROLL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,112,128,128,12
+    CONTROL         "再生中にプレビューウィンドウを最大化",IDC_SHOW_PLAYER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,144,128,12
+    DEFPUSHBUTTON   "OK",IDOK,172,144,48,12
+    PUSHBUTTON      "キャンセル",IDCANCEL,224,144,48,12
+END
+
+IDD_RENAME_COLONY DIALOGEX 0, 0, 275, 37
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "コロニーの名前を変更"
+FONT 11, "MS Shell Dlg", 400, 0, 0x80
+BEGIN
+    LTEXT           "新しい名前",-1,4,4,40,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_NEW_NAME,48,4,224,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,172,20,48,12
+    PUSHBUTTON      "キャンセル",IDCANCEL,224,20,48,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_RENAME_COLONY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 268
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 30
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_CONFIG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

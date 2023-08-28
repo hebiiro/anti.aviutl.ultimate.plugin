@@ -36,8 +36,12 @@ namespace fgo
 		//
 		static BOOL isAddinEnabled(LPCWSTR configFileName, LPCWSTR fileName)
 		{
+			WCHAR addinName[MAX_PATH] = {};
+			::StringCbCopyW(addinName, sizeof(addinName), fileName);
+			::PathRemoveExtensionW(addinName);
+
 			BOOL enable = TRUE;
-			getPrivateProfileInt(configFileName, L"AddinOnOff", fileName, enable);
+			getPrivateProfileInt(configFileName, L"AddinOnOff", addinName, enable);
 			return enable;
 		}
 
