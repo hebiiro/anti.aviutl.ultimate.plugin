@@ -10,21 +10,25 @@ namespace fgo
 		//
 		// アドインフォルダのフルパスを返します。
 		//
-		std::wstring getAddinDirectory() const
+		static std::wstring getAddinDirectory(HINSTANCE instance)
 		{
 			WCHAR path[MAX_PATH] = {};
-			::GetModuleFileNameW(sheba.fp->dll_hinst, path, std::size(path));
+			::GetModuleFileNameW(instance, path, std::size(path));
 			::PathRemoveExtensionW(path);
-			::StringCbCatW(path, sizeof(path), L"Addin");
+			::StringCbCatW(path, sizeof(path), L"Addin\\");
 			return path;
 		}
 
 		//
 		// コンフィグファイルのフルパスを返します。
 		//
-		std::wstring getConfigFileName() const
+		static std::wstring getConfigFileName(HINSTANCE instance)
 		{
-			return sheba.getConfigFileName(L"Ultimate.ini");
+			WCHAR path[MAX_PATH] = {};
+			::GetModuleFileNameW(instance, path, std::size(path));
+			::PathRemoveExtensionW(path);
+			::StringCbCatW(path, sizeof(path), L"Config\\AddinOnOff.ini");
+			return path;
 		}
 
 		//
@@ -33,7 +37,7 @@ namespace fgo
 		static BOOL isAddinEnabled(LPCWSTR configFileName, LPCWSTR fileName)
 		{
 			BOOL enable = TRUE;
-			getPrivateProfileInt(configFileName, L"Enable", fileName, enable);
+			getPrivateProfileInt(configFileName, L"AddinOnOff", fileName, enable);
 			return enable;
 		}
 
@@ -52,10 +56,10 @@ namespace fgo
 		//
 		// アドインディレクトリ内の aua ファイルをアドインとして読み込みます。
 		//
-		BOOL loadAddins()
+		BOOL loadAddins(HINSTANCE instance)
 		{
-			std::wstring directory = getAddinDirectory();
-			std::wstring searchPath = directory + L"\\*.aua";
+			std::wstring directory = getAddinDirectory(instance);
+			std::wstring searchPath = directory + L"*.aua";
 
 			WIN32_FIND_DATAW fd;
 			HANDLE handle = ::FindFirstFileW(searchPath.c_str(), &fd);
@@ -63,7 +67,7 @@ namespace fgo
 			if (handle == INVALID_HANDLE_VALUE)
 				return FALSE;
 
-			std::wstring configFileName = getConfigFileName();
+			std::wstring configFileName = getConfigFileName(instance);
 
 			do
 			{
@@ -79,7 +83,7 @@ namespace fgo
 
 					if (isAddinEnabled(configFileName.c_str(), fd.cFileName))
 					{
-						std::wstring fileName = directory + L"\\" + fd.cFileName;
+						std::wstring fileName = directory + fd.cFileName;
 
 						loadAddin(fileName.c_str());
 					}
@@ -95,9 +99,9 @@ namespace fgo
 		//
 		// 初期化を実行します。
 		//
-		BOOL init()
+		BOOL init(HINSTANCE instance)
 		{
-			if (!loadAddins()) return FALSE;
+			if (!loadAddins(instance)) return FALSE;
 
 			return TRUE;
 		}

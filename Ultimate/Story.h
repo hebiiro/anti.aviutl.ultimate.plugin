@@ -13,9 +13,7 @@ namespace fgo
 			MY_TRACE(_T("Story::func_init()\n"));
 
 			sheba.init(fp);
-			master.init();
 			chaldeas.init(fp);
-
 			fate.fire_init();
 
 			return TRUE;
@@ -26,9 +24,7 @@ namespace fgo
 			MY_TRACE(_T("Story::func_exit()\n"));
 
 			fate.fire_exit();
-
 			chaldeas.exit();
-			master.exit();
 			sheba.exit();
 
 			return TRUE;
@@ -73,16 +69,15 @@ namespace fgo
 
 					MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
 
-					// 参照カウンタを増やしてこの DLL がアンロードされないようにします。
-					WCHAR moduleFileName[MAX_PATH] = {};
-					::GetModuleFileNameW(instance, moduleFileName, MAX_PATH);
-					::LoadLibraryW(moduleFileName);
+					master.init(instance);
 
 					break;
 				}
 			case DLL_PROCESS_DETACH:
 				{
 					MY_TRACE(_T("DLL_PROCESS_DETACH\n"));
+
+					master.exit();
 
 					break;
 				}
