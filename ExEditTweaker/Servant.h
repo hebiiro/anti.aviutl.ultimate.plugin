@@ -247,7 +247,7 @@ namespace fgo::exedit_tweaker
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return sheba.getConfigFileName(L"ExEditTweaker.ini");
+			return magi.getConfigFileName(L"ExEditTweaker.ini");
 		}
 
 		//
@@ -331,7 +331,7 @@ namespace fgo::exedit_tweaker
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得します。
-			auto exedit = sheba.auin.GetExEdit();
+			auto exedit = magi.auin.GetExEdit();
 
 			// 拡張編集内のタイムラインアイテム矩形を描画する関数をフックします。
 			if (gradientFill.enable) gradientFill.attach(exedit + 0x00036a70);

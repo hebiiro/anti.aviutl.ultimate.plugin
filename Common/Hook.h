@@ -176,7 +176,7 @@ T hookImportFunc(HMODULE module, LPCSTR funcName, T func)
 		{
 			Hooker* hooker = (Hooker*)pContext;
 
-			MY_TRACE_STR(pszFunc);
+//			MY_TRACE_STR(pszFunc);
 
 			if (!pszFunc) return TRUE;
 			if (::lstrcmpA(pszFunc, hooker->m_funcName) != 0) return TRUE;

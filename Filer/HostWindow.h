@@ -29,7 +29,7 @@ namespace fgo::filer
 			if (!Tools::AviUtl::PluginWindowExtension::create(
 				*this,
 				hive.instance,
-				sheba.auin.GetAviUtlWindow(),
+				magi.auin.GetAviUtlWindow(),
 				_T("ファイラ"),
 				0,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
@@ -92,7 +92,7 @@ namespace fgo::filer
 					}
 					catch (LPCTSTR e)
 					{
-						::MessageBox(sheba.fp->hwnd, e, _T("Filer"), MB_OK);
+						::MessageBox(magi.fp->hwnd, e, _T("Filer"), MB_OK);
 					}
 				}
 			}

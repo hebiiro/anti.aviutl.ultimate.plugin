@@ -101,6 +101,22 @@ inline BOOL setWindowRect(HWND hwnd, LPCRECT rc, UINT flags = 0)
 	return ::SetWindowPos(hwnd, 0, x, y, w, h, SWP_NOZORDER | flags);
 }
 
+//
+// hwnd2がhwnd1の祖先ウィンドウの場合はTRUEを返します。
+//
+inline BOOL isAncestor(HWND hwnd1, HWND hwnd2)
+{
+	while (hwnd1)
+	{
+		if (hwnd1 == hwnd2)
+			return TRUE;
+
+		hwnd1 = ::GetParent(hwnd1);
+	}
+
+	return FALSE;
+}
+
 //--------------------------------------------------------------------
 
 inline DWORD getStyle(HWND hwnd)

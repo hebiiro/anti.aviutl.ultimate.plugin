@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "Master.h"
+#include "MysticCode.h"
+#include "Spiritron.h"
 
 namespace fgo
 {
@@ -12,8 +14,8 @@ namespace fgo
 		{
 			MY_TRACE(_T("Story::func_init()\n"));
 
-			sheba.init(fp);
-			chaldeas.init(fp);
+			magi.init(fp);
+			spiritron.init(fp);
 			fate.fire_init();
 
 			return TRUE;
@@ -24,8 +26,8 @@ namespace fgo
 			MY_TRACE(_T("Story::func_exit()\n"));
 
 			fate.fire_exit();
-			chaldeas.exit();
-			sheba.exit();
+			spiritron.exit();
+			magi.exit();
 
 			return TRUE;
 		}
@@ -55,7 +57,7 @@ namespace fgo
 				}
 			}
 
-			return chaldeas.func_WndProc(hwnd, message, wParam, lParam, editp, fp);
+			return spiritron.func_WndProc(hwnd, message, wParam, lParam, editp, fp);
 		}
 
 		BOOL DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
@@ -69,6 +71,7 @@ namespace fgo
 
 					MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
 
+					mystic_code.init();
 					master.init(instance);
 
 					break;
@@ -78,6 +81,7 @@ namespace fgo
 					MY_TRACE(_T("DLL_PROCESS_DETACH\n"));
 
 					master.exit();
+					mystic_code.exit();
 
 					break;
 				}

@@ -8,48 +8,131 @@
     <Filter Include="Framework">
       <UniqueIdentifier>{4d329be3-7c03-4d30-a949-eb28142ea02e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Element">
+      <UniqueIdentifier>{d679978c-f832-4fa3-94cc-b99c8ccb3df9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Element\Pane">
+      <UniqueIdentifier>{77e76dec-1209-4850-bcb3-5954324b9c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Element\Pane\Shuttle">
+      <UniqueIdentifier>{f850f9e7-bfc4-4bf9-b9f0-9ffa0d635da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Element\Pane\Shuttle\Container">
+      <UniqueIdentifier>{bbe09295-4f3f-484a-80d3-7ee20fcfbb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hook">
+      <UniqueIdentifier>{1b8b2a5e-a3b2-4293-a08d-79fbec3a77bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hook\API">
+      <UniqueIdentifier>{c7a5760e-1de9-48cf-8081-890ee731693c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hook\Module">
+      <UniqueIdentifier>{82fe53e3-4b3e-4559-a799-42a3fe02985e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="ColonyManager.h" />
-    <ClInclude Include="ConfigDialog.h" />
-    <ClInclude Include="Container.h" />
-    <ClInclude Include="Nest.h" />
-    <ClInclude Include="Pane.h" />
-    <ClInclude Include="RenameColonyDialog.h" />
-    <ClInclude Include="Shuttle.h" />
-    <ClInclude Include="ShuttleManager.h" />
     <ClInclude Include="resource.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Hive.h" />
+    <ClInclude Include="Shuttle\AviUtlWindow.h">
+      <Filter>Element\Pane\Shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\ExEditWindow.h">
+      <Filter>Element\Pane\Shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\SettingDialog.h">
+      <Filter>Element\Pane\Shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Pane\Pane.h">
+      <Filter>Element\Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\Shuttle.h">
+      <Filter>Element\Pane\Shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\ShuttleManager.h">
+      <Filter>Element\Pane\Shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\Container.h">
+      <Filter>Element\Pane\Shuttle\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\ScrollContainer.h">
+      <Filter>Element\Pane\Shuttle\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\SpreadContainer.h">
+      <Filter>Element\Pane\Shuttle\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Pane\Tab.h">
+      <Filter>Element\Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="SubWindow.h" />
+    <ClInclude Include="DockSite.h" />
+    <ClInclude Include="SubWindowManager.h" />
+    <ClInclude Include="ConfigLoader.h" />
+    <ClInclude Include="Hook\Share.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\GetMessage.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\CreateWindow.h">
+      <Filter>Hook\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\Menu.h">
+      <Filter>Hook\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\MoveWindow.h">
+      <Filter>Hook\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\FindWindow.h">
+      <Filter>Hook\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Module\color_palette.h">
+      <Filter>Hook\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Module\ExEdit.h">
+      <Filter>Hook\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Module\extoolbar.h">
+      <Filter>Hook\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Module\vsthost.h">
+      <Filter>Hook\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Module\ZRamPreview.h">
+      <Filter>Hook\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Module\AviUtl.h">
+      <Filter>Hook\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigSaver.h" />
+    <ClInclude Include="Hook\Module.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="SubProcess.h" />
+    <ClInclude Include="SubProcessManager.h" />
+    <ClInclude Include="Servant.h" />
+    <ClInclude Include="Hook\WinEvent.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\LowLevelMouse.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Bouyomisan.h" />
+    <ClInclude Include="PSDToolKit.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ColonyManager.cpp" />
-    <ClCompile Include="ConfigDialog.cpp" />
-    <ClCompile Include="Container.cpp" />
-    <ClCompile Include="Container_Scroll.cpp" />
-    <ClCompile Include="Container_Spread.cpp" />
-    <ClCompile Include="Nest.cpp" />
-    <ClCompile Include="Nest_Bouyomisan.cpp" />
-    <ClCompile Include="Nest_Colony.cpp" />
-    <ClCompile Include="Nest_Config_Load.cpp" />
-    <ClCompile Include="Nest_Config_Save.cpp" />
-    <ClCompile Include="Nest_Hook.cpp" />
-    <ClCompile Include="Nest_Hub.cpp" />
-    <ClCompile Include="Nest_PSDToolKit.cpp" />
-    <ClCompile Include="Pane.cpp" />
-    <ClCompile Include="RenameColonyDialog.cpp" />
-    <ClCompile Include="Shuttle.cpp" />
-    <ClCompile Include="Shuttle_AviUtlWindow.cpp" />
-    <ClCompile Include="Shuttle_ExEditWindow.cpp" />
-    <ClCompile Include="Shuttle_SettingDialog.cpp" />
-    <ClCompile Include="ShuttleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Main.def">

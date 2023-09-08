@@ -6,7 +6,7 @@ namespace Tools {
 
 	// 相対 CALL を書き換える。
 	template<class T>
-	inline T hook_call(addr_t address, T hookProc)
+	inline T set_call(addr_t address, T hookProc)
 	{
 		HANDLE process = ::GetCurrentProcess();
 
@@ -41,7 +41,7 @@ namespace Tools {
 
 	// 絶対 CALL を書き換える。
 	template<class T>
-	inline T hook_abs_call(addr_t address, T hookProc)
+	inline T set_abs_call(addr_t address, T hookProc)
 	{
 		HANDLE process = ::GetCurrentProcess();
 

@@ -97,9 +97,57 @@ namespace Tools
 
 		static INT_PTR CALLBACK dlgProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			Dialog* dialog = static_cast<Dialog*>(getPointer(hwnd));
+			Dialog* dialog = static_cast<Dialog*>(fromHandle(hwnd));
 			if (!dialog) return FALSE;
 			return dialog->onDlgProc(hwnd, message, wParam, lParam);
+		}
+
+		BOOL setInt(UINT id, int value)
+		{
+			return ::SetDlgItemInt(*this, id, value, TRUE);
+		}
+
+		BOOL setUInt(UINT id, UINT value)
+		{
+			return ::SetDlgItemInt(*this, id, value, FALSE);
+		}
+
+		void setCheck(UINT id, BOOL value)
+		{
+			::SendDlgItemMessage(*this, id, BM_SETCHECK, value ? BST_CHECKED : BST_UNCHECKED, 0);
+		}
+
+		int setComboBox(UINT id, int value)
+		{
+			return (int)::SendDlgItemMessage(*this, id, CB_SETCURSEL, value, 0);
+		}
+
+		template <class... Tail>
+		void setComboBox(UINT id, int value, LPCTSTR text, Tail&&... tail)
+		{
+			::SendDlgItemMessage(*this, id, CB_ADDSTRING, 0, (LPARAM)text);
+
+			setComboBox(id, value, std::forward<Tail>(tail)...);
+		}
+
+		int getInt(UINT id)
+		{
+			return ::GetDlgItemInt(*this, id, 0, TRUE);
+		}
+
+		UINT getUInt(UINT id)
+		{
+			return ::GetDlgItemInt(*this, id, 0, FALSE);
+		}
+
+		BOOL getCheck(UINT id)
+		{
+			return ::SendDlgItemMessage(*this, id, BM_GETCHECK, 0, 0) == BST_CHECKED;
+		}
+
+		int getComboBox(UINT id)
+		{
+			return (int)::SendDlgItemMessage(*this, id, CB_GETCURSEL, 0, 0);
 		}
 	};
 

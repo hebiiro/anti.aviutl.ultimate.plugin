@@ -186,6 +186,7 @@
     <ClInclude Include="..\Common\AviUtl\WindowHolderExtension.h" />
     <ClInclude Include="..\Common\DesignBase.h" />
     <ClInclude Include="..\Common\Dialog.h" />
+    <ClInclude Include="..\Common\Dialog2.h" />
     <ClInclude Include="..\Common\FileUpdateChecker.h" />
     <ClInclude Include="..\Common\Gdi.h" />
     <ClInclude Include="..\Common\Gdiplus.h" />
@@ -202,10 +203,9 @@
     <ClInclude Include="..\Detours.4.0.1\detours.h" />
     <ClInclude Include="..\Detours.4.0.1\detver.h" />
     <ClInclude Include="..\Fate\Chaldea.h" />
-    <ClInclude Include="..\Fate\Chaldeas.h" />
     <ClInclude Include="..\Fate\Fate.h" />
     <ClInclude Include="..\Fate\Servant.h" />
-    <ClInclude Include="..\Fate\Sheba.h" />
+    <ClInclude Include="..\Fate\Magi.h" />
     <ClInclude Include="..\Share\Filer.h" />
     <ClInclude Include="..\Tools\edit_predicates.h" />
     <ClInclude Include="..\Tools\FilterHolder.h" />
@@ -214,8 +214,10 @@
     <ClInclude Include="..\Tools\LayeredWindowInfo.h" />
     <ClInclude Include="..\Tools\ObjectHolder.h" />
     <ClInclude Include="..\Tools\Tools.h" />
+    <ClInclude Include="MysticCode.h" />
     <ClInclude Include="Master.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Spiritron.h" />
     <ClInclude Include="Story.h" />
   </ItemGroup>
   <ItemGroup>

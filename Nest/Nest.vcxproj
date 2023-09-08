@@ -163,45 +163,60 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ColonyManager.h" />
-    <ClInclude Include="ConfigDialog.h" />
-    <ClInclude Include="Container.h" />
-    <ClInclude Include="Nest.h" />
-    <ClInclude Include="Pane.h" />
+    <ClInclude Include="Bouyomisan.h" />
+    <ClInclude Include="ConfigLoader.h" />
+    <ClInclude Include="ConfigSaver.h" />
+    <ClInclude Include="Container\Container.h" />
+    <ClInclude Include="Container\ScrollContainer.h" />
+    <ClInclude Include="Container\SpreadContainer.h" />
+    <ClInclude Include="DockSite.h" />
+    <ClInclude Include="Hive.h" />
+    <ClInclude Include="Hook\Api.h" />
+    <ClInclude Include="Hook\Api\CreateWindow.h" />
+    <ClInclude Include="Hook\Api\FindWindow.h" />
+    <ClInclude Include="Hook\Api\Menu.h" />
+    <ClInclude Include="Hook\Api\MoveWindow.h" />
+    <ClInclude Include="Hook\GetMessage.h" />
+    <ClInclude Include="Hook\LowLevelMouse.h" />
+    <ClInclude Include="Hook\Module.h" />
+    <ClInclude Include="Hook\Module\AviUtl.h" />
+    <ClInclude Include="Hook\Module\color_palette.h" />
+    <ClInclude Include="Hook\Module\ExEdit.h" />
+    <ClInclude Include="Hook\Module\extoolbar.h" />
+    <ClInclude Include="Hook\Module\vsthost.h" />
+    <ClInclude Include="Hook\Module\ZRamPreview.h" />
+    <ClInclude Include="Hook\Share.h" />
+    <ClInclude Include="Hook\WinEvent.h" />
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Pane\Pane.h" />
+    <ClInclude Include="Pane\Tab.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="RenameColonyDialog.h" />
+    <ClInclude Include="PSDToolKit.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Shuttle.h" />
-    <ClInclude Include="ShuttleManager.h" />
+    <ClInclude Include="Servant.h" />
+    <ClInclude Include="Shuttle\AviUtlWindow.h" />
+    <ClInclude Include="Shuttle\ExEditWindow.h" />
+    <ClInclude Include="Shuttle\SettingDialog.h" />
+    <ClInclude Include="Shuttle\Shuttle.h" />
+    <ClInclude Include="Shuttle\ShuttleManager.h" />
+    <ClInclude Include="SubProcess.h" />
+    <ClInclude Include="SubProcessManager.h" />
+    <ClInclude Include="SubWindow.h" />
+    <ClInclude Include="SubWindowManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ColonyManager.cpp" />
-    <ClCompile Include="ConfigDialog.cpp" />
-    <ClCompile Include="Container.cpp" />
-    <ClCompile Include="Container_Scroll.cpp" />
-    <ClCompile Include="Container_Spread.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Nest.cpp" />
-    <ClCompile Include="Nest_Bouyomisan.cpp" />
-    <ClCompile Include="Nest_Colony.cpp" />
-    <ClCompile Include="Nest_Config_Load.cpp" />
-    <ClCompile Include="Nest_Config_Save.cpp" />
-    <ClCompile Include="Nest_Hook.cpp" />
-    <ClCompile Include="Nest_Hub.cpp" />
-    <ClCompile Include="Nest_PSDToolKit.cpp" />
-    <ClCompile Include="Pane.cpp" />
+    <ClCompile Include="Main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RenameColonyDialog.cpp" />
-    <ClCompile Include="Shuttle.cpp" />
-    <ClCompile Include="ShuttleManager.cpp" />
-    <ClCompile Include="Shuttle_AviUtlWindow.cpp" />
-    <ClCompile Include="Shuttle_ExEditWindow.cpp" />
-    <ClCompile Include="Shuttle_SettingDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Main.def" />

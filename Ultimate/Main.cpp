@@ -73,13 +73,13 @@ AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 }
 
 //
-// このプロセスで唯一の Sheba オブジェクトを返します。
+// このプロセスで唯一の Magi オブジェクトを返します。
 //
-Sheba* WINAPI get_sheba()
+Magi* WINAPI get_magi()
 {
-	static Sheba sheba;
+	static Magi magi;
 
-	return &sheba;
+	return &magi;
 }
 
 //
@@ -90,14 +90,4 @@ Fate* WINAPI get_fate()
 	static Fate fate;
 
 	return &fate;
-}
-
-//
-// このプロセスで唯一の Chaldeas オブジェクトを返します。
-//
-Chaldeas* WINAPI get_chaldeas()
-{
-	static Chaldeas chaldeas;
-
-	return &chaldeas;
 }

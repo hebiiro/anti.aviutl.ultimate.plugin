@@ -16,7 +16,7 @@ namespace fgo::filer
 			MY_TRACE(_T("FilerWindow::FilerWindow(%s, 0x%08X)\n"), name, clientWindow);
 
 			if (!Tools::AviUtl::PluginWindowExtension::create(
-				*this, hive.instance, sheba.auin.GetAviUtlWindow(), name))
+				*this, hive.instance, magi.auin.GetAviUtlWindow(), name))
 			{
 				throw _T("ファイラウィンドウの作成に失敗しました");
 			}

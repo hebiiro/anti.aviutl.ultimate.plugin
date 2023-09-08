@@ -52,7 +52,7 @@ namespace fgo::filter_drag
 			RECT rc; layout.getFilterRect(filter, &rc);
 			POINT pos = { rc.left, rc.top };
 			SIZE size = { rc.right - rc.left, rc.bottom - rc.top };
-			::ClientToScreen(sheba.auin.GetSettingDialog(), &pos);
+			::ClientToScreen(magi.auin.GetSettingDialog(), &pos);
 			::SetLayeredWindowAttributes(*this, 0, alpha, LWA_ALPHA);
 			::SetWindowPos(*this, HWND_TOPMOST, pos.x, pos.y, size.cx, size.cy, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 		}

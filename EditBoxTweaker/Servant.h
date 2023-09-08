@@ -73,7 +73,7 @@ namespace fgo::editbox_tweaker
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return sheba.getConfigFileName(L"EditBoxTweaker.ini");
+			return magi.getConfigFileName(L"EditBoxTweaker.ini");
 		}
 
 		//
@@ -148,7 +148,7 @@ namespace fgo::editbox_tweaker
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得する。
-			auto exedit = sheba.auin.GetExEdit();
+			auto exedit = magi.auin.GetExEdit();
 
 			getMessageA.attach(::GetMessageA);
 

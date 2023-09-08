@@ -49,6 +49,7 @@ using namespace Gdiplus;
 #include "Common/Window.h"
 #include "Common/Window2.h"
 #include "Common/Dialog.h"
+#include "Common/Dialog2.h"
 #include "Common/Profile.h"
 #include "Common/MSXML.h"
 #include "Common/FileUpdateChecker.h"
@@ -59,10 +60,9 @@ using namespace Gdiplus;
 #pragma comment(lib, "Detours.4.0.1/detours.lib")
 
 #include "Fate/Chaldea.h"
-#include "Fate/Sheba.h"
+#include "Fate/Magi.h"
 #include "Fate/Servant.h"
 #include "Fate/Fate.h"
-#include "Fate/Chaldeas.h"
 
 #include "Tools/edit_predicates.h"
 #include "Tools/Tools.h"

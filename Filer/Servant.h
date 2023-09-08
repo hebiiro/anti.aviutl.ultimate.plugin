@@ -8,7 +8,7 @@ namespace fgo::filer
 	//
 	// このクラスは AviUtl にファイラを追加します。
 	//
-	inline struct Filer : Servant
+	inline struct Filer : Servant, Magi::CommandID::Plugin
 	{
 		std::shared_ptr<HostWindow> hostWindow;
 		BOOL useCommonDialog = TRUE;
@@ -58,7 +58,7 @@ namespace fgo::filer
 			}
 			catch (LPCTSTR e)
 			{
-				::MessageBox(sheba.fp->hwnd, e, _T("Filer"), MB_OK);
+				::MessageBox(magi.fp->hwnd, e, _T("Filer"), MB_OK);
 			}
 
 			return FALSE;
@@ -86,7 +86,7 @@ namespace fgo::filer
 		{
 			switch (wParam)
 			{
-			case Sheba::CommandID::Plugin::ID_ADDIN:
+			case ID_ADDIN:
 				{
 					Tools::AviUtl::PluginWindowExtension::show(*hostWindow);
 
@@ -102,7 +102,7 @@ namespace fgo::filer
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return sheba.getConfigFileName(L"Filer.xml");
+			return magi.getConfigFileName(L"Filer.xml");
 		}
 
 		//

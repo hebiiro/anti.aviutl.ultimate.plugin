@@ -30,6 +30,12 @@ namespace Tools
 		operator HWND() const { return hwnd; }
 
 		//
+		// ウィンドウの識別名を返します。
+		// 安全にダウンキャストしたいときに使用してください。
+		//
+		virtual LPCTSTR getWindowId() { return _T(""); }
+
+		//
 		// ウィンドウを作成します。
 		//
 		virtual BOOL create(DWORD exStyle, LPCTSTR className, LPCTSTR windowName, DWORD style,
@@ -50,10 +56,8 @@ namespace Tools
 		virtual BOOL destroy()
 		{
 			if (!hwnd) return FALSE;
-
-			::DestroyWindow(hwnd), hwnd = 0;
-
-			return TRUE;
+			::DestroyWindow(hwnd);
+			return dissociate();
 		}
 
 		//
@@ -61,9 +65,9 @@ namespace Tools
 		//
 		virtual BOOL subclass(HWND hwnd)
 		{
-			this->hwnd = hwnd;
+			if (!associate(hwnd)) return FALSE;
 			origWndProc = (WNDPROC)::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)wndProc);
-			return setPointer(hwnd, this);
+			return TRUE;
 		}
 
 		//
@@ -71,11 +75,31 @@ namespace Tools
 		//
 		virtual BOOL unsubclass()
 		{
-			HWND hwnd = this->hwnd;
 			if (!hwnd) return FALSE;
-			this->hwnd = 0;
 			::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)origWndProc);
-			return setPointer(hwnd, 0);
+			return dissociate();
+		}
+
+		//
+		// HWND と Window* の関連付けを作成します。
+		//
+		BOOL associate(HWND hwnd)
+		{
+			if (fromHandle(hwnd)) return FALSE;
+			(*map)[hwnd] = this, this->hwnd = hwnd;
+			mapKeeper = map;
+			return TRUE;
+		}
+
+		//
+		// HWND と Window* の関連付けを解除します。
+		//
+		BOOL dissociate()
+		{
+			if (!hwnd) return FALSE;
+			map->erase(hwnd), hwnd = 0;
+			mapKeeper = 0;
+			return TRUE;
 		}
 
 		//
@@ -91,18 +115,25 @@ namespace Tools
 		// HWND に関連付けられた Window* を返します。
 		// HWND から Window* を取得する必要がある場合に使用してください。
 		//
-		inline static Window* getPointer(HWND hwnd)
+		inline static Window* fromHandle(HWND hwnd)
 		{
-			return (Window*)::GetProp(hwnd, PropName);
+			auto it = map->find(hwnd);
+			if (it == map->end()) return 0;
+			return it->second;
 		}
 
 		//
-		// HWND と Window* を関連付けます。
-		// 内部的に使用されます。
+		// HWND に関連付けられた Window* を返します。
+		// T 型は getWindowId() が id と同じ値を返すように実装してください。
+		// それにより、id で T 型かどうか確認できるようになります。
 		//
-		inline static BOOL setPointer(HWND hwnd, Window* window)
+		template<class T>
+		static T* fromHandle(HWND hwnd, LPCTSTR id)
 		{
-			return ::SetProp(hwnd, PropName, window);
+			Window* window = fromHandle(hwnd);
+			if (!window) return 0;
+			if (_tcscmp(id, window->getWindowId()) != 0) return 0;
+			return static_cast<T*>(window);
 		}
 
 		//
@@ -111,7 +142,7 @@ namespace Tools
 		//
 		inline static LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			Window* window = getPointer(hwnd);
+			Window* window = fromHandle(hwnd);
 			if (window)
 				return window->onWndProc(hwnd, message, wParam, lParam);
 			else
@@ -166,7 +197,7 @@ namespace Tools
 			//
 			inline static LRESULT CALLBACK hookProc(int code, WPARAM wParam, LPARAM lParam)
 			{
-				MY_TRACE(_T("hookProc(%d, 0x%08X, 0x%08X)\n"), code, wParam, lParam);
+//				MY_TRACE(_T("hookProc(%d, 0x%08X, 0x%08X)\n"), code, wParam, lParam);
 
 				if (code == HCBT_CREATEWND)
 				{
@@ -179,10 +210,15 @@ namespace Tools
 		} associator = {};
 
 		//
-		// ウィンドウプロパティの名前です。
-		// ウィンドウハンドルとポインタを結びつけるために使用されます。
+		// HWND から Window* を取得するためのマップです。
 		//
-		inline static const LPCTSTR PropName = _T("Window");
+		using Map = std::map<HWND, Window*>;
+		thread_local inline static auto map = std::make_shared<Map>();
+
+		//
+		// map が先に消滅しないように参照を保持しておきます。
+		//
+		std::shared_ptr<Map> mapKeeper;
 
 		//
 		// ウィンドウハンドルです。

@@ -125,11 +125,13 @@
     <ClInclude Include="..\Share\Filer.h">
       <Filter>Share</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\Chaldeas.h">
+    <ClInclude Include="..\Fate\Magi.h">
       <Filter>Fate</Filter>
     </ClInclude>
-    <ClInclude Include="..\Fate\Sheba.h">
-      <Filter>Fate</Filter>
+    <ClInclude Include="MysticCode.h" />
+    <ClInclude Include="Spiritron.h" />
+    <ClInclude Include="..\Common\Dialog2.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

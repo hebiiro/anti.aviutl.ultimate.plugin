@@ -3,7 +3,7 @@
 // Nest.rc で使用
 //
 #define IDD_CONFIG                      101
-#define IDD_RENAME_COLONY               102
+#define IDD_RENAME_SHUTTLE              102
 #define IDC_LAYOUT_MODE                 1001
 #define IDC_WINDOW_TOP_LEFT             1002
 #define IDC_WINDOW_TOP_RIGHT            1003

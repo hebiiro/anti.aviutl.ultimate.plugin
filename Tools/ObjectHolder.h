@@ -25,7 +25,7 @@ namespace fgo
 			this->objectIndex = objectIndex;
 			if (this->objectIndex >= 0)
 			{
-				this->object = sheba.auin.GetObject(this->objectIndex);
+				this->object = magi.auin.GetObject(this->objectIndex);
 				if (!this->object)
 					this->objectIndex = -1;
 			}
