@@ -188,8 +188,6 @@ namespace fgo::filter_drag
 		//
 		BOOL init()
 		{
-			using namespace Tools;
-
 			config_file_checker.init();
 			keyboard_hook.init();
 
@@ -197,7 +195,7 @@ namespace fgo::filter_drag
 			DetourUpdateThread(::GetCurrentThread());
 
 			settingDialogProc.orig = magi.auin.HookSettingDialogProc(settingDialogProc.hook);
-			swapFilter.attach(magi.auin.GetSwapFilter());
+			Tools::attach(swapFilter, magi.auin.GetSwapFilter());
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -479,7 +477,7 @@ namespace fgo::filter_drag
 			//
 			// 拡張編集内の設定ダイアログのウィンドウプロシージャと置き換えられます。
 			//
-			static LRESULT WINAPI hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+			inline static LRESULT WINAPI hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 //				MY_TRACE(_T("0x%08X, 0x%08X, 0x%08X, 0x%08X\n"), hwnd, message, wParam, lParam);
 
@@ -492,9 +490,10 @@ namespace fgo::filter_drag
 				case WM_CAPTURECHANGED: return servant.onCaptureChanged(hwnd, message, wParam, lParam);
 				}
 
-				return servant.settingDialogProc.orig(hwnd, message, wParam, lParam);
+				return orig(hwnd, message, wParam, lParam);
 			}
-		}; Tools::Hook<SettingDialogProc> settingDialogProc;
+			inline static decltype(&hook) orig = 0;
+		} settingDialogProc;
 
 		struct SwapFilter
 		{
@@ -517,24 +516,25 @@ namespace fgo::filter_drag
 				{
 					// 上に移動
 					for (int i = sub; i < 0; i++)
-						servant.swapFilter.orig(objectIndex, srcFilterIndex--, -1);
+						orig(objectIndex, srcFilterIndex--, -1);
 				}
 				else
 				{
 					// 下に移動
 					for (int i = sub; i > 0; i--)
-						servant.swapFilter.orig(objectIndex, srcFilterIndex++, 1);
+						orig(objectIndex, srcFilterIndex++, 1);
 				}
 			}
 
-			static void CDECL hook(int objectIndex, int filterIndex, int relativeIndex)
+			inline static void CDECL hook(int objectIndex, int filterIndex, int relativeIndex)
 			{
 				if (servant.swapFilter.enableHook)
 					servant.swapFilter.moveFilter(objectIndex);
 				else
-					servant.swapFilter.orig(objectIndex, filterIndex, relativeIndex);
+					orig(objectIndex, filterIndex, relativeIndex);
 			}
-		}; Tools::Hook<SwapFilter> swapFilter;
+			inline static decltype(&hook) orig = 0;
+		} swapFilter;
 
 		//
 		// このクラスはコンフィグファイルの更新を監視します。

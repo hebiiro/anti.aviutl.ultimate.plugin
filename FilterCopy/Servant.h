@@ -98,14 +98,12 @@ namespace fgo::filter_copy
 		//
 		BOOL init()
 		{
-			using namespace Tools;
-
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
 			settingDialogProc.orig = magi.auin.HookSettingDialogProc(settingDialogProc.hook);
-			addAlias.attach(magi.auin.GetAddAlias());
-			unknown1.attach(magi.auin.GetUnknown1());
+			Tools::attach(addAlias, magi.auin.GetAddAlias());
+			Tools::attach(unknown1, magi.auin.GetUnknown1());
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}
@@ -120,7 +118,7 @@ namespace fgo::filter_copy
 
 		//
 		// 独自のエイリアス読み込み処理を行うためのフラグです。
-		// AddAlias() のフック関数で参照されます。
+		// AddAlias()のフック関数で参照されます。
 		//
 		BOOL flagPasteFilter = FALSE;
 
@@ -150,7 +148,7 @@ namespace fgo::filter_copy
 				::GetTempPathA(MAX_PATH, tempFolderPath);
 				MY_TRACE_STR(tempFolderPath);
 
-				// カレントプロセスの ID を取得します。
+				// カレントプロセスのIDを取得します。
 				pid = ::GetCurrentProcessId();
 				MY_TRACE_INT(pid);
 
@@ -356,7 +354,7 @@ namespace fgo::filter_copy
 			//
 			// 拡張編集内の設定ダイアログのウィンドウプロシージャと置き換えられます。
 			//
-			static LRESULT WINAPI hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+			inline static LRESULT WINAPI hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				switch (message)
 				{
@@ -373,7 +371,7 @@ namespace fgo::filter_copy
 							if (i == 2)
 							{
 								::AppendMenu(subMenu, MF_SEPARATOR, 0, 0);
-								::AppendMenu(subMenu, MF_STRING, ID_CREATE_CLONE, _T("完全な複製を隣に作成"));
+								::AppendMenu(subMenu, MF_STRING, ID_CREATE_CLONE, _T("完全な複製を下に作成"));
 								::AppendMenu(subMenu, MF_STRING, ID_CREATE_SAME_ABOVE, _T("同じフィルタ効果を上に作成"));
 								::AppendMenu(subMenu, MF_STRING, ID_CREATE_SAME_BELOW, _T("同じフィルタ効果を下に作成"));
 							}
@@ -493,19 +491,21 @@ namespace fgo::filter_copy
 					}
 				}
 
-				return servant.settingDialogProc.orig(hwnd, message, wParam, lParam);
+				return orig(hwnd, message, wParam, lParam);
 			}
-		}; Tools::Hook<SettingDialogProc> settingDialogProc;
+			inline static decltype(&hook) orig = 0;
+		} settingDialogProc;
 
 		struct AddAlias {
 			//
 			// 拡張編集内の AddAlias() 関数と置き換えられます。
 			//
-			static BOOL CDECL hook(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
+			inline static BOOL CDECL hook(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 			{
 				return servant.onAddAlias(fileName, flag1, flag2, objectIndex);
 			}
-		}; Tools::Hook<AddAlias> addAlias;
+			inline static decltype(&hook) orig = 0;
+		} addAlias;
 
 		BOOL onAddAlias(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 		{
@@ -668,15 +668,16 @@ namespace fgo::filter_copy
 				}
 			}
 
-			static void CDECL hook(int objectIndex, int filterIndex)
+			inline static void CDECL hook(int objectIndex, int filterIndex)
 			{
 				MY_TRACE(_T("Unknown1(%d, %d)\n"), objectIndex, filterIndex);
 
-				servant.unknown1.orig(objectIndex, filterIndex);
+				orig(objectIndex, filterIndex);
 
 				if (servant.unknown1.commandId)
 					servant.unknown1.createClone(objectIndex, filterIndex);
 			}
-		}; Tools::Hook<Unknown1> unknown1;
+			inline static decltype(&hook) orig = 0;
+		} unknown1;
 	} servant;
 }

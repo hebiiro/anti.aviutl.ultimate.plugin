@@ -96,7 +96,7 @@ namespace fgo::exedit_tweaker
 			// グラデーション描画処理を簡素化します。
 			// ついでに枠も描画します。
 			//
-			static void CDECL hook(HDC dc, const RECT *rc, BYTE r, BYTE g, BYTE b, BYTE gr, BYTE gg, BYTE gb, int gs, int ge)
+			inline static void CDECL hook(HDC dc, const RECT *rc, BYTE r, BYTE g, BYTE b, BYTE gr, BYTE gg, BYTE gb, int gs, int ge)
 			{
 			//	MY_TRACE(_T("GradientFill(%d, %d)\n"), gs, ge);
 
@@ -111,7 +111,8 @@ namespace fgo::exedit_tweaker
 				servant.gradientFill.outer.deflate_rect(&rcFrame);
 				servant.gradientFill.inner.draw(dc, &rcFrame);
 			}
-		}; Tools::Hook<GradientFill> gradientFill;
+			inline static decltype(&hook) orig = 0;
+		} gradientFill;
 
 		struct Selection {
 			Fill fill; // 選択部分の塗りつぶし。
@@ -131,6 +132,8 @@ namespace fgo::exedit_tweaker
 					::SelectObject(dc, oldBrush);
 					::DeleteObject(brush);
 				}
+				inline static void CDECL hook(HDC dc, int mx, int my, int lx, int ly, HPEN pen) {}
+				inline static decltype(&hook) orig = 0;
 			};
 
 			struct Bound {
@@ -141,7 +144,7 @@ namespace fgo::exedit_tweaker
 
 						servant.layer.bound.left.draw(dc, mx, my, 1, ly - my, pen);
 					}
-				}; Tools::Hook<Left> left;
+				} left;
 
 				struct Right : Line {
 					static void CDECL hook(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
@@ -150,7 +153,7 @@ namespace fgo::exedit_tweaker
 
 						servant.layer.bound.right.draw(dc, mx, my, 1, ly - my, pen);
 					}
-				}; Tools::Hook<Right> right;
+				} right;
 
 				struct Top : Line {
 					static void CDECL hook(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
@@ -159,7 +162,7 @@ namespace fgo::exedit_tweaker
 
 						servant.layer.bound.left.draw(dc, mx, my, lx - mx, 1, pen);
 					}
-				}; Tools::Hook<Top> top;
+				} top;
 
 				struct Bottom : Line {
 					static void CDECL hook(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
@@ -168,7 +171,7 @@ namespace fgo::exedit_tweaker
 
 						servant.layer.bound.left.draw(dc, mx, my, lx - mx, 1, pen);
 					}
-				}; Tools::Hook<Bottom> bottom;
+				} bottom;
 			} bound;
 
 			struct Separator : Line {
@@ -178,7 +181,7 @@ namespace fgo::exedit_tweaker
 
 					servant.layer.separator.draw(dc, mx, my, 1, ly - my, pen);
 				}
-			}; Tools::Hook<Separator> separator;
+			} separator;
 		} layer;
 
 		//
@@ -321,12 +324,10 @@ namespace fgo::exedit_tweaker
 		//
 		// 初期化処理です。
 		// 拡張編集の関数をフックします。
-		// 拡張編集のコンスト値 (コードメモリ) を書き換えます。
+		// 拡張編集のコンスト値(コードメモリ)を書き換えます。
 		//
 		BOOL init()
 		{
-			using namespace Tools;
-
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
@@ -334,19 +335,19 @@ namespace fgo::exedit_tweaker
 			auto exedit = magi.auin.GetExEdit();
 
 			// 拡張編集内のタイムラインアイテム矩形を描画する関数をフックします。
-			if (gradientFill.enable) gradientFill.attach(exedit + 0x00036a70);
+			if (gradientFill.enable) Tools::attach(gradientFill, exedit + 0x00036a70);
 
 			// 拡張編集内の選択領域に関するコンスト値を書き換えます。
-			if (selection.fill.color != CLR_NONE) writeAbsoluteAddress(exedit + 0x0003807E, &selection.fill.color);
-			if (selection.stroke.color != CLR_NONE) writeAbsoluteAddress(exedit + 0x00038076, &selection.stroke.color);
-			if (selection.background.color != CLR_NONE) writeAbsoluteAddress(exedit + 0x00038087, &selection.background.color);
+			if (selection.fill.color != CLR_NONE) Tools::set_abs_addr(exedit + 0x0003807E, &selection.fill.color);
+			if (selection.stroke.color != CLR_NONE) Tools::set_abs_addr(exedit + 0x00038076, &selection.stroke.color);
+			if (selection.background.color != CLR_NONE) Tools::set_abs_addr(exedit + 0x00038087, &selection.background.color);
 
 			// 拡張編集内のレイヤー境界を描画する関数をフックします。
-			if (layer.bound.left.color != CLR_NONE) layer.bound.left.attach_to_call(exedit + 0x00038845);
-			if (layer.bound.right.color != CLR_NONE) layer.bound.right.attach_to_call(exedit + 0x000388AA);
-			if (layer.bound.top.color != CLR_NONE) layer.bound.top.attach_to_call(exedit + 0x00038871);
-			if (layer.bound.bottom.color != CLR_NONE) layer.bound.bottom.attach_to_call(exedit + 0x000388DA);
-			if (layer.separator.color != CLR_NONE) layer.separator.attach_to_call(exedit + 0x00037A1F);
+			if (layer.bound.left.color != CLR_NONE) Tools::attach_call(layer.bound.left, exedit + 0x00038845);
+			if (layer.bound.right.color != CLR_NONE) Tools::attach_call(layer.bound.right, exedit + 0x000388AA);
+			if (layer.bound.top.color != CLR_NONE) Tools::attach_call(layer.bound.top, exedit + 0x00038871);
+			if (layer.bound.bottom.color != CLR_NONE) Tools::attach_call(layer.bound.bottom, exedit + 0x000388DA);
+			if (layer.separator.color != CLR_NONE) Tools::attach_call(layer.separator, exedit + 0x00037A1F);
 
 			return DetourTransactionCommit() == NO_ERROR;
 		}

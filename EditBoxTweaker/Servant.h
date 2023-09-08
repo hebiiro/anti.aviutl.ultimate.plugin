@@ -142,28 +142,26 @@ namespace fgo::editbox_tweaker
 		//
 		BOOL init()
 		{
-			using namespace Tools;
-
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
 			// 拡張編集のモジュールハンドルを取得する。
 			auto exedit = magi.auin.GetExEdit();
 
-			getMessageA.attach(::GetMessageA);
+			Tools::attach(GetMessageA);
 
 			if (unicodeInput) {
-				dispatchMessageA.attach(::DispatchMessageA);
-				peekMessageA.attach(::PeekMessageA);
+				Tools::attach(DispatchMessageA);
+				Tools::attach(PeekMessageA);
 			}
 
-			// 拡張編集内の ::CreateWindowExW() の呼び出しをフックします。
+			// 拡張編集内の::CreateWindowExW()の呼び出しをフックします。
 			// コンスト値も書き換えます。
 			if (delta != 0 || font.handle != nullptr) {
-				editbox.attach_to_abs_call(exedit + 0x0008C46E);
-				editbox.attach_to_abs_call(exedit + 0x00087658);
-				add_int32(exedit + 0x0008CC56 + 1, delta);
-				add_int32(exedit + 0x000876DE + 1, delta);
+				Tools::attach_abs_call(editbox, exedit + 0x0008C46E);
+				Tools::attach_abs_call(editbox, exedit + 0x00087658);
+				Tools::add_int32(exedit + 0x0008CC56 + 1, delta);
+				Tools::add_int32(exedit + 0x000876DE + 1, delta);
 			}
 
 			return DetourTransactionCommit() == NO_ERROR;
@@ -181,17 +179,17 @@ namespace fgo::editbox_tweaker
 		}
 
 		//
-		// この構造体は ::GetMesageA() をフック関数に置き換えるために使用されます。
+		// このクラスは::GetMesageA()をフックします。
 		//
-		struct GetMessageA {
-			static BOOL WINAPI hook(LPMSG msg, HWND hwnd, UINT msgFilterMin, UINT msgFilterMax)
+		struct {
+			inline static BOOL WINAPI hook(LPMSG msg, HWND hwnd, UINT msgFilterMin, UINT msgFilterMax)
 			{
 				BOOL result = FALSE;
 				if (servant.unicodeInput) {
-					// ::GetMessageA() の代わりに ::GetMessageW() を呼び出す。
+					// ::GetMessageA()の代わりに::GetMessageW()を呼び出します。
 					result = ::GetMessageW(msg, hwnd, msgFilterMin, msgFilterMax);
 				} else {
-					result = servant.getMessageA.orig(msg, hwnd, msgFilterMin, msgFilterMax);
+					result = orig(msg, hwnd, msgFilterMin, msgFilterMax);
 				}
 
 				// Ctrl + A.
@@ -208,10 +206,15 @@ namespace fgo::editbox_tweaker
 
 				return result;
 			}
-		}; Tools::Hook<GetMessageA> getMessageA;
+			inline static decltype(&hook) orig = ::GetMessageA;
+		} GetMessageA;
 
-		struct EditBox {
-			static LRESULT CALLBACK subclassproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR id, DWORD_PTR)
+		//
+		// このクラスは::CreateWindowExW()をフックします。
+		//
+		struct {
+			inline static LRESULT CALLBACK subclassproc(
+				HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, UINT_PTR id, DWORD_PTR)
 			{
 				switch (msg) {
 				case WM_SETFONT:
@@ -229,12 +232,12 @@ namespace fgo::editbox_tweaker
 			//
 			// 拡張編集内の複数行エディットボックスを作成する関数(::CreateWindowExW())と置き換えられます。
 			//
-			static HWND WINAPI hook(DWORD exStyle, LPCWSTR className, LPCWSTR windowName, DWORD style,
+			inline static HWND WINAPI hook(DWORD exStyle, LPCWSTR className, LPCWSTR windowName, DWORD style,
 				int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 			{
 				MY_TRACE(_T("CreateWindowExW(%ws, %d, %d)\n"), className, w, h);
 
-				HWND hwnd = servant.editbox.orig(exStyle, className, windowName,
+				HWND hwnd = orig(exStyle, className, windowName,
 					style, x, y, w, h + servant.delta, parent, menu, instance, param);
 
 				if (servant.font.handle != nullptr)
@@ -242,20 +245,23 @@ namespace fgo::editbox_tweaker
 
 				return hwnd;
 			}
-		}; Tools::Hook<EditBox> editbox;
+			inline static decltype(&hook) orig = ::CreateWindowExW;
+		} editbox;
 
 		//
 		// この構造体は ::DispatchMesageA() を ::DispatchMesageW() に置き換えるために使用されます。
 		//
-		struct DispatchMessageA {
+		struct {
 			decltype(&::DispatchMessageA) hook = ::DispatchMessageW;
-		}; Tools::Hook<DispatchMessageA> dispatchMessageA;
+			inline static decltype(hook) orig = ::DispatchMessageA;
+		} DispatchMessageA;
 
 		//
 		// この構造体は ::PeekMesageA() を ::PeekMesageW() に置き換えるために使用されます。
 		//
-		struct PeekMessageA {
+		struct {
 			decltype(&::PeekMessageA) hook = ::PeekMessageW;
-		}; Tools::Hook<PeekMessageA> peekMessageA;
+			inline static decltype(hook) orig = ::PeekMessageA;
+		} PeekMessageA;
 	} servant;
 }
