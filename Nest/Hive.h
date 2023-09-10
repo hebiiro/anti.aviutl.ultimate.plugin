@@ -20,7 +20,7 @@ namespace fgo::nest
 		inline static const LPCTSTR PSDToolKitName = _T("PSDToolKit(外部)");
 		inline static const LPCTSTR BouyomisanName = _T("棒読みさん(外部)");
 
-		HINSTANCE instance = 0; // この DLL のインスタンスハンドルです。
+		HINSTANCE instance = 0; // このDLLのインスタンスハンドルです。
 		HTHEME theme = 0;
 		HWND mainWindow = 0;
 		HWND aviutlWindow = 0;

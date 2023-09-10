@@ -10,9 +10,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Framework</Filter>
-    </ClInclude>
     <ClInclude Include="Servant.h" />
     <ClInclude Include="resource.h">
       <Filter>Resource</Filter>
@@ -21,6 +18,10 @@
     <ClInclude Include="Gui.h" />
     <ClInclude Include="HostWindow.h" />
     <ClInclude Include="FilerWindow.h" />
+    <ClInclude Include="pch.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

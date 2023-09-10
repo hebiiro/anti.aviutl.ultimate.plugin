@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-class CFilerGuiApp : public CWinApp
+class FilerGuiApp : public CWinApp
 {
 public:
 
-	CFilerGuiApp();
-	virtual ~CFilerGuiApp();
+	FilerGuiApp();
+	virtual ~FilerGuiApp();
 
 	//
 	// コマンドライン引数からホストウィンドウを受け取ります。
@@ -31,12 +31,7 @@ protected:
 
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
-	afx_msg void OnFilerLoadTalents(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnFilerSaveTalents(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnFilerCreateTalent(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnFilerDestroyTalent(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnFilerEditTalent(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CFilerGuiApp theApp;
+extern FilerGuiApp theApp;

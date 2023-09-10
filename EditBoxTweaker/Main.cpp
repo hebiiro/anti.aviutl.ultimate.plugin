@@ -1,7 +1,31 @@
 ﻿#include "pch.h"
 #include "Servant.h"
 
+using namespace fgo::editbox_tweaker;
+
 fgo::Servant* get_servant()
 {
-	return &fgo::editbox_tweaker::servant;
+	return &servant;
+}
+
+//
+// エントリポイントです。
+//
+BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+{
+	switch (reason)
+	{
+	case DLL_PROCESS_ATTACH:
+		{
+			::DisableThreadLibraryCalls(instance);
+
+			break;
+		}
+	case DLL_PROCESS_DETACH:
+		{
+			break;
+		}
+	}
+
+	return TRUE;
 }

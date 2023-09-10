@@ -66,6 +66,8 @@ namespace fgo
 			{
 			case DLL_PROCESS_ATTACH:
 				{
+					::DisableThreadLibraryCalls(instance);
+
 					// 日本語が正しく表示されるように文字列のロケールを設定します。
 					_tsetlocale(LC_CTYPE, _T(""));
 

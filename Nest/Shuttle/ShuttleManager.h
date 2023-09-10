@@ -50,7 +50,7 @@ namespace fgo::nest
 		//
 		// 指定されたシャトルをコレクションから取り除きます。
 		//
-		void erase(Shuttle* shuttle)
+		BOOL erase(Shuttle* shuttle)
 		{
 			// リスナーが存在する場合は
 			if (shuttle->listener)
@@ -60,15 +60,14 @@ namespace fgo::nest
 			}
 
 			// コレクションから削除します。
-			shuttles.erase(shuttle->name);
-
-			// 基本的にこの時点で shuttle は無効なポインタになります。
+			return !!shuttles.erase(shuttle->name);
 		}
 
 		// シャトルの名前を変更します。
-		void rename(Shuttle* shuttle, const _bstr_t& newName)
+		BOOL rename(Shuttle* shuttle, const _bstr_t& newName)
 		{
-			assert(shuttles.find(newName) == shuttles.end());
+			if (shuttles.find(newName) != shuttles.end())
+				return FALSE;
 
 			// シャトルの以前の名前を取得しておきます。
 			_bstr_t oldName = shuttle->name;
@@ -84,14 +83,16 @@ namespace fgo::nest
 
 			// ウィンドウ名を新しい名前に更新します。
 			::SetWindowText(*shuttle, newName);
+
+			return TRUE;
 		}
 
 		// シャトルをリネームするためのダイアログを表示します。
-		void showRenameDialog(HWND owner, Shuttle* shuttle)
+		int showRenameDialog(Shuttle* shuttle, HWND parent)
 		{
 			RenameDialog dialog(shuttle);
 
-			dialog.doModal(owner);
+			return dialog.doModal(parent);
 		}
 
 		//
@@ -121,7 +122,7 @@ namespace fgo::nest
 				::GetDlgItemText(*this, IDC_NEW_NAME, newName, MAX_PATH);
 
 				// 古い名前と新しい名前が違うなら
-				if (::StrCmp(shuttle->name, newName) != 0)
+				if (_tcscmp(shuttle->name, newName) != 0)
 				{
 					// シャトルの名前を変更します。
 					shuttleManager.rename(shuttle, newName);
@@ -137,7 +138,7 @@ namespace fgo::nest
 
 				// 新しい名前が現在のシャトルの名前と違い、
 				// なおかつ新しい名前と同じ名前のシャトルがすでに存在する場合は
-				if (::StrCmp(shuttle->name, newName) != 0 && shuttleManager.get(newName))
+				if (_tcscmp(shuttle->name, newName) != 0 && shuttleManager.get(newName))
 				{
 					// メッセージボックスを表示します。
 					::MessageBox(*this, _T("名前が重複しています"), hive.AppName, MB_OK | MB_ICONWARNING);

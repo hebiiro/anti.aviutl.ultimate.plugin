@@ -1,256 +1,227 @@
 ﻿#pragma once
 #include "resource.h"
 #include "Hive.h"
+#include "ExplorerDialog.h"
 
-class FilerDialog
-	: public CDialogEx
-	, public IServiceProvider
-	, public IExplorerBrowserEvents
-	, public IExplorerPaneVisibility
-	, public IFolderFilter
+class FilerDialog : public ExplorerDialog
 {
 public:
 
-	virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** ppv)
-	{
-		if (::IsEqualIID(iid, IID_IUnknown))
-		{
-			*ppv = static_cast<IUnknown*>(static_cast<IServiceProvider*>(this));
-		}
-		else if (::IsEqualIID(iid, IID_IServiceProvider))
-		{
-			*ppv = static_cast<IServiceProvider*>(this);
-		}
-		else if (::IsEqualIID(iid, IID_IExplorerBrowserEvents))
-		{
-			*ppv = static_cast<IExplorerBrowserEvents*>(this);
-		}
-		else if (::IsEqualIID(iid, IID_IExplorerPaneVisibility))
-		{
-			*ppv = static_cast<IExplorerPaneVisibility*>(this);
-		}
-		else if (::IsEqualIID(iid, IID_IFolderFilter))
-		{
-			*ppv = static_cast<IFolderFilter*>(this);
-		}
-		else
-		{
-			*ppv = 0;
-			return E_NOINTERFACE;
-		}
-
-		this->AddRef();
-		return S_OK;
-	}
-
-	virtual ULONG STDMETHODCALLTYPE AddRef()
-	{
-		return 1;
-	}
-
-	virtual ULONG STDMETHODCALLTYPE Release()
-	{
-		return 1;
-	}
-
-	virtual HRESULT STDMETHODCALLTYPE QueryService(REFGUID service, REFIID iid, void** ppv)
-	{
-		if (::IsEqualIID(service, IID_IExplorerPaneVisibility))
-		{
-			return this->QueryInterface(iid, ppv);
-		}
-
-		*ppv = 0;
-		return E_NOINTERFACE;
-	}
-
-	virtual HRESULT STDMETHODCALLTYPE OnNavigationPending(PCIDLIST_ABSOLUTE pidlFolder)
-	{
-		MY_TRACE(_T("FilerDialog::OnNavigationPending()\n"));
-
-		return S_OK;
-	}
-        
-	virtual HRESULT STDMETHODCALLTYPE OnViewCreated(IShellView* shellView)
-	{
-		MY_TRACE(_T("FilerDialog::OnViewCreated()\n"));
-
-		m_shellView = shellView;
-
-		return S_OK;
-	}
-        
-	virtual HRESULT STDMETHODCALLTYPE OnNavigationComplete(PCIDLIST_ABSOLUTE pidlFolder)
-	{
-		MY_TRACE(_T("FilerDialog::OnNavigationComplete()\n"));
-
-		TCHAR path[MAX_PATH] = {};
-		::SHGetPathFromIDList(pidlFolder, path);
-		m_currentFolderPath = path;
-		m_url.SetWindowText(path);
-		m_url.SetEditSel(0, -1);
-
-		IShellBrowserPtr browser = m_explorer;
-		HWND hwnd = 0;
-		browser->GetWindow(&hwnd);
-		::SetWindowText(hwnd, path);
-
-		return S_OK;
-	}
-        
-	virtual HRESULT STDMETHODCALLTYPE OnNavigationFailed(PCIDLIST_ABSOLUTE pidlFolder)
-	{
-		MY_TRACE(_T("FilerDialog::OnNavigationFailed()\n"));
-
-		return S_OK;
-	}
-
-	virtual HRESULT STDMETHODCALLTYPE GetPaneState(REFEXPLORERPANE ep, EXPLORERPANESTATE* peps)
-	{
-		MY_TRACE(_T("FilerDialog::GetPaneState()\n"));
-#if 0
-		if (ep == EP_NavPane) MY_TRACE(_T("EP_NavPane\n"));
-		else if (ep == EP_Commands) MY_TRACE(_T("EP_Commands\n"));
-		else if (ep == EP_Commands_Organize) MY_TRACE(_T("EP_Commands_Organize\n"));
-		else if (ep == EP_Commands_View) MY_TRACE(_T("EP_Commands_View\n"));
-		else if (ep == EP_DetailsPane) MY_TRACE(_T("EP_DetailsPane\n"));
-		else if (ep == EP_PreviewPane) MY_TRACE(_T("EP_PreviewPane\n"));
-		else if (ep == EP_QueryPane) MY_TRACE(_T("EP_QueryPane\n"));
-		else if (ep == EP_AdvQueryPane) MY_TRACE(_T("EP_AdvQueryPane\n"));
-		else if (ep == EP_StatusBar) MY_TRACE(_T("EP_StatusBar\n"));
-		else if (ep == EP_Ribbon) MY_TRACE(_T("EP_Ribbon\n"));
-#endif
-		if (ep == EP_NavPane)
-			*peps = EPS_DEFAULT_ON;
-		else
-			*peps = EPS_DEFAULT_OFF | EPS_FORCE;
-
-		return S_OK;
-	}
-
-	virtual HRESULT STDMETHODCALLTYPE ShouldShow( 
-		/* [in] */ __RPC__in_opt IShellFolder *psf,
-		/* [unique][in] */ __RPC__in_opt PCIDLIST_ABSOLUTE pidlFolder,
-		/* [in] */ __RPC__in PCUITEMID_CHILD pidlItem)
-	{
-		IShellItemPtr si;
-		HRESULT hr = ::SHCreateItemWithParent(0, psf, pidlItem, IID_PPV_ARGS(&si));
-
-		LPWSTR displayName = 0;
-		si->GetDisplayName(SIGDN_NORMALDISPLAY, &displayName);
-
-		SFGAOF attributes = 0;
-		si->GetAttributes(SFGAO_FOLDER, &attributes);
-
-		MY_TRACE(_T("FilerDialog::ShouldShow(%ws, 0x%08X)\n"), displayName, attributes);
-
-		WCHAR searchString[MAX_PATH] = {};
-		::GetWindowTextW(m_search, searchString, MAX_PATH);
-
-		HRESULT retValue = S_OK;
-
-		if (attributes & SFGAO_FOLDER)
-		{
-			// フォルダの場合
-		}
-		else
-		{
-			// ファイルの場合
-
-			if (::lstrlenW(searchString) != 0)
-				retValue = ::StrStrIW(displayName, searchString) ? S_OK : S_FALSE;
-		}
-
-		::CoTaskMemFree(displayName);
-
-		return retValue;
-	}
-        
-	virtual HRESULT STDMETHODCALLTYPE GetEnumFlags( 
-		/* [in] */ __RPC__in_opt IShellFolder *psf,
-		/* [in] */ __RPC__in PCIDLIST_ABSOLUTE pidlFolder,
-		/* [out] */ __RPC__deref_out_opt HWND *phwnd,
-		/* [out][in] */ __RPC__inout DWORD *pgrfFlags)
-	{
-		MY_TRACE(_T("FilerDialog::GetEnumFlags()\n"));
-
-		return S_OK;
-	}
-
-public:
+	inline static std::vector<std::shared_ptr<FilerDialog>> collection;
 
 	HWND filerWindow = 0;
-	IExplorerBrowserPtr m_explorer;
-	IShellViewPtr m_shellView;
-	DWORD m_cookie = 0;
-	CString m_currentFolderPath;
-	CComboBox m_url;
-	CEdit m_search;
-	BOOL m_isNavPaneVisible = TRUE;
+	CToolTipCtrl tooltip;
 
 public:
 
-	FilerDialog(HWND filerWindow)
+	//
+	// コンストラクタです。
+	// 内部的に使用されます。create()から呼び出されます。
+	//
+	FilerDialog(LPCTSTR name, HWND filerWindow, BOOL full)
 		: filerWindow(filerWindow)
 	{
-		MY_TRACE(_T("FilerDialog::FilerDialog(0x%08X)\n"), filerWindow);
+		MY_TRACE(_T("FilerDialog::FilerDialog(%s, 0x%08X)\n"), name, filerWindow);
 
-		if (!Create(IDD_TALENT, CWnd::FromHandle(filerWindow)))
+		if (!__super::Create(IDD_FILER_DIALOG, AfxGetMainWnd()))
 			throw _T("ファイラダイアログの作成に失敗しました");
+
+		// ウィンドウ名を設定します。
+		SetWindowText(name);
+
+		if (full)
+		{
+			// エクスプローラを作成します。
+			initExplorer();
+		}
+
+		// ファイラダイアログの作成が完了したことをファイラウィンドウに通知します。
+		// これにより、ファイラウィンドウがファイラダイアログを参照することができるようになります。
+		fire_PostInitFilerDialog();
 	}
 
+	//
+	// デストラクタです。
+	//
 	~FilerDialog()
 	{
 		MY_TRACE(_T("FilerDialog::~FilerDialog()\n"));
 	}
 
-	void fire_FilerDialogCreated()
+	//
+	// ファイラウィンドウに初期化が完了したことを通知します。
+	//
+	void fire_PostInitFilerDialog()
 	{
-		::PostMessage(filerWindow, Share::Filer::Message::FilerDialogCreated, (WPARAM)GetSafeHwnd(), 0);
+		::PostMessage(filerWindow, Share::Filer::Message::PostInitFilerDialog, (WPARAM)GetSafeHwnd(), 0);
 	}
 
-	void fire_GetUrl()
+	//
+	// ファイラウィンドウにファイル名を取得する必要があることを通知します。
+	//
+	void fire_GetFileName()
 	{
-		::PostMessage(filerWindow, Share::Filer::Message::GetUrl, (WPARAM)GetSafeHwnd(), (LPARAM)m_url.GetSafeHwnd());
+		::PostMessage(filerWindow, Share::Filer::Message::GetFileName, (WPARAM)GetSafeHwnd(), (LPARAM)folder.GetSafeHwnd());
 	}
 
-	void loadSettings();
-	void saveSettings();
+	//
+	// ファイラダイアログを作成して返します。
+	//
+	static std::shared_ptr<FilerDialog> create(HWND filerWindow, BOOL full)
+	{
+		MY_TRACE(_T("FilerDialog::create(0x%08X, %d)\n"), filerWindow, full);
 
-	void createExplorer();
-	void destroyExplorer();
-	void browseToPath(LPCTSTR path);
-	void playVoice(LPCTSTR voice);
+		CString name; CWnd::FromHandle(filerWindow)->GetWindowText(name);
+
+		return collection.emplace_back(std::make_shared<FilerDialog>(name, filerWindow, full));
+	}
+
+	//
+	// 設定を読み込みます。
+	//
+	HRESULT load(const MSXML2::IXMLDOMElementPtr& element)
+	{
+		MY_TRACE(_T("FilerDialog::load()\n"));
+
+		folder.ResetContent();
+
+		BOOL hasNavPane = TRUE;
+		getPrivateProfileBool(element, L"hasNavPane", hasNavPane);
+		this->hasNavPane.SetCheck(hasNavPane ? BST_CHECKED : BST_UNCHECKED);
+
+		_bstr_t path;
+		getPrivateProfileString(element, L"path", path);
+		MY_TRACE_WSTR((BSTR)path);
+		if ((BSTR)path) folder.SetWindowText(path);
+
+		{
+			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"bookmark");
+			int c = nodeList->length;
+			for (int i = 0; i < c; i++)
+			{
+				MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
+
+				_bstr_t path;
+				getPrivateProfileString(element, L"path", path);
+				MY_TRACE_WSTR((BSTR)path);
+				if ((BSTR)path) folder.AddString(path);
+			}
+		}
+
+		exitExplorer();
+		initExplorer();
+
+		return S_OK;
+	}
+
+	//
+	// 設定を保存します。
+	//
+	HRESULT save(const MSXML2::IXMLDOMElementPtr& element)
+	{
+		MY_TRACE(_T("FilerDialog::save()\n"));
+
+		BOOL hasNavPane = this->hasNavPane.GetCheck() == BST_CHECKED;
+		setPrivateProfileBool(element, L"hasNavPane", hasNavPane);
+		setPrivateProfileString(element, L"path", (LPCTSTR)hotFolder);
+
+		// <bookmark>をすべて削除します。
+		removeChildren(element, L"bookmark");
+
+		int c = folder.GetCount();
+		for (int i = 0; i < c; i++)
+		{
+			// <bookmark>を作成します。
+			MSXML2::IXMLDOMElementPtr bookmarkElement = appendElement(element, L"bookmark");
+
+			CString path; folder.GetLBText(i, path);
+			setPrivateProfileString(bookmarkElement, L"path", (LPCTSTR)path);
+		}
+
+		return S_OK;
+	}
+
+	//
+	// エクスプローラを作成します。
+	//
+	void initExplorer()
+	{
+		MY_TRACE(_T("FilerDialog::initExplorer() 開始\n"));
+
+		__super::initExplorer(GetDlgItem(IDC_PLACE_HOLDER));
+
+		MY_TRACE(_T("フィルタウィンドウにブラウザのウィンドウハンドルをセットします\n"));
+
+		IShellBrowserPtr browser = explorer;
+		MY_TRACE_HEX(browser.GetInterfacePtr());
+		HWND hwnd = 0; browser->GetWindow(&hwnd);
+		MY_TRACE_HEX(hwnd);
+		Share::Filer::FilerWindow::setBrowser(filerWindow, hwnd);
+
+		MY_TRACE(_T("FilerDialog::initExplorer() 完了\n"));
+	}
+
+	//
+	// エクスプローラを削除します。
+	//
+	void exitExplorer()
+	{
+		MY_TRACE(_T("FilerDialog::exitExplorer() 開始\n"));
+
+		__super::exitExplorer();
+
+		MY_TRACE(_T("FilerDialog::exitExplorer() 完了\n"));
+	}
+
+	//
+	// エクスプローラをリサイズします。
+	//
+	void resizeExplorer()
+	{
+		MY_TRACE(_T("FilerDialog::resizeExplorer() 開始\n"));
+
+		__super::resizeExplorer(GetDlgItem(IDC_PLACE_HOLDER));
+
+		MY_TRACE(_T("FilerDialog::resizeExplorer() 完了\n"));
+	}
+
+	//
+	// 指定されたコントロールに指定されたツールチップテキストを付与します。
+	//
+	BOOL addTool(UINT id, LPCTSTR text)
+	{
+		TOOLINFO ti { sizeof(ti) };
+		ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | TTF_TRANSPARENT;
+		ti.hwnd = GetSafeHwnd();
+		ti.uId = (UINT)GetDlgItem(id)->GetSafeHwnd();
+		ti.lpszText = const_cast<LPTSTR>(text);
+		return tooltip.SendMessage(TTM_ADDTOOL, 0, (LPARAM)&ti);
+	}
 
 protected:
 
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_TALENT };
+	enum { IDD = IDD_FILER_DIALOG };
 #endif
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual BOOL OnInitDialog();
+	virtual void DoDataExchange(CDataExchange* pDX) override;
+	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
+	virtual void PostNcDestroy() override;
+	virtual BOOL OnInitDialog() override;
+	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnDestroy();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	virtual void OnOK();
 	virtual void OnCancel();
-	afx_msg void OnClickedPrev();
-	afx_msg void OnClickedNext();
-	afx_msg void OnClickedUp();
-	afx_msg void OnClickedGet();
-	afx_msg void OnAddFavorite();
-	afx_msg void OnDeleteFavorite();
-	afx_msg void OnShowNavPane();
-	afx_msg void OnPlayVoice();
-	afx_msg void OnUseCommonDialog();
-	afx_msg void OnUpdateShowNavPane(CCmdUI* pCmdUI);
-	afx_msg void OnUpdatePlayVoice(CCmdUI* pCmdUI);
-	afx_msg void OnUpdateUseCommonDialog(CCmdUI* pCmdUI);
-	afx_msg void OnSelChangeUrl();
+	afx_msg void OnPrevFolder();
+	afx_msg void OnNextFolder();
+	afx_msg void OnParentFolder();
+	afx_msg void OnGetFileName();
+	afx_msg void OnAddBookmark();
+	afx_msg void OnRemoveBookmark();
+	afx_msg void OnHasNavPane();
+	afx_msg void OnSelChangeFolder();
+	afx_msg LRESULT OnPostExitFilerWindow(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 };
-
-//--------------------------------------------------------------------

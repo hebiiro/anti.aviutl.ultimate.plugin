@@ -5,7 +5,8 @@ class ClientWindow : public CWnd
 {
 public:
 
-	std::map<std::wstring, std::shared_ptr<FilerDialog>> filerDialogs;
+	inline static const LPCTSTR ClassName = _T("FilerGui");
+
 	std::shared_ptr<FileUpdateChecker> config_file_checker;
 
 	//
@@ -15,7 +16,7 @@ public:
 	{
 		MY_TRACE(_T("ClientWindow::ClientWindow(0x%08X)\n"), hostWindow);
 
-		// DarkenWindow を読み込みます。
+		// DarkenWindowを読み込みます。
 //		loadDarkenWindow();
 
 		// クライアントウィンドウを作成します。
@@ -23,9 +24,12 @@ public:
 			throw _T("クライアントウィンドウの作成に失敗しました");
 
 		// ホストウィンドウにクライアントウィンドウのハンドルを渡します。
-		Share::Filer::HostWindow::setClientWindow(hostWindow, GetSafeHwnd());
+		Share::Filer::HostWindow::setClientWindow(hostWindow, *this);
 
-		// このウィンドウを MFC のメインウィンドウに設定します。
+		// クライアントウィンドウをメインウィンドウに設定します。
+		hive->mainWindow = *this;
+
+		// クライアントウィンドウをMFCのメインウィンドウに設定します。
 		AfxGetApp()->m_pMainWnd = this;
 
 		// ホストウィンドウを監視するタイマーを作成します。
@@ -47,7 +51,7 @@ public:
 	}
 
 	//
-	// DarkenWindow が存在する場合は読み込みます。
+	// DarkenWindowが存在する場合は読み込みます。
 	//
 	void loadDarkenWindow()
 	{
@@ -77,43 +81,145 @@ public:
 	//
 	BOOL Create()
 	{
-		const static LPCTSTR className = _T("FilerGui");
-
 		WNDCLASS wc = {};
-		wc.lpszClassName = className;
+		wc.lpszClassName = ClassName;
 		wc.lpfnWndProc = AfxWndProc;
 		BOOL result = AfxRegisterClass(&wc);
 
 		return __super::CreateEx(
 			0,
-			className,
-			className,
-			WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME,
+			ClassName,
+			ClassName,
+			WS_CAPTION | WS_SYSMENU | WS_THICKFRAME,
 			CRect(100, 100, 400, 400),
 			0,
 			0);
 	}
 
 	//
-	// ファイラダイアログを作成して返します。
-	// すでに作成済みの場合はそのファイラダイアログを返します。
+	// コンフィグファイルから設定を読み込みます。
 	//
-	std::shared_ptr<FilerDialog> createFilerDialog(HWND filerWindow)
+	HRESULT loadConfig()
 	{
-		MY_TRACE(_T("HostDialog::createFilerDialog(0x%08X)\n"), filerWindow);
+		MY_TRACE(_T("ClientWindow::loadConfig()\n"));
 
-		WCHAR name[MAX_PATH] = {};
-		::GetWindowTextW(filerWindow, name, std::size(name));
-		MY_TRACE_WSTR(name);
+		try
+		{
+			MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
 
-		auto it = filerDialogs.find(name);
-		if (it != filerDialogs.end()) return it->second;
-		return filerDialogs[name] = std::make_shared<FilerDialog>(filerWindow);
+			if (document->load(hive->configFileName) == VARIANT_FALSE)
+			{
+				MY_TRACE(_T("%s の読み込みに失敗しました\n"), hive->configFileName);
+
+				return S_FALSE;
+			}
+
+			MSXML2::IXMLDOMElementPtr element = document->documentElement;
+
+			load(element);
+		}
+		catch (_com_error& e)
+		{
+			MY_TRACE(_T("%s\n"), e.ErrorMessage());
+			return e.Error();
+		}
+
+		return S_OK;
+	}
+
+	//
+	// 設定を読み込みます。
+	//
+	HRESULT load(const MSXML2::IXMLDOMElementPtr& element)
+	{
+		MY_TRACE(_T("ClientWindow::load()\n"));
+
+		for (auto& filerDialog : FilerDialog::collection)
+		{
+			WCHAR name[MAX_PATH] = {};
+			::GetWindowTextW(*filerDialog, name, std::size(name));
+			MY_TRACE_WSTR(name);
+
+			WCHAR xPath[MAX_PATH] = {};
+			::StringCchPrintfW(xPath, std::size(xPath), L"filer[@name=\"%ws\"]", name);
+			MY_TRACE_WSTR(xPath);
+
+			MSXML2::IXMLDOMElementPtr filerElement = element->selectSingleNode(xPath);
+			MY_TRACE_HEX(filerElement.GetInterfacePtr());
+			if (!filerElement) continue;
+
+			filerDialog->load(filerElement);
+		}
+
+		return S_OK;
+	}
+
+	//
+	// コンフィグファイルから設定を読み込みます。
+	//
+	HRESULT saveConfig()
+	{
+		MY_TRACE(_T("ClientWindow::saveConfig()\n"));
+
+		try
+		{
+			MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
+
+			if (document->load(hive->configFileName) == VARIANT_FALSE)
+			{
+				MY_TRACE(_T("%s の読み込みに失敗しました\n"), hive->configFileName);
+
+				return S_FALSE;
+			}
+
+			MSXML2::IXMLDOMElementPtr element = document->documentElement;
+
+			save(element);
+
+			return saveXMLDocument(document, hive->configFileName, L"UTF-16");
+		}
+		catch (_com_error& e)
+		{
+			MY_TRACE(_T("%s\n"), e.ErrorMessage());
+			return e.Error();
+		}
+
+		return S_OK;
+	}
+
+	//
+	// 設定を保存します。
+	//
+	HRESULT save(const MSXML2::IXMLDOMElementPtr& element)
+	{
+		MY_TRACE(_T("ClientWindow::save()\n"));
+
+		for (auto& filerDialog : FilerDialog::collection)
+		{
+			WCHAR name[MAX_PATH] = {};
+			::GetWindowTextW(*filerDialog, name, std::size(name));
+			MY_TRACE_WSTR(name);
+
+			WCHAR xPath[MAX_PATH] = {};
+			::StringCchPrintfW(xPath, std::size(xPath), L"filer[@name=\"%ws\"]", name);
+			MY_TRACE_WSTR(xPath);
+
+			MSXML2::IXMLDOMElementPtr filerElement = element->selectSingleNode(xPath);
+			if (!filerElement) continue;
+
+			filerDialog->save(filerElement);
+		}
+
+		return TRUE;
 	}
 
 protected:
 
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	afx_msg LRESULT OnFilerWindowCreated(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnPreInit(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnPostInit(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnPreExit(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnPostExit(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnPostInitFilerWindow(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 }; inline std::shared_ptr<ClientWindow> clientWindow;

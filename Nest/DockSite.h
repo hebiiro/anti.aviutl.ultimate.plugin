@@ -336,7 +336,7 @@ namespace fgo::nest
 
 				case CommandID::IS_BORDER_LOCKED: pane->isBorderLocked = !pane->isBorderLocked; break;
 
-				case CommandID::RENAME_SUB_WINDOW: shuttleManager.showRenameDialog(dockSite, shuttle); break;
+				case CommandID::RENAME_SUB_WINDOW: shuttleManager.showRenameDialog(shuttle, dockSite); break;
 
 				case CommandID::UNDOCK:
 					{

@@ -562,7 +562,53 @@ namespace fgo::nest
 				}
 			}
 
+			if (message == Share::Nest::Message::EraseShuttle)
+			{
+				HWND hwnd = (HWND)wParam;
+
+				if (onEraseShuttle(hwnd))
+					return Share::Nest::Result::True;
+				else
+					return Share::Nest::Result::False;
+			}
+			else if (message == Share::Nest::Message::RenameShuttle)
+			{
+				HWND hwnd = (HWND)wParam;
+				LPCTSTR newName = (LPCTSTR)lParam;
+
+				if (onRenameShuttle(hwnd, newName))
+					return Share::Nest::Result::True;
+				else
+					return Share::Nest::Result::False;
+			}
+
 			return __super::onWndProc(hwnd, message, wParam, lParam);
+		}
+
+		//
+		// Share::Nest::Message::EraseShuttleのハンドラです。
+		//
+		BOOL onEraseShuttle(HWND hwnd)
+		{
+			if (!hwnd) return FALSE;
+
+			auto shuttle = Shuttle::getPointer(hwnd);
+			if (!shuttle) return FALSE;
+
+			return shuttleManager.erase(shuttle);
+		}
+
+		//
+		// Share::Nest::Message::RenameShuttleのハンドラです。
+		//
+		BOOL onRenameShuttle(HWND hwnd, LPCTSTR newName)
+		{
+			if (!hwnd || !newName) return FALSE;
+
+			auto shuttle = Shuttle::getPointer(hwnd);
+			if (!shuttle) return FALSE;
+
+			return shuttleManager.rename(shuttle, newName);
 		}
 
 		//

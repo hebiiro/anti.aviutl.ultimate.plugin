@@ -76,6 +76,26 @@ inline MSXML2::IXMLDOMTextPtr appendText(
 }
 
 //---------------------------------------------------------------------
+// Remove
+
+//
+// 指定された名前の子要素をすべて削除します。
+//
+inline int removeChildren(const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name)
+{
+	MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(name);
+	int c = nodeList->length;
+	for (int i = 0; i < c; i++)
+	{
+		MSXML2::IXMLDOMElementPtr child = nodeList->item[i];
+
+		element->removeChild(child);
+	}
+
+	return c;
+}
+
+//---------------------------------------------------------------------
 // Get
 
 inline HRESULT WINAPI getPrivateProfileVARIANT(

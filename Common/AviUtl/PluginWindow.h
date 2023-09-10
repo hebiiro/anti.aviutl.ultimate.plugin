@@ -6,22 +6,27 @@
 namespace Tools::AviUtl
 {
 	//
-	// このクラスは AviUtl のプラグインウィンドウのように振る舞うウィンドウです。
+	// このクラスはAviUtlのプラグインウィンドウのように振る舞うウィンドウです。
 	//
 	struct PluginWindow : Window2
 	{
+		std::shared_ptr<PluginWindowExtension> pluginWindowExtension;
+		std::shared_ptr<WindowHolderExtension> windowHolderExtension;
+
 		//
 		// コンストラクタです。
 		//
 		PluginWindow()
+			: pluginWindowExtension(std::make_shared<PluginWindowExtension>())
+			, windowHolderExtension(std::make_shared<WindowHolderExtension>())
 		{
-			// このウィンドウに AviUtl プラグイン拡張を追加します。
-			// これによって、このウィンドウは AviUtl プラグインウィンドウのように振る舞います。
-			addExtension(std::make_shared<PluginWindowExtension>());
+			// このウィンドウにAviUtlプラグイン拡張を追加します。
+			// これによって、このウィンドウはAviUtlプラグインウィンドウのように振る舞います。
+			addExtension(pluginWindowExtension);
 
 			// このウィンドウにウィンドウホルダー拡張を追加します。
 			// これによって、このクラス及び派生クラスでクライアント領域にターゲット(他のウィンドウ)を保持できるようになります。
-			addExtension(std::make_shared<WindowHolderExtension>());
+			addExtension(windowHolderExtension);
 		}
 	};
 }

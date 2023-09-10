@@ -9,283 +9,31 @@
 BEGIN_MESSAGE_MAP(FilerDialog, CDialogEx)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
-	ON_WM_TIMER()
 	ON_WM_SIZE()
 	ON_WM_APPCOMMAND()
-	ON_WM_CONTEXTMENU()
-	ON_BN_CLICKED(IDC_PREV, &FilerDialog::OnClickedPrev)
-	ON_BN_CLICKED(IDC_NEXT, &FilerDialog::OnClickedNext)
-	ON_BN_CLICKED(IDC_UP, &FilerDialog::OnClickedUp)
-	ON_BN_CLICKED(IDC_GET, &FilerDialog::OnClickedGet)
-	ON_COMMAND(ID_ADD_FAVORITE, &FilerDialog::OnAddFavorite)
-	ON_COMMAND(ID_DELETE_FAVORITE, &FilerDialog::OnDeleteFavorite)
-	ON_COMMAND(ID_SHOW_NAV_PANE, &FilerDialog::OnShowNavPane)
-	ON_COMMAND(ID_PLAY_VOICE, &FilerDialog::OnPlayVoice)
-	ON_COMMAND(ID_USE_COMMON_DIALOG, &FilerDialog::OnUseCommonDialog)
-	ON_UPDATE_COMMAND_UI(ID_SHOW_NAV_PANE, &FilerDialog::OnUpdateShowNavPane)
-	ON_UPDATE_COMMAND_UI(ID_PLAY_VOICE, &FilerDialog::OnUpdatePlayVoice)
-	ON_UPDATE_COMMAND_UI(ID_USE_COMMON_DIALOG, &FilerDialog::OnUpdateUseCommonDialog)
-	ON_CBN_SELCHANGE(IDC_URL, &FilerDialog::OnSelChangeUrl)
+	ON_COMMAND(IDC_PREV_FOLDER, &FilerDialog::OnPrevFolder)
+	ON_COMMAND(IDC_NEXT_FOLDER, &FilerDialog::OnNextFolder)
+	ON_COMMAND(IDC_PARENT_FOLDER, &FilerDialog::OnParentFolder)
+	ON_COMMAND(IDC_GET_FILE_NAME, &FilerDialog::OnGetFileName)
+	ON_COMMAND(IDC_ADD_BOOKMARK, &FilerDialog::OnAddBookmark)
+	ON_COMMAND(IDC_REMOVE_BOOKMARK, &FilerDialog::OnRemoveBookmark)
+	ON_COMMAND(IDC_HAS_NAV_PANE, &FilerDialog::OnHasNavPane)
+	ON_CBN_SELCHANGE(IDC_FOLDER, &FilerDialog::OnSelChangeFolder)
+	ON_MESSAGE(Share::Filer::Message::PostExitFilerWindow, OnPostExitFilerWindow)
 END_MESSAGE_MAP()
-
-#if 0
-void FilerDialog::loadSettings()
-{
-	MY_TRACE(_T("FilerDialog::loadSettings()\n"));
-
-	m_url.ResetContent();
-
-	WCHAR filePath[MAX_PATH] = {};
-	::GetModuleFileNameW(AfxGetInstanceHandle(), filePath, MAX_PATH);
-	::PathRemoveExtensionW(filePath);
-	::StringCbCatW(filePath, sizeof(filePath), L"Settings.xml");
-	MY_TRACE_WSTR(filePath);
-
-	try
-	{
-		MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
-
-		if (document->load(filePath) == VARIANT_FALSE)
-		{
-			MY_TRACE(_T("%ws file loading failed\n"), filePath);
-
-			return;
-		}
-
-		MSXML2::IXMLDOMElementPtr element = document->documentElement;
-
-		getPrivateProfileBool(element, L"isNavPaneVisible", m_isNavPaneVisible);
-		getPrivateProfileBool(element, L"isVoiceEnabled", m_isVoiceEnabled);
-		getPrivateProfileBool(element, L"usesCommonDialog", m_usesCommonDialog);
-
-		::SetProp(GetSafeHwnd(), _T("usesCommonDialog"), (HANDLE)m_usesCommonDialog);
-
-		_bstr_t path;
-		getPrivateProfileString(element, L"path", path);
-		MY_TRACE_WSTR((BSTR)path);
-		if ((BSTR)path)
-			m_url.SetWindowText(path);
-
-		{
-			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"favorite");
-			int c = nodeList->length;
-			for (int i = 0; i < c; i++)
-			{
-				MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
-
-				_bstr_t path;
-				getPrivateProfileString(element, L"path", path);
-				MY_TRACE_WSTR((BSTR)path);
-				if ((BSTR)path)
-				{
-					m_url.AddString(path);
-				}
-			}
-		}
-
-		m_isSettingsLoaded = TRUE;
-	}
-	catch (_com_error& e)
-	{
-		MY_TRACE(_T("%s\n"), e.ErrorMessage());
-	}
-}
-
-void FilerDialog::saveSettings()
-{
-	MY_TRACE(_T("FilerDialog::saveSettings()\n"));
-
-	if (!m_isSettingsLoaded)
-	{
-		MY_TRACE(_T("初期化に失敗しているので保存処理をスキップします\n"));
-
-		return;
-	}
-
-	WCHAR filePath[MAX_PATH] = {};
-	::GetModuleFileNameW(AfxGetInstanceHandle(), filePath, MAX_PATH);
-	::PathRemoveExtensionW(filePath);
-	::StringCbCatW(filePath, sizeof(filePath), L"Settings.xml");
-	MY_TRACE_WSTR(filePath);
-
-	try
-	{
-		MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
-
-		MSXML2::IXMLDOMElementPtr parentElement = appendElement(document, document, L"ObjectExplorerSettings");
-
-		setPrivateProfileString(parentElement, L"path", (LPCTSTR)m_currentFolderPath);
-		setPrivateProfileBool(parentElement, L"isNavPaneVisible", m_isNavPaneVisible);
-		setPrivateProfileBool(parentElement, L"isVoiceEnabled", m_isVoiceEnabled);
-		setPrivateProfileBool(parentElement, L"usesCommonDialog", m_usesCommonDialog);
-
-		int c = m_url.GetCount();
-		for (int i = 0; i < c; i++)
-		{
-			MSXML2::IXMLDOMElementPtr element = appendElement(document, parentElement, L"favorite");
-
-			CString path; m_url.GetLBText(i, path);
-			setPrivateProfileString(element, L"path", (LPCTSTR)path);
-		}
-
-		saveXMLDocument(document, filePath);
-	}
-	catch (_com_error& e)
-	{
-		MY_TRACE(_T("%s\n"), e.ErrorMessage());
-	}
-}
-#endif
-void FilerDialog::createExplorer()
-{
-	MY_TRACE(_T("FilerDialog::createExplorer()\n"));
-
-	// エクスプローラを作成する。
-	HRESULT hr = m_explorer.CreateInstance(CLSID_ExplorerBrowser);
-
-	{
-		// エクスプローラを初期化する。
-
-		CWnd* placeHolder = GetDlgItem(IDC_PLACE_HOLDER);
-		CRect rc; placeHolder->GetWindowRect(&rc);
-		ScreenToClient(&rc);
-
-		FOLDERSETTINGS fs = {};
-		fs.ViewMode = FVM_AUTO;
-		fs.fFlags = 0;//FWF_NOBROWSERVIEWSTATE;
-
-		hr = m_explorer->Initialize(GetSafeHwnd(), &rc, &fs);
-		hr = m_explorer->SetPropertyBag(L"AviUtl.ObjectExplorer");
-	}
-
-	// ハンドラを追加する。
-	hr = ::IUnknown_SetSite(m_explorer, static_cast<IServiceProvider*>(this));
-	hr = m_explorer->Advise(static_cast<IExplorerBrowserEvents*>(this), &m_cookie);
-	IFolderFilterSitePtr folderFilterSite = m_explorer;
-	MY_TRACE_HEX(folderFilterSite.GetInterfacePtr());
-	hr = folderFilterSite->SetFilter(static_cast<IFolderFilter*>(this));
-	MY_TRACE_COM_ERROR(hr);
-
-	if (m_isNavPaneVisible)
-	{
-		// フレームを表示する。
-		hr = m_explorer->SetOptions(EBO_SHOWFRAMES);
-	}
-
-	CString url; m_url.GetWindowText(url);
-	MY_TRACE_TSTR((LPCTSTR)url);
-
-	{
-		// 一旦デスクトップを表示する。
-		// こうしないと次の browseToPath(url) でフリーズする。
-
-		PIDLIST_ABSOLUTE pidlDesktop;
-		::SHGetKnownFolderIDList(FOLDERID_Desktop, 0, NULL, &pidlDesktop);
-		m_explorer->BrowseToIDList(pidlDesktop, SBSP_ABSOLUTE);
-		::ILFree(pidlDesktop);
-	}
-
-	MY_TRACE(_T("URL に移動します\n"));
-
-	if (!url.IsEmpty())
-		browseToPath(url);
-
-	MY_TRACE(_T("フィルタウィンドウにブラウザのウィンドウハンドルをセットします\n"));
-
-	IShellBrowserPtr browser = m_explorer;
-	MY_TRACE_HEX(browser.GetInterfacePtr());
-	HWND hwnd = 0; browser->GetWindow(&hwnd);
-	MY_TRACE_HEX(hwnd);
-	Share::Filer::FilerWindow::setBrowser(filerWindow, hwnd);
-
-	MY_TRACE(_T("FilerDialog::createExplorer() end\n"));
-}
-
-void FilerDialog::destroyExplorer()
-{
-	MY_TRACE(_T("FilerDialog::destroyExplorer()\n"));
-
-	m_explorer->Unadvise(m_cookie);
-	::IUnknown_SetSite(m_explorer, 0);
-	m_explorer->Destroy();
-	m_explorer = 0;
-	m_shellView = 0;
-
-	MY_TRACE(_T("FilerDialog::destroyExplorer() end\n"));
-}
-
-void FilerDialog::browseToPath(LPCTSTR path)
-{
-	MY_TRACE(_T("FilerDialog::browseToPath(%s)\n"), path);
-
-	if (::lstrcmpi(path, m_currentFolderPath) == 0)
-	{
-		// 現在のフォルダを再読み込みする。
-
-		if (m_shellView)
-		{
-			HRESULT hr = m_shellView->Refresh();
-			MY_TRACE_COM_ERROR(hr);
-		}
-	}
-	else
-	{
-		// 指定されたフォルダを表示する。
-
-		PIDLIST_ABSOLUTE pidl = ::ILCreateFromPath(path);
-		if (pidl)
-		{
-			m_explorer->BrowseToIDList(pidl, SBSP_ABSOLUTE | SBSP_SAMEBROWSER);
-			::ILFree(pidl);
-		}
-	}
-}
-
-void FilerDialog::playVoice(LPCTSTR voice)
-{
-	MY_TRACE(_T("FilerDialog::playVoice(%s)\n"), voice);
-#if 0
-	if (!m_isVoiceEnabled)
-		return;
-
-	// WavPlayer が存在するかチェックする。
-	if (::GetFileAttributes(theApp.m_wavPlayerFileName) == INVALID_FILE_ATTRIBUTES)
-		return;
-
-	// wav ファイルのパスを取得する。
-	TCHAR wavFileName[MAX_PATH] = {};
-	::GetModuleFileName(AfxGetInstanceHandle(), wavFileName, MAX_PATH);
-	::PathRemoveFileSpec(wavFileName);
-	::PathAppend(wavFileName, voice);
-	MY_TRACE_TSTR(wavFileName);
-
-	// wav ファイルが存在するかチェックする。
-	if (::GetFileAttributes(wavFileName) == INVALID_FILE_ATTRIBUTES)
-		return;
-
-	// wav ファイルを再生する。
-	SHELLEXECUTEINFO sei = { sizeof(sei) };
-	sei.lpFile = theApp.m_wavPlayerFileName;
-	sei.lpParameters = wavFileName;
-	BOOL result = ::ShellExecuteEx(&sei);
-	MY_TRACE_HEX(result);
-#endif
-}
 
 void FilerDialog::DoDataExchange(CDataExchange* pDX)
 {
 	MY_TRACE(_T("FilerDialog::DoDataExchange()\n"));
 
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_URL, m_url);
-	DDX_Control(pDX, IDC_SEARCH, m_search);
+	DDX_Control(pDX, IDC_FOLDER, folder);
+	DDX_Control(pDX, IDC_SEARCH, search);
+	DDX_Control(pDX, IDC_HAS_NAV_PANE, hasNavPane);
 }
 
 BOOL FilerDialog::PreTranslateMessage(MSG* pMsg)
 {
-	if (m_shellView && m_shellView->TranslateAccelerator(pMsg) == S_OK)
-		return TRUE;
-
 	if (pMsg->message == WM_KEYDOWN)
 	{
 		switch (pMsg->wParam)
@@ -294,7 +42,7 @@ BOOL FilerDialog::PreTranslateMessage(MSG* pMsg)
 			{
 				if (::GetKeyState(VK_CONTROL) < 0)
 				{
-					m_search.SetFocus();
+					search.SetFocus();
 					return TRUE;
 				}
 
@@ -304,7 +52,7 @@ BOOL FilerDialog::PreTranslateMessage(MSG* pMsg)
 			{
 				if (::GetKeyState(VK_CONTROL) < 0)
 				{
-					m_url.SetFocus();
+					folder.SetFocus();
 					return TRUE;
 				}
 
@@ -316,20 +64,73 @@ BOOL FilerDialog::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
+void FilerDialog::PostNcDestroy()
+{
+	MY_TRACE(_T("FilerDialog::PostNcDestroy()\n"));
+
+	CDialogEx::PostNcDestroy();
+
+	// thisをコレクションから取り除きます。この処理は実質的にdelete thisと同じです。
+	std::erase_if(collection, [this](const auto& x){ return x.get() == this; });
+}
+
 BOOL FilerDialog::OnInitDialog()
 {
 	MY_TRACE(_T("FilerDialog::OnInitDialog()\n"));
 
 	CDialogEx::OnInitDialog();
 
-	// エクスプローラを作成します。
-	createExplorer();
-
-	// フィルタダイアログの作成が完了したことをフィルタウィンドウに通知します。
-	// これにより、フィルタウィンドウがフィルタダイアログを参照することができるようになります。
-	fire_FilerDialogCreated();
+	tooltip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
+	tooltip.SetMaxTipWidth(INT_MAX);
+	addTool(IDC_PREV_FOLDER, _T("前のフォルダに戻ります"));
+	addTool(IDC_NEXT_FOLDER, _T("次のフォルダに進みます"));
+	addTool(IDC_PARENT_FOLDER, _T("一つ上の階層へ移動します"));
+	addTool(IDC_GET_FILE_NAME, _T("AviUtlのカレントアイテムからフォルダを取得します"));
+	addTool(IDC_ADD_BOOKMARK, _T("現在のフォルダをブックマークに追加します"));
+	addTool(IDC_REMOVE_BOOKMARK, _T("現在のフォルダをブックマークから削除します"));
+	addTool(IDC_HAS_NAV_PANE, _T("ツリービューの表示/非表示を切り替えます"));
+	addTool(IDC_SEARCH, _T("ファイルをフィルタリングするための文字列です"));
+	addTool(IDC_FOLDER, _T("現在表示中のフォルダです")
+		_T("\n手動で変更した場合はエンターキーを押して確定してください")
+		_T("\nリストダウンするとブックマークから選択できます"));
 
 	return TRUE;
+}
+
+BOOL FilerDialog::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+	auto nm = (NMHDR*)lParam;
+	if (nm->hwndFrom == tooltip.GetSafeHwnd())
+	{
+		switch (nm->code)
+		{
+		case TTN_SHOW:
+			{
+				MY_TRACE(_T("FilerDialog::OnNotify(TTN_SHOW)\n"));
+
+				CRect rc; tooltip.GetWindowRect(&rc);
+				int x = rc.left;
+				int y = rc.top;
+				int w = rc.Width();
+				int h = rc.Height();
+
+				{
+					// ツールチップをダイアログの左上に表示します。
+					CRect rc; GetClientRect(&rc);
+					ClientToScreen(&rc);
+					x = rc.left;
+					y = rc.top - h;
+				}
+
+				tooltip.SetWindowPos(0, x, y, w, h, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+				*pResult = TRUE;
+				return TRUE;
+			}
+		}
+	}
+
+	return __super::OnNotify(wParam, lParam, pResult);
 }
 
 int FilerDialog::OnCreate(LPCREATESTRUCT cs)
@@ -347,7 +148,7 @@ void FilerDialog::OnDestroy()
 	MY_TRACE(_T("FilerDialog::OnDestroy()\n"));
 
 	// エクスプローラを削除します。
-	destroyExplorer();
+	exitExplorer();
 
 	CDialogEx::OnDestroy();
 }
@@ -356,13 +157,8 @@ void FilerDialog::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 
-	CWnd* placeHolder = GetDlgItem(IDC_PLACE_HOLDER);
-	if (placeHolder)
-	{
-		CRect rc; placeHolder->GetWindowRect(&rc);
-		ScreenToClient(&rc);
-		m_explorer->SetRect(0, rc);
-	}
+	// エクスプローラをリサイズします。
+	resizeExplorer();
 }
 
 void FilerDialog::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey)
@@ -373,14 +169,14 @@ void FilerDialog::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey)
 		{
 			MY_TRACE(_T("APPCOMMAND_BROWSER_BACKWARD\n"));
 
-			OnClickedPrev();
+			OnPrevFolder();
 			break;
 		}
 	case APPCOMMAND_BROWSER_FORWARD:
 		{
 			MY_TRACE(_T("APPCOMMAND_BROWSER_FORWARD\n"));
 
-			OnClickedNext();
+			OnNextFolder();
 			break;
 		}
 	case APPCOMMAND_BROWSER_REFRESH:
@@ -394,23 +190,11 @@ void FilerDialog::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey)
 	__super::OnAppCommand(pWnd, nCmd, nDevice, nKey);
 }
 
-void FilerDialog::OnContextMenu(CWnd* pWnd, CPoint point)
-{
-	MY_TRACE(_T("FilerDialog::OnContextMenu()\n"));
-
-	CMenu menu; menu.LoadMenu(IDR_POPUP_MENU);
-	CMenu* subMenu = menu.GetSubMenu(0);
-	subMenu->CheckMenuItem(ID_SHOW_NAV_PANE, m_isNavPaneVisible ? MF_CHECKED : MF_UNCHECKED);
-//	subMenu->CheckMenuItem(ID_PLAY_VOICE, m_isVoiceEnabled ? MF_CHECKED : MF_UNCHECKED);
-//	subMenu->CheckMenuItem(ID_USE_COMMON_DIALOG, m_usesCommonDialog ? MF_CHECKED : MF_UNCHECKED);
-	subMenu->TrackPopupMenu(0, point.x, point.y, this);
-}
-
 void FilerDialog::OnOK()
 {
 	MY_TRACE(_T("FilerDialog::OnOK()\n"));
 
-	CString path; m_url.GetWindowText(path);
+	CString path; folder.GetWindowText(path);
 	MY_TRACE_TSTR(path);
 
 	browseToPath(path);
@@ -422,149 +206,95 @@ void FilerDialog::OnCancel()
 {
 	MY_TRACE(_T("FilerDialog::OnCancel()\n"));
 
-//	ShowWindow(SW_HIDE);
-
 //	__super::OnCancel();
 }
 
-void FilerDialog::OnClickedPrev()
+void FilerDialog::OnPrevFolder()
 {
-	MY_TRACE(_T("FilerDialog::OnClickedPrev()\n"));
+	MY_TRACE(_T("FilerDialog::OnPrevFolder()\n"));
 
-	m_explorer->BrowseToIDList(NULL, SBSP_NAVIGATEBACK);
+	if (!explorer) return;
 
-	playVoice(_T("Prev.wav"));
+	explorer->BrowseToIDList(NULL, SBSP_NAVIGATEBACK);
 }
 
-void FilerDialog::OnClickedNext()
+void FilerDialog::OnNextFolder()
 {
-	MY_TRACE(_T("FilerDialog::OnClickedNext()\n"));
+	MY_TRACE(_T("FilerDialog::OnNextFolder()\n"));
 
-	m_explorer->BrowseToIDList(NULL, SBSP_NAVIGATEFORWARD);
+	if (!explorer) return;
 
-	playVoice(_T("Next.wav"));
+	explorer->BrowseToIDList(NULL, SBSP_NAVIGATEFORWARD);
 }
 
-void FilerDialog::OnClickedUp()
+void FilerDialog::OnParentFolder()
 {
-	MY_TRACE(_T("FilerDialog::OnClickedUp()\n"));
+	MY_TRACE(_T("FilerDialog::OnParentFolder()\n"));
 
-	m_explorer->BrowseToIDList(NULL, SBSP_PARENT);
+	if (!explorer) return;
 
-	playVoice(_T("Up.wav"));
+	explorer->BrowseToIDList(NULL, SBSP_PARENT);
 }
 
-void FilerDialog::OnClickedGet()
+void FilerDialog::OnGetFileName()
 {
-	MY_TRACE(_T("FilerDialog::OnClickedGet()\n"));
+	MY_TRACE(_T("FilerDialog::OnGetFileName()\n"));
 
-	fire_GetUrl();
+	if (!explorer) return;
 
-	playVoice(_T("Get.wav"));
+	fire_GetFileName();
 }
 
-void FilerDialog::OnAddFavorite()
+void FilerDialog::OnAddBookmark()
 {
-	MY_TRACE(_T("FilerDialog::OnAddFavorite()\n"));
+	MY_TRACE(_T("FilerDialog::OnAddBookmark()\n"));
 
-	int index = m_url.FindString(0, m_currentFolderPath);
-	if (index == CB_ERR)
-	{
-		m_url.AddString(m_currentFolderPath);
-
-		playVoice(_T("AddFavorite.wav"));
-	}
+	CString path; folder.GetWindowText(path);
+	MY_TRACE_TSTR((LPCTSTR)path);
+	int index = folder.FindString(0, path);
+	if (index == CB_ERR) folder.AddString(path);
 }
 
-void FilerDialog::OnDeleteFavorite()
+void FilerDialog::OnRemoveBookmark()
 {
-	MY_TRACE(_T("FilerDialog::OnDeleteFavorite()\n"));
+	MY_TRACE(_T("FilerDialog::OnRemoveBookmark()\n"));
 
-	int index = m_url.FindString(0, m_currentFolderPath);
-	if (index != CB_ERR)
-	{
-		m_url.DeleteString(index);
-
-		playVoice(_T("DeleteFavorite.wav"));
-	}
+	CString path; folder.GetWindowText(path);
+	MY_TRACE_TSTR((LPCTSTR)path);
+	int index = folder.FindString(0, path);
+	if (index != CB_ERR) folder.DeleteString(index);
 }
 
-void FilerDialog::OnShowNavPane()
+void FilerDialog::OnHasNavPane()
 {
-	MY_TRACE(_T("FilerDialog::OnShowNavPane()\n"));
+	MY_TRACE(_T("FilerDialog::OnHasNavPane()\n"));
 
-	if (m_isNavPaneVisible)
-	{
-		m_isNavPaneVisible = FALSE;
-		destroyExplorer();
-		createExplorer();
-	}
-	else
-	{
-		m_isNavPaneVisible = TRUE;
-		destroyExplorer();
-		createExplorer();
-	}
+	exitExplorer();
+	initExplorer();
 }
 
-void FilerDialog::OnPlayVoice()
+void FilerDialog::OnSelChangeFolder()
 {
-	MY_TRACE(_T("FilerDialog::OnPlayVoice()\n"));
-#if 0
-	if (m_isVoiceEnabled)
-	{
-		m_isVoiceEnabled = FALSE;
-	}
-	else
-	{
-		m_isVoiceEnabled = TRUE;
-	}
-#endif
-}
+	MY_TRACE(_T("FilerDialog::OnSelChangeFolder()\n"));
 
-void FilerDialog::OnUseCommonDialog()
-{
-	MY_TRACE(_T("FilerDialog::OnUseCommonDialog()\n"));
-#if 0
-	if (m_usesCommonDialog)
-	{
-		m_usesCommonDialog = FALSE;
-	}
-	else
-	{
-		m_usesCommonDialog = TRUE;
-	}
-
-	::SetProp(GetSafeHwnd(), _T("usesCommonDialog"), (HANDLE)m_usesCommonDialog);
-#endif
-}
-
-void FilerDialog::OnUpdateShowNavPane(CCmdUI* pCmdUI)
-{
-	pCmdUI->SetCheck(m_isNavPaneVisible);
-}
-
-void FilerDialog::OnUpdatePlayVoice(CCmdUI* pCmdUI)
-{
-//	pCmdUI->SetCheck(m_isVoiceEnabled);
-}
-
-void FilerDialog::OnUpdateUseCommonDialog(CCmdUI* pCmdUI)
-{
-//	pCmdUI->SetCheck(m_usesCommonDialog);
-}
-
-void FilerDialog::OnSelChangeUrl()
-{
-	MY_TRACE(_T("FilerDialog::OnSelChangeUrl()\n"));
-
-	int index = m_url.GetCurSel();
+	int index = folder.GetCurSel();
 	MY_TRACE_INT(index);
 	if (index != CB_ERR)
 	{
-		CString path; m_url.GetLBText(index, path);
+		CString path; folder.GetLBText(index, path);
 		MY_TRACE_TSTR((LPCTSTR)path);
 
 		browseToPath(path);
 	}
+}
+
+//
+// ファイラウィンドウが削除されるときにホストプロセスから通知されます。
+// この時点でファイラウィンドウとの親子関係は解除されているので、手動でウィンドウを破壊します。
+//
+LRESULT FilerDialog::OnPostExitFilerWindow(WPARAM wParam, LPARAM lParam)
+{
+	MY_TRACE(_T("FilerDialog::OnPostExitFilerWindow(0x%08X, 0x%08X)\n"), wParam, lParam);
+
+	return DestroyWindow();
 }

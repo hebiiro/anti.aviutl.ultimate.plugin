@@ -50,15 +50,41 @@ namespace fgo::filer
 		//
 		BOOL on_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
 		{
+			// ホストウィンドウの作成に失敗する可能性もあるので、
+			// メインウィンドウをAviUtlウィンドウにしておきます。
+			hive.mainWindow = magi.auin.GetAviUtlWindow();
+
 			try
 			{
+				// ホストウィンドウを作成します。
 				hostWindow = std::make_shared<HostWindow>();
+				MainDialog::listener = hostWindow;
+				FilerWindow::listener = hostWindow->mainDialog;
 
-				load();
+				// ホストウィンドウをメインウィンドウに設定します。
+				hive.mainWindow = *hostWindow;
+
+				// ホストプロセスの初期化が開始されたことをクライアントプロセスに通知します。
+				hostWindow->sendMessage(Share::Filer::Message::PreInit, 0, 0);
+
+				// 無駄な処理を省くために
+				// コンフィグファイルを読み込む前にメインダイアログをロックします。
+				hostWindow->mainDialog->setLock(TRUE);
+
+				// コンフィグファイルから設定を読み込みます。
+				if (load())
+				{
+					// ホストプロセスの初期化が完了したことをクライアントプロセスに通知します。
+					hostWindow->postMessage(Share::Filer::Message::PostInit, 0, 0);
+				}
+
+				// メインダイアログのロックを解除し、コントロールをリフレッシュします。
+				hostWindow->mainDialog->setLock(FALSE);
+				hostWindow->mainDialog->refresh();
 			}
 			catch (LPCTSTR e)
 			{
-				::MessageBox(magi.fp->hwnd, e, _T("Filer"), MB_OK);
+				::MessageBox(hive.mainWindow, e, hive.AppName, MB_OK);
 			}
 
 			return FALSE;
@@ -71,8 +97,17 @@ namespace fgo::filer
 		{
 			if (hostWindow)
 			{
-				save();
+				// ホストプロセスの後始末が開始されたことをクライアントプロセスに通知します。
+				hostWindow->sendMessage(Share::Filer::Message::PreExit, 0, 0);
 
+				// ファイルに設定を保存します。
+				if (save())
+				{
+					// ホストプロセスの後始末が完了したことをクライアントプロセスに通知します。
+					hostWindow->sendMessage(Share::Filer::Message::PostExit, 0, 0);
+				}
+
+				// ホストウィンドウを削除します。
 				hostWindow = 0;
 			}
 
@@ -88,7 +123,8 @@ namespace fgo::filer
 			{
 			case ID_ADDIN:
 				{
-					Tools::AviUtl::PluginWindowExtension::show(*hostWindow);
+					if (hostWindow)
+						Tools::AviUtl::PluginWindowExtension::show(*hostWindow);
 
 					break;
 				}
@@ -110,13 +146,13 @@ namespace fgo::filer
 		//
 		BOOL load()
 		{
-			return load(getConfigFileName().c_str());
+			return load(getConfigFileName().c_str()) == S_OK;
 		}
 
 		//
 		// コンフィグファイルから設定を読み込みます。
 		//
-		BOOL load(LPCWSTR path)
+		HRESULT load(LPCWSTR path)
 		{
 			MY_TRACE(_T("Filer::load(%s)\n"), path);
 
@@ -128,7 +164,7 @@ namespace fgo::filer
 				{
 					MY_TRACE(_T("%ws の読み込みに失敗しました\n"), path);
 
-					return FALSE;
+					return S_FALSE;
 				}
 
 				MSXML2::IXMLDOMElementPtr element = document->documentElement;
@@ -141,11 +177,10 @@ namespace fgo::filer
 			catch (_com_error& e)
 			{
 				MY_TRACE(_T("%s\n"), e.ErrorMessage());
-
-				return FALSE;
+				return e.Error();
 			}
 
-			return TRUE;
+			return S_OK;
 		}
 
 		//
@@ -153,17 +188,37 @@ namespace fgo::filer
 		//
 		BOOL save()
 		{
-			return save(getConfigFileName().c_str());
+			return save(getConfigFileName().c_str()) == S_OK;
 		}
 
 		//
 		// コンフィグファイルに設定を保存します。
 		//
-		BOOL save(LPCWSTR path)
+		HRESULT save(LPCWSTR path)
 		{
 			MY_TRACE(_T("Filer::save(%s)\n"), path);
 
-			return TRUE;
+			try
+			{
+				// ドキュメントを作成します。
+				MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
+
+				// ドキュメントエレメントを作成します。
+				MSXML2::IXMLDOMElementPtr element = appendElement(document, document, L"config");
+
+				setPrivateProfileBool(element, L"useCommonDialog", useCommonDialog);
+
+				hostWindow->save(element);
+
+				return saveXMLDocument(document, path, L"UTF-16");
+			}
+			catch (_com_error& e)
+			{
+				MY_TRACE(_T("%s\n"), e.ErrorMessage());
+				return e.Error();
+			}
+
+			return S_OK;
 		}
 	} servant;
 }

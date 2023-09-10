@@ -2,6 +2,18 @@
 #include "Hive.h"
 #include "Servant.h"
 
+using namespace fgo::filer;
+
+//
+// エクスポート関数です。このDLLで実装したサーヴァントを返します。
+//
+fgo::Servant* get_servant()
+{
+//	CMyTracer::logger = 0; // デバッグトレースを有効にする場合はこの行をコメントアウトします。
+
+	return &servant;
+}
+
 //
 // エントリポイントです。
 //
@@ -11,7 +23,9 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		{
-			fgo::filer::hive.instance = instance;
+			::DisableThreadLibraryCalls(instance);
+
+			hive.instance = instance;
 
 			break;
 		}
@@ -22,14 +36,4 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 	}
 
 	return TRUE;
-}
-
-//
-// エクスポート関数です。この DLL で実装したサーヴァントを返します。
-//
-fgo::Servant* get_servant()
-{
-//	CMyTracer::logger = 0; // デバッグトレースを有効にする場合はこの行をコメントアウトします。
-
-	return &fgo::filer::servant;
 }

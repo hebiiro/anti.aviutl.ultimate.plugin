@@ -7,6 +7,9 @@ namespace fgo::filer
 	//
 	inline struct Hive
 	{
-		HINSTANCE instance = 0; // この DLL のインスタンスハンドルです。
+		inline static const LPCTSTR AppName = _T("ファイラ");
+
+		HINSTANCE instance = 0; // このDLLのインスタンスハンドルです。
+		HWND mainWindow = 0;
 	} hive;
 }

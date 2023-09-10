@@ -3,7 +3,11 @@
 
 BEGIN_MESSAGE_MAP(ClientWindow, CWnd)
 	ON_WM_TIMER()
-	ON_MESSAGE(Share::Filer::Message::FilerWindowCreated, OnFilerWindowCreated)
+	ON_MESSAGE(Share::Filer::Message::PreInit, OnPreInit)
+	ON_MESSAGE(Share::Filer::Message::PostInit, OnPostInit)
+	ON_MESSAGE(Share::Filer::Message::PreExit, OnPreExit)
+	ON_MESSAGE(Share::Filer::Message::PostExit, OnPostExit)
+	ON_MESSAGE(Share::Filer::Message::PostInitFilerWindow, OnPostInitFilerWindow)
 END_MESSAGE_MAP()
 
 void ClientWindow::OnTimer(UINT_PTR timerId)
@@ -24,11 +28,14 @@ void ClientWindow::OnTimer(UINT_PTR timerId)
 		}
 	case Hive::TimerID::CheckConfig:
 		{
-			if (config_file_checker && config_file_checker->isFileUpdated())
+			if (hive && ::IsWindow(hive->hostWindow))
 			{
-				MY_TRACE(_T("ユーザーがコンフィグファイルを更新したので読み込み直します\n"));
+				if (config_file_checker && config_file_checker->isFileUpdated())
+				{
+					MY_TRACE(_T("ユーザーがコンフィグファイルを更新したので読み込み直します\n"));
 
-//				loadConfig();
+					loadConfig();
+				}
 			}
 
 			break;
@@ -38,15 +45,46 @@ void ClientWindow::OnTimer(UINT_PTR timerId)
 	CWnd::OnTimer(timerId);
 }
 
-LRESULT ClientWindow::OnFilerWindowCreated(WPARAM wParam, LPARAM lParam)
+LRESULT ClientWindow::OnPreInit(WPARAM wParam, LPARAM lParam)
 {
-	MY_TRACE(_T("ClientWindow::OnFilerWindowCreated(0x%08X, 0x%08X)\n"), wParam, lParam);
+	MY_TRACE(_T("ClientWindow::OnPreInit(0x%08X, 0x%08X)\n"), wParam, lParam);
+
+	return 0;
+}
+
+LRESULT ClientWindow::OnPostInit(WPARAM wParam, LPARAM lParam)
+{
+	MY_TRACE(_T("ClientWindow::OnPostInit(0x%08X, 0x%08X)\n"), wParam, lParam);
+
+	return loadConfig();
+}
+
+LRESULT ClientWindow::OnPreExit(WPARAM wParam, LPARAM lParam)
+{
+	MY_TRACE(_T("ClientWindow::OnPreExit(0x%08X, 0x%08X)\n"), wParam, lParam);
+
+	KillTimer(Hive::TimerID::CheckConfig);
+
+	return 0;
+}
+
+LRESULT ClientWindow::OnPostExit(WPARAM wParam, LPARAM lParam)
+{
+	MY_TRACE(_T("ClientWindow::OnPostExit(0x%08X, 0x%08X)\n"), wParam, lParam);
+
+	return saveConfig();
+}
+
+LRESULT ClientWindow::OnPostInitFilerWindow(WPARAM wParam, LPARAM lParam)
+{
+	MY_TRACE(_T("ClientWindow::OnPostInitFilerWindow(0x%08X, 0x%08X)\n"), wParam, lParam);
 
 	HWND filerWindow = (HWND)wParam;
+	BOOL full = (BOOL)lParam;
 
 	try
 	{
-		auto filerDialog = createFilerDialog(filerWindow);
+		FilerDialog::create(filerWindow, full);
 	}
 	catch (LPCTSTR e)
 	{

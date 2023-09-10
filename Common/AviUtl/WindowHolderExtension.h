@@ -8,22 +8,6 @@ namespace Tools::AviUtl
 	struct WindowHolderExtension : Window2::Extension
 	{
 		//
-		// ターゲットウィンドウを設定します。
-		//
-		template<class T>
-		static BOOL setTarget(T& window, HWND hwnd)
-		{
-			auto windowHolderExtension =
-				window.getExtension<WindowHolderExtension>();
-			if (!windowHolderExtension) return FALSE;
-
-			windowHolderExtension->setTarget(hwnd);
-			windowHolderExtension->resize(window);
-
-			return TRUE;
-		}
-
-		//
 		// ターゲットウィンドウを返します。
 		//
 		HWND getTarget() const { return target; }

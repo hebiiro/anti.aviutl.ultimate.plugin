@@ -2,14 +2,17 @@
 
 namespace Share::Filer {
 	namespace Message {
-		inline const UINT FilerWindowCreated =	WM_APP + 1000;
-		inline const UINT FilerDialogCreated =	WM_APP + 1001;
-		inline const UINT GetUrl =				WM_APP + 1002;
-		inline const UINT LoadConfig =			WM_APP + 1003;
-		inline const UINT SaveConfig =			WM_APP + 1004;
+		inline const UINT PreInit =				WM_APP + 100;
+		inline const UINT PostInit =			WM_APP + 101;
+		inline const UINT PreExit =				WM_APP + 102;
+		inline const UINT PostExit =			WM_APP + 103;
+		inline const UINT PostInitFilerWindow =	WM_APP + 200;
+		inline const UINT PostExitFilerWindow =	WM_APP + 201;
+		inline const UINT PostInitFilerDialog =	WM_APP + 300;
+		inline const UINT GetFileName =			WM_APP + 400;
 	}
 	namespace Event {
-		inline const LPCTSTR ClientInited = _T("Share::Filer::Event::ClientInited");
+		inline const LPCTSTR PostInitClient = _T("Share::Filer::Event::PostInitClient");
 	}
 	namespace HostWindow {
 		namespace PropName {

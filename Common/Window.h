@@ -56,8 +56,7 @@ namespace Tools
 		virtual BOOL destroy()
 		{
 			if (!hwnd) return FALSE;
-			::DestroyWindow(hwnd);
-			return dissociate();
+			return ::DestroyWindow(hwnd);
 		}
 
 		//
@@ -86,8 +85,8 @@ namespace Tools
 		BOOL associate(HWND hwnd)
 		{
 			if (fromHandle(hwnd)) return FALSE;
-			(*map)[hwnd] = this, this->hwnd = hwnd;
 			mapKeeper = map;
+			(*map)[hwnd] = this, this->hwnd = hwnd;
 			return TRUE;
 		}
 
@@ -98,8 +97,15 @@ namespace Tools
 		{
 			if (!hwnd) return FALSE;
 			map->erase(hwnd), hwnd = 0;
-			mapKeeper = 0;
 			return TRUE;
+		}
+
+		//
+		// ウィンドウが破壊されたときの最終処理を行います。
+		//
+		virtual void postNcDestroy()
+		{
+			dissociate();
 		}
 
 		//
@@ -108,6 +114,16 @@ namespace Tools
 		//
 		virtual LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
+			switch (message)
+			{
+			case WM_NCDESTROY:
+				{
+					LRESULT lr = ::CallWindowProc(origWndProc, hwnd, message, wParam, lParam);
+					postNcDestroy();
+					return lr;
+				}
+			}
+
 			return ::CallWindowProc(origWndProc, hwnd, message, wParam, lParam);
 		}
 

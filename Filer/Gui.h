@@ -12,7 +12,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("Gui::Gui(0x%08X)\n"), hwnd);
 
-			Event event(0, TRUE, FALSE, Share::Filer::Event::ClientInited);
+			Event event(0, TRUE, FALSE, Share::Filer::Event::PostInitClient);
 			MY_TRACE_HEX((HANDLE)event);
 
 			TCHAR path[MAX_PATH] = {};

@@ -23,19 +23,19 @@
     <ClInclude Include="framework.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Manager.h" />
     <ClInclude Include="Hive.h" />
     <ClInclude Include="ClientWindow.h" />
     <ClInclude Include="FilerDialog.h" />
+    <ClInclude Include="ExplorerDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FilerGui.cpp" />
     <ClCompile Include="pch.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Manager.cpp" />
     <ClCompile Include="ClientWindow.cpp" />
     <ClCompile Include="FilerDialog.cpp" />
+    <ClCompile Include="ExplorerDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FilerGui.rc">
