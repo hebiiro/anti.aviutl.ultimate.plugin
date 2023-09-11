@@ -24,6 +24,7 @@ namespace fgo::nest::hook
 			DetourUpdateThread(::GetCurrentThread());
 
 			Tools::attach(CreateWindowExA, ::GetProcAddress(user32, "CreateWindowExA"));
+			Tools::attach(CreateWindowExW, ::GetProcAddress(user32, "CreateWindowExW"));
 			Tools::attach(MoveWindow);
 			Tools::attach(SetWindowPos);
 			Tools::attach(GetMenu);

@@ -4,6 +4,15 @@
 namespace Tools {
 	using addr_t = DWORD;
 
+	//
+	// 指定されたモジュールの指定された名前の関数をprocに格納します。
+	//
+	template<class T>
+	inline void get_proc(HMODULE module, LPCSTR name, T& proc)
+	{
+		proc = (T)::GetProcAddress(module, name);
+	}
+
 	// 相対 CALL を書き換える。
 	template<class T>
 	inline T set_call(addr_t address, T hookProc)

@@ -35,8 +35,24 @@ namespace fgo::nest
 			virtual void onChangeFocus(Shuttle* shuttle) = 0;
 		};
 
+		//
+		// このクラスはシャトルのスタティックリスナーです。
+		//
+		struct StaticListener {
+			//
+			// シャトルが作成されたときに呼ばれます。
+			//
+			virtual void onInitShuttle(const std::shared_ptr<Shuttle>& shuttle) = 0;
+
+			//
+			// シャトルが破壊されたときに呼ばれます。
+			//
+			virtual void onExitShuttle(const std::shared_ptr<Shuttle>& shuttle) = 0;
+		};
+
 		inline const static LPCTSTR PropName = _T("Nest.Shuttle");
 
+		inline static StaticListener* staticListener = 0; // このクラスのスタティックリスナーです。
 		Listener* listener = 0; // このクラスのリスナーです。
 		_bstr_t name = L""; // このシャトルの名前です。
 		std::shared_ptr<Container> dockContainer; // このシャトル専用のドッキングコンテナです。
@@ -72,9 +88,9 @@ namespace fgo::nest
 		{
 			MY_TRACE(_T("Shuttle::~Shuttle(), 0x%08X, %ws\n"), (HWND)*this, (BSTR)name);
 
-			// このままだとコンテナが削除されるときターゲットウィンドウも削除されてしまうので、
-			// それを防ぐために ターゲットウィンドウの親ウィンドウを 0 にしておきます。
-//			::SetParent(*this, 0);
+			// ターゲットウィンドウの親ウィンドウを0にします。
+			// これにより、コンテナウィンドウが破壊されてもターゲットウィンドウが道連れに破壊されずにすみます。
+			::SetParent(*this, 0);
 		}
 
 		//
@@ -128,6 +144,9 @@ namespace fgo::nest
 			// ターゲットが表示状態ならフローティングコンテナを表示します。
 			if (visible)
 				::ShowWindow(*floatContainer, SW_SHOW);
+
+			if (staticListener)
+				staticListener->onInitShuttle(shared_from_this());
 		}
 
 		//
@@ -224,6 +243,19 @@ namespace fgo::nest
 		}
 
 		//
+		// ウィンドウ破壊時の最終処理を行います。
+		//
+		void postNcDestroy() override
+		{
+			MY_TRACE(_T("Shuttle::postNcDestroy()\n"));
+
+			__super::postNcDestroy();
+
+			if (staticListener)
+				staticListener->onExitShuttle(shared_from_this());
+		}
+
+		//
 		// ターゲットのウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -242,6 +274,20 @@ namespace fgo::nest
 
 			switch (message)
 			{
+			case WM_DESTROY:
+				{
+					MY_TRACE(_T("WM_DESTROY, 0x%08X, 0x%08X\n"), wParam, lParam);
+
+					break;
+				}
+			case WM_NCDESTROY:
+				{
+					MY_TRACE(_T("WM_NCDESTROY, 0x%08X, 0x%08X\n"), wParam, lParam);
+
+					MY_TRACE_HWND(hwnd);
+
+					break;
+				}
 			case WM_NCPAINT:
 				{
 					// クライアント領域を除外してから塗り潰します。

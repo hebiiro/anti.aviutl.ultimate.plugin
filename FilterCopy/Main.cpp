@@ -3,7 +3,7 @@
 
 using namespace fgo::filter_copy;
 
-fgo::Servant* get_servant()
+fgo::Servant* WINAPI get_servant()
 {
 	CMyTracer::logger = 0; // デバッグトレースを有効にする場合はこの行をコメントアウトしてください。
 

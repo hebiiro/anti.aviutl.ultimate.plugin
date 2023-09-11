@@ -63,7 +63,7 @@ static void CALLBACK traceEventHook(
 	DWORD dwmsEventTime)
 {
 	static int i = 0; i++;
-/*
+#if 0
 	if (event == 0x00007562) return;
 
 	if (event == EVENT_OBJECT_REORDER) return;
@@ -71,8 +71,7 @@ static void CALLBACK traceEventHook(
 	if (event == EVENT_OBJECT_NAMECHANGE && idObject == OBJID_CURSOR) return;
 	if (event == EVENT_OBJECT_LOCATIONCHANGE && idObject == OBJID_CURSOR) return;
 	if (hwnd != ::GetDesktopWindow()) return;
-*/
-
+#endif
 	TCHAR eventText[MAX_PATH];
 	switch (event)
 	{

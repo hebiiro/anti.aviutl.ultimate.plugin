@@ -50,5 +50,24 @@ namespace fgo
 		{
 			return FALSE;
 		}
+
+		using addr_t = ULONG_PTR;
+
+		//
+		// 指定された名前に関連付けられた何らかのアドレスを要求されたときに呼び出されます。
+		//
+		virtual addr_t on_get_address(LPCWSTR name)
+		{
+			return 0;
+		}
+
+		//
+		// 型変換付きのon_get_address()です。
+		//
+		template<class T>
+		inline void on_get_address(LPCWSTR name, T& t)
+		{
+			t = (T)on_get_address(name);
+		}
 	};
 }

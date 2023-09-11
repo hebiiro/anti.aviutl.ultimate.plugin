@@ -8,7 +8,11 @@
 
 using namespace fgo::nest;
 
-fgo::Servant* get_servant()
+//
+// エクスポート関数です。
+// このDLLで実装したサーヴァントを返します。
+//
+fgo::Servant* WINAPI get_servant()
 {
 	return &servant;
 }
@@ -22,6 +26,8 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		{
+			MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
+
 			::DisableThreadLibraryCalls(instance);
 
 			hive.instance = instance;
@@ -35,6 +41,8 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		}
 	case DLL_PROCESS_DETACH:
 		{
+			MY_TRACE(_T("DLL_PROCESS_DETACH\n"));
+
 //			hook::win_event.exit();
 //			hook::low_level_mouse.exit();
 			hook::get_message.exit();

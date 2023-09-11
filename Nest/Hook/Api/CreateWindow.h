@@ -5,7 +5,7 @@
 #include "MainWindow.h"
 #include "ConfigLoader.h"
 #include "ConfigSaver.h"
-#include "Module.h"
+#include "Hook/Module.h"
 
 namespace fgo::nest::hook
 {
@@ -25,7 +25,7 @@ namespace fgo::nest::hook
 					x, y, w, h, parent, menu, instance, param);
 			}
 
-//				MY_TRACE(_T("::CreateWindowExA(%hs, %hs)\n"), className, windowName);
+//			MY_TRACE(_T("::CreateWindowExA(%hs, %hs)\n"), className, windowName);
 
 			if (className && windowName)
 			{
@@ -47,7 +47,7 @@ namespace fgo::nest::hook
 				}
 				else if (_stricmp(className, "AviUtl") == 0 && parent && parent == hive.aviutlWindow)
 				{
-//						MY_TRACE_STR(windowName);
+					MY_TRACE_STR(windowName);
 
 					// AviUtlのプラグインウィンドウの親をメインウィンドウに変更します。
 					parent = hive.mainWindow;
@@ -69,7 +69,6 @@ namespace fgo::nest::hook
 						// AviUtlウィンドウ用のシャトルを初期化します。
 						LPCTSTR name = _T("* AviUtl");
 						aviutlWindow->init(name, hwnd);
-						shuttleManager.add(aviutlWindow, name);
 						hive.aviutlWindow = hwnd;
 					}
 					else if (_stricmp(windowName, "拡張編集") == 0)
@@ -79,7 +78,6 @@ namespace fgo::nest::hook
 						// 拡張編集ウィンドウ用のシャトルを初期化します。
 						LPCTSTR name = _T("* 拡張編集");
 						exeditWindow->init(name, hwnd);
-						shuttleManager.add(exeditWindow, name);
 						hive.exeditWindow = hwnd;
 					}
 					else if (parent && parent == hive.mainWindow)
@@ -89,7 +87,6 @@ namespace fgo::nest::hook
 						// プラグインウィンドウ用のシャトルを初期化します。
 						auto shuttle = std::make_shared<Shuttle>();
 						shuttle->init(windowName, hwnd);
-						shuttleManager.add(shuttle, windowName);
 					}
 				}
 				else if (_stricmp(windowName, "ExtendedFilter") == 0)
@@ -97,7 +94,6 @@ namespace fgo::nest::hook
 					// 設定ダイアログ用のシャトルを初期化します。
 					LPCTSTR name = _T("* 設定ダイアログ");
 					settingDialog->init(name, hwnd);
-					shuttleManager.add(settingDialog, name);
 					hive.settingDialog = hwnd;
 
 					// モジュール別フックを初期化します。
@@ -112,4 +108,48 @@ namespace fgo::nest::hook
 		}
 		inline static decltype(&hook) orig = ::CreateWindowExA;
 	} CreateWindowExA;
+
+	//
+	// このクラスは::CreateWindowExW()をフックします。
+	//
+	inline struct
+	{
+		inline static BOOL isPluginWindow(LPCWSTR className, LPCWSTR windowName, HWND parent)
+		{
+			if ((DWORD)className <= 0x0000FFFF) return FALSE; // クラス名が無効なので除外します。
+			if ((DWORD)windowName <= 0x0000FFFF) return FALSE; // ウィンドウ名が無効なので除外します。
+			if (!parent) return FALSE; // トップレベルウィンドウは除外します。
+			if (parent != hive.aviutlWindow) return FALSE; // 親ウィンドウがAviUtlウィンドウではないので除外します。
+			if (_wcsicmp(className, L"AviUtl")) return FALSE; // クラス名が"AviUtl"ではないので除外します。
+
+			return TRUE;
+		}
+
+		inline static HWND WINAPI hook(DWORD exStyle, LPCWSTR className, LPCWSTR windowName, DWORD style,
+			int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
+		{
+			if (isPluginWindow(className, windowName, parent))
+			{
+				MY_TRACE(_T("::CreateWindowExW(%ws, %ws)\n"), className, windowName);
+
+				// プラグインウィンドウの親をメインウィンドウにして作成します。
+				HWND hwnd = orig(
+					exStyle, className, windowName, style,
+					x, y, w, h, hive.mainWindow, menu, instance, param);
+
+				MY_TRACE_HWND(hwnd);
+
+				// プラグインウィンドウ用のシャトルを初期化します。
+				auto shuttle = std::make_shared<Shuttle>();
+				shuttle->init(windowName, hwnd);
+
+				return hwnd;
+			}
+
+			return orig(
+				exStyle, className, windowName, style,
+				x, y, w, h, parent, menu, instance, param);
+		}
+		inline static decltype(&hook) orig = ::CreateWindowExW;
+	} CreateWindowExW;
 }

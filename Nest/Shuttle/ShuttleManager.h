@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Resource.h"
+#include "Hive.h"
 #include "Shuttle.h"
 
 namespace fgo::nest
@@ -7,12 +8,21 @@ namespace fgo::nest
 	//
 	// このクラスはシャトルを管理します。
 	//
-	inline static struct ShuttleManager
+	inline static struct ShuttleManager : Shuttle::StaticListener
 	{
 		//
 		// シャトルのコレクションです。
 		//
 		std::map<_bstr_t, std::shared_ptr<Shuttle>> shuttles;
+
+		//
+		// コンストラクタです。
+		//
+		ShuttleManager()
+		{
+			// シャトルマネージャーをシャトルのスタティックリスナーに設定します。
+			Shuttle::staticListener = this;
+		}
 
 		//
 		// 指定された名前のシャトルを返します。
@@ -22,45 +32,6 @@ namespace fgo::nest
 			auto it = shuttles.find(name);
 			if (it == shuttles.end()) return 0;
 			return it->second;
-		}
-
-		//
-		// シャトルをコレクションに追加します。
-		//
-		BOOL add(const std::shared_ptr<Shuttle>& shuttle, const _bstr_t& name)
-		{
-			// 指定された名前のシャトルがすでに存在している場合は
-			if (get(name))
-			{
-				// メッセージボックスを出して処理を中止します。
-
-				TCHAR text[MAX_PATH] = {};
-				::StringCbPrintf(text, sizeof(text), _T("ウィンドウ名が重複しています\nウィンドウ名 : %ws"), (BSTR)name);
-				::MessageBox(hive.mainWindow, text, hive.AppName, MB_OK | MB_ICONWARNING);
-
-				return FALSE;
-			}
-
-			// シャトルをコレクションに追加します。
-			shuttles[name] = shuttle;
-
-			return TRUE;
-		}
-
-		//
-		// 指定されたシャトルをコレクションから取り除きます。
-		//
-		BOOL erase(Shuttle* shuttle)
-		{
-			// リスナーが存在する場合は
-			if (shuttle->listener)
-			{
-				// リスナーにシャトルの削除を通知します。
-				shuttle->listener->releaseShuttle(shuttle);
-			}
-
-			// コレクションから削除します。
-			return !!shuttles.erase(shuttle->name);
 		}
 
 		// シャトルの名前を変更します。
@@ -119,7 +90,7 @@ namespace fgo::nest
 					return retValue;
 
 				TCHAR newName[MAX_PATH] = {};
-				::GetDlgItemText(*this, IDC_NEW_NAME, newName, MAX_PATH);
+				::GetDlgItemText(*this, IDC_NEW_NAME, newName, std::size(newName));
 
 				// 古い名前と新しい名前が違うなら
 				if (_tcscmp(shuttle->name, newName) != 0)
@@ -134,13 +105,14 @@ namespace fgo::nest
 			void onOK() override
 			{
 				TCHAR newName[MAX_PATH] = {};
-				::GetDlgItemText(*this, IDC_NEW_NAME, newName, MAX_PATH);
+				::GetDlgItemText(*this, IDC_NEW_NAME, newName, std::size(newName));
 
 				// 新しい名前が現在のシャトルの名前と違い、
 				// なおかつ新しい名前と同じ名前のシャトルがすでに存在する場合は
 				if (_tcscmp(shuttle->name, newName) != 0 && shuttleManager.get(newName))
 				{
-					// メッセージボックスを表示します。
+					// メッセージボックスを表示して拒否します。
+
 					::MessageBox(*this, _T("名前が重複しています"), hive.AppName, MB_OK | MB_ICONWARNING);
 
 					return;
@@ -154,5 +126,67 @@ namespace fgo::nest
 				__super::onCancel();
 			}
 		};
+
+	protected:
+
+		//
+		// シャトルをコレクションに追加します。
+		//
+		BOOL add(const std::shared_ptr<Shuttle>& shuttle, const _bstr_t& name)
+		{
+			// 指定された名前のシャトルがすでに存在している場合は
+			if (get(name))
+			{
+				// メッセージボックスを出して処理を中止します。
+
+				TCHAR text[MAX_PATH] = {};
+				::StringCchPrintf(text, std::size(text), _T("ウィンドウ名が重複しています\nウィンドウ名 : %ws"), (LPCWSTR)name);
+				::MessageBox(hive.mainWindow, text, hive.AppName, MB_OK | MB_ICONWARNING);
+
+				return FALSE;
+			}
+
+			// シャトルをコレクションに追加します。
+			shuttles[name] = shuttle;
+
+			return TRUE;
+		}
+
+		//
+		// 指定されたシャトルをコレクションから取り除きます。
+		//
+		BOOL erase(const std::shared_ptr<Shuttle>& shuttle)
+		{
+			// リスナーが存在する場合は
+			if (shuttle->listener)
+			{
+				// リスナーにシャトルの削除を通知します。
+				shuttle->listener->releaseShuttle(shuttle.get());
+			}
+
+			// コレクションから削除します。
+			return !!shuttles.erase(shuttle->name);
+		}
+
+		//
+		// シャトルが作成されたときに呼ばれます。
+		//
+		void onInitShuttle(const std::shared_ptr<Shuttle>& shuttle) override
+		{
+			MY_TRACE(_T("ShuttleManager::onInitShuttle(%ws)\n"), (LPCWSTR)shuttle->name);
+
+			add(shuttle, shuttle->name);
+		}
+
+		//
+		// シャトルが破壊されたときに呼ばれます。
+		//
+		void onExitShuttle(const std::shared_ptr<Shuttle>& shuttle) override
+		{
+			MY_TRACE(_T("ShuttleManager::onExitShuttle(%ws)\n"), (LPCWSTR)shuttle->name);
+
+			// このシャトルをコレクションから削除します。
+			erase(shuttle);
+		}
 	} shuttleManager;
 }

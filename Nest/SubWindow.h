@@ -28,25 +28,6 @@ namespace fgo::nest
 		}
 
 		//
-		// コンストラクタです。
-		//
-		SubWindow(LPCTSTR name, HWND parent)
-		{
-			MY_TRACE(_T("SubWindow::SubWindow(%s, 0x%08X)\n"), name, parent);
-
-			if (create(name, parent))
-				init(name, *this);
-		}
-
-		//
-		// デストラクタです。
-		//
-		virtual ~SubWindow()
-		{
-			MY_TRACE(_T("SubWindow::~SubWindow(), 0x%08X\n"), (HWND)*this);
-		}
-
-		//
 		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -62,18 +43,6 @@ namespace fgo::nest
 					subWindowManager.add(hwnd);
 
 					break;
-				}
-			case WM_NCDESTROY:
-				{
-					MY_TRACE(_T("SubWindow::onWndProc(0x%08X, WM_NCDESTROY, 0x%08X, 0x%08X)\n"), hwnd,  wParam, lParam);
-
-					// このあとの処理でthisが無効になるので、先に基本クラスのウィンドウプロシージャを呼んでおきます。
-					LRESULT lr = __super::onWndProc(hwnd, message, wParam, lParam);
-
-					// シャトルを削除します。
-					shuttleManager.erase(this);
-
-					return lr;
 				}
 			case WM_CLOSE:
 				{

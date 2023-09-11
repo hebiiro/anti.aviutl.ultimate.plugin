@@ -3,7 +3,7 @@
 
 using namespace fgo::exedit_tweaker;
 
-fgo::Servant* get_servant()
+fgo::Servant* WINAPI get_servant()
 {
 	return &servant;
 }

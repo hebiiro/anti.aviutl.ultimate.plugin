@@ -116,22 +116,29 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("HostWindow::onDestroyFiler(%d)\n"), index);
 
+			// インデックスがコレクションの範囲外の場合は何もしません。
 			if (index >= FilerWindow::collection.size()) return FALSE;
 
+			// 指定されたインデックスにあるファイラウィンドウを取得します。
 			auto& filerWindow = FilerWindow::collection[index];
 
+			// 現在のファイラ名を取得します。
 			TCHAR name[MAX_PATH] = {};
 			::GetWindowText(*filerWindow, name, std::size(name));
 			MY_TRACE_TSTR(name);
 
+			// メッセージテキストを構築します。
 			TCHAR text[MAX_PATH] = {};
 			::StringCchPrintf(text, std::size(text),
 				_T("ファイラ「%s」を削除しますか？")
 				_T("\n※ファイラを削除するとファイラに登録してあるブックマークも一緒に削除されます"), name);
 			MY_TRACE_TSTR(text);
 
+			// メッセージボックスを出してユーザーに確認してもらいます。
 			if (::MessageBox(*this, text, hive.AppName, MB_YESNO | MB_ICONWARNING) != IDYES) return FALSE;
 
+			// ファイラウィンドウを破壊します。
+			// ウィンドウ破壊時の最終処理でコレクションから取り除かれ、thisポインタが消滅します。
 			return FilerWindow::collection[index]->destroy();
 		}
 
@@ -143,21 +150,31 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("HostWindow::onEditFiler(%d)\n"), index);
 
+			// インデックスがコレクションの範囲外の場合は何もしません。
 			if (index >= FilerWindow::collection.size()) return FALSE;
 
+			// 指定されたインデックスにあるファイラウィンドウを取得します。
 			auto& filerWindow = FilerWindow::collection[index];
 
+			// 現在のファイラ名を取得します。
 			TCHAR name[MAX_PATH] = {};
 			::GetWindowText(*filerWindow, name, std::size(name));
 			MY_TRACE_TSTR(name);
 
+			// ダイアログを表示してユーザーにファイラ名を入力してもらいます。
 			RenameDialog dialog(name);
 			if (dialog.doModal(*this) != IDOK) return FALSE;
 			MY_TRACE_TSTR(dialog.newName);
 
-			// できればここでNestにシャトル名のリネームを通知したほうがいい。
-
+			// ファイラをリネームします。
 			filerWindow->updateWindowName(dialog.newName);
+
+			// メインダイアログのファイラ名も変更します。
+			mainDialog->setFilerName(index, dialog.newName);
+
+			// Nestが存在する場合はシャトル名もリネームします。
+			if (hive.nest.shuttle)
+				return hive.nest.shuttle->rename(*filerWindow, (_bstr_t)dialog.newName);
 
 			return TRUE;
 		}
@@ -270,18 +287,23 @@ namespace fgo::filer
 			//
 			BOOL isEmptyName(LPCTSTR newName)
 			{
-				// できればここでNestに同じ名前のシャトルがすでに存在しているか問い合わせたほうがいい。
-
 				if (_tcslen(newName) == 0) return FALSE;
 
-				auto it = std::find_if(FilerWindow::collection.begin(), FilerWindow::collection.end(),
-					[newName](const auto& x) {
-						TCHAR name[MAX_PATH] = {};
-						::GetWindowText(*x, name, std::size(name));
-						return _tcscmp(name, newName) == 0;
-					});
+				if (hive.nest.shuttle)
+				{
+					return hive.nest.shuttle->is_empty_name((_bstr_t)newName);
+				}
+				else
+				{
+					auto it = std::find_if(FilerWindow::collection.begin(), FilerWindow::collection.end(),
+						[newName](const auto& x) {
+							TCHAR name[MAX_PATH] = {};
+							::GetWindowText(*x, name, std::size(name));
+							return _tcscmp(name, newName) == 0;
+						});
 
-				return it == FilerWindow::collection.end();
+					return it == FilerWindow::collection.end();
+				}
 			}
 
 			//

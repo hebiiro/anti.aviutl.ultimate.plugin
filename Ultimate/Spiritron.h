@@ -110,6 +110,32 @@ namespace fgo
 			return TRUE;
 		}
 
+		//
+		// ターゲットのウィンドウプロシージャです。
+		//
+		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		{
+			switch (message)
+			{
+			case WM_DESTROY:
+				{
+					MY_TRACE(_T("Spiritron::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+
+					break;
+				}
+			case WM_NCDESTROY:
+				{
+					MY_TRACE(_T("Spiritron::onWndProc(WM_NCDESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+
+					MY_TRACE_HWND(hwnd);
+
+					break;
+				}
+			}
+
+			return __super::onWndProc(hwnd, message, wParam, lParam);
+		}
+
 		BOOL func_WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
 			switch (message)

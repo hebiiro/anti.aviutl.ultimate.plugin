@@ -68,22 +68,6 @@ namespace fgo::filer
 		//
 		static BOOL destroyFilerWindow(FilerWindow* _filerWindow)
 		{
-			// コレクション内のファイラウィンドウを検索します。
-			auto it = std::find_if(collection.begin(), collection.end(),
-				[_filerWindow](const auto& x){ return x.get() == _filerWindow; });
-			if (it == collection.end()) return FALSE;
-
-			// ポインタが無効にならないように保持しておきます。
-			std::shared_ptr<FilerWindow> filerWindow = *it;
-
-			// コレクションから取り除きます。
-			collection.erase(it);
-
-			// リスナーが存在する場合はファイラウィンドウが破壊されたことを通知します。
-			if (auto listener = filerWindow->listener.lock())
-				listener->onExitFilerWindow(filerWindow.get());
-
-			return TRUE;
 		}
 
 		//
@@ -183,11 +167,31 @@ namespace fgo::filer
 				parent, menu, instance, param);
 		}
 
+		//
+		// ウィンドウ破壊時の最終処理を行います。
+		//
 		void postNcDestroy() override
 		{
-			// ファイラウィンドウの最終処理を行います。
-			destroyFilerWindow(this);
+			std::shared_ptr<FilerWindow> keeper;
 
+			// コレクション内のファイラウィンドウを検索します。
+			auto it = std::find_if(collection.begin(), collection.end(),
+				[this](const auto& x){ return x.get() == this; });
+			if (it != collection.end())
+			{
+				// スマートポインタを取得しておきます。
+				// これにより、このスコープ内でthisポインタが削除されないようになります。
+				keeper = *it;
+
+				// コレクションから取り除きます。
+				collection.erase(it);
+			}
+
+			// リスナーが存在する場合はファイラウィンドウが破壊されたことを通知します。
+			if (auto listener = this->listener.lock())
+				listener->onExitFilerWindow(this);
+
+			// ここでHWNDとの関連付けが解除されます。
 			__super::postNcDestroy();
 		}
 

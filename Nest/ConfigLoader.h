@@ -112,8 +112,9 @@ namespace fgo::nest
 				getPrivateProfileName(subWindowElement, L"name", name);
 
 				// サブウィンドウを作成します。
-				auto subWindow = std::make_shared<SubWindow>(name, hive.mainWindow);
-				shuttleManager.add(subWindow, name);
+				auto subWindow = std::make_shared<SubWindow>();
+				if (subWindow->create(name, hive.mainWindow))
+					subWindow->init(name, *subWindow);
 			}
 
 			return S_OK;

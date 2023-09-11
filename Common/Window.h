@@ -110,7 +110,7 @@ namespace Tools
 
 		//
 		// 仮想関数版のウィンドウプロシージャです。
-		// サブクラスでこの関数をオーバーライドして処理してください。
+		// 派生クラスでこの関数をオーバーライドして処理してください。
 		//
 		virtual LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{

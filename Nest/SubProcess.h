@@ -121,10 +121,11 @@ namespace fgo::nest
 			case WM_SHOWWINDOW:
 				{
 					MY_TRACE(_T("SubProcess::onWndProc(WM_SHOWWINDOW)\n"));
-#if 0
+
+					// このウィンドウが表示されるとき、サブプロセスのウィンドウも表示状態にします。
 					if (wParam && ::IsWindow(target))
 						::ShowWindow(target, SW_SHOW);
-#endif
+
 					break;
 				}
 			case WM_SIZE:
@@ -156,6 +157,7 @@ namespace fgo::nest
 								modifyStyle(target, remove, add);
 								::SetParent(target, hwnd);
 								resize();
+								::ShowWindow(target, SW_SHOW);
 							}
 
 							break;

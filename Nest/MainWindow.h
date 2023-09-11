@@ -324,8 +324,9 @@ namespace fgo::nest
 			SubWindow::getEmptyName(name, std::size(name));
 			MY_TRACE_TSTR(name);
 
-			auto subWindow = std::make_shared<SubWindow>(name, parent);
-			shuttleManager.add(subWindow, name);
+			auto subWindow = std::make_shared<SubWindow>();
+			if (subWindow->create(name, parent))
+				subWindow->init(name, *subWindow);
 
 			return TRUE;
 		}
@@ -340,7 +341,6 @@ namespace fgo::nest
 				auto shuttle = psdtoolkit = std::make_shared<PSDToolKit>();
 				shuttle->create(name, *this);
 				shuttle->init(name, *shuttle);
-				shuttleManager.add(shuttle, name);
 			}
 
 			if (hive.dockBouyomisan) {
@@ -348,7 +348,6 @@ namespace fgo::nest
 				auto shuttle = bouyomisan = std::make_shared<Bouyomisan>();
 				shuttle->create(name, *this);
 				shuttle->init(name, *shuttle);
-				shuttleManager.add(shuttle, name);
 			}
 
 			return TRUE;
@@ -562,53 +561,7 @@ namespace fgo::nest
 				}
 			}
 
-			if (message == Share::Nest::Message::EraseShuttle)
-			{
-				HWND hwnd = (HWND)wParam;
-
-				if (onEraseShuttle(hwnd))
-					return Share::Nest::Result::True;
-				else
-					return Share::Nest::Result::False;
-			}
-			else if (message == Share::Nest::Message::RenameShuttle)
-			{
-				HWND hwnd = (HWND)wParam;
-				LPCTSTR newName = (LPCTSTR)lParam;
-
-				if (onRenameShuttle(hwnd, newName))
-					return Share::Nest::Result::True;
-				else
-					return Share::Nest::Result::False;
-			}
-
 			return __super::onWndProc(hwnd, message, wParam, lParam);
-		}
-
-		//
-		// Share::Nest::Message::EraseShuttleのハンドラです。
-		//
-		BOOL onEraseShuttle(HWND hwnd)
-		{
-			if (!hwnd) return FALSE;
-
-			auto shuttle = Shuttle::getPointer(hwnd);
-			if (!shuttle) return FALSE;
-
-			return shuttleManager.erase(shuttle);
-		}
-
-		//
-		// Share::Nest::Message::RenameShuttleのハンドラです。
-		//
-		BOOL onRenameShuttle(HWND hwnd, LPCTSTR newName)
-		{
-			if (!hwnd || !newName) return FALSE;
-
-			auto shuttle = Shuttle::getPointer(hwnd);
-			if (!shuttle) return FALSE;
-
-			return shuttleManager.rename(shuttle, newName);
 		}
 
 		//

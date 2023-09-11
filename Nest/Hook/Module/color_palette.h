@@ -28,7 +28,6 @@ namespace fgo::nest::hook
 					// マイパレットダイアログ用のシャトルを作成します。
 					auto shuttle = std::make_shared<Shuttle>();
 					shuttle->init(windowName, hwnd);
-					shuttleManager.add(shuttle, windowName);
 				}
 
 				return hwnd;

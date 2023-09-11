@@ -37,22 +37,19 @@ namespace fgo
 			return TRUE;
 		}
 
-		int get_servant_count() const
+		std::size_t get_servant_count() const
 		{
-			return (int)servants.vector.size();
+			return servants.vector.size();
 		}
 
 		//
 		// 指定された位置にあるサーヴァントを返します。
 		//
 		template<class T>
-		T* get_servant(int index) const
+		T* get_servant(std::size_t index) const
 		{
-			try {
-				return static_cast<T*>(servants.vector.at(index));
-			} catch (std::out_of_range&) {
-				return 0;
-			}
+			if (index >= servants.vector.size()) return 0;
+			return static_cast<T*>(servants.vector[index]);
 		}
 
 		//
@@ -61,11 +58,9 @@ namespace fgo
 		template<class T>
 		T* get_servant(LPCWSTR name) const
 		{
-			try {
-				return static_cast<T*>(servants.map.at(name));
-			} catch (std::out_of_range&) {
-				return 0;
-			}
+			auto it = servants.map.find(name);
+			if (it == servants.map.end()) return 0;
+			return static_cast<T*>(it->second);
 		}
 
 		//

@@ -50,6 +50,9 @@ namespace fgo::filer
 		//
 		BOOL on_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
 		{
+			// Nestから補助関数をインポートします。
+			hive.nest.init();
+
 			// ホストウィンドウの作成に失敗する可能性もあるので、
 			// メインウィンドウをAviUtlウィンドウにしておきます。
 			hive.mainWindow = magi.auin.GetAviUtlWindow();

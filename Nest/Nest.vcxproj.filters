@@ -71,7 +71,6 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="SubWindow.h" />
     <ClInclude Include="DockSite.h" />
-    <ClInclude Include="SubWindowManager.h" />
     <ClInclude Include="ConfigLoader.h" />
     <ClInclude Include="Hook\Share.h">
       <Filter>Hook</Filter>
@@ -127,6 +126,7 @@
     </ClInclude>
     <ClInclude Include="Bouyomisan.h" />
     <ClInclude Include="PSDToolKit.h" />
+    <ClInclude Include="SubWindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

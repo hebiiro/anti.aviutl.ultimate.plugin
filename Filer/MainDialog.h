@@ -132,6 +132,22 @@ namespace fgo::filer
 		}
 
 		//
+		// リストボックス内にある指定されたインデックスにあるファイラ名を変更します。
+		//
+		BOOL setFilerName(std::size_t index, LPCTSTR newName)
+		{
+			MY_TRACE(_T("MainDialog::setFilerName(%d, %s)\n"), index, newName);
+
+			if (lock) return FALSE;
+
+			HWND list = ::GetDlgItem(*this, IDC_FILER_LIST);
+			::SendMessage(list, LB_DELETESTRING, index, 0); // 一旦テキストを削除します。
+			::SendMessage(list, LB_INSERTSTRING, index, (LPARAM)newName); // 新しいテキストを挿入します。
+
+			return TRUE;
+		}
+
+		//
 		// 選択されているファイラを表示します。
 		//
 		BOOL showFiler()

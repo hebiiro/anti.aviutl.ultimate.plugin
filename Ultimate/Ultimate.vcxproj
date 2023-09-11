@@ -199,6 +199,7 @@
     <ClInclude Include="..\Common\Tracer2.h" />
     <ClInclude Include="..\Common\Window.h" />
     <ClInclude Include="..\Common\Window2.h" />
+    <ClInclude Include="..\Common\WindowManager.h" />
     <ClInclude Include="..\Common\WinUtility.h" />
     <ClInclude Include="..\Detours.4.0.1\detours.h" />
     <ClInclude Include="..\Detours.4.0.1\detver.h" />

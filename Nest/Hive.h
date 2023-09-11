@@ -19,6 +19,7 @@ namespace fgo::nest
 		inline static const LPCTSTR AppName = _T("ネスト");
 		inline static const LPCTSTR PSDToolKitName = _T("PSDToolKit(外部)");
 		inline static const LPCTSTR BouyomisanName = _T("棒読みさん(外部)");
+		inline static const LPCTSTR ShuttleManagerPropName = _T("Nest.ShuttleManager");
 
 		HINSTANCE instance = 0; // このDLLのインスタンスハンドルです。
 		HTHEME theme = 0;

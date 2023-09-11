@@ -86,6 +86,15 @@ namespace fgo::nest
 
 			switch (message)
 			{
+			case WM_DESTROY:
+				{
+					MY_TRACE(_T("SettingDialog::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+
+					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
+					unsubclass();
+
+					break;
+				}
 			case WM_PAINT:
 				{
 					// 「拡張編集」用の処理です。

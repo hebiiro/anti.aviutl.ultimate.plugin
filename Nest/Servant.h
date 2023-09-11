@@ -45,6 +45,41 @@ namespace fgo::nest
 			return TRUE;
 		}
 
+		addr_t on_get_address(LPCWSTR name) override
+		{
+			if (wcscmp(name, L"shuttle") == 0) return (addr_t)&exports.shuttle;
+
+			return 0;
+		}
+
+		struct Exports {
+			struct Shuttle : Share::Nest::Exports::Shuttle {
+				//
+				// エクスポート関数です。
+				// 指定されたターゲットを保持するシャトル名を変更します。
+				//
+				BOOL rename(HWND target, LPCWSTR name) override
+				{
+					MY_TRACE(_T("Exports::Shuttle::rename(0x%08X, %ws)\n"), target, name);
+
+					auto shuttle = fgo::nest::Shuttle::getPointer(target);
+					if (!shuttle) return FALSE;
+					return shuttleManager.rename(shuttle, name);
+				}
+
+				//
+				// エクスポート関数です。
+				// 指定されたシャトル名が使用可能な場合はTRUEを返します。
+				//
+				BOOL is_empty_name(LPCWSTR name) override
+				{
+					MY_TRACE(_T("Exports::Shuttle::is_empty_name(%ws)\n"), name);
+
+					return !shuttleManager.get(name);
+				}
+			} shuttle;
+		} exports;
+
 		//
 		// コンフィグファイルのフルパスを返します。
 		//
