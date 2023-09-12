@@ -1,4 +1,7 @@
 ﻿#include "pch.h"
+#include "Rayshift.h"
+
+using namespace fgo;
 
 //
 // エントリポイントです。
@@ -11,16 +14,14 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 		{
 			::DisableThreadLibraryCalls(instance);
 
-			// Ultimate.auf をロードします。
-			WCHAR moduleFileName[MAX_PATH] = {};
-			::GetModuleFileNameW(instance, moduleFileName, MAX_PATH);
-			::PathRenameExtensionW(moduleFileName, L".auf");
-			::LoadLibraryW(moduleFileName);
+			rayshift.init(instance);
 
 			break;
 		}
 	case DLL_PROCESS_DETACH:
 		{
+			rayshift.exit();
+
 			break;
 		}
 	}

@@ -73,7 +73,27 @@ AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 }
 
 //
-// このプロセスで唯一の Magi オブジェクトを返します。
+// この世界に辿り着いたときに呼び出されます。
+//
+BOOL WINAPI hello_world(HINSTANCE instance)
+{
+	MY_TRACE(_T("hello_world(0x%08X)\n"), instance);
+
+	return story.init(instance);
+}
+
+//
+// この世界から離れるときに呼び出されます。
+//
+BOOL WINAPI see_you()
+{
+	MY_TRACE(_T("see_you()\n"));
+
+	return story.exit();
+}
+
+//
+// このプロセスで唯一のMagiオブジェクトを返します。
 //
 Magi* WINAPI get_magi()
 {
@@ -83,7 +103,7 @@ Magi* WINAPI get_magi()
 }
 
 //
-// このプロセスで唯一の Fate オブジェクトを返します。
+// このプロセスで唯一のFateオブジェクトを返します。
 //
 Fate* WINAPI get_fate()
 {

@@ -10,6 +10,26 @@ namespace fgo
 	//
 	inline struct Story
 	{
+		BOOL init(HINSTANCE instance)
+		{
+			MY_TRACE(_T("Story::init(0x%08X)\n"), instance);
+
+			mystic_code.init();
+			master.init(instance);
+
+			return TRUE;
+		}
+
+		BOOL exit()
+		{
+			MY_TRACE(_T("Story::exit()\n"));
+
+			master.exit();
+			mystic_code.exit();
+
+			return TRUE;
+		}
+
 		BOOL func_init(AviUtl::FilterPlugin* fp)
 		{
 			MY_TRACE(_T("Story::func_init()\n"));
@@ -68,22 +88,13 @@ namespace fgo
 				{
 					::DisableThreadLibraryCalls(instance);
 
-					// 日本語が正しく表示されるように文字列のロケールを設定します。
-					_tsetlocale(LC_CTYPE, _T(""));
-
 					MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
-
-					mystic_code.init();
-					master.init(instance);
 
 					break;
 				}
 			case DLL_PROCESS_DETACH:
 				{
 					MY_TRACE(_T("DLL_PROCESS_DETACH\n"));
-
-					master.exit();
-					mystic_code.exit();
 
 					break;
 				}

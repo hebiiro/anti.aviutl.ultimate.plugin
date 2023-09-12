@@ -176,6 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Rayshift.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

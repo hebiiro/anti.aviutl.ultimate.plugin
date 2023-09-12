@@ -13,6 +13,7 @@
     <ClInclude Include="pch.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Rayshift.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
