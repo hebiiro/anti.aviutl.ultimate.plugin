@@ -29,7 +29,7 @@ namespace fgo::filter_copy
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"フィルタコピー";
+			return L"フィルタのコピペ";
 		}
 
 		//
@@ -37,6 +37,14 @@ namespace fgo::filter_copy
 		//
 		BOOL on_init() override
 		{
+			if (::GetModuleHandleW(L"CopyFilter.auf"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"FilterCopyとCopyFilter.aufが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
+
 			if (!load()) return FALSE;
 			if (!init()) return FALSE;
 			return TRUE;

@@ -30,6 +30,22 @@ namespace fgo::nest
 		//
 		BOOL on_init() override
 		{
+			if (::GetModuleHandleW(L"UniteWindow.aul"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"NestとUniteWindow.aulが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
+
+			if (::GetModuleHandleW(L"SplitWindow.aul"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"NestとSplitWindow.aulが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
+
 			if (!load()) return FALSE;
 			if (!init()) return FALSE;
 			return TRUE;

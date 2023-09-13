@@ -34,6 +34,14 @@ namespace fgo::filer
 		//
 		BOOL on_init() override
 		{
+			if (::GetModuleHandleW(L"ObjectExplorer.auf"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"FilerとObjectExplorer.aufが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
+
 			return TRUE;
 		}
 

@@ -6,9 +6,9 @@
 #define MY_TRACE_BINARY(buf, c)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, buf, c)
 #define MY_TRACE_FUNC(format, ...)	Tools::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), format, __VA_ARGS__)
 #else
-#define MY_TRACE(format, ...)		(void)
-#define MY_TRACE_BINARY(buf, c)		(void)
-#define MY_TRACE_FUNC(format, ...)	(void)
+#define MY_TRACE(format, ...)		((void)0)
+#define MY_TRACE_BINARY(buf, c)		((void)0)
+#define MY_TRACE_FUNC(format, ...)	((void)0)
 #endif
 
 #define MY_TRACE_STR(xxx)	MY_TRACE(_T(#xxx) _T(" = %hs\n"), xxx)

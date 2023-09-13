@@ -222,7 +222,7 @@ namespace fgo::exedit_tweaker
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"拡張編集調整";
+			return L"拡張編集微調整";
 		}
 
 		//
@@ -230,6 +230,14 @@ namespace fgo::exedit_tweaker
 		//
 		BOOL on_init() override
 		{
+			if (::GetModuleHandleW(L"OptimizeEditBox.auf"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"ExEditTweakerとOptimizeEditBox.aufが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
+
 			if (!load()) return FALSE;
 			if (!init()) return FALSE;
 			return TRUE;

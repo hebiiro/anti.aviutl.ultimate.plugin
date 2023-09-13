@@ -45,7 +45,7 @@ namespace fgo::editbox_tweaker
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"エディットボックス調整";
+			return L"エディットボックス微調整";
 		}
 
 		//
@@ -53,6 +53,14 @@ namespace fgo::editbox_tweaker
 		//
 		BOOL on_init() override
 		{
+			if (::GetModuleHandleW(L"OptimizeEditBox.auf"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"EditBoxTweakerとOptimizeEditBox.aufが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
+
 			if (!load()) return FALSE;
 			if (!init()) return FALSE;
 			return TRUE;

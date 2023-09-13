@@ -39,7 +39,7 @@ namespace fgo::filter_drag
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"フィルタドラッグ";
+			return L"フィルタのドラッグ移動";
 		}
 
 		//
@@ -47,6 +47,13 @@ namespace fgo::filter_drag
 		//
 		BOOL on_init() override
 		{
+			if (::GetModuleHandleW(L"DragFilter.auf"))
+			{
+				::MessageBoxW(magi.fp->hwnd,
+					L"FilterDragとDragFilter.aufが競合しています"
+					L"\nどちらかを除外してからAviUtlを再起動してください",
+					get_servant_display_name(), MB_OK | MB_ICONWARNING);
+			}
 			if (!load()) return FALSE;
 			if (!init()) return FALSE;
 			return TRUE;
