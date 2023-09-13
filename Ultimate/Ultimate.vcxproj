@@ -195,6 +195,7 @@
     <ClInclude Include="..\Common\MFC.h" />
     <ClInclude Include="..\Common\MSXML.h" />
     <ClInclude Include="..\Common\Profile.h" />
+    <ClInclude Include="..\Common\StringPrint.h" />
     <ClInclude Include="..\Common\Tracer.h" />
     <ClInclude Include="..\Common\Tracer2.h" />
     <ClInclude Include="..\Common\Window.h" />

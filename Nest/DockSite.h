@@ -206,6 +206,21 @@ namespace fgo::nest
 			return FALSE;
 		}
 
+		static BOOL isUltimate(Shuttle* shuttle)
+		{
+			if (_tcscmp(shuttle->name, _T("アルティメットプラグイン")) == 0) return TRUE;
+
+			auto instance = (HINSTANCE)::GetWindowLongPtr(*shuttle, GWLP_HINSTANCE);
+			MY_TRACE_HEX(instance);
+			TCHAR fileName[MAX_PATH] = {};
+			::GetModuleFileName(instance, fileName, std::size(fileName));
+			MY_TRACE_TSTR(fileName);
+
+			if (::StrCmpI(::PathFindExtension(fileName), _T(".aua")) == 0) return TRUE;
+
+			return FALSE;
+		}
+
 		// ペイン操作用のメニューを表示します。
 		void showPaneMenu(HWND dockSite)
 		{
@@ -245,9 +260,11 @@ namespace fgo::nest
 			HMENU menu = ::CreatePopupMenu();
 			HMENU primaryMenu = ::CreatePopupMenu();
 			HMENU secondaryMenu = ::CreatePopupMenu();
+			HMENU ultimateMenu = ::CreatePopupMenu();
 
 			::AppendMenu(menu, MF_POPUP, (UINT)primaryMenu, _T("プライマリウィンドウ"));
 			::AppendMenu(menu, MF_POPUP, (UINT)secondaryMenu, _T("セカンダリウィンドウ"));
+			::AppendMenu(menu, MF_POPUP, (UINT)ultimateMenu, _T("アルティメットウィンドウ"));
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_NONE, _T("分割なし"));
 			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_VERT, _T("垂直線で分割"));
@@ -280,8 +297,13 @@ namespace fgo::nest
 				{
 					auto& shuttle = pair.second;
 
-					// 追加先メニューがプライマリかセカンダリか判定します。
-					HMENU menu = isPrimary(shuttle->name) ? primaryMenu : secondaryMenu;
+					// 追加先メニューを判定します。
+					HMENU menu = primaryMenu;
+					if (!isPrimary(shuttle->name)) {
+						menu = secondaryMenu;
+						if (isUltimate(shuttle.get()))
+							menu = ultimateMenu;
+					}
 
 					// メニューアイテムを追加します。
 					::AppendMenu(menu, MF_STRING, id, shuttle->name);
@@ -394,6 +416,7 @@ namespace fgo::nest
 				::InvalidateRect(dockSite, 0, FALSE);
 			}
 
+			::DestroyMenu(ultimateMenu);
 			::DestroyMenu(secondaryMenu);
 			::DestroyMenu(primaryMenu);
 			::DestroyMenu(menu);

@@ -254,7 +254,9 @@ namespace fgo::nest
 				return FALSE;
 
 			// レイアウトファイルをインポートします。
-			return loadConfig(fileName, TRUE);
+			// Shiftキーが押されている場合はレイアウトのインポートではなく、
+			// すべての設定を完全に読み込みます。
+			return loadConfig(fileName, ::GetKeyState(VK_SHIFT) >= 0);
 		}
 
 		//

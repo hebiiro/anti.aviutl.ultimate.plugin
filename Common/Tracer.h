@@ -1,11 +1,14 @@
 ﻿#pragma once
+#include "StringPrint.h"
 
 #ifdef _DEBUG
-#define MY_TRACE			(CMyTracer(_T(__FILE__), __LINE__)).output
-#define MY_TRACE_BINARY		(CMyTracer(_T(__FILE__), __LINE__)).outputBinary
+#define MY_TRACE(format, ...)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, format, __VA_ARGS__)
+#define MY_TRACE_BINARY(buf, c)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, buf, c)
+#define MY_TRACE_FUNC(format, ...)	Tools::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), format, __VA_ARGS__)
 #else
-#define MY_TRACE			(void)
-#define MY_TRACE_BINARY		(void)
+#define MY_TRACE(format, ...)		(void)
+#define MY_TRACE_BINARY(buf, c)		(void)
+#define MY_TRACE_FUNC(format, ...)	(void)
 #endif
 
 #define MY_TRACE_STR(xxx)	MY_TRACE(_T(#xxx) _T(" = %hs\n"), xxx)
@@ -53,119 +56,101 @@ while (0)
 
 #define MY_TRACE_COM_ERROR(hr) MY_TRACE(_T("0x%08X = %s\n"), hr, _com_error(hr).ErrorMessage())
 
-class CMyTracer
-{
-public:
+namespace Tools {
+	struct Tracer {
+		using string = std::basic_string<TCHAR>;
 
-	CMyTracer(LPCTSTR file, int line)
-		: m_file(file)
-		, m_line(line)
-	{
-	}
+		inline static constexpr int maxSize = 2048;
+		inline static struct Logger {
+			virtual void output(LPCTSTR raw, LPCTSTR text) {
+				::OutputDebugString(text);
+			}
+		} default_logger;
+		inline static Logger* logger = &default_logger;
 
-	void __cdecl output(LPCTSTR format, ...)
-	{
-		const int maxSize = 2048;
+		//
+		// 文字列を修飾して出力します。
+		//
+		static void output_text(LPCTSTR file, int line, LPCTSTR raw) {
+			// ロガーが存在しない場合は何もしません。
+			if (!logger) return;
 
-		va_list va;
-		va_start(va, format);
-		TCHAR text[maxSize];
-		int c = ::StringCbVPrintf(text, sizeof(text), format, va);
-		va_end(va);
-
-		if (c == EOF)
-			return;
-
-		outputInternal(text);
-	}
-
-	void outputInternal(LPCTSTR text)
-	{
-		const int maxSize = 2048;
-
-		TCHAR output[maxSize] = { 0 };
-
-		if (m_file)
-		{
-#if 0
-			TCHAR fileSpec[MAX_PATH];
-			::StringCbCopy(fileSpec, sizeof(fileSpec), m_file);
-			::PathStripPath(fileSpec);
-
-			::StringCbPrintf(output, sizeof(output), _T("%s(%d) : %s"), fileSpec, m_line, text);
-#else
-			::StringCbPrintf(output, sizeof(output), _T("%s(%d) : %s"), m_file, m_line, text);
-#endif
-		}
-		else
-		{
-			::StringCbCopy(output, sizeof(output), text);
+			if (file) {
+				// rawを修飾してからロガーに出力させます。
+				logger->output(raw, FormatString(maxSize, _T("%s(%d) : %s"), file, line, raw).c_str());
+			} else {
+				// rawをロガーに出力させます。
+				logger->output(raw, raw);
+			}
 		}
 
-		if (logger)
-			logger->outputLog(text, output);
-	}
-
-	TCHAR ch(BYTE a)
-	{
-		if (a > 0x09)
-			return _T('A') + a - 0x0A;
-		else
-			return _T('0') + a;
-	}
-
-	void outputBinary(const void* buf, int c)
-	{
-		const BYTE* bytes = (const BYTE*)buf;
-
-		if (!bytes)
-		{
-			outputInternal(_T("(null)\n"));
-			return;
+		//
+		// 書式化された文字列を出力します。
+		//
+		template <class... Args>
+		static void output_format(LPCTSTR file, int line, LPCTSTR format, Args... args) {
+			FormatString text(maxSize, format, args...);
+			output_text(file, line, text.c_str());
 		}
 
-		const int line = 16;
+		static TCHAR ch(BYTE a) {
+			if (a > 0x09)
+				return _T('A') + a - 0x0A;
+			else
+				return _T('0') + a;
+		}
 
-		TCHAR text[line * 3 + 2];
+		//
+		// バイナリ文字列を出力します。
+		//
+		static void output_binary(LPCTSTR file, int line, const void* buf, int c) {
+			const BYTE* bytes = (const BYTE*)buf;
 
-		for (int i = 0; i < c;)
-		{
-			int j;
-
-			for (j = 0; i < c && j < line * 3; i++)
-			{
-				text[j++] = ch(bytes[i] >> 4);
-				text[j++] = ch(bytes[i] & 0x0F);
-				text[j++] = _T(' ');
+			if (!bytes) {
+				output_text(file, line, _T("(null)\n"));
+				return;
 			}
 
-			text[j++] = _T('\n');
-			text[j++] = _T('\0');
+			constexpr int cch = 16;
+			TCHAR text[cch * 3 + 2] = {};
 
-			outputInternal(text);
+			for (int i = 0; i < c;) {
+				int j;
+				for (j = 0; i < c && j < cch * 3; i++) {
+					text[j++] = ch(bytes[i] >> 4 & 0x0F);
+					text[j++] = ch(bytes[i] >> 0 & 0x0F);
+					text[j++] = _T(' ');
+				}
+				text[j++] = _T('\n');
+				text[j++] = _T('\0');
+
+				output_text(file, line, text);
+			}
 		}
-	}
 
-	//
-	// デフォルトのデバッグ用トレース関数です。デバッグメッセージを出力します。
-	//
-	inline static void outputLogDefault(LPCTSTR text, LPCTSTR output)
-	{
-		::OutputDebugString(output);
-	}
+		//
+		// 関数文字列を出力します。
+		//
+		template <class... Args>
+		static void output_func(LPCTSTR file, int line, LPCTSTR func, LPCTSTR format, Args... args) {
+			//
+			// formatとargsからfunc_argsを構築します。
+			//
+			FormatString<TCHAR> func_args(maxSize, format, args...);
 
-public:
+			//
+			// funcからfunc_nameを構築します。
+			//
+			string func_name = func;
+			size_t end = func_name.find_first_of(_T('('));
+			if (end != string::npos) func_name.resize(end);
+			size_t begin = func_name.find_last_of(_T(' '));
+			if (begin != string::npos) func_name.erase(0, begin + 1);
 
-	inline static struct Logger {
-		virtual void outputLog(LPCTSTR text, LPCTSTR output) {
-			::OutputDebugString(output);
+			//
+			// func_nameとfunc_argsを書式化して出力します。
+			//
+			output_format(file, line, _T("%s(%s)\n"), func_name, func_args);
 		}
-	} defaultLogger;
-
-	inline static Logger* logger = &defaultLogger;
-
-private:
-
-	LPCTSTR m_file;
-	int m_line;
-};
+	};
+}

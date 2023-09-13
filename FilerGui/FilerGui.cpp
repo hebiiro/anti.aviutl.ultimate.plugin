@@ -15,12 +15,12 @@ FilerGuiApp::FilerGuiApp()
 {
 	_tsetlocale(LC_ALL, _T(""));
 
-	trace_init(0, 0, TRUE);
+	Tools::Trace::File::init(0, 0, TRUE);
 }
 
 FilerGuiApp::~FilerGuiApp()
 {
-	trace_term();
+	Tools::Trace::File::exit();
 }
 
 BOOL FilerGuiApp::InitInstance()

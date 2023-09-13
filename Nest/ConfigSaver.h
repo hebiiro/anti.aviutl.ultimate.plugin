@@ -35,7 +35,8 @@ namespace fgo::nest
 				// ドキュメントエレメントを作成します。
 				MSXML2::IXMLDOMElementPtr element = appendElement(document, document, L"config");
 
-				if (!_export) // エクスポートのときはこれらの変数は保存しません。
+				// エクスポートのときでもレイアウト以外の変数も保存します。
+				//if (!_export) // エクスポートのときはこれらの変数は保存しません。
 				{
 					setPrivateProfileInt(element, L"borderWidth", Pane::borderWidth);
 					setPrivateProfileInt(element, L"captionHeight", Pane::captionHeight);

@@ -101,7 +101,7 @@ namespace fgo::nest
 			subWindowManager.clear();
 
 			// <subWindow> を読み込みます。
-			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"subWindow");
+			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
 			{
@@ -126,7 +126,7 @@ namespace fgo::nest
 			MY_TRACE(_T("loadMainWindow()\n"));
 
 			// <mainWindow> を読み込みます。
-			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"mainWindow");
+			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"hub|mainWindow");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
 			{
@@ -160,7 +160,7 @@ namespace fgo::nest
 			MY_TRACE(_T("loadSubWindow()\n"));
 
 			// <subWindow> を読み込みます。
-			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"subWindow");
+			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
 			{
