@@ -163,7 +163,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Bouyomisan.h" />
     <ClInclude Include="ConfigLoader.h" />
     <ClInclude Include="ConfigSaver.h" />
     <ClInclude Include="Container\Container.h" />
@@ -191,7 +190,6 @@
     <ClInclude Include="Pane\Pane.h" />
     <ClInclude Include="Pane\Tab.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PSDToolKit.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Servant.h" />
     <ClInclude Include="Shuttle\AviUtlWindow.h" />
@@ -201,6 +199,8 @@
     <ClInclude Include="Shuttle\ShuttleManager.h" />
     <ClInclude Include="SubProcess.h" />
     <ClInclude Include="SubProcessManager.h" />
+    <ClInclude Include="SubProcess\Bouyomisan.h" />
+    <ClInclude Include="SubProcess\PSDToolKit.h" />
     <ClInclude Include="SubWindow.h" />
     <ClInclude Include="SubWindowManager.h" />
   </ItemGroup>

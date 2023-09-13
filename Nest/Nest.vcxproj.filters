@@ -29,6 +29,9 @@
     <Filter Include="Hook\Module">
       <UniqueIdentifier>{82fe53e3-4b3e-4559-a799-42a3fe02985e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Element\SubProcess">
+      <UniqueIdentifier>{3fe2baf1-6484-4093-9ec7-3f61c74c81af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -124,9 +127,13 @@
     <ClInclude Include="Hook\LowLevelMouse.h">
       <Filter>Hook</Filter>
     </ClInclude>
-    <ClInclude Include="Bouyomisan.h" />
-    <ClInclude Include="PSDToolKit.h" />
     <ClInclude Include="SubWindowManager.h" />
+    <ClInclude Include="SubProcess\Bouyomisan.h">
+      <Filter>Element\SubProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="SubProcess\PSDToolKit.h">
+      <Filter>Element\SubProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

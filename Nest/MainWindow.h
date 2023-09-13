@@ -1,8 +1,8 @@
 ﻿#pragma once
 #include "Resource.h"
 #include "SubWindow.h"
-#include "PSDToolKit.h"
-#include "Bouyomisan.h"
+#include "SubProcess/PSDToolKit.h"
+#include "SubProcess/Bouyomisan.h"
 
 namespace fgo::nest
 {
