@@ -28,6 +28,31 @@ namespace fgo::nest
 		}
 
 		//
+		// ウィンドウを作成します。
+		//
+		BOOL create(LPCTSTR name, HWND parent)
+		{
+			MY_TRACE_FUNC("%s, 0x%08X", name, parent);
+
+			WNDCLASS wc = {};
+			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.lpfnWndProc = ::DefWindowProc;
+			wc.hInstance = hive.instance;
+			wc.lpszClassName = hive.SubWindowClassName;
+			::RegisterClass(&wc);
+
+			return __super::create(
+				0,
+				hive.SubWindowClassName,
+				name,
+				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
+				WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+				CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+				parent, 0, hive.instance, 0);
+		}
+
+		//
 		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override

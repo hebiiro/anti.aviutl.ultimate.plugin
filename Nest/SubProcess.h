@@ -25,21 +25,19 @@ namespace fgo::nest
 		//
 		BOOL create(LPCTSTR name, HWND parent)
 		{
-			MY_TRACE(_T("SubProcess::create(%s, 0x%08X)\n"), name, parent);
-
-			const LPCTSTR className = _T("Nest.SubProcess");
+			MY_TRACE_FUNC("%s, 0x%08X", name, parent);
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
-			wc.lpszClassName = className;
+			wc.lpszClassName = hive.SubProcessClassName;
 			::RegisterClass(&wc);
 
 			return __super::create(
 				0,
-				className,
+				hive.SubProcessClassName,
 				name,
 				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,

@@ -28,7 +28,6 @@ namespace fgo::nest
 			static const UINT SHUTTLE = 2000;
 		};
 
-		inline static const LPCTSTR ClassName = _T("DockSite");
 		inline static const LPCTSTR PropName = _T("RootPane");
 		inline static std::shared_ptr<Pane> hotBorderPane;
 
@@ -134,7 +133,9 @@ namespace fgo::nest
 			}
 		}
 
+		//
 		// ターゲットのメニューを表示します。
+		//
 		BOOL showTargetMenu(HWND dockSite, POINT point)
 		{
 			MY_TRACE(_T("DockSite::showTargetMenu(%d, %d)\n"), point.x, point.y);
@@ -180,45 +181,72 @@ namespace fgo::nest
 			return TRUE;
 		}
 
-		static BOOL isPrimary(LPCTSTR name)
+		struct Category
 		{
-			if (_tcscmp(name, _T("* AviUtl")) == 0) return TRUE;
-			if (_tcscmp(name, _T("* 拡張編集")) == 0) return TRUE;
-			if (_tcscmp(name, _T("* 設定ダイアログ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("ぼかしフィルタ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("クリッピング＆リサイズ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("シャープフィルタ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("ツールウィンドウ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("ノイズ除去(時間軸)フィルタ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("ノイズ除去フィルタ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("ヒストグラム")) == 0) return TRUE;
-			if (_tcscmp(name, _T("偶数")) == 0) return TRUE;
-			if (_tcscmp(name, _T("再生ウィンドウ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("奇数")) == 0) return TRUE;
-			if (_tcscmp(name, _T("拡張色調補正")) == 0) return TRUE;
-			if (_tcscmp(name, _T("縁塗りつぶし")) == 0) return TRUE;
-			if (_tcscmp(name, _T("自動24fps")) == 0) return TRUE;
-			if (_tcscmp(name, _T("色調補正フィルタ")) == 0) return TRUE;
-			if (_tcscmp(name, _T("音声の位置調整")) == 0) return TRUE;
-			if (_tcscmp(name, _T("音量の最大化")) == 0) return TRUE;
-			if (_tcscmp(name, _T("音量の調整")) == 0) return TRUE;
+			static const int None = 0;
+			static const int Primary = 1;
+			static const int Secondary = 2;
+			static const int SubWindow = 3;
+			static const int SubProcess = 4;
+			static const int Ultimate = 5;
+			static const int Filer = 6;
+		};
 
-			return FALSE;
-		}
-
-		static BOOL isUltimate(Shuttle* shuttle)
+		//
+		// 指定されたシャトルのカテゴリを返します。
+		//
+		static int getCategory(Shuttle* shuttle)
 		{
-			if (_tcscmp(shuttle->name, _T("アルティメットプラグイン")) == 0) return TRUE;
+			if (_tcscmp(shuttle->name, _T("* AviUtl")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("* 拡張編集")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("* 設定ダイアログ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("ぼかしフィルタ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("クリッピング＆リサイズ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("シャープフィルタ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("ツールウィンドウ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("ノイズ除去(時間軸)フィルタ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("ノイズ除去フィルタ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("ヒストグラム")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("偶数")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("再生ウィンドウ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("奇数")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("拡張色調補正")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("縁塗りつぶし")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("自動24fps")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("色調補正フィルタ")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("音声の位置調整")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("音量の最大化")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("音量の調整")) == 0) return Category::Primary;
+			if (_tcscmp(shuttle->name, _T("アルティメットプラグイン")) == 0) return Category::Ultimate;
 
-			auto instance = (HINSTANCE)::GetWindowLongPtr(*shuttle, GWLP_HINSTANCE);
-			MY_TRACE_HEX(instance);
-			TCHAR fileName[MAX_PATH] = {};
-			::GetModuleFileName(instance, fileName, std::size(fileName));
-			MY_TRACE_TSTR(fileName);
+			{
+				TCHAR className[MAX_PATH] = {};
+				::GetClassName(*shuttle, className, std::size(className));
+				if (::StrCmpI(className, hive.SubWindowClassName) == 0) return Category::SubWindow;
+				if (::StrCmpI(className, hive.SubProcessClassName) == 0) return Category::SubProcess;
+			}
 
-			if (::StrCmpI(::PathFindExtension(fileName), _T(".aua")) == 0) return TRUE;
+			{
+				auto instance = (HINSTANCE)::GetWindowLongPtr(*shuttle, GWLP_HINSTANCE);
+				MY_TRACE_HEX(instance);
 
-			return FALSE;
+				TCHAR fileName[MAX_PATH] = {};
+				::GetModuleFileName(instance, fileName, std::size(fileName));
+				MY_TRACE_TSTR(fileName);
+
+				if (::StrCmpI(::PathFindExtension(fileName), _T(".aua")) == 0)
+				{
+					if (::StrCmpI(::PathFindFileName(fileName), _T("Filer.aua")) == 0)
+					{
+						if (!Share::Filer::HostWindow::getClientWindow(*shuttle))
+							return Category::Filer;
+					}
+
+					return Category::Ultimate;
+				}
+			}
+
+			return Category::Secondary;
 		}
 
 		// ペイン操作用のメニューを表示します。
@@ -260,11 +288,17 @@ namespace fgo::nest
 			HMENU menu = ::CreatePopupMenu();
 			HMENU primaryMenu = ::CreatePopupMenu();
 			HMENU secondaryMenu = ::CreatePopupMenu();
+			HMENU subWindowMenu = ::CreatePopupMenu();
+			HMENU subProcessMenu = ::CreatePopupMenu();
 			HMENU ultimateMenu = ::CreatePopupMenu();
+			HMENU filerMenu = ::CreatePopupMenu();
 
-			::AppendMenu(menu, MF_POPUP, (UINT)primaryMenu, _T("プライマリウィンドウ"));
-			::AppendMenu(menu, MF_POPUP, (UINT)secondaryMenu, _T("セカンダリウィンドウ"));
-			::AppendMenu(menu, MF_POPUP, (UINT)ultimateMenu, _T("アルティメットウィンドウ"));
+			::AppendMenu(menu, MF_POPUP, (UINT)primaryMenu, _T("プライマリ"));
+			::AppendMenu(menu, MF_POPUP, (UINT)secondaryMenu, _T("セカンダリ"));
+			::AppendMenu(menu, MF_POPUP, (UINT)subWindowMenu, _T("サブウィンドウ"));
+			::AppendMenu(menu, MF_POPUP, (UINT)subProcessMenu, _T("サブプロセス"));
+			::AppendMenu(menu, MF_POPUP, (UINT)ultimateMenu, _T("アルティメット"));
+			::AppendMenu(menu, MF_POPUP, (UINT)filerMenu, _T("ファイラ"));
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_NONE, _T("分割なし"));
 			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_VERT, _T("垂直線で分割"));
@@ -299,10 +333,14 @@ namespace fgo::nest
 
 					// 追加先メニューを判定します。
 					HMENU menu = primaryMenu;
-					if (!isPrimary(shuttle->name)) {
-						menu = secondaryMenu;
-						if (isUltimate(shuttle.get()))
-							menu = ultimateMenu;
+					switch (getCategory(shuttle.get()))
+					{
+					case Category::Primary: menu = primaryMenu; break;
+					case Category::Secondary: menu = secondaryMenu; break;
+					case Category::SubWindow: menu = subWindowMenu; break;
+					case Category::SubProcess: menu = subProcessMenu; break;
+					case Category::Ultimate: menu = ultimateMenu; break;
+					case Category::Filer: menu = filerMenu; break;
 					}
 
 					// メニューアイテムを追加します。
@@ -416,35 +454,8 @@ namespace fgo::nest
 				::InvalidateRect(dockSite, 0, FALSE);
 			}
 
-			::DestroyMenu(ultimateMenu);
-			::DestroyMenu(secondaryMenu);
-			::DestroyMenu(primaryMenu);
-			::DestroyMenu(menu);
-		}
-
-		//
-		// ウィンドウを作成します。
-		//
-		BOOL create(LPCTSTR name, HWND parent)
-		{
-			MY_TRACE(_T("DockSite::create(%s)\n"), name);
-
-			WNDCLASS wc = {};
-			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
-			wc.lpfnWndProc = ::DefWindowProc;
-			wc.hInstance = hive.instance;
-			wc.lpszClassName = ClassName;
-			::RegisterClass(&wc);
-
-			return __super::create(
-				0,
-				ClassName,
-				name,
-				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
-				WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-				parent, 0, hive.instance, 0);
+			// メニューを削除します。
+			::DestroyMenu(menu); // 再帰的にサブメニューも削除されます。
 		}
 
 		//
