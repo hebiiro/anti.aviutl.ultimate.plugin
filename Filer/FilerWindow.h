@@ -63,14 +63,6 @@ namespace fgo::filer
 		}
 
 		//
-		// 指定されたファイラウィンドウを削除します。
-		// 内部的に使用されます。
-		//
-		static BOOL destroyFilerWindow(FilerWindow* _filerWindow)
-		{
-		}
-
-		//
 		// カレントオブジェクトに関連するファイルパスを取得します。
 		//
 		BOOL getItemFileName(LPTSTR buffer, int bufferSize)
@@ -134,8 +126,6 @@ namespace fgo::filer
 			MY_TRACE(_T("FilerWindow::load()\n"));
 
 			getPrivateProfileWindow(element, L"placement", *this);
-
-			::ShowWindow(*this, SW_SHOW); // テスト
 
 			return S_OK;
 		}
@@ -216,6 +206,14 @@ namespace fgo::filer
 					// ファイラウィンドウの後始末が完了したことをファイラダイアログに通知します。
 					// これにより、クライアントプロセス側でファイラダイアログを破壊することができます。
 					::PostMessage(dialog, Share::Filer::Message::PostExitFilerWindow, 0, 0);
+
+					break;
+				}
+			case WM_SETFOCUS:
+				{
+					MY_TRACE(_T("FilerWindow::onWndProc(WM_SETFOCUS, 0x%08X, 0x%08X)\n"), wParam, lParam);
+
+					hive.activeWindow = hwnd;
 
 					break;
 				}

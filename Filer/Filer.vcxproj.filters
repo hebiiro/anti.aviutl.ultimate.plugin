@@ -22,6 +22,7 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="MainDialog.h" />
+    <ClInclude Include="Hook.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

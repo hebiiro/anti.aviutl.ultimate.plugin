@@ -1,7 +1,5 @@
 ﻿#pragma once
 #include "HostWindow.h"
-#include "FilerWindow.h"
-#include "Gui.h"
 
 namespace fgo::filer
 {

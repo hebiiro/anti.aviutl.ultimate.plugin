@@ -459,7 +459,7 @@ inline HRESULT getPrivateProfileWindow(LPCWSTR fileName, LPCWSTR name, HWND hwnd
 	WINDOWPLACEMENT wp = { sizeof(wp) };
 	if (!::GetWindowPlacement(hwnd, &wp)) return S_FALSE;
 	if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
-	wp.flags = WPF_SETMINPOSITION;
+	wp.flags = WPF_ASYNCWINDOWPLACEMENT | WPF_SETMINPOSITION;
 
 	if (cmdShow == -1)
 		getPrivateProfileInt(fileName, name, L"flags", wp.showCmd);

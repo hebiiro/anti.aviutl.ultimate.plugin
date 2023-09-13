@@ -11,6 +11,8 @@ namespace fgo::filer
 
 		HINSTANCE instance = 0; // このDLLのインスタンスハンドルです。
 		HWND mainWindow = 0;
+		HWND activeWindow = 0;
+		BOOL useCommonDialog = TRUE;
 		Share::Nest::Exports nest;
 	} hive;
 }

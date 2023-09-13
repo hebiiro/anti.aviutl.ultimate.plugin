@@ -633,8 +633,7 @@ inline HRESULT getPrivateProfileWindow(const MSXML2::IXMLDOMElementPtr& element,
 {
 	WINDOWPLACEMENT wp = { sizeof(wp) };
 	if (!::GetWindowPlacement(hwnd, &wp)) return S_FALSE;
-
-	wp.showCmd = cmdShow;
+	if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
 	wp.flags = WPF_ASYNCWINDOWPLACEMENT | WPF_SETMINPOSITION;
 
 	MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(name);
@@ -643,7 +642,10 @@ inline HRESULT getPrivateProfileWindow(const MSXML2::IXMLDOMElementPtr& element,
 	{
 		MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
 
-		getPrivateProfileInt(element, L"flags", wp.showCmd);
+		if (cmdShow == -1)
+			getPrivateProfileInt(element, L"flags", wp.showCmd);
+		else
+			wp.showCmd = cmdShow;
 
 		getPrivateProfileInt(element, L"left", wp.rcNormalPosition.left);
 		getPrivateProfileInt(element, L"top", wp.rcNormalPosition.top);
@@ -655,9 +657,6 @@ inline HRESULT getPrivateProfileWindow(const MSXML2::IXMLDOMElementPtr& element,
 		getPrivateProfileInt(element, L"maxX", wp.ptMaxPosition.x);
 		getPrivateProfileInt(element, L"maxY", wp.ptMaxPosition.y);
 	}
-
-	if (wp.showCmd == -1)
-		wp.showCmd = ::IsWindowVisible(hwnd) ? SW_SHOW : SW_HIDE;
 
 	if (!::SetWindowPlacement(hwnd, &wp))
 		return S_FALSE;

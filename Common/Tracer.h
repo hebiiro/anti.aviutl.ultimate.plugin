@@ -4,7 +4,7 @@
 #ifdef _DEBUG
 #define MY_TRACE(format, ...)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, format, __VA_ARGS__)
 #define MY_TRACE_BINARY(buf, c)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, buf, c)
-#define MY_TRACE_FUNC(format, ...)	Tools::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), format, __VA_ARGS__)
+#define MY_TRACE_FUNC(format, ...)	Tools::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), _T(format), __VA_ARGS__)
 #else
 #define MY_TRACE(format, ...)		((void)0)
 #define MY_TRACE_BINARY(buf, c)		((void)0)

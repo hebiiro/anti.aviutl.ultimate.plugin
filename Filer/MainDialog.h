@@ -78,6 +78,7 @@ namespace fgo::filer
 
 			refreshListBox();
 			refreshButton();
+			refreshCheckBox();
 
 			return TRUE;
 		}
@@ -132,6 +133,21 @@ namespace fgo::filer
 		}
 
 		//
+		// チェックボックスをリフレッシュします。
+		//
+		BOOL refreshCheckBox()
+		{
+			MY_TRACE(_T("MainDialog::refreshCheckBox()\n"));
+
+			if (lock) return FALSE;
+
+			::SendDlgItemMessage(*this, IDC_USE_COMMON_DIALOG, BM_SETCHECK,
+				hive.useCommonDialog ? BST_CHECKED : BST_UNCHECKED, 0);
+
+			return TRUE;
+		}
+
+		//
 		// リストボックス内にある指定されたインデックスにあるファイラ名を変更します。
 		//
 		BOOL setFilerName(std::size_t index, LPCTSTR newName)
@@ -148,7 +164,7 @@ namespace fgo::filer
 		}
 
 		//
-		// 選択されているファイラを表示します。
+		// 選択されているファイラを表示状態を切り替えます。
 		//
 		BOOL showFiler()
 		{
@@ -157,8 +173,7 @@ namespace fgo::filer
 			std::size_t index = (std::size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 			if (index >= FilerWindow::collection.size()) return FALSE;
 
-			::ShowWindow(*FilerWindow::collection[index], SW_SHOW);
-			::SetActiveWindow(*FilerWindow::collection[index]);
+			::SendMessage(*FilerWindow::collection[index], WM_CLOSE, 0, 0);
 
 			return TRUE;
 		}
@@ -221,6 +236,9 @@ namespace fgo::filer
 				::GetDlgItem(*this, IDC_DESTROY_FILER),
 				::GetDlgItem(*this, IDC_EDIT_FILER),
 			};
+			HWND checkbox[] = {
+				::GetDlgItem(*this, IDC_USE_COMMON_DIALOG),
+			};
 
 			RECT rc; ::GetClientRect(*this, &rc);
 			int cx = rc.left;
@@ -234,11 +252,12 @@ namespace fgo::filer
 				::MulDiv(cw, 3, 3),
 			};
 
-			HDWP dwp = ::BeginDeferWindowPos(4);
-			::DeferWindowPos(dwp, list, 0, cx, cy, cw, ch - base, SWP_NOZORDER | SWP_NOACTIVATE);
+			HDWP dwp = ::BeginDeferWindowPos(5);
+			::DeferWindowPos(dwp, list, 0, cx, cy, cw, ch - base * 2, SWP_NOZORDER | SWP_NOACTIVATE);
 			for (std::size_t i = 0; i < std::size(button); i++) {
-				::DeferWindowPos(dwp, button[i], 0, bx[i], ch - base, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
+				::DeferWindowPos(dwp, button[i], 0, bx[i], ch - base * 2, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
 			}
+			::DeferWindowPos(dwp, checkbox[0], 0, cx, ch - base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
 			::EndDeferWindowPos(dwp);
 		}
 
@@ -314,6 +333,14 @@ namespace fgo::filer
 					case IDC_CREATE_FILER: onCreateFiler(); break;
 					case IDC_DESTROY_FILER: onDestroyFiler(); break;
 					case IDC_EDIT_FILER: onEditFiler(); break;
+					case IDC_USE_COMMON_DIALOG:
+						{
+							hive.useCommonDialog = ::SendDlgItemMessage(*this,
+								IDC_USE_COMMON_DIALOG, BM_GETCHECK, 0, 0) == BST_CHECKED;
+							MY_TRACE_INT(hive.useCommonDialog);
+
+							break;
+						}
 					case IDC_FILER_LIST:
 						{
 							switch (code)

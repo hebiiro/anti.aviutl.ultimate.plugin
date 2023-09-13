@@ -166,6 +166,7 @@
     <ClInclude Include="FilerWindow.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Hive.h" />
+    <ClInclude Include="Hook.h" />
     <ClInclude Include="HostWindow.h" />
     <ClInclude Include="MainDialog.h" />
     <ClInclude Include="pch.h" />

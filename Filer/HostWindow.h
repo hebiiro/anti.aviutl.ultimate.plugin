@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Hook.h"
 #include "Gui.h"
 #include "MainDialog.h"
 #include "FilerWindow.h"
@@ -10,6 +11,11 @@ namespace fgo::filer
 	//
 	struct HostWindow : Tools::AviUtl::PluginWindow, MainDialog::Listener
 	{
+		//
+		// フックです。
+		//
+		std::shared_ptr<Hook> hook;
+
 		//
 		// GUIを担当するクライアントプロセスです。
 		//
@@ -39,6 +45,7 @@ namespace fgo::filer
 				throw _T("ホストウィンドウの失敗しました");
 			}
 
+			hook = std::make_shared<Hook>();
 			gui = std::make_shared<Gui>(*this);
 			mainDialog = std::make_shared<MainDialog>(*this);
 
@@ -186,6 +193,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("HostWindow::load()\n"));
 
+			getPrivateProfileBool(element, L"useCommonDialog", hive.useCommonDialog);
 			getPrivateProfileWindow(element, L"placement", *this, SW_SHOW);
 
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"filer");
@@ -221,6 +229,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("HostWindow::save()\n"));
 
+			setPrivateProfileBool(element, L"useCommonDialog", hive.useCommonDialog);
 			setPrivateProfileWindow(element, L"placement", *this);
 
 			for (auto& filerWindow : FilerWindow::collection)

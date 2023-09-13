@@ -31,6 +31,7 @@
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib")
 using namespace Gdiplus;
+#include <shellapi.h>
 #include <psapi.h>
 #include <comdef.h>
 #include <strsafe.h>

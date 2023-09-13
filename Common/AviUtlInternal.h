@@ -10,7 +10,7 @@ private:
 	typedef BOOL (CDECL* Type_get_sys_info)(void* editp, AviUtl::SysInfo* sip);
 	Type_get_sys_info m_get_sys_info = 0;
 
-public:
+public: // 拡張編集の変数
 
 	uintptr_t m_exedit = 0;
 	HWND* m_aviutlWindow = 0; // AviUtl ウィンドウ。
@@ -40,19 +40,26 @@ public:
 	HMENU* m_settingDialogMenu[5] = {}; // 設定ダイアログのコンテキストメニュー。
 	BYTE* m_positionDataArray = 0;
 
+public: // 拡張編集の関数
+
 	using Type_ExEditWindowProc = decltype(AviUtl::FilterPlugin::func_WndProc);
-//	typedef BOOL (CDECL* Type_ExEditWindowProc)(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin *fp);
-	typedef WNDPROC Type_SettingDialogProc;
-//	typedef LRESULT (WINAPI* Type_SettingDialogProc)(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+	Type_ExEditWindowProc m_ExEditWindowProc = 0;
+	auto GetExEditWindowProc() { return m_ExEditWindowProc; }
 
-	typedef __int64 (CDECL* Type_FrameToX)(int frame);
-	Type_FrameToX m_FrameToX = 0;
+	WNDPROC m_SettingDialogProc = 0;
+	auto GetSettingDialogProc() { return m_SettingDialogProc; }
 
-	typedef void (CDECL* Type_PushUndo)();
-	Type_PushUndo m_PushUndo = 0;
+	__int64 (CDECL* m_FrameToX)(int frame) = 0;
+	auto GetFrameToX() { return m_FrameToX; }
+	__int64 FrameToX(int frame) { return m_FrameToX(frame); }
 
-	typedef void (CDECL* Type_CreateUndo)(int objectIndex, UINT flags);
-	Type_CreateUndo m_CreateUndo = 0;
+	void (CDECL* m_PushUndo)() = 0;
+	auto GetPushUndo() { return m_PushUndo; }
+	void PushUndo() { m_PushUndo(); }
+
+	void (CDECL* m_CreateUndo)(int objectIndex, UINT flags) = 0;
+	auto GetCreateUndo() { return m_CreateUndo; }
+	void CreateUndo(int objectIndex, UINT flags) { m_CreateUndo(objectIndex, flags); }
 
 	typedef void (CDECL* Type_HideControls)();
 	Type_HideControls m_HideControls = 0;
@@ -103,6 +110,11 @@ public:
 	Type_DeleteMidPoint m_DeleteMidPoint = 0;
 
 public:
+
+	template <class T>
+	inline static void assign(T& proc, uintptr_t address) {
+		proc = (T)address;
+	}
 
 	BOOL initAviUtlAddress()
 	{
@@ -157,11 +169,13 @@ public:
 
 		m_positionDataArray = (BYTE*)(m_exedit + 0x146270);
 
-		m_PushUndo = (Type_PushUndo)(m_exedit + 0x0008D150);
-		m_CreateUndo = (Type_CreateUndo)(m_exedit + 0x0008D290);
+		assign(m_ExEditWindowProc, m_exedit + 0x3B620);
+		assign(m_SettingDialogProc, m_exedit + 0x2CDE0);
+		assign(m_FrameToX, m_exedit + 0x00032BD0);
+		assign(m_PushUndo, m_exedit + 0x0008D150);
+		assign(m_CreateUndo, m_exedit + 0x0008D290);
 		m_HideControls = (Type_HideControls)(m_exedit + 0x00030500);
 		m_ShowControls = (Type_ShowControls)(m_exedit + 0x000305E0);
-		m_FrameToX = (Type_FrameToX)(m_exedit + 0x00032BD0);
 		m_DrawObject = (Type_DrawObject)(m_exedit + 0x00037060);
 		m_DrawSettingDialog = (Type_DrawSettingDialog)(m_exedit + 0x00039490);
 		m_DeleteFilter = (Type_DeleteFilter)(m_exedit + 0x33D20);
@@ -188,7 +202,7 @@ public:
 		return oldProc;
 	}
 
-	Type_SettingDialogProc HookSettingDialogProc(Type_SettingDialogProc newProc)
+	decltype(m_SettingDialogProc) HookSettingDialogProc(decltype(m_SettingDialogProc) newProc)
 	{
 		return writeAbsoluteAddress(m_exedit + 0x2E800 + 4, newProc);
 	}
@@ -450,21 +464,6 @@ public:
 
 public:
 
-	Type_FrameToX GetFrameToX()
-	{
-		return m_FrameToX;
-	}
-
-	Type_PushUndo GetPushUndo()
-	{
-		return m_PushUndo;
-	}
-
-	Type_CreateUndo GetCreateUndo()
-	{
-		return m_CreateUndo;
-	}
-
 	Type_HideControls GetHideControls()
 	{
 		return m_HideControls;
@@ -546,21 +545,6 @@ public:
 	}
 
 public:
-
-	__int64 FrameToX(int frame)
-	{
-		return m_FrameToX(frame);
-	}
-
-	void PushUndo()
-	{
-		m_PushUndo();
-	}
-
-	void CreateUndo(int objectIndex, UINT flags)
-	{
-		m_CreateUndo(objectIndex, flags);
-	}
 
 	void HideControls()
 	{

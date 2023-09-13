@@ -202,6 +202,7 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_ACTIVATE:
 			case WM_COMMAND:
 			case WM_CLOSE:
 				{
