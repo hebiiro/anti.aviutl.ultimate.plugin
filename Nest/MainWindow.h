@@ -238,6 +238,10 @@ namespace fgo::nest
 		{
 			// ファイル選択ダイアログを表示してファイル名を取得します。
 
+			// Shiftキーが押されている場合はレイアウトだけのインポートではなく、
+			// すべての設定を完全に読み込みます。
+			BOOL import = ::GetKeyState(VK_SHIFT) >= 0;
+
 			// ユーザーが指定したファイル名が格納されるバッファです。
 			WCHAR fileName[MAX_PATH] = {};
 
@@ -254,9 +258,7 @@ namespace fgo::nest
 				return FALSE;
 
 			// レイアウトファイルをインポートします。
-			// Shiftキーが押されている場合はレイアウトのインポートではなく、
-			// すべての設定を完全に読み込みます。
-			return loadConfig(fileName, ::GetKeyState(VK_SHIFT) >= 0);
+			return loadConfig(fileName, import);
 		}
 
 		//

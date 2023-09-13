@@ -249,7 +249,9 @@ namespace fgo::nest
 			return Category::Secondary;
 		}
 
+		//
 		// ペイン操作用のメニューを表示します。
+		//
 		void showPaneMenu(HWND dockSite)
 		{
 			// ルートペインを取得します。
