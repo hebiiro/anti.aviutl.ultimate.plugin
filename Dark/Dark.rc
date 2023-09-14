@@ -1,0 +1,207 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+AVIUTL_ICON             ICON                    "res/AVIUTL_ICON.ico"
+
+AVIUTL_ICON_BACK        ICON                    "res/AVIUTL_ICON_BACK.ico"
+
+AVIUTL_ICON_BACK2       ICON                    "res/AVIUTL_ICON_BACK2.ico"
+
+AVIUTL_ICON_DEL         ICON                    "res/AVIUTL_ICON_DEL.ico"
+
+AVIUTL_ICON_DEL2        ICON                    "res/AVIUTL_ICON_DEL2.ico"
+
+AVIUTL_ICON_DRAG        ICON                    "res/AVIUTL_ICON_DRAG.ico"
+
+AVIUTL_ICON_FORWARD     ICON                    "res/AVIUTL_ICON_FORWARD.ico"
+
+AVIUTL_ICON_FORWARD2    ICON                    "res/AVIUTL_ICON_FORWARD2.ico"
+
+AVIUTL_ICON_IN          ICON                    "res/AVIUTL_ICON_IN.ico"
+
+AVIUTL_ICON_I_AUTO      ICON                    "res/AVIUTL_ICON_I_AUTO.ico"
+
+AVIUTL_ICON_I_EVEN      ICON                    "res/AVIUTL_ICON_I_EVEN.ico"
+
+AVIUTL_ICON_I_MIX       ICON                    "res/AVIUTL_ICON_I_MIX.ico"
+
+AVIUTL_ICON_I_NORM      ICON                    "res/AVIUTL_ICON_I_NORM.ico"
+
+AVIUTL_ICON_I_ODD       ICON                    "res/AVIUTL_ICON_I_ODD.ico"
+
+AVIUTL_ICON_I_REV       ICON                    "res/AVIUTL_ICON_I_REV.ico"
+
+AVIUTL_ICON_LEFT        ICON                    "res/AVIUTL_ICON_LEFT.ico"
+
+AVIUTL_ICON_MARK        ICON                    "res/AVIUTL_ICON_MARK.ico"
+
+AVIUTL_ICON_OUT         ICON                    "res/AVIUTL_ICON_OUT.ico"
+
+AVIUTL_ICON_PAUSE       ICON                    "res/AVIUTL_ICON_PAUSE.ico"
+
+AVIUTL_ICON_PLAY        ICON                    "res/AVIUTL_ICON_PLAY.ico"
+
+AVIUTL_ICON_RIGHT       ICON                    "res/AVIUTL_ICON_RIGHT.ico"
+
+AVIUTL_ICON_STOP        ICON                    "res/AVIUTL_ICON_STOP.ico"
+
+AVIUTL_ICON_VOL         ICON                    "res/AVIUTL_ICON_VOL.ico"
+
+AVIUTL_ICON_Z_1         ICON                    "res/AVIUTL_ICON_Z_1.ico"
+
+AVIUTL_ICON_Z_2         ICON                    "res/AVIUTL_ICON_Z_2.ico"
+
+AVIUTL_ICON_Z_3         ICON                    "res/AVIUTL_ICON_Z_3.ico"
+
+AVIUTL_ICON_Z_4         ICON                    "res/AVIUTL_ICON_Z_4.ico"
+
+EXEDIT_ICON_AL          ICON                    "res\\EXEDIT_ICON_AL.ico"
+
+EXEDIT_ICON_AR          ICON                    "res\\EXEDIT_ICON_AR.ico"
+
+EXEDIT_ICON_CA0         ICON                    "res\\EXEDIT_ICON_CA0.ico"
+
+EXEDIT_ICON_CA1         ICON                    "res\\EXEDIT_ICON_CA1.ico"
+
+EXEDIT_ICON_CH          ICON                    "res\\EXEDIT_ICON_CH.ico"
+
+EXEDIT_ICON_CL          ICON                    "res\\EXEDIT_ICON_CL.ico"
+
+EXEDIT_ICON_CL0         ICON                    "res\\EXEDIT_ICON_CL0.ico"
+
+EXEDIT_ICON_CL1         ICON                    "res\\EXEDIT_ICON_CL1.ico"
+
+EXEDIT_ICON_LL          ICON                    "res\\EXEDIT_ICON_LL.ico"
+
+EXEDIT_ICON_MA          ICON                    "res\\EXEDIT_ICON_MA.ico"
+
+EXEDIT_ICON_MN          ICON                    "res\\EXEDIT_ICON_MN.ico"
+
+EXEDIT_ICON_OP          ICON                    "res\\EXEDIT_ICON_OP.ico"
+
+EXEDIT_ICON_PL          ICON                    "res\\EXEDIT_ICON_PL.ico"
+
+EXEDIT_ICON_RR          ICON                    "res\\EXEDIT_ICON_RR.ico"
+
+EXEDIT_ICON_SP          ICON                    "res\\EXEDIT_ICON_SP.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+GET_LAYER_NAME DIALOGEX 0, 0, 125, 38
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "レイヤー名"
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    EDITTEXT        171,4,4,116,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "OK",1,4,20,40,14,BS_CENTER
+    PUSHBUTTON      "キャンセル",2,48,20,40,14,BS_CENTER
+    PUSHBUTTON      "色分け",IDC_CHOOSE_COLOR,92,20,28,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+GET_LAYER_NAME AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    "GET_LAYER_NAME", DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_INFORMATION         "黒窓 1.0.0 by 蛇色"
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

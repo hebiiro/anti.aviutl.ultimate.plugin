@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{48c155b5-3b4c-4b27-a96f-8cf708938a03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Control">
+      <UniqueIdentifier>{e32e0429-a8c2-48b6-a2a6-c3fba091206b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Servant.h" />
+    <ClInclude Include="ClassicHook.h" />
+    <ClInclude Include="DarkenWindow.h" />
+    <ClInclude Include="MyDraw.h" />
+    <ClInclude Include="Skin.h" />
+    <ClInclude Include="ThemeHook.h" />
+    <ClInclude Include="resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ClassicHook.cpp" />
+    <ClCompile Include="DarkenWindow.cpp" />
+    <ClCompile Include="DarkenWindow_ExEdit.cpp" />
+    <ClCompile Include="MyDraw.cpp" />
+    <ClCompile Include="Skin.cpp" />
+    <ClCompile Include="ThemeHook.cpp" />
+    <ClCompile Include="AviUtl.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="AviUtlButton.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ComboBox.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandModule.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonItemsDialog.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Edit.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Exedit.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Header.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ListBox.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ListView.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewPane.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ScrollBar.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Spin.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Static.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Tab.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolBar.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolTip.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackBar.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeView.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Control</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Main.def">
+      <Filter>Framework</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Dark.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

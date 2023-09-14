@@ -424,13 +424,13 @@ namespace fgo::nest
 					}
 				}
 
-				if (id > CommandID::SHUTTLE)
+				if (id >= CommandID::SHUTTLE)
 				{
 					// ユーザーが指定したシャトルをクリックされたペインにドッキングさせます。
 
 					// メニューアイテムのテキストを取得します。
 					TCHAR text[MAX_PATH] = {};
-					::GetMenuString(menu, id, text, MAX_PATH, MF_BYCOMMAND);
+					::GetMenuString(menu, id, text, std::size(text), MF_BYCOMMAND);
 					MY_TRACE_TSTR(text);
 
 					// テキストからシャトルを取得します。ドッキングできるかチェックもします。

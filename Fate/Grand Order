@@ -16,8 +16,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#pragma comment(lib, "msimg32.lib")
 #include <shlwapi.h>
 #pragma comment(lib, "shlwapi.lib")
+//#include <pathcch.h>
+//#pragma comment(lib, "pathcch.lib")
 #include <commctrl.h>
 #pragma comment(lib, "comctl32.lib")
 #include <commdlg.h>
@@ -28,6 +31,8 @@
 #include <vssym32.h>
 #include <uxtheme.h>
 #pragma comment(lib, "uxtheme.lib")
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib")
 using namespace Gdiplus;

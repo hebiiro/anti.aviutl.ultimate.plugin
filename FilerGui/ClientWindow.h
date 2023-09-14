@@ -16,12 +16,12 @@ public:
 	{
 		MY_TRACE(_T("ClientWindow::ClientWindow(0x%08X)\n"), hostWindow);
 
-		// DarkenWindowを読み込みます。
-//		loadDarkenWindow();
-
 		// クライアントウィンドウを作成します。
 		if (!Create())
 			throw _T("クライアントウィンドウの作成に失敗しました");
+
+		// Darkアドインを読み込みます。
+		loadDark(*this);
 
 		// ホストウィンドウにクライアントウィンドウのハンドルを渡します。
 		Share::Filer::HostWindow::setClientWindow(hostWindow, *this);
@@ -51,14 +51,16 @@ public:
 	}
 
 	//
-	// DarkenWindowが存在する場合は読み込みます。
+	// Darkアドインが存在する場合は読み込みます。
 	//
-	void loadDarkenWindow()
+	inline static void loadDark(HWND hwnd)
 	{
+		MY_TRACE_FUNC("");
+
 		TCHAR fileName[MAX_PATH] = {};
 		::GetModuleFileName(AfxGetInstanceHandle(), fileName, MAX_PATH);
 		::PathRemoveFileSpec(fileName);
-		::PathAppend(fileName, _T("..\\DarkenWindow.aul"));
+		::PathAppend(fileName, _T("Dark.aua"));
 		MY_TRACE_TSTR(fileName);
 
 		HMODULE DarkenWindow = ::LoadLibrary(fileName);
@@ -72,7 +74,7 @@ public:
 			MY_TRACE_HEX(DarkenWindow_init);
 
 			if (DarkenWindow_init)
-				DarkenWindow_init(GetSafeHwnd());
+				DarkenWindow_init(hwnd);
 		}
 	}
 

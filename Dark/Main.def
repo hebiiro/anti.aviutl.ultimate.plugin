@@ -1,0 +1,3 @@
+EXPORTS
+	get_servant
+	DarkenWindow_init
