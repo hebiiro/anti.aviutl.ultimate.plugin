@@ -8,20 +8,30 @@ namespace fgo
 	inline struct Fate
 	{
 		//
+		// コレクションの要素です。
+		//
+		struct Node {
+			HINSTANCE instance;
+			Servant* servant;
+		};
+
+		//
 		// サーヴァントのコレクションです。
 		//
 		struct {
-			std::unordered_map<std::wstring, Servant*> map;
+			std::unordered_map<std::wstring, Node> map;
 			std::vector<Servant*> vector;
 		} servants;
 
 		//
 		// 指定されたサーヴァントをコレクションに追加します。
 		//
-		BOOL add_servant(Servant* servant)
+		BOOL add_servant(HINSTANCE instance, Servant* servant)
 		{
 			if (!servant) return FALSE;
-			servants.map[servant->get_servant_name()] = servant;
+			servants.map.emplace(std::piecewise_construct,
+				std::forward_as_tuple(servant->get_servant_name()),
+				std::forward_as_tuple(instance, servant));
 			servants.vector.emplace_back(servant);
 			return TRUE;
 		}
@@ -37,7 +47,7 @@ namespace fgo
 			return TRUE;
 		}
 
-		std::size_t get_servant_count() const
+		size_t get_servant_count() const
 		{
 			return servants.vector.size();
 		}
@@ -46,7 +56,7 @@ namespace fgo
 		// 指定された位置にあるサーヴァントを返します。
 		//
 		template<class T>
-		T* get_servant(std::size_t index) const
+		T* get_servant(size_t index) const
 		{
 			if (index >= servants.vector.size()) return 0;
 			return static_cast<T*>(servants.vector[index]);
@@ -60,7 +70,31 @@ namespace fgo
 		{
 			auto it = servants.map.find(name);
 			if (it == servants.map.end()) return 0;
-			return static_cast<T*>(it->second);
+			return static_cast<T*>(it->second.servant);
+		}
+
+		//
+		// サーヴァントにDLLの初期化を実行させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_dll_init()
+		{
+			for (const auto& pair : servants.map)
+				pair.second.servant->on_dll_init(pair.second.instance);
+
+			return TRUE;
+		}
+
+		//
+		// サーヴァントにDLLの後始末を実行させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_dll_exit()
+		{
+			for (const auto& pair : servants.map)
+				pair.second.servant->on_dll_exit(pair.second.instance);
+
+			return TRUE;
 		}
 
 		//
@@ -70,7 +104,7 @@ namespace fgo
 		BOOL fire_init()
 		{
 			for (const auto& pair : servants.map)
-				pair.second->on_init();
+				pair.second.servant->on_init();
 
 			return TRUE;
 		}
@@ -82,7 +116,7 @@ namespace fgo
 		BOOL fire_exit()
 		{
 			for (const auto& pair : servants.map)
-				pair.second->on_exit();
+				pair.second.servant->on_exit();
 
 			return TRUE;
 		}
@@ -95,7 +129,7 @@ namespace fgo
 		{
 			BOOL result = FALSE;
 			for (const auto& pair : servants.map)
-				result |= pair.second->on_window_init(hwnd, message, wParam, lParam, editp, fp);
+				result |= pair.second.servant->on_window_init(hwnd, message, wParam, lParam, editp, fp);
 			return result;
 		}
 
@@ -107,7 +141,7 @@ namespace fgo
 		{
 			BOOL result = FALSE;
 			for (const auto& pair : servants.map)
-				result |= pair.second->on_window_exit(hwnd, message, wParam, lParam, editp, fp);
+				result |= pair.second.servant->on_window_exit(hwnd, message, wParam, lParam, editp, fp);
 			return result;
 		}
 
@@ -119,7 +153,7 @@ namespace fgo
 		{
 			BOOL result = FALSE;
 			for (const auto& pair : servants.map)
-				result |= pair.second->on_window_command(hwnd, message, wParam, lParam, editp, fp);
+				result |= pair.second.servant->on_window_command(hwnd, message, wParam, lParam, editp, fp);
 			return result;
 		}
 

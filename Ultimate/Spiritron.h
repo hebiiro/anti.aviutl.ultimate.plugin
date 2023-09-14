@@ -62,7 +62,7 @@ namespace fgo
 
 				for (const auto& pair : fate.servants.map)
 				{
-					Servant* servant = pair.second;
+					auto servant = pair.second.servant;
 
 					// リストボックスにアイテムを追加します。アイテム名はサーヴァントの表示名です。
 					int index = ::SendMessageW(listbox, LB_ADDSTRING,
@@ -90,7 +90,7 @@ namespace fgo
 
 					// メニューアイテム名を構築します。
 					char name[MAX_PATH] = {};
-					::StringCbPrintfA(name, sizeof(name), "%wsを表示", servant->get_servant_display_name());
+					::StringCchPrintfA(name, std::size(name), "%wsを表示", servant->get_servant_display_name());
 					MY_TRACE_STR(name);
 
 					// AviUtlにメニュー項目を追加します。

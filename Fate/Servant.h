@@ -18,6 +18,19 @@ namespace fgo
 		virtual LPCWSTR get_servant_display_name() = 0;
 
 		//
+		// DLLの初期化のタイミングで呼び出されます。
+		// DllMain(DLL_PROCESS_ATTACH)を抜けたあとに呼び出されるので安全に初期化ができます。
+		//
+		virtual BOOL on_dll_init(HINSTANCE instance) { return FALSE; }
+
+		//
+		// DLLの後始末のタイミングで呼び出されます。
+		// DllMain(DLL_PROCESS_DETACH)に入る前に呼び出されるので安全に初期化ができます。
+		// ※現在未実装。
+		//
+		virtual BOOL on_dll_exit(HINSTANCE instance) { return FALSE; }
+
+		//
 		// 初期化のタイミングで呼び出されます。
 		//
 		virtual BOOL on_init() = 0;

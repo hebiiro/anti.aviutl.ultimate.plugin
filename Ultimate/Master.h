@@ -32,7 +32,7 @@ namespace fgo
 		}
 
 		//
-		// コンフィグファイルを参照し、指定されたファイル名のアドインが有効なら TRUE を返します。
+		// コンフィグファイルを参照し、指定されたファイル名のアドインが有効ならTRUEを返します。
 		//
 		static BOOL isAddinEnabled(LPCWSTR configFileName, LPCWSTR fileName)
 		{
@@ -54,11 +54,11 @@ namespace fgo
 			if (!module) return FALSE;
 			auto get_servant = (Servant* (WINAPI*)())::GetProcAddress(module, "get_servant");
 			if (!get_servant) return FALSE;
-			return fate.add_servant((*get_servant)());
+			return fate.add_servant(module, get_servant());
 		}
 
 		//
-		// アドインディレクトリ内の aua ファイルをアドインとして読み込みます。
+		// アドインディレクトリ内のauaファイルをアドインとして読み込みます。
 		//
 		BOOL loadAddins(HINSTANCE instance)
 		{
