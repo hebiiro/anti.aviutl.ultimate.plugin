@@ -240,6 +240,8 @@ namespace fgo::nest
 		//
 		void refreshCurrent()
 		{
+			MY_TRACE_FUNC("");
+
 			int current = getCurrentIndex();
 			int c = getTabCount();
 			for (int i = 0; i < c; i++)
@@ -258,20 +260,24 @@ namespace fgo::nest
 					{
 						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
 
-						::ShowWindow(*shuttle, SW_SHOW);
+						// ターゲットを表示します。
+						shuttle->showTargetWindow();
+
 						::ShowWindow(*shuttle->dockContainer, SW_SHOW);
+						::ShowWindow(*shuttle, SW_SHOW);
 					}
 				}
 				else
 				{
 					MY_TRACE(_T("「%ws」を非表示にします\n"), (BSTR)shuttle->name);
 
-					::ShowWindow(*shuttle, SW_HIDE);
 					::ShowWindow(*shuttle->dockContainer, SW_HIDE);
+					::ShowWindow(*shuttle, SW_HIDE);
 				}
 
-				MY_TRACE_INT(::IsWindowVisible(*shuttle));
-				MY_TRACE_INT(::IsWindowVisible(*shuttle->dockContainer));
+//				MY_TRACE_INT(::IsWindowVisible(*shuttle));
+//				MY_TRACE_INT(::IsWindowVisible(*shuttle->dockContainer));
+//				MY_TRACE_INT(::IsWindowVisible(::GetParent(*shuttle->dockContainer)));
 			}
 		}
 
@@ -303,7 +309,7 @@ namespace fgo::nest
 		//
 		int addShuttle(Shuttle* shuttle, int index = -1)
 		{
-			MY_TRACE(_T("Pane::addShuttle(0x%08X, %d)\n"), shuttle, index);
+			MY_TRACE_FUNC("0x%08X, %d", shuttle, index);
 
 			// シャトルはすでにドッキング済みなので何もしません。
 			if (findTab(shuttle) != -1) return -1;

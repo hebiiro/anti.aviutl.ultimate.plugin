@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Resource.h"
+#include "Shuttle/AviUtlWindow.h"
+#include "Shuttle/ExEditWindow.h"
+#include "Shuttle/SettingDialog.h"
 #include "SubWindow.h"
 #include "SubProcess/PSDToolKit.h"
 #include "SubProcess/Bouyomisan.h"
@@ -76,7 +79,7 @@ namespace fgo::nest
 
 			return Tools::Window::create(
 				0,
-				_T("Nest"), // フックしてあとで"AviUtl"に置き換えます。
+				ClassName,
 				_T("Nest"),
 				WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
@@ -85,10 +88,83 @@ namespace fgo::nest
 		}
 
 		//
+		// シャトルを初期化します。
+		//
+		BOOL initShuttle(HWND hwnd, LPTSTR windowName)
+		{
+			// クラス名を取得します。取得できなかった場合は何もしません。
+			TCHAR className[MAX_PATH] = {};
+			::GetClassName(hwnd, className, std::size(className));
+			if (_tcslen(className) == 0) return FALSE;
+
+			// ウィンドウ名を取得します。取得できなかった場合は何もしません。
+			if (!windowName || _tcslen(windowName) == 0) return FALSE;
+
+			MY_TRACE_FUNC("0x%08X, %s, %s", hwnd, className, windowName);
+
+			if (hwnd == hive.aviutlWindow)
+			{
+				if (*aviutlWindow) return FALSE;
+
+				MY_TRACE(_T("AviUtlウィンドウ用のシャトルを初期化します\n"));
+
+				LPCTSTR name = _T("* AviUtl");
+				aviutlWindow->init(name, hwnd);
+
+				return TRUE;
+			}
+
+			if (hwnd == hive.exeditWindow)
+			{
+				if (*exeditWindow) return FALSE;
+
+				MY_TRACE(_T("拡張編集ウィンドウ用のシャトルを初期化します\n"));
+
+				LPCTSTR name = _T("* 拡張編集");
+				exeditWindow->init(name, hwnd);
+
+				return TRUE;
+			}
+
+			if (hwnd == hive.settingDialog)
+			{
+				if (*settingDialog) return FALSE;
+
+				MY_TRACE(_T("設定ダイアログ用のシャトルを初期化します\n"));
+
+				LPCTSTR name = _T("* 設定ダイアログ");
+				settingDialog->init(name, hwnd);
+
+				// 最初のレイアウト計算を行う準備が整ったので、
+				// メインウィンドウにメッセージをポストして通知します。
+				::PostMessage(hive.mainWindow, Hive::WindowMessage::WM_POST_INIT, 0, 0);
+
+				return TRUE;
+			}
+
+			if (_tcsicmp(className, _T("AviUtl")) == 0)
+			{
+				// 拡張編集ウィンドウのダミーかもしれないのでチェックしておきます。
+				if (hwnd == exeditWindow->dummy) return FALSE;
+
+				MY_TRACE(_T("「%s」用のシャトルを初期化します\n"), windowName);
+
+				auto shuttle = std::make_shared<Shuttle>();
+				shuttle->init(windowName, hwnd);
+
+				return TRUE;
+			}
+
+			return FALSE;
+		}
+
+		//
 		// システムメニューを初期化します。
 		//
 		void initSystemMenu()
 		{
+			MY_TRACE_FUNC("");
+
 			HMENU menu = ::GetSystemMenu(*this, FALSE);
 			int index = 0;
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subWindowMenu, _T("サブウィンドウ"));
@@ -105,6 +181,8 @@ namespace fgo::nest
 		//
 		void updateSubWindowMenu()
 		{
+			MY_TRACE_FUNC("");
+
 			// すべての項目を削除します。
 			while (::DeleteMenu(subWindowMenu, 0, MF_BYPOSITION)){}
 
@@ -137,6 +215,8 @@ namespace fgo::nest
 		//
 		void updateSubProcessMenu()
 		{
+			MY_TRACE_FUNC("");
+
 			// すべての項目を削除します。
 			while (::DeleteMenu(subProcessMenu, 0, MF_BYPOSITION)){}
 
@@ -169,6 +249,8 @@ namespace fgo::nest
 		//
 		void updateMainMenu()
 		{
+			MY_TRACE_FUNC("");
+
 			HMENU menu = ::GetMenu(*this);
 
 			LPCTSTR text = _T("再生時最大化 OFF");
@@ -187,6 +269,8 @@ namespace fgo::nest
 		//
 		void calcAllLayout()
 		{
+			MY_TRACE_FUNC("");
+
 			calcLayout(*this);
 
 			for (auto subWindow : subWindowManager.collection)
@@ -330,7 +414,10 @@ namespace fgo::nest
 
 			auto subWindow = std::make_shared<SubWindow>();
 			if (subWindow->create(name, parent))
+			{
 				subWindow->init(name, *subWindow);
+				::ShowWindow(*subWindow, SW_SHOW);
+			}
 
 			return TRUE;
 		}
@@ -536,6 +623,19 @@ namespace fgo::nest
 					::DestroyMenu(subProcessMenu), subProcessMenu = 0;
 					::DestroyMenu(subWindowMenu), subWindowMenu = 0;
 					::CloseThemeData(hive.theme), hive.theme = 0;
+
+					break;
+				}
+			case Hive::WindowMessage::WM_INIT_SHUTTLE: // シャトルを初期化するために通知されます。
+				{
+					HWND hwnd = (HWND)wParam;
+					LPTSTR windowName = (LPTSTR)lParam;
+
+					// シャトルを初期化します。
+					initShuttle(hwnd, windowName);
+
+					// メモリを開放します。
+					delete[] windowName;
 
 					break;
 				}

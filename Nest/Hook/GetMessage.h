@@ -16,7 +16,7 @@ namespace fgo::nest::hook
 		{
 			MY_TRACE(_T("GetMessage::init()\n"));
 
-			hook = ::SetWindowsHookEx(WH_GETMESSAGE, hookProc, hive.instance, ::GetCurrentThreadId());
+			hook = ::SetWindowsHookEx(WH_GETMESSAGE, hookProc, 0, ::GetCurrentThreadId());
 			MY_TRACE_HEX(hook);
 		}
 
@@ -67,7 +67,7 @@ namespace fgo::nest::hook
 				}
 			}
 
-			return ::CallNextHookEx(get_message.hook, code, wParam, lParam);
+			return ::CallNextHookEx(0, code, wParam, lParam);
 		}
 	} get_message;
 }

@@ -1,6 +1,14 @@
 ﻿#pragma once
 #include "Hive.h"
 #include "MainWindow.h"
+#include "ConfigLoader.h"
+#include "ConfigSaver.h"
+#include "Hook/Api.h"
+#include "Hook/CBT.h"
+#include "Hook/GetMessage.h"
+#include "Hook/LowLevelMouse.h" // テスト用です。
+#include "Hook/WinEvent.h" // テスト用です。
+#include "Hook/Module.h"
 
 namespace fgo::nest
 {
@@ -23,6 +31,50 @@ namespace fgo::nest
 		LPCWSTR get_servant_display_name() override
 		{
 			return L"ネスト";
+		}
+
+		//
+		// この仮想関数は、DLLの初期化のタイミングで呼ばれます。
+		//
+		BOOL on_dll_init(HINSTANCE instance) override
+		{
+			MY_TRACE_FUNC("0x%08X", instance);
+
+			hive.instance = instance;
+
+			// コンテナのウィンドウクラスを登録します。
+			Container::registerWndClass();
+
+			// メインウィンドウを作成します。
+			if (mainWindow->create(std::make_shared<ConfigLoader>(), std::make_shared<ConfigSaver>()))
+			{
+				hive.mainWindow = *mainWindow;
+				MY_TRACE_HEX(hive.mainWindow);
+			}
+
+			hook::api.init();
+			hook::cbt.init();
+			hook::get_message.init();
+//			hook::low_level_mouse.init();
+//			hook::win_event.init();
+
+			return TRUE;
+		}
+
+		//
+		// この仮想関数は、DLLの後始末のタイミングで呼ばれます。
+		//
+		BOOL on_dll_exit(HINSTANCE instance) override
+		{
+			MY_TRACE_FUNC("");
+
+//			hook::win_event.exit();
+//			hook::low_level_mouse.exit();
+			hook::get_message.exit();
+			hook::cbt.exit();
+			hook::api.exit();
+
+			return TRUE;
 		}
 
 		//
@@ -148,6 +200,9 @@ namespace fgo::nest
 		BOOL init()
 		{
 			mainWindow->createSubProcesses(hive.mainWindow);
+
+			// モジュール別フックを初期化します。
+			hook::module.init();
 
 			return TRUE;
 		}

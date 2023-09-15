@@ -84,9 +84,6 @@
     <ClInclude Include="Hook\GetMessage.h">
       <Filter>Hook</Filter>
     </ClInclude>
-    <ClInclude Include="Hook\Api\CreateWindow.h">
-      <Filter>Hook\API</Filter>
-    </ClInclude>
     <ClInclude Include="Hook\Api\Menu.h">
       <Filter>Hook\API</Filter>
     </ClInclude>
@@ -133,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="SubProcess\PSDToolKit.h">
       <Filter>Element\SubProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\CBT.h">
+      <Filter>Hook</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

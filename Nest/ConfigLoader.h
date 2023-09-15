@@ -31,7 +31,7 @@ namespace fgo::nest
 		//
 		HRESULT loadConfig(LPCWSTR fileName, BOOL _import) override
 		{
-			MY_TRACE(_T("loadConfig(%ws, %d)\n"), fileName, _import);
+			MY_TRACE_FUNC("%ws, %d", fileName, _import);
 
 			try
 			{
@@ -95,7 +95,7 @@ namespace fgo::nest
 		// これにより、レイアウトを読み込みます前に必要なすべてのサブウィンドウが存在する状態になります。
 		HRESULT preLoadSubWindow(const MSXML2::IXMLDOMElementPtr& element)
 		{
-			MY_TRACE(_T("preLoadSubWindow()\n"));
+			MY_TRACE_FUNC("");
 
 			// 一旦すべてのサブウィンドウを削除します。
 			subWindowManager.clear();
@@ -123,7 +123,7 @@ namespace fgo::nest
 		// <mainWindow> を読み込みます。
 		HRESULT loadMainWindow(const MSXML2::IXMLDOMElementPtr& element)
 		{
-			MY_TRACE(_T("loadMainWindow()\n"));
+			MY_TRACE_FUNC("");
 
 			// <mainWindow> を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"hub|mainWindow");
@@ -157,7 +157,7 @@ namespace fgo::nest
 		// <subWindow> を読み込みます。
 		HRESULT loadSubWindow(const MSXML2::IXMLDOMElementPtr& element)
 		{
-			MY_TRACE(_T("loadSubWindow()\n"));
+			MY_TRACE_FUNC("");
 
 			// <subWindow> を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");
@@ -169,10 +169,14 @@ namespace fgo::nest
 				// シャトル名を読み込みます。
 				_bstr_t name = L"";
 				getPrivateProfileName(subWindowElement, L"name", name);
+				MY_TRACE_TSTR((LPCTSTR)name);
 
 				// サブウィンドウを取得します。
 				std::shared_ptr<Shuttle> shuttle = shuttleManager.get(name);
 				if (!shuttle) continue;
+
+				MY_TRACE_INT(::IsWindowVisible(*shuttle));
+				MY_TRACE_INT(::IsWindowVisible(::GetParent(*shuttle)));
 
 				// ルートペインを取得します。
 				std::shared_ptr<Pane> root = SubWindow::getRootPane(*shuttle);
@@ -195,7 +199,7 @@ namespace fgo::nest
 		// <pane> を読み込みます。
 		HRESULT loadPane(const MSXML2::IXMLDOMElementPtr& paneElement, const std::shared_ptr<Pane>& pane)
 		{
-			MY_TRACE(_T("loadPane()\n"));
+			MY_TRACE_FUNC("");
 
 			// <pane> のアトリビュートを読み込みます。
 
@@ -222,9 +226,9 @@ namespace fgo::nest
 
 					_bstr_t name = L"";
 					getPrivateProfileName(dockShuttleElement, L"name", name);
-					MY_TRACE_WSTR((LPCWSTR)name);
+					MY_TRACE_TSTR((LPCTSTR)name);
 
-					std::shared_ptr<Shuttle> shuttle = shuttleManager.get(name);
+					auto shuttle = shuttleManager.get(name);
 					if (shuttle)
 						pane->addShuttle(shuttle.get());
 				}
@@ -250,7 +254,7 @@ namespace fgo::nest
 		// <floatShuttle> を読み込みます。
 		HRESULT loadFloatShuttle(const MSXML2::IXMLDOMElementPtr& element)
 		{
-			MY_TRACE(_T("loadFloatShuttle()\n"));
+			MY_TRACE_FUNC("");
 
 			// <floatShuttle> を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"floatShuttle");
@@ -261,8 +265,9 @@ namespace fgo::nest
 
 				_bstr_t name = L"";
 				getPrivateProfileName(floatShuttleElement, L"name", name);
+				MY_TRACE_TSTR((LPCTSTR)name);
 
-				std::shared_ptr<Shuttle> shuttle = shuttleManager.get(name);
+				auto shuttle = shuttleManager.get(name);
 				if (shuttle)
 				{
 					getPrivateProfileWindow(floatShuttleElement, L"placement", *shuttle->floatContainer);

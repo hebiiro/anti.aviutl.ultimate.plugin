@@ -10,10 +10,8 @@ namespace Tools
 		//
 		// コンストラクタです。
 		//
-		Window()
+		Window() : hwnd(0)
 		{
-			hwnd = 0;
-			origWndProc = 0;
 		}
 
 		//
@@ -56,7 +54,9 @@ namespace Tools
 		virtual BOOL destroy()
 		{
 			if (!hwnd) return FALSE;
-			return ::DestroyWindow(hwnd);
+			BOOL result = ::DestroyWindow(hwnd);
+			hwnd = 0;
+			return result;
 		}
 
 		//
@@ -64,9 +64,9 @@ namespace Tools
 		//
 		virtual BOOL subclass(HWND hwnd)
 		{
-			if (!associate(hwnd)) return FALSE;
-			origWndProc = (WNDPROC)::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)wndProc);
-			return TRUE;
+			if (this->hwnd) return FALSE;
+			this->hwnd = hwnd;
+			return ::SetWindowSubclass(hwnd, subclassProc, getSubclassId(), (DWORD_PTR)this);
 		}
 
 		//
@@ -75,29 +75,9 @@ namespace Tools
 		virtual BOOL unsubclass()
 		{
 			if (!hwnd) return FALSE;
-			::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)origWndProc);
-			return dissociate();
-		}
-
-		//
-		// HWND と Window* の関連付けを作成します。
-		//
-		BOOL associate(HWND hwnd)
-		{
-			if (fromHandle(hwnd)) return FALSE;
-			mapKeeper = map;
-			(*map)[hwnd] = this, this->hwnd = hwnd;
-			return TRUE;
-		}
-
-		//
-		// HWND と Window* の関連付けを解除します。
-		//
-		BOOL dissociate()
-		{
-			if (!hwnd) return FALSE;
-			map->erase(hwnd), hwnd = 0;
-			return TRUE;
+			BOOL result = ::RemoveWindowSubclass(hwnd, subclassProc, getSubclassId());
+			hwnd = 0;
+			return result;
 		}
 
 		//
@@ -105,7 +85,7 @@ namespace Tools
 		//
 		virtual void postNcDestroy()
 		{
-			dissociate();
+			unsubclass();
 		}
 
 		//
@@ -118,13 +98,13 @@ namespace Tools
 			{
 			case WM_NCDESTROY:
 				{
-					LRESULT lr = ::CallWindowProc(origWndProc, hwnd, message, wParam, lParam);
+					LRESULT lr = ::DefSubclassProc(hwnd, message, wParam, lParam);
 					postNcDestroy();
 					return lr;
 				}
 			}
 
-			return ::CallWindowProc(origWndProc, hwnd, message, wParam, lParam);
+			return ::DefSubclassProc(hwnd, message, wParam, lParam);
 		}
 
 		//
@@ -133,9 +113,9 @@ namespace Tools
 		//
 		inline static Window* fromHandle(HWND hwnd)
 		{
-			auto it = map->find(hwnd);
-			if (it == map->end()) return 0;
-			return it->second;
+			DWORD_PTR refData = 0;
+			::GetWindowSubclass(hwnd, subclassProc, getSubclassId(), &refData);
+			return (Window*)refData;
 		}
 
 		//
@@ -153,16 +133,22 @@ namespace Tools
 		}
 
 		//
-		// ウィンドウプロシージャです。
+		// サブクラスプロシージャです。
 		// 内部的に使用されます。
 		//
-		inline static LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		inline static LRESULT CALLBACK subclassProc(
+			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam,
+			UINT_PTR id, DWORD_PTR refData)
 		{
-			Window* window = fromHandle(hwnd);
-			if (window)
-				return window->onWndProc(hwnd, message, wParam, lParam);
-			else
-				return ::DefWindowProc(hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam, id, refData);
+			TCHAR className[MAX_PATH] = {};
+			::GetClassName(hwnd, className, std::size(className));
+//			MY_TRACE_TSTR(className);
+
+			auto window = (Window*)refData;
+			LRESULT lr = window->onWndProc(hwnd, message, wParam, lParam);
+//			MY_TRACE_HEX(lr);
+			return lr;
 		}
 
 	public:
@@ -226,24 +212,20 @@ namespace Tools
 		} associator = {};
 
 		//
-		// HWND から Window* を取得するためのマップです。
+		// サブクラスID用の変数です。
+		// 内部的に使用されます。
 		//
-		using Map = std::map<HWND, Window*>;
-		thread_local inline static auto map = std::make_shared<Map>();
+		inline static const UINT SubclassIdPlacement = 0;
 
 		//
-		// map が先に消滅しないように参照を保持しておきます。
+		// サブクラスIDを返します。
+		// 内部的に使用されます。
 		//
-		std::shared_ptr<Map> mapKeeper;
+		inline static UINT_PTR getSubclassId() { return (UINT_PTR)&SubclassIdPlacement; }
 
 		//
 		// ウィンドウハンドルです。
 		//
 		HWND hwnd;
-
-		//
-		// サブクラス化する前のオリジナルのウィンドウプロシージャです。
-		//
-		WNDPROC origWndProc;
 	};
 }

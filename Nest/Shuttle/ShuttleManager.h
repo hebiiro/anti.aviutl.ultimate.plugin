@@ -141,7 +141,7 @@ namespace fgo::nest
 
 				TCHAR text[MAX_PATH] = {};
 				::StringCchPrintf(text, std::size(text), _T("ウィンドウ名が重複しています\nウィンドウ名 : %ws"), (LPCWSTR)name);
-				::MessageBox(hive.mainWindow, text, hive.AppName, MB_OK | MB_ICONWARNING);
+				::MessageBox(hive.mainWindow, text, hive.AppName, MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
 
 				return FALSE;
 			}

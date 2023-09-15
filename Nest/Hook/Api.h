@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "Api/CreateWindow.h"
 #include "Api/MoveWindow.h"
 #include "Api/Menu.h"
 #include "Api/FindWindow.h"
@@ -23,8 +22,6 @@ namespace fgo::nest::hook
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			Tools::attach(CreateWindowExA, ::GetProcAddress(user32, "CreateWindowExA"));
-			Tools::attach(CreateWindowExW, ::GetProcAddress(user32, "CreateWindowExW"));
 			Tools::attach(MoveWindow);
 			Tools::attach(SetWindowPos);
 			Tools::attach(GetMenu);
@@ -42,7 +39,6 @@ namespace fgo::nest::hook
 			{
 				MY_TRACE(_T("API フックに成功しました\n"));
 
-				hive.true_CreateWindowExA = CreateWindowExA.orig;
 				hive.true_SetWindowPos = SetWindowPos.orig;
 
 				return TRUE;

@@ -86,7 +86,7 @@ namespace fgo::nest
 		//
 		virtual ~Shuttle()
 		{
-			MY_TRACE(_T("Shuttle::~Shuttle(), 0x%08X, %ws\n"), (HWND)*this, (BSTR)name);
+			MY_TRACE_FUNC("0x%08X, %ws", (HWND)*this, (BSTR)name);
 
 			// ターゲットウィンドウの親ウィンドウを0にします。
 			// これにより、コンテナウィンドウが破壊されてもターゲットウィンドウが道連れに破壊されずにすみます。
@@ -100,6 +100,8 @@ namespace fgo::nest
 		//
 		void init(const _bstr_t& name, HWND hwnd)
 		{
+			MY_TRACE_FUNC("%s, 0x%08X", (LPCTSTR)name, hwnd);
+
 			// シャトル名をセットします。
 			this->name = name;
 
@@ -109,6 +111,10 @@ namespace fgo::nest
 
 			// HWNDにポインタを関連付けます。
 			setPointer(hwnd, this);
+
+			// ターゲットウィンドウの表示状態を取得しておきます。
+			BOOL visible = ::IsWindowVisible(*this);
+			MY_TRACE_INT(visible);
 
 			// ターゲットウィンドウのウィンドウ矩形を取得しておきます。
 			RECT rc; ::GetWindowRect(*this, &rc);
@@ -131,19 +137,24 @@ namespace fgo::nest
 			::GetWindowText(*this, text, MAX_PATH);
 			::SetWindowText(*floatContainer, text);
 
-			// ターゲットウィンドウの表示状態を取得しておきます。
-			BOOL visible = ::IsWindowVisible(*this);
+			// ウィンドウの無駄な描画を抑制するため、
+			// 一時的にターゲットウィンドウを非表示にします。
+			::ShowWindow(*this, SW_HIDE);
 
 			// ターゲットの親をフローティングコンテナに変更します。
 			::SetParent(*this, *floatContainer);
 
 			// ::SetWindowPos() を呼び出し、フック処理を促します。
 			// コンテナの種類によってはコンテナのウィンドウサイズが調整されます。
-			::SetWindowPos(*this, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			::SetWindowPos(*this, 0, x, y, w, h,
+				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
 			// ターゲットが表示状態ならフローティングコンテナを表示します。
 			if (visible)
-				::ShowWindow(*floatContainer, SW_SHOW);
+			{
+				::ShowWindow(*this, SW_SHOW); // この時点でフローティングコンテナも表示されているはずですが、
+				::ShowWindow(*floatContainer, SW_SHOW); // 念のため::ShowWindow()を呼んでおきます。
+			}
 
 			if (staticListener)
 				staticListener->onInitShuttle(shared_from_this());
@@ -187,6 +198,8 @@ namespace fgo::nest
 		//
 		virtual void showTargetWindow()
 		{
+			MY_TRACE_FUNC("%s", (LPCTSTR)name);
+
 			// ターゲットウィンドウが表示状態なら何もしません。
 			if (::IsWindowVisible(*this)) return;
 
@@ -260,8 +273,9 @@ namespace fgo::nest
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-			auto container = Tools::Window::fromHandle<Container>(
-				::GetParent(hwnd), Container::ClassName);
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+
+			auto container = Tools::Window::fromHandle<Container>(::GetParent(hwnd), Container::ClassName);
 			if (container)
 			{
 				// 先にコンテナにメッセージを処理させます。
@@ -276,15 +290,13 @@ namespace fgo::nest
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("WM_DESTROY, 0x%08X, 0x%08X\n"), wParam, lParam);
+					MY_TRACE_FUNC("%s, WM_DESTROY, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
 					break;
 				}
 			case WM_NCDESTROY:
 				{
-					MY_TRACE(_T("WM_NCDESTROY, 0x%08X, 0x%08X\n"), wParam, lParam);
-
-					MY_TRACE_HWND(hwnd);
+					MY_TRACE_FUNC("%s, WM_NCDESTROY, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
 					break;
 				}
@@ -307,7 +319,7 @@ namespace fgo::nest
 				}
 			case WM_SHOWWINDOW:
 				{
-//					MY_TRACE(_T("WM_SHOWWINDOW, 0x%08X, 0x%08X\n"), wParam, lParam);
+					MY_TRACE_FUNC("%s, WM_SHOWWINDOW, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
 					// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
 					::ShowWindow(::GetParent(hwnd), wParam ? SW_SHOW : SW_HIDE);
@@ -316,7 +328,7 @@ namespace fgo::nest
 				}
 			case WM_SETTEXT:
 				{
-//					MY_TRACE(_T("WM_SETTEXT, 0x%08X, 0x%08X\n"), wParam, lParam);
+					MY_TRACE_FUNC("%s, WM_SETTEXT, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
 					LPCTSTR newText = (LPCTSTR)lParam;
 
@@ -384,9 +396,6 @@ namespace fgo::nest
 			// フローティングコンテナを非表示にし、ドッキングコンテナを表示します。
 			::ShowWindow(*floatContainer, SW_HIDE);
 			::ShowWindow(*dockContainer, SW_SHOW);
-
-			// ターゲットを表示します。
-			showTargetWindow();
 		}
 
 		//

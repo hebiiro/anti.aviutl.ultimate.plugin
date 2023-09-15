@@ -47,7 +47,7 @@ namespace fgo::nest
 				hive.SubWindowClassName,
 				name,
 				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
-				WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 				parent, 0, hive.instance, 0);
 		}

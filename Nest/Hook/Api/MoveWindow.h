@@ -70,9 +70,7 @@ namespace fgo::nest::hook
 			if (!shuttle) // シャトルを取得できない場合はデフォルト処理を行います。
 				return orig(hwnd, insertAfter, x, y, w, h, flags);
 
-			MY_TRACE(_T("::SetWindowPos(0x%08X, %d, %d, %d, %d)\n"), hwnd, x, y, w, h);
-			MY_TRACE_HWND(hwnd);
-			MY_TRACE_WSTR((LPCWSTR)shuttle->name);
+			MY_TRACE_FUNC("%s, 0x%08X, %d, %d, %d, %d", (LPCTSTR)shuttle->name, hwnd, x, y, w, h);
 
 			// ターゲットのウィンドウ位置を更新します。
 			BOOL result = orig(hwnd, insertAfter, x, y, w, h, flags);

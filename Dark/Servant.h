@@ -24,6 +24,26 @@ namespace fgo::dark
 		}
 
 		//
+		// この仮想関数は、DLLの初期化のタイミングで呼ばれます。
+		//
+		BOOL on_dll_init(HINSTANCE instance) override
+		{
+			MY_TRACE_FUNC("0x%08X", instance);
+
+			return actctx.init(instance);
+		}
+
+		//
+		// この仮想関数は、DLLの後始末のタイミングで呼ばれます。
+		//
+		BOOL on_dll_exit(HINSTANCE instance) override
+		{
+			MY_TRACE_FUNC("");
+
+			return actctx.exit();
+		}
+
+		//
 		// この仮想関数は、初期化のタイミングで呼ばれます。
 		//
 		BOOL on_init() override
@@ -106,5 +126,50 @@ namespace fgo::dark
 		{
 			return TRUE;
 		}
+
+		//
+		// このクラスはアクティブ化コンテキストを管理します。
+		//
+		struct
+		{
+			ACTCTXW ac = { sizeof(ac) };
+			HANDLE hac = INVALID_HANDLE_VALUE;
+			ULONG_PTR cookie = 0;
+
+			//
+			// アクティブ化コンテキストを作成します。
+			//
+			BOOL init(HINSTANCE instance)
+			{
+				MY_TRACE(_T("actctx.init(0x%08X)\n"), instance);
+
+				// マニフェストのファイル名を取得します。
+				WCHAR fileName[MAX_PATH] = {};
+				::GetModuleFileNameW(instance, fileName, std::size(fileName));
+				::PathRemoveFileSpecW(fileName);
+				::PathAppendW(fileName, L"cc6.manifest");
+				MY_TRACE_WSTR(fileName);
+
+				// アクティブ化コンテキストを作成します。
+				ac.lpSource = fileName;
+				hac = ::CreateActCtxW(&ac);
+				BOOL result = ::ActivateActCtx(hac, &cookie);
+				MY_TRACE_INT(result);
+
+				return result;
+			}
+
+			//
+			// アクティブ化コンテキストを削除します。
+			//
+			BOOL exit()
+			{
+				MY_TRACE(_T("actctx.exit()\n"));
+
+				if (cookie) ::DeactivateActCtx(0, cookie), cookie = 0;
+				if (hac != INVALID_HANDLE_VALUE) ::ReleaseActCtx(hac), hac = INVALID_HANDLE_VALUE;
+				return TRUE;
+			}
+		} actctx;
 	} servant;
 }

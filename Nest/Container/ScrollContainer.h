@@ -175,11 +175,13 @@ namespace fgo::nest
 		//
 		BOOL onSetContainerPos(WINDOWPOS* wp) override
 		{
+			if (!__super::onSetContainerPos(wp)) return FALSE;
+
 			// スクロールバーとレイアウトを更新します。
 			updateScrollBar();
 			recalcLayout();
 
-			return FALSE;
+			return TRUE;
 		}
 
 		//

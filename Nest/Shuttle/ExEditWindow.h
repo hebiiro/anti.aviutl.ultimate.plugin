@@ -8,7 +8,7 @@ namespace fgo::nest
 	//
 	struct ExEditWindow : Shuttle
 	{
-		HWND dummy = 0;
+		Tools::Window dummy;
 
 		//
 		// ターゲットにアタッチします。
@@ -36,10 +36,10 @@ namespace fgo::nest
 				wc.lpszClassName = _T("AviUtl");
 				ATOM atom = ::RegisterClass(&wc);
 
-				dummy = hive.true_CreateWindowExA(
+				dummy.create(
 					WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW,
-					"AviUtl",
-					"拡張編集",
+					_T("AviUtl"),
+					_T("拡張編集"),
 					WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 					0, 0, 0, 0,
 					hive.mainWindow, 0, wc.hInstance, 0);

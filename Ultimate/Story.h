@@ -86,9 +86,9 @@ namespace fgo
 			{
 			case DLL_PROCESS_ATTACH:
 				{
-					::DisableThreadLibraryCalls(instance);
-
 					MY_TRACE(_T("DLL_PROCESS_ATTACH\n"));
+
+					::DisableThreadLibraryCalls(instance);
 
 					break;
 				}

@@ -106,6 +106,7 @@ namespace fgo
 		BOOL init(HINSTANCE instance)
 		{
 			if (!loadAddins(instance)) return FALSE;
+			if (!fate.fire_dll_init()) return FALSE;
 
 			return TRUE;
 		}
@@ -115,6 +116,8 @@ namespace fgo
 		//
 		BOOL exit()
 		{
+			if (!fate.fire_dll_exit()) return FALSE;
+
 			return TRUE;
 		}
 	} master;

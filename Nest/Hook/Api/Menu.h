@@ -42,7 +42,7 @@ namespace fgo::nest::hook
 	{
 		inline static BOOL WINAPI hook(HWND hwnd, HMENU menu)
 		{
-//			MY_TRACE(_T("::SetMenu(0x%08X, 0x%08X)\n"), hwnd, menu);
+//			MY_TRACE_FUNC("0x%08X, 0x%08X", hwnd, menu);
 
 			hwnd = getMenuOwner(hwnd);
 

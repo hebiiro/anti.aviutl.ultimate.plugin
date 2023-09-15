@@ -95,7 +95,7 @@ namespace fgo::nest
 		//
 		static void calcLayout(HWND hwnd)
 		{
-			MY_TRACE(_T("DockSite::calcLayout(0x%08X)\n"), hwnd);
+//			MY_TRACE_FUNC("0x%08X", hwnd);
 
 			RECT rc; ::GetClientRect(hwnd, &rc);
 			auto root = getRootPane(hwnd);
