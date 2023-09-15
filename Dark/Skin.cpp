@@ -924,6 +924,13 @@ BOOL CALLBACK Skin::enumChildWindowsProc(HWND hwnd, LPARAM lParam)
 		HICON icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0);
 		::SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);
 	}
+	else
+	{
+		::RedrawWindow(hwnd, 0, 0,
+			RDW_ERASE | RDW_FRAME | RDW_INTERNALPAINT |
+			RDW_INVALIDATE | RDW_ALLCHILDREN);
+		::EnumChildWindows(hwnd, enumChildWindowsProc, lParam);
+	}
 
 	return TRUE;
 }
