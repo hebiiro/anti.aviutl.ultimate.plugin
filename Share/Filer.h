@@ -17,12 +17,19 @@ namespace Share::Filer {
 	namespace HostWindow {
 		namespace PropName {
 			inline const LPCTSTR ClientWindow = _T("Share::Filer::HostWindow::ClientWindow");
+			inline const LPCTSTR Dark = _T("Share::Filer::HostWindow::Dark");
 		}
 		inline HWND getClientWindow(HWND hostWindow) {
 			return (HWND)::GetProp(hostWindow, PropName::ClientWindow);
 		}
 		inline HWND setClientWindow(HWND hostWindow, HWND clientWindow) {
-			return (HWND)::SetProp(hostWindow, PropName::ClientWindow, clientWindow);
+			return (HWND)::SetProp(hostWindow, PropName::ClientWindow, (HANDLE)clientWindow);
+		}
+		inline BOOL getDark(HWND hostWindow) {
+			return (BOOL)::GetProp(hostWindow, PropName::Dark);
+		}
+		inline BOOL setDark(HWND hostWindow, BOOL dark) {
+			return (BOOL)::SetProp(hostWindow, PropName::Dark, (HANDLE)dark);
 		}
 	}
 	namespace FilerWindow {

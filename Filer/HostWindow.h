@@ -33,6 +33,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("HostWindow::HostWindow()\n"));
 
+			// ウィンドウを作成します。
 			if (!Tools::AviUtl::PluginWindowExtension::create(
 				*this,
 				hive.instance,
@@ -44,6 +45,10 @@ namespace fgo::filer
 			{
 				throw _T("ホストウィンドウの失敗しました");
 			}
+
+			// Darkアドインが読み込まれているかのフラグをセットしておきます。
+			Share::Filer::HostWindow::setDark(*this,
+				!!fgo::fate.get_servant<fgo::Servant>(L"Dark"));
 
 			hook = std::make_shared<Hook>();
 			gui = std::make_shared<Gui>(*this);
@@ -194,7 +199,7 @@ namespace fgo::filer
 			MY_TRACE(_T("HostWindow::load()\n"));
 
 			getPrivateProfileBool(element, L"useCommonDialog", hive.useCommonDialog);
-			getPrivateProfileWindow(element, L"placement", *this, SW_SHOW);
+			Share::Nest::getPrivateProfileWindow(element, L"placement", *this);
 
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"filer");
 			int c = nodeList->length;
@@ -230,7 +235,7 @@ namespace fgo::filer
 			MY_TRACE(_T("HostWindow::save()\n"));
 
 			setPrivateProfileBool(element, L"useCommonDialog", hive.useCommonDialog);
-			setPrivateProfileWindow(element, L"placement", *this);
+			Share::Nest::setPrivateProfileWindow(element, L"placement", *this);
 
 			for (auto& filerWindow : FilerWindow::collection)
 			{

@@ -11,6 +11,12 @@
     <Filter Include="Control">
       <UniqueIdentifier>{e32e0429-a8c2-48b6-a2a6-c3fba091206b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hook">
+      <UniqueIdentifier>{df4cbf40-e4af-47cc-8a17-bbc44196abc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hook\Api">
+      <UniqueIdentifier>{487b9fab-7a73-4204-9457-1c34ef2f2941}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -25,6 +31,13 @@
     <ClInclude Include="resource.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Hook\Api.h">
+      <Filter>Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\CreateWindow.h">
+      <Filter>Hook\Api</Filter>
+    </ClInclude>
+    <ClInclude Include="ActCtx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

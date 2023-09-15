@@ -14,14 +14,15 @@ public:
 	//
 	ClientWindow(HWND hostWindow)
 	{
-		MY_TRACE(_T("ClientWindow::ClientWindow(0x%08X)\n"), hostWindow);
+		MY_TRACE_FUNC("0x%08X", hostWindow);
 
 		// クライアントウィンドウを作成します。
 		if (!Create())
 			throw _T("クライアントウィンドウの作成に失敗しました");
 
 		// Darkアドインを読み込みます。
-		loadDark(*this);
+		if (!loadDark(hostWindow, *this))
+			MY_TRACE(_T("Darkアドインの読み込みに失敗しました\n"));
 
 		// ホストウィンドウにクライアントウィンドウのハンドルを渡します。
 		Share::Filer::HostWindow::setClientWindow(hostWindow, *this);
@@ -47,15 +48,18 @@ public:
 	//
 	~ClientWindow()
 	{
-		MY_TRACE(_T("ClientWindow::~ClientWindow()\n"));
+		MY_TRACE_FUNC("");
 	}
 
 	//
 	// Darkアドインが存在する場合は読み込みます。
 	//
-	inline static void loadDark(HWND hwnd)
+	inline static BOOL loadDark(HWND hostWindow, HWND hwnd)
 	{
-		MY_TRACE_FUNC("");
+		MY_TRACE_FUNC("0x%08X, 0x%08X", hostWindow, hwnd);
+
+		if (!Share::Filer::HostWindow::getDark(hostWindow))
+			return FALSE;
 
 		TCHAR fileName[MAX_PATH] = {};
 		::GetModuleFileName(AfxGetInstanceHandle(), fileName, MAX_PATH);
@@ -63,19 +67,18 @@ public:
 		::PathAppend(fileName, _T("Dark.aua"));
 		MY_TRACE_TSTR(fileName);
 
-		HMODULE DarkenWindow = ::LoadLibrary(fileName);
-		MY_TRACE_HEX(DarkenWindow);
+		HMODULE dark = ::LoadLibrary(fileName);
+		MY_TRACE_HEX(dark);
+		if (!dark) return FALSE;
 
-		if (DarkenWindow)
-		{
-			typedef void (WINAPI* Type_DarkenWindow_init)(HWND hwnd);
-			Type_DarkenWindow_init DarkenWindow_init =
-				(Type_DarkenWindow_init)::GetProcAddress(DarkenWindow, "DarkenWindow_init");
-			MY_TRACE_HEX(DarkenWindow_init);
+		void (WINAPI* DarkenWindow_init)(HWND hwnd) = 0;
+		Tools::get_proc(dark, "DarkenWindow_init", DarkenWindow_init);
+		MY_TRACE_HEX(DarkenWindow_init);
+		if (!DarkenWindow_init) return FALSE;
 
-			if (DarkenWindow_init)
-				DarkenWindow_init(hwnd);
-		}
+		DarkenWindow_init(hwnd);
+
+		return TRUE;
 	}
 
 	//

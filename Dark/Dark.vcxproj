@@ -163,8 +163,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ActCtx.h" />
     <ClInclude Include="ClassicHook.h" />
     <ClInclude Include="DarkenWindow.h" />
+    <ClInclude Include="Hook\Api.h" />
+    <ClInclude Include="Hook\Api\CreateWindow.h" />
     <ClInclude Include="MyDraw.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />

@@ -464,6 +464,12 @@ namespace fgo::nest
 
 					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
 				}
+			case WM_NCACTIVATE:
+				{
+					MY_TRACE(_T("MainWindow::onWndProc(WM_NCACTIVATE, 0x%08X, 0x%08X)\n"), wParam, lParam);
+
+					break;
+				}
 			case WM_ACTIVATE: // 「patch.aul」用の処理です。
 				{
 					MY_TRACE(_T("MainWindow::onWndProc(WM_ACTIVATE, 0x%08X, 0x%08X)\n"), wParam, lParam);
@@ -641,11 +647,15 @@ namespace fgo::nest
 				}
 			case Hive::WindowMessage::WM_POST_INIT: // AviUtlの初期化処理が終わったあとに通知されます。
 				{
+					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, Begin", hwnd, wParam, lParam);
+
 					// システムメニューに独自の項目を追加する。
 					initSystemMenu();
 
 					// 設定をファイルから読み込みます。
 					loadConfig();
+
+					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, End", hwnd, wParam, lParam);
 
 					break;
 				}

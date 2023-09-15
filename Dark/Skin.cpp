@@ -858,6 +858,7 @@ Skin::Skin()
 	m_hwnd = 0;
 	memset(m_themes, 0, sizeof(m_themes));
 
+	m_dwm.enable = FALSE;
 	m_dwm.m_darkMode = -1;
 	m_dwm.m_cornerMode = -1;
 	m_dwm.m_activeBorderColor = -1;
@@ -952,6 +953,7 @@ void Skin::init(HINSTANCE instance, HWND hwnd)
 	m_themes[THEME_DIALOG] = ::OpenThemeData(m_hwnd, VSCLASS_WINDOW);
 	m_themes[THEME_CTLCOLOR] = ::OpenThemeData(m_hwnd, VSCLASS_WINDOW);
 	m_themes[THEME_EXEDIT] = ::OpenThemeData(m_hwnd, VSCLASS_WINDOW);
+	m_dwm.enable = getDwm(hwnd) == S_OK;
 
 	::SetTimer(m_hwnd, (UINT_PTR)this, 1000, timerProc);
 }
@@ -2716,9 +2718,28 @@ int Skin::getCtlColorPartId(UINT message)
 	return 0;
 }
 
+HRESULT Skin::getDwm(HWND hwnd)
+{
+	enum MY_DWMWINDOWATTRIBUTE
+	{
+		DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
+		DWMWA_WINDOW_CORNER_PREFERENCE = 33,
+		DWMWA_BORDER_COLOR = 34,
+		DWMWA_CAPTION_COLOR = 35,
+		DWMWA_TEXT_COLOR = 36,
+		DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
+		DWMWA_LAST
+	};
+
+	int cornerMode = 0;
+	return ::DwmGetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE , &cornerMode, sizeof(cornerMode));
+}
+
 void Skin::setDwm(HWND hwnd, BOOL active)
 {
 //	MY_TRACE(_T("Skin::setDwm(0x%08X, %d)\n"), hwnd, active);
+
+	if (!m_dwm.enable) return;
 
 	enum MY_DWMWINDOWATTRIBUTE
 	{

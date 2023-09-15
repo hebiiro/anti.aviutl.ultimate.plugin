@@ -578,20 +578,16 @@ private:
 
 	HTHEME m_themes[THEME_MAXSIZE];
 
-	class XorPen
+	struct XorPen
 	{
-	public:
-
 		int m_style = -1;
 		int m_width = -1;
 		COLORREF m_color = CLR_NONE;
-
 	} m_xorPen;
 
-	class Dwm
+	struct Dwm
 	{
-	public:
-
+		BOOL enable;
 		int m_darkMode;
 		int m_cornerMode;
 		COLORREF m_activeBorderColor;
@@ -600,7 +596,6 @@ private:
 		COLORREF m_inactiveBorderColor;
 		COLORREF m_inactiveCaptionColor;
 		COLORREF m_inactiveTextColor;
-
 	} m_dwm;
 
 	EditIconMap m_editIconMap;
@@ -719,6 +714,7 @@ public:
 	HTHEME getTheme(THEMES theme);
 	static int getCtlColorPartId(UINT message);
 
+	HRESULT getDwm(HWND hwnd);
 	void setDwm(HWND hwnd, BOOL active);
 	void addDrawIconData(HICON icon, LPCWSTR iconName);
 	HICON getDrawIcon(HICON icon);

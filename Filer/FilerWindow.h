@@ -25,6 +25,7 @@ namespace fgo::filer
 
 		//
 		// コンストラクタです。
+		// 内部的に使用されます。createFilerWindow()から呼ばれます。
 		//
 		FilerWindow(LPCTSTR name)
 		{
@@ -125,7 +126,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("FilerWindow::load()\n"));
 
-			getPrivateProfileWindow(element, L"placement", *this);
+			Share::Nest::getPrivateProfileWindow(element, L"placement", *this);
 
 			return S_OK;
 		}
@@ -137,7 +138,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("FilerWindow::save()\n"));
 
-			setPrivateProfileWindow(element, L"placement", *this);
+			Share::Nest::setPrivateProfileWindow(element, L"placement", *this);
 
 			return S_OK;
 		}
@@ -222,7 +223,7 @@ namespace fgo::filer
 					MY_TRACE(_T("FilerWindow::onWndProc(PostInitFilerDialog, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
 					HWND dialog = (HWND)wParam;
-					HWND browser = (HWND)lParam;
+					BOOL full = (BOOL)lParam;
 
 					// ファイラダイアログを子ウィンドウスタイルにしてから子ウィンドウに変更します。
 					modifyStyle(dialog, WS_POPUP | WS_CAPTION | WS_THICKFRAME, WS_CHILD);
@@ -237,8 +238,12 @@ namespace fgo::filer
 					// ターゲットのウィンドウ名を更新します。
 					updateWindowName();
 
-					// ファイラダイアログの状態が整ったので表示します。
-					::ShowWindow(dialog, SW_SHOW);
+					if (full)
+					{
+						// ファイラダイアログの状態が整ったので
+						// ファイラウィンドウを表示します。
+						::ShowWindow(*this, SW_SHOW);
+					}
 
 					break;
 				}

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Hook/Api.h"
 
 namespace fgo::dark
 {
@@ -30,7 +31,10 @@ namespace fgo::dark
 		{
 			MY_TRACE_FUNC("0x%08X", instance);
 
-			return actctx.init(instance);
+			actctx.init(instance);
+			hook::api.init();
+
+			return TRUE;
 		}
 
 		//
@@ -38,9 +42,12 @@ namespace fgo::dark
 		//
 		BOOL on_dll_exit(HINSTANCE instance) override
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("0x%08X", instance);
 
-			return actctx.exit();
+			hook::api.exit();
+			actctx.exit();
+
+			return TRUE;
 		}
 
 		//
@@ -48,6 +55,8 @@ namespace fgo::dark
 		//
 		BOOL on_init() override
 		{
+			MY_TRACE_FUNC("");
+
 			if (::GetModuleHandleW(L"DarkenWindow.aul"))
 			{
 				::MessageBoxW(magi.fp->hwnd,
@@ -66,6 +75,8 @@ namespace fgo::dark
 		//
 		BOOL on_exit() override
 		{
+			MY_TRACE_FUNC("");
+
 			if (!save()) return FALSE;
 			if (!exit()) return FALSE;
 			return TRUE;
@@ -84,6 +95,8 @@ namespace fgo::dark
 		//
 		BOOL load()
 		{
+			MY_TRACE_FUNC("");
+
 			return load(getConfigFileName().c_str());
 		}
 
@@ -92,6 +105,8 @@ namespace fgo::dark
 		//
 		BOOL load(LPCWSTR path)
 		{
+			MY_TRACE_FUNC("%ws", path);
+
 			return TRUE;
 		}
 
@@ -100,6 +115,8 @@ namespace fgo::dark
 		//
 		BOOL save()
 		{
+			MY_TRACE_FUNC("");
+
 			return save(getConfigFileName().c_str());
 		}
 
@@ -108,6 +125,8 @@ namespace fgo::dark
 		//
 		BOOL save(LPCWSTR path)
 		{
+			MY_TRACE_FUNC("%ws", path);
+
 			return TRUE;
 		}
 
@@ -116,6 +135,8 @@ namespace fgo::dark
 		//
 		BOOL init()
 		{
+			MY_TRACE_FUNC("");
+
 			return TRUE;
 		}
 
@@ -124,52 +145,9 @@ namespace fgo::dark
 		//
 		BOOL exit()
 		{
+			MY_TRACE_FUNC("");
+
 			return TRUE;
 		}
-
-		//
-		// このクラスはアクティブ化コンテキストを管理します。
-		//
-		struct
-		{
-			ACTCTXW ac = { sizeof(ac) };
-			HANDLE hac = INVALID_HANDLE_VALUE;
-			ULONG_PTR cookie = 0;
-
-			//
-			// アクティブ化コンテキストを作成します。
-			//
-			BOOL init(HINSTANCE instance)
-			{
-				MY_TRACE(_T("actctx.init(0x%08X)\n"), instance);
-
-				// マニフェストのファイル名を取得します。
-				WCHAR fileName[MAX_PATH] = {};
-				::GetModuleFileNameW(instance, fileName, std::size(fileName));
-				::PathRemoveFileSpecW(fileName);
-				::PathAppendW(fileName, L"cc6.manifest");
-				MY_TRACE_WSTR(fileName);
-
-				// アクティブ化コンテキストを作成します。
-				ac.lpSource = fileName;
-				hac = ::CreateActCtxW(&ac);
-				BOOL result = ::ActivateActCtx(hac, &cookie);
-				MY_TRACE_INT(result);
-
-				return result;
-			}
-
-			//
-			// アクティブ化コンテキストを削除します。
-			//
-			BOOL exit()
-			{
-				MY_TRACE(_T("actctx.exit()\n"));
-
-				if (cookie) ::DeactivateActCtx(0, cookie), cookie = 0;
-				if (hac != INVALID_HANDLE_VALUE) ::ReleaseActCtx(hac), hac = INVALID_HANDLE_VALUE;
-				return TRUE;
-			}
-		} actctx;
 	} servant;
 }

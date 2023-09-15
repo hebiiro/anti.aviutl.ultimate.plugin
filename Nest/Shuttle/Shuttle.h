@@ -88,6 +88,9 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("0x%08X, %ws", (HWND)*this, (BSTR)name);
 
+			// サブクラス化を解除して、これ以降の後始末処理を省略します。
+			unsubclass();
+
 			// ターゲットウィンドウの親ウィンドウを0にします。
 			// これにより、コンテナウィンドウが破壊されてもターゲットウィンドウが道連れに破壊されずにすみます。
 			::SetParent(*this, 0);

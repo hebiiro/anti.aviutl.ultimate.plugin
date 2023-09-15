@@ -16,7 +16,7 @@ public:
 
 	//
 	// コンストラクタです。
-	// 内部的に使用されます。create()から呼び出されます。
+	// 内部的に使用されます。create()から呼ばれます。
 	//
 	FilerDialog(LPCTSTR name, HWND filerWindow, BOOL full)
 		: filerWindow(filerWindow)
@@ -37,7 +37,7 @@ public:
 
 		// ファイラダイアログの作成が完了したことをファイラウィンドウに通知します。
 		// これにより、ファイラウィンドウがファイラダイアログを参照することができるようになります。
-		fire_PostInitFilerDialog();
+		fire_PostInitFilerDialog(full);
 	}
 
 	//
@@ -51,9 +51,9 @@ public:
 	//
 	// ファイラウィンドウに初期化が完了したことを通知します。
 	//
-	void fire_PostInitFilerDialog()
+	void fire_PostInitFilerDialog(BOOL full)
 	{
-		::PostMessage(filerWindow, Share::Filer::Message::PostInitFilerDialog, (WPARAM)GetSafeHwnd(), 0);
+		::PostMessage(filerWindow, Share::Filer::Message::PostInitFilerDialog, (WPARAM)GetSafeHwnd(), (LPARAM)full);
 	}
 
 	//
