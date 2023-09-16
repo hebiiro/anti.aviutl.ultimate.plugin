@@ -203,19 +203,8 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("%s", (LPCTSTR)name);
 
-			// ターゲットウィンドウが表示状態なら何もしません。
-			if (::IsWindowVisible(*this)) return;
-
-			// ターゲットウィンドウを表示状態にします。
-			// (AviUtlはWM_CLOSEで表示/非表示状態をトグルで切り替えます)
-			::SendMessage(*this, WM_CLOSE, 0, 0);
-
-			// AviUtlがターゲットウィンドウを表示しなかった場合は
-			if (!::IsWindowVisible(*this))
-			{
-				// 手動でウィンドウを表示します。
-				::ShowWindow(*this, SW_SHOW);
-			}
+			// ターゲットウィンドウを表示します。
+			::ShowWindow(*this, SW_SHOW);
 		}
 
 		//

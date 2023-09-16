@@ -4,6 +4,7 @@
 #include "Shuttle/ExEditWindow.h"
 #include "Shuttle/SettingDialog.h"
 #include "SubWindow.h"
+#include "SubProcess.h"
 #include "SubProcess/PSDToolKit.h"
 #include "SubProcess/Bouyomisan.h"
 
@@ -36,9 +37,6 @@ namespace fgo::nest
 		struct Saver {
 			virtual HRESULT saveConfig(LPCWSTR fileName, BOOL _export) = 0;
 		}; std::shared_ptr<Saver> saver;
-
-		HMENU subWindowMenu = 0;
-		HMENU subProcessMenu = 0;
 
 		//
 		// コンストラクタです。
@@ -167,81 +165,13 @@ namespace fgo::nest
 
 			HMENU menu = ::GetSystemMenu(*this, FALSE);
 			int index = 0;
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subWindowMenu, _T("サブウィンドウ"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subProcessMenu, _T("サブプロセス"));
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subWindowManager.menu, _T("サブウィンドウ"));
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subProcessManager.menu, _T("サブプロセス"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::CREATE_SUB_WINDOW, _T("サブウィンドウを新規作成"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::IMPORT_LAYOUT, _T("レイアウトのインポート"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::EXPORT_LAYOUT, _T("レイアウトのエクスポート"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::SHOW_CONFIG_DIALOG, _T("ネストの設定"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
-		}
-
-		//
-		// サブウィンドウ一覧用メニューを更新します。
-		//
-		void updateSubWindowMenu()
-		{
-			MY_TRACE_FUNC("");
-
-			// すべての項目を削除します。
-			while (::DeleteMenu(subWindowMenu, 0, MF_BYPOSITION)){}
-
-			int c = (int)subWindowManager.collection.size();
-			for (int i = 0; i < c; i++)
-			{
-				HWND subWindow = subWindowManager.collection[i];
-
-				MENUITEMINFO mii = { sizeof(mii) };
-				mii.fMask = MIIM_STRING | MIIM_DATA | MIIM_ID | MIIM_STATE;
-
-				TCHAR windowName[MAX_PATH] = {};
-				::GetWindowText(subWindow, windowName, MAX_PATH);
-
-				if (::IsWindowVisible(subWindow))
-					mii.fState = MFS_CHECKED;
-				else
-					mii.fState = MFS_UNCHECKED;
-
-				mii.wID = CommandID::SUB_WINDOW_BEGIN + i;
-				mii.dwItemData = (DWORD)subWindow;
-				mii.dwTypeData = windowName;
-
-				::InsertMenuItem(subWindowMenu, i, TRUE, &mii);
-			}
-		}
-
-		//
-		// サブプロセス一覧用メニューを更新します。
-		//
-		void updateSubProcessMenu()
-		{
-			MY_TRACE_FUNC("");
-
-			// すべての項目を削除します。
-			while (::DeleteMenu(subProcessMenu, 0, MF_BYPOSITION)){}
-
-			int c = (int)subProcessManager.collection.size();
-			for (int i = 0; i < c; i++)
-			{
-				HWND subProcess = subProcessManager.collection[i];
-
-				MENUITEMINFO mii = { sizeof(mii) };
-				mii.fMask = MIIM_STRING | MIIM_DATA | MIIM_ID | MIIM_STATE;
-
-				TCHAR windowName[MAX_PATH] = {};
-				::GetWindowText(subProcess, windowName, MAX_PATH);
-
-				if (::IsWindowVisible(subProcess))
-					mii.fState = MFS_CHECKED;
-				else
-					mii.fState = MFS_UNCHECKED;
-
-				mii.wID = CommandID::SUB_PROCESS_BEGIN + i;
-				mii.dwItemData = (DWORD)subProcess;
-				mii.dwTypeData = windowName;
-
-				::InsertMenuItem(subProcessMenu, i, TRUE, &mii);
-			}
 		}
 
 		//
@@ -519,37 +449,8 @@ namespace fgo::nest
 				{
 					MY_TRACE(_T("MainWindow::onWndProc(WM_SYSCOMMAND, 0x%08X, 0x%08X)\n"), wParam, lParam);
 
-					if (wParam >= CommandID::SUB_WINDOW_BEGIN &&
-						wParam < CommandID::SUB_WINDOW_END)
-					{
-						// メニューで選択されたサブウィンドウの表示/非表示を切り替えます。
-
-						MENUITEMINFO mii = { sizeof(mii) };
-						mii.fMask = MIIM_DATA;
-						::GetMenuItemInfo(subWindowMenu, wParam, FALSE, &mii);
-
-						HWND subWindow = (HWND)mii.dwItemData;
-						if (subWindow)
-							::SendMessage(subWindow, WM_CLOSE, 0, 0);
-
-						break;
-					}
-
-					if (wParam >= CommandID::SUB_PROCESS_BEGIN &&
-						wParam < CommandID::SUB_PROCESS_END)
-					{
-						// メニューで選択されたサブプロセスの表示/非表示を切り替えます。
-
-						MENUITEMINFO mii = { sizeof(mii) };
-						mii.fMask = MIIM_DATA;
-						::GetMenuItemInfo(subProcessMenu, wParam, FALSE, &mii);
-
-						HWND subProcess = (HWND)mii.dwItemData;
-						if (subProcess)
-							::SendMessage(subProcess, WM_CLOSE, 0, 0);
-
-						break;
-					}
+					if (subWindowManager.executeMenu(wParam)) break;
+					if (subProcessManager.executeMenu(wParam)) break;
 
 					switch (wParam)
 					{
@@ -602,8 +503,8 @@ namespace fgo::nest
 				}
 			case WM_INITMENUPOPUP:
 				{
-					if ((HMENU)wParam == subWindowMenu) updateSubWindowMenu();
-					if ((HMENU)wParam == subProcessMenu) updateSubProcessMenu();
+					subWindowManager.onInitMenuPopup(wParam, lParam);
+					subProcessManager.onInitMenuPopup(wParam, lParam);
 
 					break;
 				}
@@ -614,11 +515,8 @@ namespace fgo::nest
 					hive.theme = ::OpenThemeData(hwnd, VSCLASS_WINDOW);
 					MY_TRACE_HEX(hive.theme);
 
-					subWindowMenu = ::CreatePopupMenu();
-					MY_TRACE_HEX(subWindowMenu);
-
-					subProcessMenu = ::CreatePopupMenu();
-					MY_TRACE_HEX(subProcessMenu);
+					subWindowManager.init(CommandID::SUB_WINDOW_BEGIN, CommandID::SUB_WINDOW_END);
+					subProcessManager.init(CommandID::SUB_PROCESS_BEGIN, CommandID::SUB_PROCESS_END);
 
 					break;
 				}
@@ -626,8 +524,8 @@ namespace fgo::nest
 				{
 					MY_TRACE(_T("MainWindow::onWndProc(WM_DESTROY)\n"));
 
-					::DestroyMenu(subProcessMenu), subProcessMenu = 0;
-					::DestroyMenu(subWindowMenu), subWindowMenu = 0;
+					subProcessManager.exit();
+					subWindowManager.exit();
 					::CloseThemeData(hive.theme), hive.theme = 0;
 
 					break;

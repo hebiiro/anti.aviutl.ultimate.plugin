@@ -81,28 +81,29 @@ namespace fgo::nest
 						if (IDYES != ::MessageBox(hwnd, _T("サブウィンドウを削除しますか？"), hive.AppName, MB_YESNO))
 							return 0;
 
-						// 何もしないとメインウィンドウが他のウィンドウの後ろに隠れてしまうので、
-						// 手動でフォアグラウンドにします。
-						::SetActiveWindow(hive.mainWindow);
-
 						// このサブウィンドウをマネージャーから削除します。
 						// これにより、このウィンドウは破壊されます。
 						subWindowManager.erase(hwnd);
 					}
 					else
 					{
-						// サブウィンドウの表示状態を切り替えます。
-						// ::ShowWindow(hwnd, SW_SHOW)ではなぜかWM_SHOWWINDOWが発生しないので、
-						// 親ウィンドウ(コンテナ)の表示状態を直接切り替えます。
+						// サブウィンドウの表示状態をトグルで切り替えます。
 
 						if (::IsWindowVisible(hwnd))
 						{
-							::ShowWindow(::GetParent(hwnd), SW_HIDE);
+							::ShowWindow(hwnd, SW_HIDE);
 						}
 						else
 						{
-							::ShowWindow(::GetParent(hwnd), SW_SHOW);
+							::ShowWindow(hwnd, SW_SHOW);
 						}
+					}
+
+					if (!::IsWindowVisible(hwnd))
+					{
+						// 何もしないとメインウィンドウが他のウィンドウの後ろに隠れてしまうので、
+						// 手動でフォアグラウンドにします。
+						::SetActiveWindow(hive.mainWindow);
 					}
 
 					return 0;

@@ -254,14 +254,11 @@ namespace fgo::nest
 					if (*shuttle == hive.settingDialog &&
 						magi.auin.GetCurrentObjectIndex() == -1)
 					{
-						MY_TRACE(_T("空の設定ダイアログは表示しません\n"));
+						MY_TRACE(_T("空の設定ダイアログなので表示できません\n"));
 					}
 					else
 					{
 						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
-
-						// ターゲットを表示します。
-						shuttle->showTargetWindow();
 
 						::ShowWindow(*shuttle->dockContainer, SW_SHOW);
 						::ShowWindow(*shuttle, SW_SHOW);
