@@ -1,0 +1,155 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#include <commctrl.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+GET_COLOR DIALOGEX 0, 0, 222, 150
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "色の選択"
+FONT 10, "MS Shell Dlg", 400, 0, 0x80
+BEGIN
+    LTEXT           "",132,8,8,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",133,8,22,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",134,8,36,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",135,8,50,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",136,8,64,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",137,8,78,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",138,8,92,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",139,8,106,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",140,22,8,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",141,22,22,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",142,22,36,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",143,22,50,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",144,22,64,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",145,22,78,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",146,22,92,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",147,22,106,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",148,36,8,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",149,36,22,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",150,36,36,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",151,36,50,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",152,36,64,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",153,36,78,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",154,36,92,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",155,36,106,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",156,50,8,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",157,50,22,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",158,50,36,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",159,50,50,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",160,50,64,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",161,50,78,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",162,50,92,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",163,50,106,13,13,SS_NOTIFY | SS_SUNKEN | NOT WS_GROUP
+    LTEXT           "",131,70,8,40,40,NOT WS_GROUP,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    CONTROL         "R",-1,"Static",SS_LEFTNOWORDWRAP,70,58,7,10
+    EDITTEXT        171,78,54,32,14,ES_RIGHT | ES_NUMBER,WS_EX_CLIENTEDGE | WS_EX_RIGHT
+    CONTROL         "UpDown1",111,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,110,85,9,14
+    CONTROL         "G",-1,"Static",SS_LEFTNOWORDWRAP,70,74,7,10
+    EDITTEXT        172,78,70,32,14,ES_RIGHT | ES_NUMBER,WS_EX_CLIENTEDGE | WS_EX_RIGHT
+    CONTROL         "UpDown2",112,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,110,53,9,14
+    CONTROL         "B",-1,"Static",SS_LEFTNOWORDWRAP,70,90,7,10
+    EDITTEXT        173,78,86,32,14,ES_RIGHT | ES_NUMBER,WS_EX_CLIENTEDGE | WS_EX_RIGHT
+    CONTROL         "UpDown3",113,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,110,69,9,14
+    EDITTEXT        IDC_COLOR_CODE,66,105,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",121,96,105,14,14,BS_ICON | BS_CENTER
+    PUSHBUTTON      "色指定無し",122,16,129,40,14,BS_CENTER
+    PUSHBUTTON      "OK",1,72,129,40,14,BS_CENTER
+    PUSHBUTTON      "キャンセル",2,116,129,40,14,BS_CENTER
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    "GET_COLOR", DIALOG
+    BEGIN
+        RIGHTMARGIN, 171
+        BOTTOMMARGIN, 114
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+GET_COLOR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include <windows.h>\r\n"
+    "#include <commctrl.h>\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -4,6 +4,14 @@
 namespace Tools {
 	using addr_t = DWORD;
 
+
+	// 指定されたアドレスを指定されたポインタにキャストして格納します。
+	template<class T>
+	inline void get_pointer(T& x, addr_t address)
+	{
+		x = (T)address;
+	}
+
 	//
 	// 指定されたモジュールの指定された名前の関数をprocに格納します。
 	//

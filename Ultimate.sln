@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ultimate", "Ultimate\Ultimate.vcxproj", "{8E583504-3780-4129-BCC2-BA590DBD0D0E}"
 	ProjectSection(ProjectDependencies) = postProject
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D} = {E80E8462-911F-4EAB-B83B-D4B2DFE2010D}
 		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973} = {9B59E47F-0E71-4672-8CB7-2FB03F8BC973}
 	EndProjectSection
 EndProject
@@ -32,6 +33,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Nest", "Nest\Nest.vcxproj", "{55AF099C-72AF-490D-A7AC-99DB7EAE5675}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dark", "Dark\Dark.vcxproj", "{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorCode", "ColorCode\ColorCode.vcxproj", "{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +124,14 @@ Global
 		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x64.Build.0 = Release|x64
 		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x86.ActiveCfg = Release|Win32
 		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x86.Build.0 = Release|Win32
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Debug|x64.ActiveCfg = Debug|x64
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Debug|x64.Build.0 = Debug|x64
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Debug|x86.ActiveCfg = Debug|Win32
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Debug|x86.Build.0 = Debug|Win32
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Release|x64.ActiveCfg = Release|x64
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Release|x64.Build.0 = Release|x64
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Release|x86.ActiveCfg = Release|Win32
+		{E80E8462-911F-4EAB-B83B-D4B2DFE2010D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
