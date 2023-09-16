@@ -66,8 +66,21 @@ namespace fgo::nest
 		static std::shared_ptr<RootPane> getRootPane(HWND hwnd)
 		{
 			auto p = (std::shared_ptr<RootPane>*)::GetProp(hwnd, PropName);
-			if (!p) return 0; // 取得できなかった場合は 0 を返します。
+			if (!p) return 0; // 取得できなかった場合は0を返します。
 			return *p;
+		}
+
+		//
+		// 最初のペインを返します。
+		// ルートペインではなく、最大化されたペインの場合もあります。
+		//
+		static std::shared_ptr<Pane> getFirstPane(HWND hwnd)
+		{
+			auto root = getRootPane(hwnd);
+			if (!root) return 0; // 取得できなかった場合は0を返します。
+			auto maximizedPane = root->getMaximizedPane();
+			if (maximizedPane) return maximizedPane; // 最大化されたペインがあれば、それを返します。
+			return root;
 		}
 
 		//
@@ -140,12 +153,12 @@ namespace fgo::nest
 		{
 			MY_TRACE(_T("DockSite::showTargetMenu(%d, %d)\n"), point.x, point.y);
 
-			// ルートペインを取得します。
-			auto root = getRootPane(dockSite);
-			if (!root) return FALSE;
+			// 最初のペインを取得します。
+			auto first = getFirstPane(dockSite);
+			if (!first) return FALSE;
 
 			// 指定された座標からペインを取得します。
-			auto pane = root->hitTestPane(point);
+			auto pane = first->hitTestPane(point);
 			if (!pane) return FALSE;
 
 			// カレントシャトルを取得します。
@@ -569,11 +582,9 @@ namespace fgo::nest
 					if (!dc.isValid())
 						return 0;
 
-					auto root = getRootPane(hwnd);
-					auto painter = root->getMaximizedPane();
-
-					// 最大化されたペインが存在しない場合はルートペインを描画します。
-					if (!painter) painter = root;
+					// 最初のペインを取得します。
+					auto first = getFirstPane(hwnd);
+					if (!first) return 0;
 
 					{
 						// 背景を塗りつぶします。
@@ -585,7 +596,7 @@ namespace fgo::nest
 						// ボーダーを再帰的に描画します。
 
 						HBRUSH brush = ::CreateSolidBrush(hive.borderColor);
-						painter->drawBorder(dc, brush);
+						first->drawBorder(dc, brush);
 						::DeleteObject(brush);
 					}
 
@@ -609,7 +620,7 @@ namespace fgo::nest
 						HFONT font = ::CreateFontIndirectW(&lf);
 						HFONT oldFont = (HFONT)::SelectObject(dc, font);
 
-						painter->drawCaption(dc);
+						first->drawCaption(dc);
 
 						::SelectObject(dc, oldFont);
 						::DeleteObject(font);
@@ -623,7 +634,9 @@ namespace fgo::nest
 
 					if (hwnd != (HWND)wParam) break;
 
+					// ルートペインを取得します。
 					auto root = getRootPane(hwnd);
+					if (!root || root->getMaximizedPane()) break;
 
 					POINT point; ::GetCursorPos(&point);
 					::ScreenToClient(hwnd, &point);
@@ -654,17 +667,18 @@ namespace fgo::nest
 					MY_TRACE_FUNC("WM_LBUTTONDOWN, 0x%08X, 0x%08X", wParam, lParam);
 
 					// マウス座標を取得します。
-					POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+					POINT point = LP2PT(lParam);
 
 					// 必要であればターゲットウィンドウのメニューを表示します。
 					if (showTargetMenu(hwnd, point))
 						break; // メニューの表示が行われた場合はここで処理を終わります。
 
-					// ルートペインを取得します。
-					auto root = getRootPane(hwnd);
+					// 最初のペインを取得します。
+					auto first = getFirstPane(hwnd);
+					if (!first) break;
 
 					// マウス座標にあるボーダーを取得します。
-					hotBorderPane = root->hitTestBorder(point);
+					hotBorderPane = first->hitTestBorder(point);
 
 					// ボーダーが有効かチェックします。
 					if (hotBorderPane)
@@ -683,7 +697,7 @@ namespace fgo::nest
 
 					{
 						// マウス座標にあるペインを取得できたら
-						auto pane = root->hitTestPane(point);
+						auto pane = first->hitTestPane(point);
 						if (pane)
 						{
 							// クリックされたペインがシャトルを持っているなら
@@ -700,7 +714,7 @@ namespace fgo::nest
 					MY_TRACE_FUNC("WM_LBUTTONUP, 0x%08X, 0x%08X", wParam, lParam);
 
 					// マウス座標を取得します。
-					POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+					POINT point = LP2PT(lParam);
 
 					// マウスをキャプチャ中かチェックします。
 					if (::GetCapture() == hwnd)
@@ -772,7 +786,7 @@ namespace fgo::nest
 //					MY_TRACE_FUNC("WM_MOUSEMOVE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// マウス座標を取得します。
-					POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+					POINT point = LP2PT(lParam);
 
 					// マウスをキャプチャ中かチェックします。
 					if (::GetCapture() == hwnd)
@@ -791,10 +805,12 @@ namespace fgo::nest
 					}
 					else
 					{
-						auto root = getRootPane(hwnd);
+						// 最初のペインを取得します。
+						auto first = getFirstPane(hwnd);
+						if (!first) break;
 
 						// マウス座標にあるボーダーを取得します。
-						auto pane = root->hitTestBorder(point);
+						auto pane = first->hitTestBorder(point);
 
 						// 現在のホットボーダーと違うなら
 						if (hotBorderPane != pane)
