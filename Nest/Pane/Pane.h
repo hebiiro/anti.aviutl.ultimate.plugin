@@ -260,16 +260,16 @@ namespace fgo::nest
 					{
 						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
 
-						::ShowWindow(*shuttle->dockContainer, SW_SHOW);
-						::ShowWindow(*shuttle, SW_SHOW);
+						::ShowWindowAsync(*shuttle->dockContainer, SW_SHOW);
+						::ShowWindowAsync(*shuttle, SW_SHOW);
 					}
 				}
 				else
 				{
 					MY_TRACE(_T("「%ws」を非表示にします\n"), (BSTR)shuttle->name);
 
-					::ShowWindow(*shuttle->dockContainer, SW_HIDE);
-					::ShowWindow(*shuttle, SW_HIDE);
+					::ShowWindowAsync(*shuttle->dockContainer, SW_HIDE);
+					::ShowWindowAsync(*shuttle, SW_HIDE);
 				}
 
 //				MY_TRACE_INT(::IsWindowVisible(*shuttle));

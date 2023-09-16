@@ -43,7 +43,7 @@ namespace fgo::nest
 			::RegisterClass(&wc);
 
 			return __super::create(
-				0,
+				WS_EX_NOPARENTNOTIFY,
 				hive.SubWindowClassName,
 				name,
 				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |

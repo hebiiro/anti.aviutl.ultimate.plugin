@@ -64,7 +64,7 @@ namespace Tools::AviUtl
 //					MY_TRACE(_T("WindowHolderExtension::onWndProc(WM_SHOWWINDOW)\n"));
 
 					if (wParam && ::IsWindow(target))
-						::ShowWindow(target, SW_SHOW);
+						::ShowWindowAsync(target, SW_SHOW);
 
 					break;
 				}

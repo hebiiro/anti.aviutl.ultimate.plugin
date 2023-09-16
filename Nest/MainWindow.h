@@ -195,6 +195,35 @@ namespace fgo::nest
 		}
 
 		//
+		// メインウィンドウのタイトル名を更新します。
+		//
+		void setTitle(LPCTSTR newText)
+		{
+			MY_TRACE_FUNC("%s", newText);
+
+			AviUtl::EditHandle* editp = magi.auin.GetEditp();
+
+			TCHAR fileName[MAX_PATH] = {};
+			if (editp->frame_n)
+			{
+				::StringCchPrintf(fileName, std::size(fileName), _T("%hs"), editp->project_filename);
+				::PathStripPath(fileName);
+
+				if (_tcslen(fileName) == 0)
+					::StringCchCopy(fileName, std::size(fileName), newText);
+			}
+			else
+			{
+				::StringCchCopy(fileName, std::size(fileName), _T("無題"));
+			}
+
+			::StringCchCat(fileName, std::size(fileName), _T(" - "));
+			::StringCchCat(fileName, std::size(fileName), newText);
+
+			::SetWindowText(*this, fileName);
+		}
+
+		//
 		// すべてのドックサイトのレイアウトを再計算します。
 		//
 		void calcAllLayout()
@@ -346,7 +375,7 @@ namespace fgo::nest
 			if (subWindow->create(name, parent))
 			{
 				subWindow->init(name, *subWindow);
-				::ShowWindow(*subWindow, SW_SHOW);
+				::ShowWindowAsync(*subWindow, SW_SHOW);
 			}
 
 			return TRUE;
@@ -530,19 +559,6 @@ namespace fgo::nest
 
 					break;
 				}
-			case Hive::WindowMessage::WM_INIT_SHUTTLE: // シャトルを初期化するために通知されます。
-				{
-					HWND hwnd = (HWND)wParam;
-					LPTSTR windowName = (LPTSTR)lParam;
-
-					// シャトルを初期化します。
-					initShuttle(hwnd, windowName);
-
-					// メモリを開放します。
-					delete[] windowName;
-
-					break;
-				}
 			case Hive::WindowMessage::WM_POST_INIT: // AviUtlの初期化処理が終わったあとに通知されます。
 				{
 					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, Begin", hwnd, wParam, lParam);
@@ -554,6 +570,10 @@ namespace fgo::nest
 					loadConfig();
 
 					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, End", hwnd, wParam, lParam);
+
+					TCHAR windowName[MAX_PATH] = {};
+					::GetWindowText(hive.aviutlWindow, windowName, std::size(windowName));
+					setTitle(windowName);
 
 					break;
 				}
@@ -568,6 +588,27 @@ namespace fgo::nest
 				{
 					// 設定をファイルに保存します。
 					saveConfig();
+
+					break;
+				}
+			case Hive::WindowMessage::WM_INIT_SHUTTLE: // シャトルを初期化するために通知されます。
+				{
+					HWND hwnd = (HWND)wParam;
+					LPTSTR windowName = (LPTSTR)lParam;
+
+					// シャトルを初期化します。
+					initShuttle(hwnd, windowName);
+
+					// メモリを開放します。
+					delete[] windowName;
+
+					break;
+				}
+			case Hive::WindowMessage::WM_SET_TITLE: // タイトルを更新するために通知されます。
+				{
+					LPCTSTR newText = (LPCTSTR)lParam;
+
+					setTitle(newText);
 
 					break;
 				}

@@ -82,7 +82,7 @@ namespace fgo::nest
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE(_T("SettingDialog::onWndProc(0x%08X, 0x%08X, 0x%08X)\n"), message, wParam, lParam);
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{

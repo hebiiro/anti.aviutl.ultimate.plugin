@@ -44,6 +44,8 @@ namespace fgo::nest
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+
 			switch (message)
 			{
 			case WM_DESTROY:
@@ -68,30 +70,10 @@ namespace fgo::nest
 				{
 					MY_TRACE(_T("AviUtlWindow::onWndProc(WM_SETTEXT)\n"));
 
-					LPCSTR newText = (LPCSTR)lParam;
+					LPCTSTR newText = (LPCTSTR)lParam;
 
 					// メインウィンドウのウィンドウテキストを更新します。
-
-					AviUtl::EditHandle* editp = magi.auin.GetEditp();
-
-					char fileName[MAX_PATH] = {};
-					if (editp->frame_n)
-					{
-						::StringCbCopyA(fileName, sizeof(fileName), editp->project_filename);
-						::PathStripPathA(fileName);
-
-						if (strlen(fileName) == 0)
-							::StringCbCopyA(fileName, sizeof(fileName), newText);
-					}
-					else
-					{
-						::StringCbCopyA(fileName, sizeof(fileName), "無題");
-					}
-
-					::StringCbCatA(fileName, sizeof(fileName), " - ");
-					::StringCbCatA(fileName, sizeof(fileName), newText);
-
-					::SetWindowTextA(hive.mainWindow, fileName);
+					::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_SET_TITLE, 0, (LPARAM)newText);
 
 					break;
 				}

@@ -29,24 +29,24 @@ namespace fgo::nest
 				// 「口パク」「目パチ」ダイアログだけに限定します。
 				if (!::FindWindowEx(dialog, 0, WC_STATIC, _T("開き"))) return;
 
-				// ターゲットウィンドウのハンドルを取得します。
-				hwnd = shuttle->target;
+				// サブプロセスウィンドウのハンドルを取得します。
+				hwnd = shuttle->window;
 				MY_TRACE_HWND(hwnd);
 				if (!hwnd) return;
 
-				// ターゲットウィンドウのクライアント矩形を取得します。
+				// サブプロセスウィンドウのクライアント矩形を取得します。
 				RECT rc; ::GetClientRect(hwnd, &rc);
 
 				// クライアント矩形をスクリーン座標に変換します。
 				::MapWindowPoints(hwnd, 0, (LPPOINT)&rc, 2);
 
-				// ウィンドウの元の状態を取得しておきます。
+				// サブプロセスウィンドウの元の状態を取得しておきます。
 				parent = ::GetParent(hwnd);
 				owner = (HWND)::GetWindowLong(hwnd, GWL_HWNDPARENT);
 				style = ::GetWindowLong(hwnd, GWL_STYLE);
 				exStyle = ::GetWindowLong(hwnd, GWL_EXSTYLE);
 
-				// フローティング状態になるようにウィンドウの状態を変更します。
+				// フローティング状態になるようにサブプロセスウィンドウの状態を変更します。
 				::ShowWindow(hwnd, SW_HIDE);
 				::SetParent(hwnd, 0);
 //				::SetWindowLong(hwnd, GWL_HWNDPARENT, 0); // この処理は必要ないようです。
@@ -57,17 +57,16 @@ namespace fgo::nest
 				// クライアント矩形をウィンドウ矩形に変換します。
 				clientToWindow(hwnd, &rc);
 
-				// ウィンドウの位置を調整します。
+				// サブプロセスウィンドウの位置を調整します。
 				int x = rc.left;
 				int y = rc.top;
 				int w = getWidth(rc);
 				int h = getHeight(rc);
 				hive.true_SetWindowPos(hwnd, HWND_TOPMOST, x, y, w, h, SWP_ASYNCWINDOWPOS | SWP_SHOWWINDOW);
 
-				// PSDToolKitウィンドウの後ろに隠れてしまうので、
-				// ダイアログも最上位ウィンドウにします。
+				// サブプロセスウィンドウの後ろに行かないように、
+				// ダイアログの親ウィンドウをサブプロセスウィンドウに変更します。
 				::SetWindowLong(dialog, GWL_HWNDPARENT, (LONG)hwnd);
-//				hive.true_SetWindowPos(dialog, HWND_TOPMOST, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_NOMOVE | SWP_NOSIZE);
 			}
 
 			//

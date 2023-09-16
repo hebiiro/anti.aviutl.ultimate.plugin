@@ -134,6 +134,7 @@ namespace fgo::nest
 			// ターゲットのウィンドウスタイルを変更します。
 			DWORD style = onGetTargetNewStyle();
 			::SetWindowLong(*this, GWL_STYLE, style | WS_CHILD);
+			modifyExStyle(*this, 0, WS_EX_NOPARENTNOTIFY);
 
 			// ターゲットのウィンドウタイトルを取得します。
 			TCHAR text[MAX_PATH] = {};
@@ -265,7 +266,7 @@ namespace fgo::nest
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("%s, 0x%08X, 0x%08X, 0x%08X, 0x%08X", (LPCTSTR)name, hwnd, message, wParam, lParam);
 
 			auto container = Tools::Window::fromHandle<Container>(::GetParent(hwnd), Container::ClassName);
 			if (container)
@@ -314,7 +315,7 @@ namespace fgo::nest
 					MY_TRACE_FUNC("%s, WM_SHOWWINDOW, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
 					// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
-					::ShowWindow(::GetParent(hwnd), wParam ? SW_SHOW : SW_HIDE);
+					::ShowWindowAsync(::GetParent(hwnd), wParam ? SW_SHOW : SW_HIDE);
 
 					break;
 				}
@@ -377,7 +378,7 @@ namespace fgo::nest
 		//
 		void dockWindow(HWND site)
 		{
-			MY_TRACE_HWND(site);
+			MY_TRACE_FUNC("0x%08X", site);
 
 			// ドッキングコンテナの親ウィンドウを指定されたウィンドウに切り替えます。
 			::SetParent(*dockContainer, site);
@@ -403,6 +404,8 @@ namespace fgo::nest
 		//
 		void floatWindow()
 		{
+			MY_TRACE_FUNC("");
+
 			// フローティングコンテナのテキストを更新します。
 			TCHAR text[MAX_PATH] = {};
 			::GetWindowText(*this, text, MAX_PATH);

@@ -40,7 +40,7 @@ namespace fgo::nest
 			: listener(listener)
 		{
 			create(
-				0,
+				WS_EX_NOPARENTNOTIFY,
 				ClassName,
 				ClassName,
 				style,

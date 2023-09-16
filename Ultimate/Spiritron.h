@@ -138,6 +138,8 @@ namespace fgo
 
 		BOOL func_WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+
 			switch (message)
 			{
 			case AviUtl::FilterPlugin::WindowMessage::Command:

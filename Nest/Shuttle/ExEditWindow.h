@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Shuttle.h"
+#include "SubProcess/PSDToolKit.h"
 
 namespace fgo::nest
 {
@@ -66,11 +67,13 @@ namespace fgo::nest
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+
 			switch (message)
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("ExEditWindow::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, 0x%08X, 0x%08X", wParam, lParam);
 
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
@@ -88,6 +91,28 @@ namespace fgo::nest
 				{
 					// ダミーウィンドウのテキストを更新します。
 					::SetWindowText(dummy, (LPCTSTR)lParam);
+
+					break;
+				}
+			case AviUtl::FilterPlugin::WindowMessage::FileOpen:
+				{
+					MY_TRACE_FUNC("FileOpen, 0x%08X, 0x%08X", wParam, lParam);
+
+					// 「PSDToolKit」用の処理です。
+					// FileCloseで非表示にしたPSDToolKitを再表示します。
+					if (psdtoolkit)
+						::ShowWindow(*psdtoolkit, SW_SHOW);
+
+					break;
+				}
+			case AviUtl::FilterPlugin::WindowMessage::FileClose:
+				{
+					MY_TRACE_FUNC("FileClose, 0x%08X, 0x%08X", wParam, lParam);
+
+					// 「PSDToolKit」用の処理です。
+					// フリーズしないように一旦非表示にします。
+					if (psdtoolkit)
+						::ShowWindow(*psdtoolkit, SW_HIDE);
 
 					break;
 				}

@@ -13,10 +13,13 @@ namespace fgo::nest
 			static const UINT Init = 1000;
 		};
 
-		HWND target = 0; // サブプロセスののウィンドウ。
+		//
+		// サブプロセスウィンドウです。
+		//
+		HWND window = 0;
 
 		//
-		// ターゲットウィンドウを見つけて返します。
+		// サブプロセスウィンドウを見つけて返します。
 		//
 		virtual HWND findWindow() = 0;
 
@@ -36,7 +39,7 @@ namespace fgo::nest
 			::RegisterClass(&wc);
 
 			return __super::create(
-				0,
+				WS_EX_NOPARENTNOTIFY,
 				hive.SubProcessClassName,
 				name,
 				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
@@ -50,16 +53,16 @@ namespace fgo::nest
 		//
 		void show()
 		{
-			MY_TRACE(_T("SubProcess::show()\n"));
+			MY_TRACE_FUNC("");
 
 			::SendMessage(*this, WM_CLOSE, 0, 0);
 		}
 
-		// サブプロセスのウィンドウをクライアント領域全体まで広げます。
+		// サブプロセスウィンドウをクライアント領域全体まで広げます。
 		// ウィンドウ位置の変更は非同期で処理されるので、デッドロックの心配はありません。
 		void resize()
 		{
-			MY_TRACE(_T("SubProcess::resize()\n"));
+			MY_TRACE_FUNC("");
 
 			RECT rc; ::GetClientRect(*this, &rc);
 			int w = getWidth(rc);
@@ -70,7 +73,7 @@ namespace fgo::nest
 			if (::IsWindowVisible(*this))
 				flags |= SWP_SHOWWINDOW;
 
-			::SetWindowPos(target, 0, 0, 0, w, h, flags);
+			::SetWindowPos(window, 0, 0, 0, w, h, flags);
 		}
 
 		//
@@ -82,13 +85,13 @@ namespace fgo::nest
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE(_T("SubProcess::onWndProc(WM_CREATE)\n"));
+					MY_TRACE_FUNC("0x%08X, WM_CREATE, 0x%08X, 0x%08X", hwnd, wParam, lParam);
 
 					// このサブプロセスをマネージャーに追加します。
 					// これにより、現存するすべてのサブプロセスにアクセスできるようになります。
 					subProcessManager.add(hwnd);
 
-					// このタイミングではまだサブプロセスのウィンドウが作成されていないかもしれないので、
+					// このタイミングではまだサブプロセスウィンドウが作成されていないかもしれないので、
 					// タイマーで遅らせて初期化処理を行います。
 					::SetTimer(hwnd, TimerID::Init, 1000, 0);
 
@@ -96,42 +99,42 @@ namespace fgo::nest
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("SubProcess::onWndProc(WM_DESTROY)\n"));
+					MY_TRACE_FUNC("0x%08X, WM_DESTROY, 0x%08X, 0x%08X", hwnd, wParam, lParam);
 
 					break;
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE(_T("SubProcess::onWndProc(WM_CLOSE)\n"));
+					MY_TRACE_FUNC("0x%08X, WM_CLOSE, 0x%08X, 0x%08X", hwnd, wParam, lParam);
 
 					// ウィンドウの表示状態をトグルで切り替えます。
 					if (::IsWindowVisible(hwnd))
 					{
-						::ShowWindow(hwnd, SW_HIDE);
+						::ShowWindowAsync(hwnd, SW_HIDE);
 					}
 					else
 					{
-						::ShowWindow(hwnd, SW_SHOW);
+						::ShowWindowAsync(hwnd, SW_SHOW);
 					}
 
 					return 0;
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE(_T("SubProcess::onWndProc(WM_SHOWWINDOW)\n"));
+					MY_TRACE_FUNC("0x%08X, WM_SHOWWINDOW, 0x%08X, 0x%08X", hwnd, wParam, lParam);
 
-					// このウィンドウが表示されるとき、サブプロセスのウィンドウも表示状態にします。
-					if (wParam && ::IsWindow(target))
-						::ShowWindow(target, SW_SHOW);
+					// このウィンドウが表示されるとき、サブプロセスウィンドウも表示状態にします。
+					if (wParam && ::IsWindow(window))
+						::ShowWindowAsync(window, SW_SHOW);
 
 					break;
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE(_T("SubProcess::onWndProc(WM_SIZE)\n"));
+					MY_TRACE_FUNC("0x%08X, WM_SIZE, 0x%08X, 0x%08X", hwnd, wParam, lParam);
 
-					// サブプロセスのウィンドウが有効ならリサイズします。
-					if (::IsWindow(target))
+					// サブプロセスウィンドウが有効ならリサイズします。
+					if (::IsWindow(window))
 						resize();
 
 					break;
@@ -142,20 +145,21 @@ namespace fgo::nest
 					{
 					case TimerID::Init:
 						{
-							// サブプロセスのウィンドウを見つけます。
-							target = findWindow();
-							if (target)
+							// サブプロセスウィンドウを見つけます。
+							window = findWindow();
+							if (window)
 							{
-								MY_TRACE(_T("サブプロセスのウィンドウが見つかりました => 0x%08X\n"), target);
+								MY_TRACE(_T("サブプロセスウィンドウが見つかりました => 0x%08X\n"), window);
 
 								DWORD remove = WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;
 								DWORD add = WS_CHILD;
 
 								::KillTimer(hwnd, TimerID::Init);
-								modifyStyle(target, remove, add);
-								::SetParent(target, hwnd);
+								modifyStyle(window, remove, add);
+								modifyExStyle(window, 0, WS_EX_NOPARENTNOTIFY);
+								::SetParent(window, hwnd);
 								resize();
-								::ShowWindow(target, SW_SHOW);
+								::ShowWindowAsync(window, SW_SHOW);
 							}
 
 							break;

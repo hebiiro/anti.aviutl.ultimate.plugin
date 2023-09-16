@@ -74,11 +74,11 @@ namespace Tools::AviUtl
 
 					if (::IsWindowVisible(hwnd))
 					{
-						::ShowWindow(hwnd, SW_HIDE);
+						::ShowWindowAsync(hwnd, SW_HIDE);
 					}
 					else
 					{
-						::ShowWindow(hwnd, SW_SHOW);
+						::ShowWindowAsync(hwnd, SW_SHOW);
 					}
 
 					*lr = 0;
