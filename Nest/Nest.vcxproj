@@ -176,7 +176,6 @@
     <ClInclude Include="Hook\Api\MoveWindow.h" />
     <ClInclude Include="Hook\CBT.h" />
     <ClInclude Include="Hook\GetMessage.h" />
-    <ClInclude Include="Hook\LowLevelMouse.h" />
     <ClInclude Include="Hook\Module.h" />
     <ClInclude Include="Hook\Module\AviUtl.h" />
     <ClInclude Include="Hook\Module\color_palette.h" />
@@ -185,7 +184,6 @@
     <ClInclude Include="Hook\Module\vsthost.h" />
     <ClInclude Include="Hook\Module\ZRamPreview.h" />
     <ClInclude Include="Hook\Share.h" />
-    <ClInclude Include="Hook\WinEvent.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Pane\Pane.h" />
     <ClInclude Include="Pane\Tab.h" />

@@ -390,15 +390,15 @@ namespace fgo::nest
 		//
 		BOOL createSubProcesses(HWND parent)
 		{
-			if (hive.dockPSDToolKit) {
-				const LPCTSTR name = Hive::PSDToolKitName;
+			if (hive.psdtoolkit.dock) {
+				const LPCTSTR name = Hive::PSDToolKit::Name;
 				auto shuttle = psdtoolkit = std::make_shared<PSDToolKit>();
 				shuttle->create(name, *this);
 				shuttle->init(name, *shuttle);
 			}
 
-			if (hive.dockBouyomisan) {
-				const LPCTSTR name = Hive::BouyomisanName;
+			if (hive.bouyomisan.dock) {
+				const LPCTSTR name = Hive::Bouyomisan::Name;
 				auto shuttle = bouyomisan = std::make_shared<Bouyomisan>();
 				shuttle->create(name, *this);
 				shuttle->init(name, *shuttle);

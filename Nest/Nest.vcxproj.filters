@@ -118,12 +118,6 @@
     <ClInclude Include="SubProcess.h" />
     <ClInclude Include="SubProcessManager.h" />
     <ClInclude Include="Servant.h" />
-    <ClInclude Include="Hook\WinEvent.h">
-      <Filter>Hook</Filter>
-    </ClInclude>
-    <ClInclude Include="Hook\LowLevelMouse.h">
-      <Filter>Hook</Filter>
-    </ClInclude>
     <ClInclude Include="SubWindowManager.h" />
     <ClInclude Include="SubProcess\Bouyomisan.h">
       <Filter>Element\SubProcess</Filter>

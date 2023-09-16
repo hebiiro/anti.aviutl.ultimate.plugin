@@ -6,8 +6,6 @@
 #include "Hook/Api.h"
 #include "Hook/CBT.h"
 #include "Hook/GetMessage.h"
-#include "Hook/LowLevelMouse.h" // テスト用です。
-#include "Hook/WinEvent.h" // テスト用です。
 #include "Hook/Module.h"
 
 namespace fgo::nest
@@ -55,8 +53,6 @@ namespace fgo::nest
 			hook::api.init();
 			hook::cbt.init();
 			hook::get_message.init();
-//			hook::low_level_mouse.init();
-//			hook::win_event.init();
 
 			return TRUE;
 		}
@@ -68,8 +64,6 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("");
 
-//			hook::win_event.exit();
-//			hook::low_level_mouse.exit();
 			hook::get_message.exit();
 			hook::cbt.exit();
 			hook::api.exit();
@@ -169,8 +163,8 @@ namespace fgo::nest
 		//
 		BOOL load(LPCWSTR path)
 		{
-			getPrivateProfileInt(path, L"Config", L"dockPSDToolKit", hive.dockPSDToolKit);
-			getPrivateProfileInt(path, L"Config", L"dockBouyomisan", hive.dockBouyomisan);
+			hive.psdtoolkit.load(path, L"PSDToolKit");
+			hive.bouyomisan.load(path, L"Bouyomisan");
 
 			return TRUE;
 		}
@@ -188,8 +182,8 @@ namespace fgo::nest
 		//
 		BOOL save(LPCWSTR path)
 		{
-			setPrivateProfileInt(path, L"Config", L"dockPSDToolKit", hive.dockPSDToolKit);
-			setPrivateProfileInt(path, L"Config", L"dockBouyomisan", hive.dockBouyomisan);
+			hive.psdtoolkit.save(path, L"PSDToolKit");
+			hive.bouyomisan.save(path, L"Bouyomisan");
 
 			return TRUE;
 		}

@@ -493,6 +493,13 @@ inline HRESULT WINAPI setPrivateProfileBSTR(LPCWSTR fileName, LPCWSTR appName, L
 }
 
 template<class T>
+inline HRESULT WINAPI setPrivateProfileString(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value)
+{
+	::WritePrivateProfileStringW(appName, keyName, value, fileName);
+	return S_OK;
+}
+
+template<class T>
 inline HRESULT WINAPI setPrivateProfileInt(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value)
 {
 	WCHAR text[MAX_PATH] = {};

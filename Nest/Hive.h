@@ -18,9 +18,36 @@ namespace fgo::nest
 			static const UINT WM_REFRESH_TITLE = WM_APP + 5;
 		};
 
+		struct SubProcess {
+			BOOL dock = FALSE;
+			TCHAR run[MAX_PATH] = {};
+			BOOL load(LPCWSTR path, LPCWSTR appName) {
+				getPrivateProfileInt(path, appName, L"dock", dock);
+				getPrivateProfileString(path, appName, L"run", run);
+				if (_tcslen(run)) {
+					TCHAR directory[MAX_PATH] = {};
+					::StringCchCopy(directory, std::size(directory), run);
+					::PathRemoveFileSpec(directory);
+					::ShellExecute(hive.mainWindow, 0, run, 0, directory, SW_SHOW);
+				}
+				return TRUE;
+			}
+			BOOL save(LPCWSTR path, LPCWSTR appName) {
+				setPrivateProfileInt(path, appName, L"dock", dock);
+				setPrivateProfileString(path, appName, L"run", run);
+				return TRUE;
+			}
+		};
+
+		struct PSDToolKit : SubProcess {
+			inline static const LPCTSTR Name = _T("PSDToolKit(外部)");
+		} psdtoolkit;
+
+		struct Bouyomisan : SubProcess {
+			inline static const LPCTSTR Name = _T("棒読みさん(外部)");
+		} bouyomisan;
+
 		inline static const LPCTSTR AppName = _T("ネスト");
-		inline static const LPCTSTR PSDToolKitName = _T("PSDToolKit(外部)");
-		inline static const LPCTSTR BouyomisanName = _T("棒読みさん(外部)");
 		inline static const LPCTSTR SubWindowClassName = _T("Nest.SubWindow");
 		inline static const LPCTSTR SubProcessClassName = _T("Nest.SubProcess");
 
@@ -43,8 +70,6 @@ namespace fgo::nest
 		BOOL useTheme = FALSE;
 		BOOL forceScroll = FALSE;
 		BOOL showPlayer = FALSE;
-		BOOL dockPSDToolKit = FALSE;
-		BOOL dockBouyomisan = FALSE;
 
 		//
 		// 矩形を塗りつぶします。
