@@ -70,12 +70,12 @@ namespace fgo::nest
 				{
 					MY_TRACE(_T("AviUtlWindow::onWndProc(WM_SETTEXT)\n"));
 
-					LPCTSTR newText = (LPCTSTR)lParam;
+					LRESULT lr = __super::onWndProc(hwnd, message, wParam, lParam);
 
 					// メインウィンドウのウィンドウテキストを更新します。
-					::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_SET_TITLE, 0, (LPARAM)newText);
+					::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_REFRESH_TITLE, 0, 0);
 
-					break;
+					return lr;
 				}
 			}
 

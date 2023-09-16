@@ -15,7 +15,7 @@ namespace fgo::nest
 			static const UINT WM_LOAD_CONFIG = WM_APP + 2;
 			static const UINT WM_SAVE_CONFIG = WM_APP + 3;
 			static const UINT WM_INIT_SHUTTLE = WM_APP + 4;
-			static const UINT WM_SET_TITLE = WM_APP + 5;
+			static const UINT WM_REFRESH_TITLE = WM_APP + 5;
 		};
 
 		inline static const LPCTSTR AppName = _T("ネスト");

@@ -197,30 +197,34 @@ namespace fgo::nest
 		//
 		// メインウィンドウのタイトル名を更新します。
 		//
-		void setTitle(LPCTSTR newText)
+		void refreshTitle()
 		{
-			MY_TRACE_FUNC("%s", newText);
+			MY_TRACE_FUNC("");
+
+			TCHAR orig[MAX_PATH] = {};
+			::GetWindowText(hive.aviutlWindow, orig, std::size(orig));
+			MY_TRACE_TSTR(orig);
 
 			AviUtl::EditHandle* editp = magi.auin.GetEditp();
 
-			TCHAR fileName[MAX_PATH] = {};
-			if (editp->frame_n)
+			TCHAR title[MAX_PATH] = {};
+			if (editp && editp->frame_n)
 			{
-				::StringCchPrintf(fileName, std::size(fileName), _T("%hs"), editp->project_filename);
-				::PathStripPath(fileName);
+				::StringCchPrintf(title, std::size(title), _T("%hs"), editp->project_filename);
+				::PathStripPath(title);
 
-				if (_tcslen(fileName) == 0)
-					::StringCchCopy(fileName, std::size(fileName), newText);
+				if (_tcslen(title) == 0)
+					::StringCchCopy(title, std::size(title), _T("無題"));
+
+				::StringCchCat(title, std::size(title), _T(" - "));
+				::StringCchCat(title, std::size(title), orig);
 			}
 			else
 			{
-				::StringCchCopy(fileName, std::size(fileName), _T("無題"));
+				::StringCchCopy(title, std::size(title), orig);
 			}
 
-			::StringCchCat(fileName, std::size(fileName), _T(" - "));
-			::StringCchCat(fileName, std::size(fileName), newText);
-
-			::SetWindowText(*this, fileName);
+			::SetWindowText(*this, title);
 		}
 
 		//
@@ -571,9 +575,7 @@ namespace fgo::nest
 
 					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, End", hwnd, wParam, lParam);
 
-					TCHAR windowName[MAX_PATH] = {};
-					::GetWindowText(hive.aviutlWindow, windowName, std::size(windowName));
-					setTitle(windowName);
+					refreshTitle();
 
 					break;
 				}
@@ -604,11 +606,9 @@ namespace fgo::nest
 
 					break;
 				}
-			case Hive::WindowMessage::WM_SET_TITLE: // タイトルを更新するために通知されます。
+			case Hive::WindowMessage::WM_REFRESH_TITLE: // タイトルを更新するために通知されます。
 				{
-					LPCTSTR newText = (LPCTSTR)lParam;
-
-					setTitle(newText);
+					refreshTitle();
 
 					break;
 				}
