@@ -478,7 +478,7 @@ namespace fgo::nest
 
 					// 「PSDToolKit」用の処理です。
 					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズします。
-					if (psdtoolkit && ::IsWindowVisible(*psdtoolkit))
+					if (psdtoolkit)
 					{
 						// PSDToolKitを非表示にしてマウスメッセージが飛ばないようにします。
 						::ShowWindow(*psdtoolkit, FALSE);
