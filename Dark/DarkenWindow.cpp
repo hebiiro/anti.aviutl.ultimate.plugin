@@ -148,103 +148,6 @@ void WINAPI DarkenWindow_init(HWND hwnd)
 	g_skin.reloadSettings(TRUE);
 }
 
-BOOL WINAPI checkPatch()
-{
-	MY_TRACE(_T("checkPatch()\n"));
-
-	// システム情報を取得する。
-	AviUtl::SysInfo si = {};
-	g_auin.get_sys_info(0, &si);
-
-	// バージョン文字列を取得する。
-	if (!si.info)
-	{
-		::MessageBox(
-			0,
-			_T("バージョン文字列を取得できませんでした") _T("\n")
-			_T("DarkenWindow は正常に動作することができません") _T("\n") _T(" "),
-			_T("DarkenWindow"),
-			MB_OK);
-
-		return FALSE; // バージョン文字列を取得できなかった。
-	}
-
-	// バージョン文字列を見つける。
-	LPCSTR p = strstr(si.info, "patched r");
-	if (!p)
-	{
-		int retValue = ::MessageBox(
-			0,
-			_T("patch.aul のバージョン文字列が見つかりませんでした") _T("\n")
-			_T("DarkenWindow は正常に動作することができません") _T("\n")
-			_T("patch.aul を導入済みなのにこのメッセージが出ている場合は OK を押してください") _T("\n") _T(" "),
-			_T("DarkenWindow"),
-			MB_OKCANCEL | MB_ICONQUESTION);
-
-		if (retValue == IDOK)
-		{
-			if (!::LoadLibrary(_T("MSVCP140_ATOMIC_WAIT.DLL")))
-			{
-				int retValue = ::MessageBox(
-					0,
-					_T("Visual Studio 2022 のランタイムライブラリがインストールされていない可能性があります") _T("\n")
-					_T("ランタイムライブラリのダウンロードリンクをクリップボードにコピーする場合は OK を押してください") _T("\n") _T(" "),
-					_T("DarkenWindow"),
-					MB_OKCANCEL | MB_ICONQUESTION);
-
-				if (retValue == IDOK)
-				{
-					::OpenClipboard(0);
-					::EmptyClipboard();
-					HANDLE handle = ::GlobalAlloc(GHND | GMEM_SHARE, MAX_PATH * sizeof(TCHAR));
-					LPTSTR buffer = (LPTSTR)::GlobalLock(handle);
-					::StringCchCopy(buffer, MAX_PATH, _T("https://aka.ms/vs/17/release/vc_redist.x86.exe"));
-					::GlobalUnlock(handle);
-					::SetClipboardData(CF_TEXT, handle);
-					::CloseClipboard();
-
-					::MessageBox(
-						0,
-						_T("https://aka.ms/vs/17/release/vc_redist.x86.exe") _T("\n")
-						_T("上記のランタイムライブラリのダウンロードリンクをクリップボードにコピーしました") _T("\n")
-						_T("ブラウザのアドレスバーに貼り付けてダウンロードしてください") _T("\n") _T(" "),
-						_T("DarkenWindow"),
-						MB_OK);
-				}
-			}
-			else
-			{
-				int retValue = ::MessageBox(
-					0,
-					_T("patch.aul が AviUtl のフォルダの中にあるか確認してください") _T("\n") _T(" "),
-					_T("DarkenWindow"),
-					MB_OK);
-			}
-		}
-
-		return FALSE; // バージョン文字列を見つけられなかった。
-	}
-
-	p += strlen("patched r");
-
-	// バージョンを取得する。
-	int version = atoi(p);
-	if (version < 18)
-	{
-		::MessageBox(
-			0,
-			_T("patch.aul r18 以上が見つかりませんでした") _T("\n")
-			_T("DarkenWindow は正常に動作することができません") _T("\n")
-			_T("patch.aul の最新バージョンを導入してください") _T("\n") _T(" "),
-			_T("DarkenWindow"),
-			MB_OK);
-
-		return FALSE; // バージョンが低すぎた。
-	}
-
-	return TRUE;
-}
-
 BOOL WINAPI init(HWND hwnd)
 {
 	MY_TRACE(_T("init(0x%08X)\n"), hwnd);
@@ -256,13 +159,6 @@ BOOL WINAPI init(HWND hwnd)
 
 		// AviUtl のアドレス情報を取得する。
 		g_auin.initAviUtlAddress();
-
-		if(!checkPatch()) // patch.aul のバージョンを確認する。
-		{
-			termHook();
-
-			return FALSE;
-		}
 
 		DarkenWindow_init(hwnd);
 
