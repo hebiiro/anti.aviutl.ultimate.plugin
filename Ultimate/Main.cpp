@@ -49,7 +49,7 @@ BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 {
 	LPCSTR name = "アルティメットプラグイン";
-	LPCSTR information = "アルティメットプラグイン r1 by 蛇色";
+	LPCSTR information = "アルティメットプラグイン r3 by 蛇色";
 
 	static AviUtl::FilterPluginDLL filter = {
 		.flag =

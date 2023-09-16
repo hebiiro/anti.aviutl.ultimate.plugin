@@ -472,8 +472,25 @@ namespace fgo::nest
 
 							updateMainMenu();
 
-							break;
+							return 0;
 						}
+					}
+
+					// 「PSDToolKit」用の処理です。
+					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズします。
+					if (psdtoolkit)
+					{
+						// PSDToolKitを非表示にしてマウスメッセージが飛ばないようにします。
+						::ShowWindow(*psdtoolkit, FALSE);
+
+						// AviUtlにWM_COMMANDを処理させます。
+						LRESULT lr = ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
+
+						// 非表示コマンドをポストします。
+						// これにより、若干遅れてPSDToolKitが表示状態になります。
+						::ShowWindowAsync(*psdtoolkit, TRUE);
+
+						return lr;
 					}
 
 					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);

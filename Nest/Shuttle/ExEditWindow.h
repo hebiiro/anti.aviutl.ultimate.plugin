@@ -94,28 +94,6 @@ namespace fgo::nest
 
 					break;
 				}
-			case AviUtl::FilterPlugin::WindowMessage::FileOpen:
-				{
-					MY_TRACE_FUNC("FileOpen, 0x%08X, 0x%08X", wParam, lParam);
-
-					// 「PSDToolKit」用の処理です。
-					// FileCloseで非表示にしたPSDToolKitを再表示します。
-					if (psdtoolkit)
-						::ShowWindow(*psdtoolkit, SW_SHOW);
-
-					break;
-				}
-			case AviUtl::FilterPlugin::WindowMessage::FileClose:
-				{
-					MY_TRACE_FUNC("FileClose, 0x%08X, 0x%08X", wParam, lParam);
-
-					// 「PSDToolKit」用の処理です。
-					// フリーズしないように一旦非表示にします。
-					if (psdtoolkit)
-						::ShowWindow(*psdtoolkit, SW_HIDE);
-
-					break;
-				}
 			}
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);

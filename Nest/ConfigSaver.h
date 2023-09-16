@@ -167,6 +167,7 @@ namespace fgo::nest
 				MSXML2::IXMLDOMElementPtr floatShuttleElement = appendElement(element, L"floatShuttle");
 
 				std::wstring name = getName(shuttle->name);
+				MY_TRACE_WSTR(name);
 
 				setPrivateProfileString(floatShuttleElement, L"name", name.c_str());
 				setPrivateProfileWindow(floatShuttleElement, L"placement", *shuttle->floatContainer);
