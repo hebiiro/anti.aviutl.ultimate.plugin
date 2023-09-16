@@ -144,7 +144,8 @@ namespace Tools {
 			string func_name = func;
 			size_t end = func_name.find_first_of(_T('('));
 			if (end != string::npos) func_name.resize(end);
-			size_t begin = func_name.find_last_of(_T(' '));
+			size_t template_begin = func_name.find_first_of(_T('<'));
+			size_t begin = func_name.find_last_of(_T(' '), template_begin);
 			if (begin != string::npos) func_name.erase(0, begin + 1);
 
 			//

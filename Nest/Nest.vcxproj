@@ -186,6 +186,7 @@
     <ClInclude Include="Hook\Share.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Pane\Pane.h" />
+    <ClInclude Include="Pane\RootPane.h" />
     <ClInclude Include="Pane\Tab.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />

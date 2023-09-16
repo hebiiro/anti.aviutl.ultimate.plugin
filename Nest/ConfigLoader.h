@@ -132,7 +132,7 @@ namespace fgo::nest
 			{
 				MSXML2::IXMLDOMElementPtr mainWindowElement = nodeList->item[i];
 
-				std::shared_ptr<Pane> root = MainWindow::getRootPane(hive.mainWindow);
+				auto root = MainWindow::getRootPane(hive.mainWindow);
 
 				// 一旦すべてのペインをリセットします。
 				root->resetPane();
@@ -172,14 +172,11 @@ namespace fgo::nest
 				MY_TRACE_TSTR((LPCTSTR)name);
 
 				// サブウィンドウを取得します。
-				std::shared_ptr<Shuttle> shuttle = shuttleManager.get(name);
+				auto shuttle = shuttleManager.get(name);
 				if (!shuttle) continue;
 
-				MY_TRACE_INT(::IsWindowVisible(*shuttle));
-				MY_TRACE_INT(::IsWindowVisible(::GetParent(*shuttle)));
-
 				// ルートペインを取得します。
-				std::shared_ptr<Pane> root = SubWindow::getRootPane(*shuttle);
+				auto root = SubWindow::getRootPane(*shuttle);
 				if (!root) continue;
 
 				// <pane> を読み込みます。

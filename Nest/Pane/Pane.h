@@ -72,7 +72,7 @@ namespace fgo::nest
 			: owner(owner)
 		{
 			tab.create(
-				0,
+				WS_EX_NOPARENTNOTIFY,
 				WC_TABCONTROL,
 				_T("Nest.Tab"),
 				WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
@@ -260,7 +260,8 @@ namespace fgo::nest
 					{
 						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
 
-						::ShowWindowAsync(*shuttle->dockContainer, SW_SHOW);
+						hive.true_SetWindowPos(*shuttle->dockContainer, HWND_TOP, 0, 0, 0, 0,
+							SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
 						::ShowWindowAsync(*shuttle, SW_SHOW);
 					}
 				}
@@ -400,7 +401,7 @@ namespace fgo::nest
 		//
 		// ペインをリセットします。
 		//
-		void resetPane()
+		virtual void resetPane()
 		{
 			removeAllShuttles();
 
@@ -600,14 +601,14 @@ namespace fgo::nest
 		//
 		void recalcLayout()
 		{
-			recalcLayout(&position);
+			recalcLayout(&position, 0);
 		}
 
 		//
 		// このペインおよび子孫ペインの位置情報を再計算します。
 		// rcはこのペインの新しい位置です。
 		//
-		void recalcLayout(LPCRECT rc)
+		virtual void recalcLayout(LPCRECT rc, const std::shared_ptr<Pane>& limited)
 		{
 //			MY_TRACE(_T("Pane::recalcLayout()\n"));
 
@@ -620,7 +621,7 @@ namespace fgo::nest
 			int c = getTabCount();
 
 			// タブが 2 個以上あるなら
-			if (c >= 2)
+			if (c >= 2 && (!limited || this == limited.get()))
 			{
 				switch (tabMode)
 				{
@@ -634,8 +635,8 @@ namespace fgo::nest
 						modifyStyle(tab, TCS_BOTTOM, 0);
 
 						// タブコントロールを表示します。
-						hive.true_SetWindowPos(tab, 0,
-							x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+						hive.true_SetWindowPos(tab, HWND_TOP,
+							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 						break;
 					}
@@ -649,8 +650,8 @@ namespace fgo::nest
 						modifyStyle(tab, TCS_BOTTOM, 0);
 
 						// タブコントロールを表示します。
-						hive.true_SetWindowPos(tab, 0,
-							x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+						hive.true_SetWindowPos(tab, HWND_TOP,
+							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 						break;
 					}
@@ -664,8 +665,8 @@ namespace fgo::nest
 						modifyStyle(tab, 0, TCS_BOTTOM);
 
 						// タブコントロールを表示します。
-						hive.true_SetWindowPos(tab, 0,
-							x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+						hive.true_SetWindowPos(tab, HWND_TOP,
+							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 						break;
 					}
@@ -705,14 +706,14 @@ namespace fgo::nest
 					{
 						RECT rc = { position.left, position.top, absBorder, position.bottom };
 
-						children[0]->recalcLayout(&rc);
+						children[0]->recalcLayout(&rc, limited);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { absBorder + borderWidth, position.top, position.right, position.bottom };
 
-						children[1]->recalcLayout(&rc);
+						children[1]->recalcLayout(&rc, limited);
 					}
 
 					break;
@@ -725,14 +726,14 @@ namespace fgo::nest
 					{
 						RECT rc = { position.left, position.top, position.right, absBorder };
 
-						children[0]->recalcLayout(&rc);
+						children[0]->recalcLayout(&rc, limited);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { position.left, absBorder + borderWidth, position.right, position.bottom };
 
-						children[1]->recalcLayout(&rc);
+						children[1]->recalcLayout(&rc, limited);
 					}
 
 					break;
@@ -1048,7 +1049,7 @@ namespace fgo::nest
 		// このペインの表示状態を最新の状態に更新します。
 		// deepがTRUEなら子孫ペインも再帰的に更新します。
 		//
-		void refresh(BOOL deep)
+		virtual void refresh(BOOL deep)
 		{
 			refreshCurrent();
 			invalidate();

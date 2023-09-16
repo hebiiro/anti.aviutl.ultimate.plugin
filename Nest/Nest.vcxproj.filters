@@ -128,6 +128,9 @@
     <ClInclude Include="Hook\CBT.h">
       <Filter>Hook</Filter>
     </ClInclude>
+    <ClInclude Include="Pane\RootPane.h">
+      <Filter>Element\Pane</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

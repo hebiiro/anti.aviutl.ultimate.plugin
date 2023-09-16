@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Hive.h"
-#include "Pane/Pane.h"
+#include "Pane/RootPane.h"
 #include "Shuttle/ShuttleManager.h"
 
 namespace fgo::nest
@@ -36,7 +36,7 @@ namespace fgo::nest
 		//
 		static void initRootPane(HWND hwnd)
 		{
-			auto p = new std::shared_ptr<Pane>(std::make_shared<Pane>(hwnd));
+			auto p = new std::shared_ptr<RootPane>(std::make_shared<RootPane>(hwnd));
 			::SetProp(hwnd, PropName, p);
 		}
 
@@ -46,7 +46,7 @@ namespace fgo::nest
 		static void exitRootPane(HWND hwnd)
 		{
 			// ルートペインを取得します。
-			auto p = (std::shared_ptr<Pane>*)::GetProp(hwnd, PropName);
+			auto p = (std::shared_ptr<RootPane>*)::GetProp(hwnd, PropName);
 
 			// ルートペインをリセットします。
 			// これにより、ドッキング中のすべてのシャトルがフローティング状態になり、
@@ -63,9 +63,9 @@ namespace fgo::nest
 		//
 		// ルートペインを返します。
 		//
-		static std::shared_ptr<Pane> getRootPane(HWND hwnd)
+		static std::shared_ptr<RootPane> getRootPane(HWND hwnd)
 		{
-			auto p = (std::shared_ptr<Pane>*)::GetProp(hwnd, PropName);
+			auto p = (std::shared_ptr<RootPane>*)::GetProp(hwnd, PropName);
 			if (!p) return 0; // 取得できなかった場合は 0 を返します。
 			return *p;
 		}
@@ -93,15 +93,15 @@ namespace fgo::nest
 		//
 		// ペインのレイアウトを再帰的に再計算します。
 		//
-		static void calcLayout(HWND hwnd)
+		void calcLayout(HWND hwnd)
 		{
 //			MY_TRACE_FUNC("0x%08X", hwnd);
 
-			RECT rc; ::GetClientRect(hwnd, &rc);
 			auto root = getRootPane(hwnd);
 			if (root)
 			{
-				root->recalcLayout(&rc);
+				RECT rc; ::GetClientRect(hwnd, &rc);
+				root->recalcLayout(&rc, 0);
 				::InvalidateRect(hwnd, 0, FALSE);
 			}
 		}
@@ -256,7 +256,7 @@ namespace fgo::nest
 		{
 			// ルートペインを取得します。
 			auto root = getRootPane(dockSite);
-			if (!root) return;
+			if (!root || root->getMaximizedPane()) return;
 
 			// カーソル座標を取得して、クライアント座標に変換します。
 			POINT cursorPos; ::GetCursorPos(&cursorPos);
@@ -471,8 +471,38 @@ namespace fgo::nest
 				{
 					NMHDR* header = (NMHDR*)lParam;
 
+					MY_TRACE_FUNC("WM_NOTIFY, %d\n", header->code);
+
 					switch (header->code)
 					{
+					case NM_DBLCLK:
+						{
+							auto pane = Pane::getPane(header->hwndFrom);
+							if (!pane) break;
+
+							// ルートペインを取得します。
+							auto root = getRootPane(hwnd);
+
+							// 最大化されたペインが存在するなら
+							if (root->getMaximizedPane().get() == pane)
+							{
+								// 最大化されたペインをリセットします。
+								root->setMaximizedPane(0);
+							}
+							else
+							{
+								// 最大化されたペインにセットします。
+								root->setMaximizedPane(pane->shared_from_this());
+							}
+
+							// レイアウトを再計算します。
+							calcLayout(hwnd);
+
+							// ペインをリフレッシュします。
+							root->refresh(TRUE);
+
+							break;
+						}
 					case NM_RCLICK:
 						{
 							// タブ上で右クリックが発生した場合はペインメニューを表示します。
@@ -483,7 +513,7 @@ namespace fgo::nest
 					case TCN_SELCHANGE:
 						{
 							// タブアイテムが切り替わった場合はペインをリフレッシュします。
-							Pane* pane = Pane::getPane(header->hwndFrom);
+							auto pane = Pane::getPane(header->hwndFrom);
 							if (pane)
 								pane->refresh(FALSE);
 
@@ -495,7 +525,7 @@ namespace fgo::nest
 				}
 			case WM_CREATE:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_CREATE, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// ルートペインを作成します。
 					initRootPane(hwnd);
@@ -504,7 +534,7 @@ namespace fgo::nest
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, 0x%08X, 0x%08X", wParam, lParam);
 
 					// ルートペインを削除します。
 					exitRootPane(hwnd);
@@ -519,7 +549,7 @@ namespace fgo::nest
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_SHOWWINDOW, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_SHOWWINDOW, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (wParam)
 					{
@@ -540,6 +570,10 @@ namespace fgo::nest
 						return 0;
 
 					auto root = getRootPane(hwnd);
+					auto painter = root->getMaximizedPane();
+
+					// 最大化されたペインが存在しない場合はルートペインを描画します。
+					if (!painter) painter = root;
 
 					{
 						// 背景を塗りつぶします。
@@ -551,7 +585,7 @@ namespace fgo::nest
 						// ボーダーを再帰的に描画します。
 
 						HBRUSH brush = ::CreateSolidBrush(hive.borderColor);
-						root->drawBorder(dc, brush);
+						painter->drawBorder(dc, brush);
 						::DeleteObject(brush);
 					}
 
@@ -575,7 +609,7 @@ namespace fgo::nest
 						HFONT font = ::CreateFontIndirectW(&lf);
 						HFONT oldFont = (HFONT)::SelectObject(dc, font);
 
-						root->drawCaption(dc);
+						painter->drawCaption(dc);
 
 						::SelectObject(dc, oldFont);
 						::DeleteObject(font);
@@ -617,7 +651,7 @@ namespace fgo::nest
 				}
 			case WM_LBUTTONDOWN:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_LBUTTONDOWN, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDOWN, 0x%08X, 0x%08X", wParam, lParam);
 
 					// マウス座標を取得します。
 					POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
@@ -663,7 +697,7 @@ namespace fgo::nest
 				}
 			case WM_LBUTTONUP:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_LBUTTONUP, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONUP, 0x%08X, 0x%08X", wParam, lParam);
 
 					// マウス座標を取得します。
 					POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
@@ -689,9 +723,44 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_LBUTTONDBLCLK:
+				{
+					MY_TRACE_FUNC("WM_LBUTTONDBLCLK, 0x%08X, 0x%08X", wParam, lParam);
+
+					// ルートペインを取得します。
+					auto root = getRootPane(hwnd);
+
+					// 最大化されたペインが存在するなら
+					if (root->getMaximizedPane())
+					{
+						// 最大化されたペインをリセットします。
+						root->setMaximizedPane(0);
+					}
+					else
+					{
+						// マウス座標を取得します。
+						POINT point = LP2PT(lParam);
+
+						// マウス座標にあるキャプションのペインを取得します。
+						auto pane = root->hitTestPane(point);
+						if (!pane || !pane->hitTestCaption(point)) break;
+
+						// キャプションをダブルクリックされたペインを
+						// 最大化されたペインにセットします。
+						root->setMaximizedPane(pane);
+					}
+
+					// レイアウトを再計算します。
+					calcLayout(hwnd);
+
+					// ペインをリフレッシュします。
+					root->refresh(TRUE);
+
+					break;
+				}
 			case WM_RBUTTONDOWN:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_RBUTTONDOWN, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_RBUTTONDOWN, 0x%08X, 0x%08X", wParam, lParam);
 
 					// ペイン編集用メニューを表示します。
 					showPaneMenu(hwnd);
@@ -700,6 +769,8 @@ namespace fgo::nest
 				}
 			case WM_MOUSEMOVE:
 				{
+//					MY_TRACE_FUNC("WM_MOUSEMOVE, 0x%08X, 0x%08X", wParam, lParam);
+
 					// マウス座標を取得します。
 					POINT point = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 
@@ -746,7 +817,7 @@ namespace fgo::nest
 				}
 			case WM_MOUSELEAVE:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_MOUSELEAVE, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSELEAVE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// ホットボーダーが存在する場合は
 					if (hotBorderPane)
@@ -762,7 +833,7 @@ namespace fgo::nest
 				}
 			case WM_MOUSEWHEEL:
 				{
-					MY_TRACE(_T("DockSite::onWndProc(WM_MOUSEWHEEL, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSEWHEEL, 0x%08X, 0x%08X", wParam, lParam);
 
 					// タブ上でマウスホイールが発生した場合はカレントタブを切り替えます。
 
