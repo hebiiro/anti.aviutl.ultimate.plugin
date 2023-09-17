@@ -8,6 +8,15 @@ namespace fgo
 	struct Servant
 	{
 		//
+		// このクラスは関数の状態です。
+		//
+		struct ProcState {
+			BOOL is_editing;
+			BOOL is_saving;
+			BOOL is_playing;
+		};
+
+		//
 		// サーヴァントの識別名を返します。
 		//
 		virtual LPCWSTR get_servant_name() = 0;
@@ -60,6 +69,30 @@ namespace fgo
 		// ウィンドウのコマンドのタイミングで呼び出されます。
 		//
 		virtual BOOL on_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			return FALSE;
+		}
+
+		//
+		// ウィンドウ関数のタイミングで呼び出されます。
+		//
+		virtual BOOL on_window_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			return FALSE;
+		}
+
+		//
+		// 映像フィルタのタイミングで呼び出されます。
+		//
+		virtual BOOL on_video_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state)
+		{
+			return FALSE;
+		}
+
+		//
+		// 音声フィルタのタイミングで呼び出されます。
+		//
+		virtual BOOL on_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state)
 		{
 			return FALSE;
 		}

@@ -47,6 +47,9 @@ namespace fgo
 			return TRUE;
 		}
 
+		//
+		// サーヴァントの数を返します。
+		//
 		size_t get_servant_count() const
 		{
 			return servants.vector.size();
@@ -154,6 +157,52 @@ namespace fgo
 			BOOL result = FALSE;
 			for (const auto& pair : servants.map)
 				result |= pair.second.servant->on_window_command(hwnd, message, wParam, lParam, editp, fp);
+			return result;
+		}
+
+		//
+		// サーヴァントにウィンドウ関数を処理させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_window_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_window_proc(hwnd, message, wParam, lParam, editp, fp);
+			return result;
+		}
+
+		//
+		// サーヴァントに映像フィルタを処理させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_video_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
+		{
+			Servant::ProcState proc_state = {};
+			proc_state.is_editing = fp->exfunc->is_editing(fpip->editp);
+			proc_state.is_saving = fp->exfunc->is_saving(fpip->editp);
+			proc_state.is_playing = !!((DWORD)fpip->editp->aviutl_window_info.flag & 0x00040000);
+
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_video_proc(fp, fpip, proc_state);
+			return result;
+		}
+
+		//
+		// サーヴァントに音声フィルタを処理させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
+		{
+			Servant::ProcState proc_state = {};
+			proc_state.is_editing = fp->exfunc->is_editing(fpip->editp);
+			proc_state.is_saving = fp->exfunc->is_saving(fpip->editp);
+			proc_state.is_playing = !!((DWORD)fpip->editp->aviutl_window_info.flag & 0x00040000);
+
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_audio_proc(fp, fpip, proc_state);
 			return result;
 		}
 

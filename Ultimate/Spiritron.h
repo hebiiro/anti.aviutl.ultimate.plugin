@@ -111,7 +111,7 @@ namespace fgo
 		}
 
 		//
-		// ターゲットのウィンドウプロシージャです。
+		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
@@ -119,13 +119,13 @@ namespace fgo
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("Spiritron::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, 0x%08X, 0x%08X", wParam, lParam);
 
 					break;
 				}
 			case WM_NCDESTROY:
 				{
-					MY_TRACE(_T("Spiritron::onWndProc(WM_NCDESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_NCDESTROY, 0x%08X, 0x%08X", wParam, lParam);
 
 					MY_TRACE_HWND(hwnd);
 
@@ -144,7 +144,7 @@ namespace fgo
 			{
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
-					MY_TRACE(_T("Spiritron::func_WndProc(Command, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("Command, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (wParam == 0 && lParam == 0) return TRUE; // AviUtlの再描画のみ行います。
 
@@ -164,7 +164,6 @@ namespace fgo
 						// サーヴァントにアドインコマンドを送ります。
 						return servant->on_window_command(hwnd, message, ID_ADDIN, lParam, editp, fp);
 					}
-
 
 					return fate.fire_window_command(hwnd, message, wParam, lParam, editp, fp);
 				}

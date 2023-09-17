@@ -1,5 +1,5 @@
 EXPORTS
-	GetFilterTable
+	GetFilterTableList
 	hello_world
 	see_you
 	get_magi
