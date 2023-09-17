@@ -46,7 +46,7 @@ namespace fgo
 	//
 	// エントリポイント
 	//
-	BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+	EXTERN_C BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 	{
 		return story.DllMain(instance, reason, reserved);
 	}

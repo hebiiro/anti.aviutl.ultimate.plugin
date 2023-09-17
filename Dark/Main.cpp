@@ -1,36 +1,39 @@
 ﻿#include "pch.h"
 #include "Servant.h"
 
-using namespace fgo::dark;
-
-//
-// エクスポート関数です。
-// このDLLで実装したサーヴァントを返します。
-//
-fgo::Servant* WINAPI get_servant()
+namespace fgo::dark
 {
-	return &servant;
-}
-#if 0
-//
-// エントリポイントです。
-//
-BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
-{
-	switch (reason)
+	//
+	// エクスポート関数です。
+	// このDLLで実装したサーヴァントを返します。
+	//
+	fgo::Servant* WINAPI get_servant()
 	{
-	case DLL_PROCESS_ATTACH:
-		{
-			::DisableThreadLibraryCalls(instance);
+		Tools::Tracer::logger = 0; // デバッグトレースを有効にする場合はこの行をコメントアウトしてください。
 
-			break;
-		}
-	case DLL_PROCESS_DETACH:
-		{
-			break;
-		}
+		return &servant;
 	}
+#if 0
+	//
+	// エントリポイントです。
+	//
+	EXTERN_C BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+	{
+		switch (reason)
+		{
+		case DLL_PROCESS_ATTACH:
+			{
+				::DisableThreadLibraryCalls(instance);
 
-	return TRUE;
-}
+				break;
+			}
+		case DLL_PROCESS_DETACH:
+			{
+				break;
+			}
+		}
+
+		return TRUE;
+	}
 #endif
+}

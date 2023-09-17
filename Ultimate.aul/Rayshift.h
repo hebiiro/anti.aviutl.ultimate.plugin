@@ -9,7 +9,7 @@ namespace fgo
 
 		BOOL examine(HMODULE module)
 		{
-			MY_TRACE_FUNC("0x%08X", module);
+//			MY_TRACE_FUNC("0x%08X", module);
 
 			if (module == aul)
 				return start(module);

@@ -6,7 +6,7 @@ namespace fgo
 	//
 	// エントリポイントです。
 	//
-	BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+	EXTERN_C BOOL APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 	{
 		switch (reason)
 		{
