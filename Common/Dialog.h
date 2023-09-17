@@ -149,6 +149,27 @@ namespace Tools
 		{
 			return (int)::SendDlgItemMessage(*this, id, CB_GETCURSEL, 0, 0);
 		}
+
+		//
+		// コントロールサイズの基準となる数値を返します。
+		//
+		int getBaseSize()
+		{
+			// フォントを取得します。
+			HFONT font = (HFONT)::SendMessage(*this, WM_GETFONT, 0, 0);
+			MY_TRACE_HEX(font);
+			if (!font) font = (HFONT)::GetStockObject(DEFAULT_GUI_FONT);
+
+			// フォントのメトリックを取得します。
+			ClientDC dc(*this);
+			GdiObjSelector selector(dc, font);
+			TEXTMETRIC tm = {}; ::GetTextMetrics(dc, &tm);
+
+			// フォントの高さを返します。
+			// 24 == 最低値
+			// 8 == コントロールのエッジ幅(2 * 2) + 余白(2 * 2)
+			return std::max<int>(24, tm.tmHeight + tm.tmInternalLeading + 8);
+		}
 	};
 
 	struct NoCloseDialog : Dialog

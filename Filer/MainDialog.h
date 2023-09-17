@@ -28,7 +28,7 @@ namespace fgo::filer
 		//
 		MainDialog(HWND parent)
 		{
-			MY_TRACE(_T("MainDialog::MainDialog(0x%08X)\n"), parent);
+			MY_TRACE_FUNC("0x%08X", parent);
 
 			if (!create(hive.instance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), parent))
 			{
@@ -41,7 +41,7 @@ namespace fgo::filer
 		//
 		~MainDialog()
 		{
-			MY_TRACE(_T("MainDialog::~MainDialog()\n"));
+			MY_TRACE_FUNC("");
 		}
 
 		//
@@ -74,7 +74,7 @@ namespace fgo::filer
 		//
 		BOOL refresh()
 		{
-			MY_TRACE(_T("MainDialog::refresh()\n"));
+			MY_TRACE_FUNC("");
 
 			refreshListBox();
 			refreshButton();
@@ -88,7 +88,7 @@ namespace fgo::filer
 		//
 		BOOL refreshListBox()
 		{
-			MY_TRACE(_T("MainDialog::refreshListBox()\n"));
+			MY_TRACE_FUNC("");
 
 			if (lock) return FALSE;
 
@@ -111,7 +111,7 @@ namespace fgo::filer
 		//
 		BOOL refreshButton()
 		{
-			MY_TRACE(_T("MainDialog::refreshButton()\n"));
+			MY_TRACE_FUNC("");
 
 			if (lock) return FALSE;
 
@@ -137,7 +137,7 @@ namespace fgo::filer
 		//
 		BOOL refreshCheckBox()
 		{
-			MY_TRACE(_T("MainDialog::refreshCheckBox()\n"));
+			MY_TRACE_FUNC("");
 
 			if (lock) return FALSE;
 
@@ -152,7 +152,7 @@ namespace fgo::filer
 		//
 		BOOL setFilerName(size_t index, LPCTSTR newName)
 		{
-			MY_TRACE(_T("MainDialog::setFilerName(%d, %s)\n"), index, newName);
+			MY_TRACE_FUNC("%d, %s", index, newName);
 
 			if (lock) return FALSE;
 
@@ -168,7 +168,7 @@ namespace fgo::filer
 		//
 		BOOL showFiler()
 		{
-			MY_TRACE(_T("MainDialog::showFiler()\n"));
+			MY_TRACE_FUNC("");
 
 			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 			if (index >= FilerWindow::collection.size()) return FALSE;
@@ -183,7 +183,7 @@ namespace fgo::filer
 		//
 		BOOL onInitFilerWindow(FilerWindow* filerWindow) override
 		{
-			MY_TRACE(_T("MainDialog::onInitFilerWindow(0x%08X)\n"), filerWindow);
+			MY_TRACE_FUNC("0x%08X", filerWindow);
 
 			return refresh();
 		}
@@ -193,30 +193,9 @@ namespace fgo::filer
 		//
 		BOOL onExitFilerWindow(FilerWindow* filerWindow) override
 		{
-			MY_TRACE(_T("MainDialog::onExitFilerWindow(0x%08X)\n"), filerWindow);
+			MY_TRACE_FUNC("0x%08X", filerWindow);
 
 			return refresh();
-		}
-
-		//
-		// コントロールサイズの基準となる数値を返します。
-		// 内部的に使用されます。
-		//
-		int getBase()
-		{
-			// フォントを取得します。
-			HFONT font = (HFONT)::SendMessage(*this, WM_GETFONT, 0, 0);
-			MY_TRACE_HEX(font);
-			if (!font) font = (HFONT)::GetStockObject(DEFAULT_GUI_FONT);
-
-			// フォントのメトリックを取得します。
-			ClientDC dc(*this);
-			GdiObjSelector selector(dc, font);
-			TEXTMETRIC tm = {}; ::GetTextMetrics(dc, &tm);
-
-			// フォントの高さを返します。
-			// コントロールのエッジ幅(2 * 2) + 余白(2 * 2)
-			return tm.tmHeight + tm.tmInternalLeading + 8;
 		}
 
 		//
@@ -224,10 +203,9 @@ namespace fgo::filer
 		//
 		void onSize()
 		{
-			MY_TRACE(_T("MainDialog::onSize()\n"));
+			MY_TRACE_FUNC("");
 
-			int base = getBase();
-			if (base <= 0) base = 24;
+			int base = getBaseSize();
 			MY_TRACE_INT(base);
 
 			HWND list = ::GetDlgItem(*this, IDC_FILER_LIST);
@@ -266,7 +244,7 @@ namespace fgo::filer
 		//
 		BOOL onCreateFiler()
 		{
-			MY_TRACE(_T("MainDialog::onCreateFiler()\n"));
+			MY_TRACE_FUNC("");
 
 			if (auto listener = this->listener.lock())
 				return listener->onCreateFiler();
@@ -279,7 +257,7 @@ namespace fgo::filer
 		//
 		BOOL onDestroyFiler()
 		{
-			MY_TRACE(_T("MainDialog::onDestroyFiler()\n"));
+			MY_TRACE_FUNC("");
 
 			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 
@@ -294,7 +272,7 @@ namespace fgo::filer
 		//
 		BOOL onEditFiler()
 		{
-			MY_TRACE(_T("MainDialog::onEditFiler()\n"));
+			MY_TRACE_FUNC("");
 
 			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 

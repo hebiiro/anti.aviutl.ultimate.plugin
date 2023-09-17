@@ -2,7 +2,7 @@
 #include "Resource.h"
 #include "Hive.h"
 
-namespace fgo::last_frame
+namespace fgo::encode_guard
 {
 	//
 	// このクラスはメインダイアログです。
@@ -28,7 +28,9 @@ namespace fgo::last_frame
 			MY_TRACE_INT(base);
 
 			HWND checkbox[] = {
-				::GetDlgItem(*this, IDC_ENABLE),
+				::GetDlgItem(*this, IDC_CHECK_RANGE),
+				::GetDlgItem(*this, IDC_CHECK_LAST_FRAME),
+				::GetDlgItem(*this, IDC_CHECK_FRAME_RATE),
 			};
 
 			RECT rc; ::GetClientRect(*this, &rc);
@@ -37,8 +39,10 @@ namespace fgo::last_frame
 			int cw = getWidth(rc);
 			int ch = getHeight(rc);
 
-			HDWP dwp = ::BeginDeferWindowPos(1);
-			::DeferWindowPos(dwp, checkbox[0], 0, cx, cy, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
+			HDWP dwp = ::BeginDeferWindowPos(3);
+			::DeferWindowPos(dwp, checkbox[0], 0, cx, cy + base * 0, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
+			::DeferWindowPos(dwp, checkbox[1], 0, cx, cy + base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
+			::DeferWindowPos(dwp, checkbox[2], 0, cx, cy + base * 2, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
 			::EndDeferWindowPos(dwp);
 		}
 
@@ -59,7 +63,9 @@ namespace fgo::last_frame
 			{
 			case WM_INITDIALOG:
 				{
-					setCheck(IDC_ENABLE, hive.enable);
+					setCheck(IDC_CHECK_RANGE, hive.checkRange);
+					setCheck(IDC_CHECK_LAST_FRAME, hive.checkLastFrame);
+					setCheck(IDC_CHECK_FRAME_RATE, hive.checkFrameRate);
 
 					break;
 				}
@@ -79,7 +85,9 @@ namespace fgo::last_frame
 					{
 					case IDOK:
 					case IDCANCEL: return 0;
-					case IDC_ENABLE: hive.enable = getCheck(IDC_ENABLE); break;
+					case IDC_CHECK_RANGE: hive.checkRange = getCheck(IDC_CHECK_RANGE); break;
+					case IDC_CHECK_LAST_FRAME: hive.checkLastFrame = getCheck(IDC_CHECK_LAST_FRAME); break;
+					case IDC_CHECK_FRAME_RATE: hive.checkFrameRate = getCheck(IDC_CHECK_FRAME_RATE); break;
 					}
 
 					break;

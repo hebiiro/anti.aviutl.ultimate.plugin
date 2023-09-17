@@ -21,7 +21,7 @@ namespace fgo::namecage
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"最終フレーム自動調整";
+			return L"ネームケージ";
 		}
 
 		//
