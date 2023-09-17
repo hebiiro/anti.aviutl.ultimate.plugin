@@ -7,7 +7,7 @@ namespace fgo::namecage
 	//
 	inline struct Hive
 	{
-		inline static const LPCTSTR AppName = _T("ネームケージ");
+		inline static const LPCTSTR AppName = _T("アイテム名常時表示");
 
 		HINSTANCE instance = 0;
 	} hive;

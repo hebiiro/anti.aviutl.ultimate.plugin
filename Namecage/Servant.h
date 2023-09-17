@@ -21,7 +21,7 @@ namespace fgo::namecage
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"ネームケージ";
+			return L"アイテム名常時表示";
 		}
 
 		//
