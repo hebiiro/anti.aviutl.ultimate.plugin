@@ -17,6 +17,7 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="Servant.h" />
+    <ClInclude Include="Hook.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
