@@ -1,19 +1,19 @@
 ﻿#pragma once
 #include "Hook.h"
 
-namespace fgo::color_code
+namespace fgo::dialog_position
 {
 	//
-	// このクラスは「色の選択」ダイアログにカラーコードを追加します。
+	// このクラスはモーダルダイアログが画面外に表示されないように位置を調整します。
 	//
-	inline struct ColorCode : Servant
+	inline struct DialogPosition : Servant
 	{
 		//
 		// この仮想関数は、このサーヴァントの識別名が必要なときに呼ばれます。
 		//
 		LPCWSTR get_servant_name() override
 		{
-			return L"ColorCode";
+			return L"DialogPosition";
 		}
 
 		//
@@ -21,7 +21,7 @@ namespace fgo::color_code
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"カラーコード";
+			return L"ダイアログ表示位置調整";
 		}
 
 		//
@@ -49,10 +49,10 @@ namespace fgo::color_code
 		//
 		BOOL on_init() override
 		{
-			if (::GetModuleHandleW(L"AddColorCode.auf"))
+			if (::GetModuleHandleW(L"AdjustDialogPosition.auf"))
 			{
 				::MessageBoxW(magi.fp->hwnd,
-					L"ColorCodeとAddColorCode.aufが競合しています"
+					L"DialogPositionとAdjustDialogPosition.aufが競合しています"
 					L"\nどちらかを除外してからAviUtlを再起動してください",
 					get_servant_display_name(), MB_OK | MB_ICONWARNING);
 			}
@@ -77,7 +77,7 @@ namespace fgo::color_code
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return magi.getConfigFileName(L"ColorCode.ini");
+			return magi.getConfigFileName(L"DialogPosition.ini");
 		}
 
 		//

@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "Servant.h"
 
-using namespace fgo::color_code;
+using namespace fgo::dialog_position;
 
 //
 // エクスポート関数です。
