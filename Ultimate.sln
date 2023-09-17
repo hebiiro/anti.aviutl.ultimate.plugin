@@ -40,6 +40,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DialogPosition", "DialogPos
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LastFrame", "LastFrame\LastFrame.vcxproj", "{4797BB8D-501F-4F13-8C75-E9E1D8A14EF5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Namecage", "Namecage\Namecage.vcxproj", "{49E1E1E4-073B-42B9-921F-9084508C0610}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -152,6 +154,14 @@ Global
 		{4797BB8D-501F-4F13-8C75-E9E1D8A14EF5}.Release|x64.Build.0 = Release|x64
 		{4797BB8D-501F-4F13-8C75-E9E1D8A14EF5}.Release|x86.ActiveCfg = Release|Win32
 		{4797BB8D-501F-4F13-8C75-E9E1D8A14EF5}.Release|x86.Build.0 = Release|Win32
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Debug|x64.ActiveCfg = Debug|x64
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Debug|x64.Build.0 = Debug|x64
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Debug|x86.ActiveCfg = Debug|Win32
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Debug|x86.Build.0 = Debug|Win32
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Release|x64.ActiveCfg = Release|x64
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Release|x64.Build.0 = Release|x64
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Release|x86.ActiveCfg = Release|Win32
+		{49E1E1E4-073B-42B9-921F-9084508C0610}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "Servant.h"
 
-namespace fgo::last_frame
+namespace fgo::namecage
 {
 	//
 	// エクスポート関数です。
