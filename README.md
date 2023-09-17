@@ -16,6 +16,7 @@
 
 ## 更新履歴
 
+* r5 - 2023/09/17 ColorCode・DialogPosition・LastFrame・Namecage・EncodeGuardを追加
 * r4 - 2023/09/16 ダブルクリックでペインを最大化できる機能を追加
 * r3 - 2023/09/16 PSDToolKitをドッキングしているときフリーズする問題を緩和
 * r2 - 2023/09/16 Darkを追加
