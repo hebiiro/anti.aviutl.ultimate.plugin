@@ -143,7 +143,7 @@ public:
 //		MY_TRACE(_T("ExplorerDialog::ShouldShow(%ws, 0x%08X)\n"), displayName, attributes);
 
 		WCHAR searchString[MAX_PATH] = {};
-		::GetWindowTextW(search, searchString, MAX_PATH);
+		::GetWindowTextW(search, searchString, std::size(searchString));
 
 		HRESULT retValue = S_OK;
 

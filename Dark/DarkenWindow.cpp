@@ -204,7 +204,7 @@ void showSkinSelector(HWND hwnd)
 	std::vector<std::basic_string<TCHAR>> fileNames;
 	{
 		TCHAR folder[MAX_PATH] = {};
-		::StringCbCopy(folder, sizeof(folder), origin);
+		::StringCchCopy(folder, std::size(folder), origin);
 		::PathAppend(folder, _T("*.xml"));
 		MY_TRACE_TSTR(folder);
 
@@ -229,7 +229,7 @@ void showSkinSelector(HWND hwnd)
 	}
 
 	TCHAR current[MAX_PATH] = {};
-	::StringCbCopy(current, sizeof(current), g_skin.getSkinFileName());
+	::StringCchCopy(current, std::size(current), g_skin.getSkinFileName());
 	::PathStripPath(current);
 
 	const int ID_SHADOW_MODE = 20000;
@@ -242,7 +242,7 @@ void showSkinSelector(HWND hwnd)
 	for (int i = 0; i < (int)fileNames.size(); i++)
 	{
 		TCHAR text[MAX_PATH] = {};
-		::StringCbCopy(text, sizeof(text), fileNames[i].c_str());
+		::StringCchCopy(text, std::size(text), fileNames[i].c_str());
 		::PathRemoveExtension(text);
 
 		::AppendMenu(menu, MF_STRING, i + 1, text);
@@ -390,11 +390,11 @@ IMPLEMENT_HOOK_PROC_NULL(LRESULT, WINAPI, CallWindowProcInternal, (WNDPROC wndPr
 			MY_TRACE_HWND(hwnd);
 
 			TCHAR className[MAX_PATH] = {};
-			::GetClassName(hwnd, className, MAX_PATH);
+			::GetClassName(hwnd, className, std::size(className));
 //			MY_TRACE_TSTR(className);
 
 			TCHAR windowText[MAX_PATH] = {};
-			::GetWindowText(hwnd, windowText, MAX_PATH);
+			::GetWindowText(hwnd, windowText, std::size(windowText));
 //			MY_TRACE_TSTR(windowText);
 
 			if (::lstrcmpi(className, _T("AviUtl")) == 0)
@@ -421,7 +421,7 @@ IMPLEMENT_HOOK_PROC_NULL(LRESULT, WINAPI, CallWindowProcInternal, (WNDPROC wndPr
 
 				HWND parent = ::GetParent(hwnd);
 				TCHAR windowText[MAX_PATH] = {};
-				::GetWindowText(parent, windowText, MAX_PATH);
+				::GetWindowText(parent, windowText, std::size(windowText));
 //				MY_TRACE_TSTR(windowText);
 
 				if (::lstrcmp(windowText, _T("ラウドネスメーター(全体)")) == 0)
@@ -534,7 +534,7 @@ IMPLEMENT_HOOK_PROC_NULL(LRESULT, WINAPI, CallWindowProcInternal, (WNDPROC wndPr
 			// エディットボックスだった場合は WM_CTLCOLOREDIT に変更する。
 
 			TCHAR className[MAX_PATH] = {};
-			::GetClassName(control, className, MAX_PATH);
+			::GetClassName(control, className, std::size(className));
 			if (::lstrcmpi(className, WC_EDIT) == 0)
 			{
 				// エディットボックスだった。
@@ -584,7 +584,7 @@ IMPLEMENT_HOOK_PROC_NULL(LRESULT, WINAPI, CallWindowProcInternal, (WNDPROC wndPr
 			NMHDR* nm = (NMHDR*)lParam;
 
 			TCHAR className[MAX_PATH] = {};
-			::GetClassName(nm->hwndFrom, className, MAX_PATH);
+			::GetClassName(nm->hwndFrom, className, std::size(className));
 //			MY_TRACE_TSTR(className);
 
 			if (::lstrcmpi(className, WC_BUTTON) == 0)
@@ -684,8 +684,8 @@ IMPLEMENT_HOOK_PROC(HANDLE, WINAPI, LoadImageA, (HINSTANCE instance, LPCSTR name
 			MY_TRACE(_T("AviUtl のアイコンを書き換えます %hs, 0x%08X\n"), name, flags);
 
 			char name2[MAX_PATH] = {};
-			::StringCbCopyA(name2, sizeof(name2), "AVIUTL_");
-			::StringCbCatA(name2, sizeof(name2), name);
+			::StringCchCopyA(name2, std::size(name2), "AVIUTL_");
+			::StringCchCatA(name2, std::size(name2), name);
 
 			HANDLE result = true_LoadImageA(g_instance, name2, type, cx, cy, flags);
 			g_skin.addDrawIconData((HICON)result, (_bstr_t)name2);
@@ -696,8 +696,8 @@ IMPLEMENT_HOOK_PROC(HANDLE, WINAPI, LoadImageA, (HINSTANCE instance, LPCSTR name
 			MY_TRACE(_T("拡張編集のアイコンを書き換えます %hs, 0x%08X\n"), name, flags);
 
 			char name2[MAX_PATH] = {};
-			::StringCbCopyA(name2, sizeof(name2), "EXEDIT_");
-			::StringCbCatA(name2, sizeof(name2), name);
+			::StringCchCopyA(name2, std::size(name2), "EXEDIT_");
+			::StringCchCatA(name2, std::size(name2), name);
 
 			HANDLE result = true_LoadImageA(g_instance, name2, type, cx, cy, flags);
 			g_skin.addDrawIconData((HICON)result, (_bstr_t)name2);

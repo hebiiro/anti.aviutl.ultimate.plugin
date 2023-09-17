@@ -166,7 +166,7 @@ BOOL WINAPI drawRootText(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR 
 //	MY_TRACE(_T("drawRootText(0x%08X, %d, %d, 0x%08X)\n"), dc, x, y, options);
 
 	WCHAR text2[MAX_PATH] = {};
-	UINT c2 = ::MultiByteToWideChar(CP_ACP, 0, text, c, text2, MAX_PATH);
+	UINT c2 = ::MultiByteToWideChar(CP_ACP, 0, text, c, text2, std::size(text2));
 
 	HTHEME theme = g_skin.getTheme(Dark::THEME_EXEDIT);
 
@@ -194,7 +194,7 @@ BOOL WINAPI drawLayerText(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR
 	MY_TRACE(_T("drawLayerText(0x%08X, %d, %d, 0x%08X)\n"), dc, x, y, options);
 
 	WCHAR text2[MAX_PATH] = {};
-	UINT c2 = ::MultiByteToWideChar(CP_ACP, 0, text, c, text2, MAX_PATH);
+	UINT c2 = ::MultiByteToWideChar(CP_ACP, 0, text, c, text2, std::size(text2));
 
 	int stateId = Dark::EXEDIT_LAYER_ACTIVE;
 
@@ -428,7 +428,7 @@ IMPLEMENT_HOOK_PROC_NULL(INT_PTR, CALLBACK, LayerNameDialogProc, (HWND hdlg, UIN
 			if (id == IDC_CHOOSE_COLOR)
 			{
 				char text[MAX_PATH] = {};
-				::GetDlgItemTextA(hdlg, 171, text, MAX_PATH);
+				::GetDlgItemTextA(hdlg, 171, text, std::size(text));
 				MY_TRACE_STR(text);
 
 				COLORREF color = getColorFromLayerName(text);
@@ -441,7 +441,7 @@ IMPLEMENT_HOOK_PROC_NULL(INT_PTR, CALLBACK, LayerNameDialogProc, (HWND hdlg, UIN
 				if (sep) *sep = '\0';
 
 				char newText[MAX_PATH] = {};
-				::StringCbPrintfA(newText, sizeof(newText), "%s#%02x%02x%02x",
+				::StringCchPrintfA(newText, std::size(newText), "%s#%02x%02x%02x",
 					text, GetRValue(color), GetGValue(color), GetBValue(color));
 				::SetDlgItemTextA(hdlg, 171, newText);
 			}

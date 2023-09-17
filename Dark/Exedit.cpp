@@ -16,7 +16,7 @@ HWND getComboBox(HWND settingDialog)
 
 		// コンボボックスかどうかクラス名で調べる。
 		TCHAR className[MAX_PATH] = {};
-		::GetClassName(hwnd, className, MAX_PATH);
+		::GetClassName(hwnd, className, std::size(className));
 		if (::lstrcmpi(className, WC_COMBOBOX) != 0) continue;
 
 		if (::IsWindowVisible(hwnd)) // ウィンドウが可視なら

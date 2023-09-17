@@ -42,7 +42,7 @@ namespace fgo::nest::hook
 					{
 						// クラス名を取得します。
 						TCHAR className[MAX_PATH] = {};
-						::GetClassName(msg->hwnd, className, MAX_PATH);
+						::GetClassName(msg->hwnd, className, std::size(className));
 						MY_TRACE_TSTR(className);
 
 						// コンボボックスの場合

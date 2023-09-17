@@ -92,7 +92,7 @@ namespace fgo::filer
 
 				// セクション内の_nameを取得します。
 				char name[MAX_PATH] = {};
-				::GetPrivateProfileStringA(appName, "_name", "", name, MAX_PATH, fileName);
+				::GetPrivateProfileStringA(appName, "_name", "", name, std::size(name), fileName);
 				MY_TRACE_STR(name);
 
 				// 読み込み可能なフィルタかチェックします。
@@ -305,7 +305,7 @@ namespace fgo::filer
 
 			// フォルダ名を取得します。
 			char folderName[MAX_PATH] = {};
-			::GetWindowTextA(Share::Filer::FilerWindow::getBrowser(hive.activeWindow), folderName, MAX_PATH);
+			::GetWindowTextA(Share::Filer::FilerWindow::getBrowser(hive.activeWindow), folderName, std::size(folderName));
 
 			OPENFILENAMEA ofn = { sizeof(ofn) };
 			ofn.hwndOwner = hwnd;
@@ -413,7 +413,7 @@ namespace fgo::filer
 						for (int i = 0; i < c; i++)
 						{
 							char fileName[MAX_PATH] = {};
-							::DragQueryFileA(drop, i, fileName, MAX_PATH);
+							::DragQueryFileA(drop, i, fileName, std::size(fileName));
 							MY_TRACE_STR(fileName);
 
 							LPCSTR extension = ::PathFindExtensionA(fileName);

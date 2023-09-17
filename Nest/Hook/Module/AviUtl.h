@@ -241,7 +241,7 @@ namespace fgo::nest::hook::aviutl
 		MY_TRACE(_T("AviUtl::init()\n"));
 
 		TCHAR fileName[MAX_PATH] = {};
-		::GetModuleFileName(0, fileName, MAX_PATH);
+		::GetModuleFileName(0, fileName, std::size(fileName));
 		::PathRemoveFileSpec(fileName);
 		::PathAppend(fileName, _T("aviutl.ini"));
 		MY_TRACE_TSTR(fileName);

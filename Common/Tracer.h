@@ -40,9 +40,9 @@ do \
 { \
 	HWND hwndCache = hwnd; \
 	TCHAR windowText[MAX_PATH] = {}; \
-	::GetWindowText(hwndCache, windowText, MAX_PATH); \
+	::GetWindowText(hwndCache, windowText, std::size(windowText)); \
 	TCHAR className[MAX_PATH] = {}; \
-	::GetClassName(hwndCache, className, MAX_PATH); \
+	::GetClassName(hwndCache, className, std::size(className)); \
 	MY_TRACE(_T(#hwnd) _T(" = 0x%08X = \"%s\" (%s)\n"), hwndCache, windowText, className); \
 } \
 while (0)

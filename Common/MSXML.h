@@ -589,7 +589,7 @@ inline HRESULT WINAPI getPrivateProfileFileName(
 //		MY_TRACE_WSTR(folder);
 
 		WCHAR fileName[MAX_PATH] = {};
-		::StringCbCopyW(fileName, sizeof(fileName), folder);
+		::StringCchCopyW(fileName, std::size(fileName), folder);
 		::PathAppendW(fileName, value);
 //		MY_TRACE_WSTR(fileName);
 
@@ -752,7 +752,7 @@ inline HRESULT WINAPI setPrivateProfileColor(
 	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, COLORREF value)
 {
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"#%02x%02x%02x", GetRValue(value), GetGValue(value), GetBValue(value));
+	::StringCchPrintfW(text, std::size(text), L"#%02x%02x%02x", GetRValue(value), GetGValue(value), GetBValue(value));
 
 	return element->setAttribute(name, text);
 }
@@ -761,7 +761,7 @@ inline HRESULT WINAPI setPrivateProfileColor(
 	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, const Gdiplus::Color& value)
 {
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"%08X", value.GetValue());
+	::StringCchPrintfW(text, std::size(text), L"%08X", value.GetValue());
 
 	return element->setAttribute(name, text);
 }

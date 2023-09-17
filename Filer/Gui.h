@@ -16,13 +16,13 @@ namespace fgo::filer
 			MY_TRACE_HEX((HANDLE)event);
 
 			TCHAR path[MAX_PATH] = {};
-			::GetModuleFileName(hive.instance, path, MAX_PATH);
+			::GetModuleFileName(hive.instance, path, std::size(path));
 			::PathRemoveFileSpec(path);
 			::PathAppend(path, _T("FilerGui.exe"));
 			MY_TRACE_TSTR(path);
 
 			TCHAR args[MAX_PATH] = {};
-			::StringCbPrintf(args, sizeof(args), _T("0x%08p"), hwnd);
+			::StringCchPrintf(args, std::size(args), _T("0x%08p"), hwnd);
 			MY_TRACE_TSTR(args);
 
 			STARTUPINFO si = { sizeof(si) };

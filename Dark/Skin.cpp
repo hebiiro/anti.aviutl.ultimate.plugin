@@ -911,7 +911,7 @@ BOOL CALLBACK Skin::enumWindowsProc(HWND hwnd, LPARAM lParam)
 BOOL CALLBACK Skin::enumChildWindowsProc(HWND hwnd, LPARAM lParam)
 {
 	TCHAR className[MAX_PATH] = {};
-	::GetClassName(hwnd, className, MAX_PATH);
+	::GetClassName(hwnd, className, std::size(className));
 
 	if (::lstrcmpi(className, TRACKBAR_CLASS) == 0)
 	{

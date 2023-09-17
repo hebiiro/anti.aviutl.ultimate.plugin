@@ -121,7 +121,7 @@ namespace Tools
 
 		StringU8& operator=(LPCWSTR x)
 		{
-			::WideCharToMultiByte(CP_UTF8, 0, x, -1, m_buffer, MAX_PATH, 0, 0);
+			::WideCharToMultiByte(CP_UTF8, 0, x, -1, m_buffer, std::size(m_buffer), 0, 0);
 			return *this;
 		}
 

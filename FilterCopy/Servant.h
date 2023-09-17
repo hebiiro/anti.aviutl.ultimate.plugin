@@ -210,7 +210,7 @@ namespace fgo::filter_copy
 
 				// 一時ファイルのファイル名を構築します。
 				char tempFileName[MAX_PATH] = {};
-				::StringCbPrintfA(tempFileName, sizeof(tempFileName),
+				::StringCchPrintfA(tempFileName, std::size(tempFileName),
 					"%s\\AviUtl_FilterCopy_%d_%d.exa",
 					prep.tempFolderPath, prep.pid, filterIndex);
 				MY_TRACE_STR(tempFileName);

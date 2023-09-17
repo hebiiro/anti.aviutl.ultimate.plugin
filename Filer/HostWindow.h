@@ -124,7 +124,7 @@ namespace fgo::filer
 		// メインダイアログの削除ボタンを押したときの処理です。
 		// 指定されたインデックスのファイラを破壊します。
 		//
-		BOOL onDestroyFiler(std::size_t index) override
+		BOOL onDestroyFiler(size_t index) override
 		{
 			MY_TRACE(_T("HostWindow::onDestroyFiler(%d)\n"), index);
 
@@ -158,7 +158,7 @@ namespace fgo::filer
 		// メインダイアログの編集ボタンを押したときの処理です。
 		// 指定されたインデックスのファイラをリネームします。
 		//
-		BOOL onEditFiler(std::size_t index) override
+		BOOL onEditFiler(size_t index) override
 		{
 			MY_TRACE(_T("HostWindow::onEditFiler(%d)\n"), index);
 

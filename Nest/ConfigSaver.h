@@ -104,7 +104,7 @@ namespace fgo::nest
 				MSXML2::IXMLDOMElementPtr subWindowElement = appendElement(element, L"subWindow");
 
 				TCHAR name[MAX_PATH] = {};
-				::GetWindowText(subWindow, name, MAX_PATH);
+				::GetWindowText(subWindow, name, std::size(name));
 				setPrivateProfileString(subWindowElement, L"name", name);
 
 				auto root = SubWindow::getRootPane(subWindow);

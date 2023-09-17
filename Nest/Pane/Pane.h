@@ -326,7 +326,7 @@ namespace fgo::nest
 
 			// ウィンドウテキストを取得します。
 			TCHAR text[MAX_PATH] = {};
-			::GetWindowText(*shuttle, text, MAX_PATH);
+			::GetWindowText(*shuttle, text, std::size(text));
 
 			// タブを追加します。
 			int result = addTab(shuttle, text, index);
@@ -949,7 +949,7 @@ namespace fgo::nest
 
 				// シャトルのウィンドウテキストを取得します。
 				WCHAR text[MAX_PATH] = {};
-				::GetWindowTextW(*shuttle, text, MAX_PATH);
+				::GetWindowTextW(*shuttle, text, std::size(text));
 
 				// テーマを使用するなら
 				if (hive.useTheme)

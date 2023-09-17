@@ -19,29 +19,28 @@ namespace Tools::Trace::File {
 		// dll\$dll@exe[name].txt
 
 		TCHAR dllPath[MAX_PATH];
-		::GetModuleFileName(instance, dllPath, MAX_PATH);
+		::GetModuleFileName(instance, dllPath, std::size(dllPath));
 		::PathRemoveFileSpec(dllPath);
-		//::StringCbCopy(dllPath, sizeof(dllPath), _T("C:\\Temp"));
 
 		TCHAR dllFileSpec[MAX_PATH];
-		::GetModuleFileName(instance, dllFileSpec, MAX_PATH);
+		::GetModuleFileName(instance, dllFileSpec, std::size(dllFileSpec));
 		::PathStripPath(dllFileSpec);
 
 		TCHAR exeFileSpec[MAX_PATH];
-		::GetModuleFileName(0, exeFileSpec, MAX_PATH);
+		::GetModuleFileName(0, exeFileSpec, std::size(exeFileSpec));
 		::PathStripPath(exeFileSpec);
 
 		TCHAR reportFilePath[MAX_PATH];
-		::StringCbCopy(reportFilePath, sizeof(reportFilePath), dllPath);
-		::StringCbCat(reportFilePath, sizeof(reportFilePath), _T("\\$"));
-		::StringCbCat(reportFilePath, sizeof(reportFilePath), dllFileSpec);
-		::StringCbCat(reportFilePath, sizeof(reportFilePath), _T("@"));
-		::StringCbCat(reportFilePath, sizeof(reportFilePath), exeFileSpec);
+		::StringCchCopy(reportFilePath, std::size(reportFilePath), dllPath);
+		::StringCchCat(reportFilePath, std::size(reportFilePath), _T("\\$"));
+		::StringCchCat(reportFilePath, std::size(reportFilePath), dllFileSpec);
+		::StringCchCat(reportFilePath, std::size(reportFilePath), _T("@"));
+		::StringCchCat(reportFilePath, std::size(reportFilePath), exeFileSpec);
 
 		if (name)
-			::StringCbCat(reportFilePath, sizeof(reportFilePath), name);
+			::StringCchCat(reportFilePath, std::size(reportFilePath), name);
 
-		::StringCbCat(reportFilePath, sizeof(reportFilePath), _T(".txt"));
+		::StringCchCat(reportFilePath, std::size(reportFilePath), _T(".txt"));
 
 		file = ::CreateFile(reportFilePath, GENERIC_WRITE,
 			FILE_SHARE_READ | FILE_SHARE_WRITE, 0, CREATE_ALWAYS, 0, 0);

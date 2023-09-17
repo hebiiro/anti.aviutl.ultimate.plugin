@@ -4,14 +4,12 @@ class FileUpdateChecker
 {
 private:
 
-	WCHAR m_filePath[MAX_PATH];
-	FILETIME m_fileTime;
+	WCHAR m_filePath[MAX_PATH] = {};
+	FILETIME m_fileTime = {};
 
 public:
 
 	FileUpdateChecker()
-		: m_filePath()
-		, m_fileTime()
 	{
 //		MY_TRACE(_T("FileUpdateChecker::FileUpdateChecker()\n"));
 	}
@@ -25,7 +23,8 @@ public:
 
 	void init(LPCWSTR filePath)
 	{
-		::StringCbCopyW(m_filePath, sizeof(m_filePath), filePath);
+		::StringCchCopyW(m_filePath, std::size(m_filePath), filePath);
+
 		getFileTime(m_filePath, &m_fileTime);
 	}
 

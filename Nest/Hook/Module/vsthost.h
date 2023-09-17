@@ -41,7 +41,7 @@ namespace fgo::nest::hook
 				// vsthost_N.auf 内の ::DialogBoxIndirectParamA() をフックする。
 
 				TCHAR fileName[MAX_PATH] = {};
-				::StringCbPrintf(fileName, sizeof(fileName), _T("vsthost_%d.auf"), i + 1);
+				::StringCchPrintf(fileName, std::size(fileName), _T("vsthost_%d.auf"), i + 1);
 				MY_TRACE_TSTR(fileName);
 
 				HMODULE vsthost = ::GetModuleHandle(fileName);

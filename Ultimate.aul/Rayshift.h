@@ -19,7 +19,7 @@ namespace fgo
 				MY_TRACE(_T("DllMain()の外でUltimate.aufをロードします\n"));
 
 				WCHAR moduleFileName[MAX_PATH] = {};
-				::GetModuleFileNameW(aul, moduleFileName, MAX_PATH);
+				::GetModuleFileNameW(aul, moduleFileName, std::size(moduleFileName));
 				::PathRenameExtensionW(moduleFileName, L".auf");
 				auf = ::LoadLibraryW(moduleFileName);
 				MY_TRACE_HEX(auf);

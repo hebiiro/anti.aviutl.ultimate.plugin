@@ -62,7 +62,7 @@ public:
 			return FALSE;
 
 		TCHAR fileName[MAX_PATH] = {};
-		::GetModuleFileName(AfxGetInstanceHandle(), fileName, MAX_PATH);
+		::GetModuleFileName(AfxGetInstanceHandle(), fileName, std::size(fileName));
 		::PathRemoveFileSpec(fileName);
 		::PathAppend(fileName, _T("Dark.aua"));
 		MY_TRACE_TSTR(fileName);

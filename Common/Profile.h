@@ -6,7 +6,7 @@
 inline HRESULT WINAPI getPrivateProfileBSTR(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, _bstr_t& outValue)
 {
 	WCHAR buffer[MAX_PATH] = {};
-	DWORD result = ::GetPrivateProfileStringW(appName, keyName, L"", buffer, MAX_PATH, fileName);
+	DWORD result = ::GetPrivateProfileStringW(appName, keyName, L"", buffer, std::size(buffer), fileName);
 	if (!result) return S_FALSE;
 	outValue = buffer;
 	return S_OK;
@@ -503,7 +503,7 @@ template<class T>
 inline HRESULT WINAPI setPrivateProfileInt(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value)
 {
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"%d", value);
+	::StringCchPrintfW(text, std::size(text), L"%d", value);
 	return setPrivateProfileBSTR(fileName, appName, keyName, text);
 }
 
@@ -511,7 +511,7 @@ template<class T>
 inline HRESULT WINAPI setPrivateProfileReal(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value)
 {
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"%f", value);
+	::StringCchPrintfW(text, std::size(text), L"%f", value);
 	return setPrivateProfileBSTR(fileName, appName, keyName, text);
 }
 
@@ -527,7 +527,7 @@ inline HRESULT WINAPI setPrivateProfileColor(LPCWSTR fileName, LPCWSTR appName, 
 	BYTE g = GetGValue(value);
 	BYTE b = GetBValue(value);
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"#%02x%02x%02x", r, g, b);
+	::StringCchPrintfW(text, std::size(text), L"#%02x%02x%02x", r, g, b);
 	return setPrivateProfileBSTR(fileName, appName, keyName, text);
 }
 
@@ -535,7 +535,7 @@ inline HRESULT WINAPI setPrivateProfileColor(LPCWSTR fileName, LPCWSTR appName, 
 inline HRESULT WINAPI setPrivateProfileColor(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const Gdiplus::Color& value)
 {
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"%08X", value.GetValue());
+	::StringCchPrintfW(text, std::size(text), L"%08X", value.GetValue());
 	return setPrivateProfileBSTR(fileName, appName, keyName, text);
 }
 #endif
@@ -547,7 +547,7 @@ inline HRESULT WINAPI setPrivateProfileColor(LPCWSTR fileName, LPCWSTR appName, 
 	BYTE b = (BYTE)roundf(value.b * 255.0f);
 	BYTE a = (BYTE)roundf(value.a * 255.0f);
 	WCHAR text[MAX_PATH] = {};
-	::StringCbPrintfW(text, sizeof(text), L"%d, %d, %d, %d", r, g, b, a);
+	::StringCchPrintfW(text, std::size(text), L"%d, %d, %d, %d", r, g, b, a);
 	return setPrivateProfileBSTR(fileName, appName, keyName, text);
 }
 #endif

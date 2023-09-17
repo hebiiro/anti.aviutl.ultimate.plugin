@@ -82,7 +82,7 @@ namespace fgo::filter_drag
 			{
 			case WM_PAINT:
 				{
-					PAINTSTRUCT ps;
+					PAINTSTRUCT ps = {};
 					HDC dc = ::BeginPaint(hwnd, &ps);
 					RECT rc = ps.rcPaint;
 
@@ -100,8 +100,8 @@ namespace fgo::filter_drag
 						::DeleteObject(brush);
 
 						// ウィンドウテキストを描画する。
-						WCHAR text[MAX_PATH];
-						::GetWindowTextW(hwnd, text, MAX_PATH);
+						WCHAR text[MAX_PATH] = {};
+						::GetWindowTextW(hwnd, text, std::size(text));
 						drawText(dc, text, -1, &ps.rcPaint, DT_CENTER | DT_TOP | DT_NOCLIP);
 
 						::EndBufferedPaint(pb, TRUE);

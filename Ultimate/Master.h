@@ -15,7 +15,7 @@ namespace fgo
 			WCHAR path[MAX_PATH] = {};
 			::GetModuleFileNameW(instance, path, std::size(path));
 			::PathRemoveExtensionW(path);
-			::StringCbCatW(path, sizeof(path), L"Addin\\");
+			::StringCchCatW(path, std::size(path), L"Addin\\");
 			return path;
 		}
 
@@ -27,7 +27,7 @@ namespace fgo
 			WCHAR path[MAX_PATH] = {};
 			::GetModuleFileNameW(instance, path, std::size(path));
 			::PathRemoveExtensionW(path);
-			::StringCbCatW(path, sizeof(path), L"Config\\AddinOnOff.ini");
+			::StringCchCatW(path, std::size(path), L"Config\\AddinOnOff.ini");
 			return path;
 		}
 
@@ -37,7 +37,7 @@ namespace fgo
 		static BOOL isAddinEnabled(LPCWSTR configFileName, LPCWSTR fileName)
 		{
 			WCHAR addinName[MAX_PATH] = {};
-			::StringCbCopyW(addinName, sizeof(addinName), fileName);
+			::StringCchCopyW(addinName, std::size(addinName), fileName);
 			::PathRemoveExtensionW(addinName);
 
 			BOOL enable = TRUE;

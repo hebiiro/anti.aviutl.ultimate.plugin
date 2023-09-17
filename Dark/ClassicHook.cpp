@@ -225,7 +225,7 @@ void initRenderer(HWND hwnd)
 	Renderer* renderer = 0;
 
 	TCHAR className[MAX_PATH] = {};
-	::GetClassName(hwnd, className, MAX_PATH);
+	::GetClassName(hwnd, className, std::size(className));
 //	MY_TRACE_TSTR(className);
 	if (::lstrcmpi(className, _T("#32770")) == 0) renderer = &g_dialogRenderer;
 	else if (::lstrcmpi(className, WC_STATIC) == 0) renderer = &g_staticRenderer;

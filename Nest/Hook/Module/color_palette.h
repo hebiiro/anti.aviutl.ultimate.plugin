@@ -20,7 +20,7 @@ namespace fgo::nest::hook
 				HWND hwnd = orig(instance, templateName, parent, dlgProc, initParam);
 
 				TCHAR windowName[MAX_PATH] = {};
-				::GetWindowText(hwnd, windowName, MAX_PATH);
+				::GetWindowText(hwnd, windowName, std::size(windowName));
 				MY_TRACE_TSTR(windowName);
 
 				if (_tcsicmp(windowName, _T("マイパレット")) == 0)

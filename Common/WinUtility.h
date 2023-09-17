@@ -326,20 +326,18 @@ public:
 
 	FormatText(int value)
 	{
-		::StringCbPrintf(m_buffer, sizeof(m_buffer), _T("%d"), value);
+		::StringCchPrintf(m_buffer, std::size(m_buffer), _T("%d"), value);
 	}
 
 	FormatText(double value)
 	{
-		::StringCbPrintf(m_buffer, sizeof(m_buffer), _T("%.10g"), value);
+		::StringCchPrintf(m_buffer, std::size(m_buffer), _T("%.10g"), value);
 	}
 
-	FormatText(LPCTSTR format, ...)
+	template <class... Args>
+	FormatText(LPCTSTR format, Args... args)
 	{
-		va_list va;
-		va_start(va, format);
-		::StringCbVPrintf(m_buffer, sizeof(m_buffer), format, va);
-		va_end(va);
+		::StringCchPrintf(m_buffer, std::size(m_buffer), format, args...);
 	}
 
 	operator LPCTSTR() const

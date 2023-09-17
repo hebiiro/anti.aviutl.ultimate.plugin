@@ -12,8 +12,8 @@ namespace fgo::filer
 	{
 		struct Listener {
 			virtual BOOL onCreateFiler() = 0;
-			virtual BOOL onDestroyFiler(std::size_t index) = 0;
-			virtual BOOL onEditFiler(std::size_t index) = 0;
+			virtual BOOL onDestroyFiler(size_t index) = 0;
+			virtual BOOL onEditFiler(size_t index) = 0;
 		};
 
 		//
@@ -115,8 +115,8 @@ namespace fgo::filer
 
 			if (lock) return FALSE;
 
-			std::size_t index = (std::size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
-			if (index >= (std::size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCOUNT, 0, 0))
+			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
+			if (index >= (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCOUNT, 0, 0))
 			{
 				enableControl(IDC_CREATE_FILER, TRUE);
 				enableControl(IDC_DESTROY_FILER, FALSE);
@@ -150,7 +150,7 @@ namespace fgo::filer
 		//
 		// リストボックス内にある指定されたインデックスにあるファイラ名を変更します。
 		//
-		BOOL setFilerName(std::size_t index, LPCTSTR newName)
+		BOOL setFilerName(size_t index, LPCTSTR newName)
 		{
 			MY_TRACE(_T("MainDialog::setFilerName(%d, %s)\n"), index, newName);
 
@@ -170,7 +170,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("MainDialog::showFiler()\n"));
 
-			std::size_t index = (std::size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
+			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 			if (index >= FilerWindow::collection.size()) return FALSE;
 
 			::SendMessage(*FilerWindow::collection[index], WM_CLOSE, 0, 0);
@@ -254,7 +254,7 @@ namespace fgo::filer
 
 			HDWP dwp = ::BeginDeferWindowPos(5);
 			::DeferWindowPos(dwp, list, 0, cx, cy, cw, ch - base * 2, SWP_NOZORDER | SWP_NOACTIVATE);
-			for (std::size_t i = 0; i < std::size(button); i++) {
+			for (size_t i = 0; i < std::size(button); i++) {
 				::DeferWindowPos(dwp, button[i], 0, bx[i], ch - base * 2, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
 			}
 			::DeferWindowPos(dwp, checkbox[0], 0, cx, ch - base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
@@ -281,7 +281,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("MainDialog::onDestroyFiler()\n"));
 
-			std::size_t index = (std::size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
+			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 
 			if (auto listener = this->listener.lock())
 				return listener->onDestroyFiler(index);
@@ -296,7 +296,7 @@ namespace fgo::filer
 		{
 			MY_TRACE(_T("MainDialog::onEditFiler()\n"));
 
-			std::size_t index = (std::size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
+			size_t index = (size_t)::SendDlgItemMessage(*this, IDC_FILER_LIST, LB_GETCURSEL, 0, 0);
 
 			if (auto listener = this->listener.lock())
 				return listener->onEditFiler(index);

@@ -138,7 +138,7 @@ namespace fgo::nest
 
 			// ターゲットのウィンドウタイトルを取得します。
 			TCHAR text[MAX_PATH] = {};
-			::GetWindowText(*this, text, MAX_PATH);
+			::GetWindowText(*this, text, std::size(text));
 			::SetWindowText(*floatContainer, text);
 
 			// ウィンドウの無駄な描画を抑制するため、
@@ -408,7 +408,7 @@ namespace fgo::nest
 
 			// フローティングコンテナのテキストを更新します。
 			TCHAR text[MAX_PATH] = {};
-			::GetWindowText(*this, text, MAX_PATH);
+			::GetWindowText(*this, text, std::size(text));
 			::SetWindowText(*floatContainer, text);
 
 			// まず現在のターゲットの位置からフローティングコンテナの位置を算出します。
