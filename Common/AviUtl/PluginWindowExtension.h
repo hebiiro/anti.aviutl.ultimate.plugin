@@ -12,14 +12,14 @@ namespace Tools::AviUtl
 		//
 		template<class T>
 		static BOOL create(T& window, HINSTANCE instance, HWND parent, LPCTSTR name,
-			DWORD exStyle = 0,
+			DWORD exStyle = WS_EX_NOPARENTNOTIFY,
 			DWORD style = WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 			int x = CW_USEDEFAULT,
 			int y = CW_USEDEFAULT,
 			int w = CW_USEDEFAULT,
 			int h = CW_USEDEFAULT)
 		{
-			MY_TRACE(_T("AviUtl::PluginWindowExtension::create()\n"));
+			MY_TRACE_FUNC("");
 
 			const LPCTSTR className = _T("AviUtl");
 
@@ -43,7 +43,7 @@ namespace Tools::AviUtl
 		//
 		static void show(HWND hwnd)
 		{
-			MY_TRACE(_T("AviUtl::PluginWindowExtension::show()\n"));
+			MY_TRACE_FUNC("");
 
 			::SendMessage(hwnd, WM_CLOSE, 0, 0);
 		}
@@ -51,7 +51,7 @@ namespace Tools::AviUtl
 		//
 		// ウィンドウ拡張の名前です。
 		//
-		inline static const LPCWSTR Name = L"Tools::AviUtl::PluginWindowExtension";
+		inline static constexpr LPCWSTR Name = L"Tools::AviUtl::PluginWindowExtension";
 
 		//
 		// ウィンドウ拡張の名前を返します。
@@ -70,7 +70,7 @@ namespace Tools::AviUtl
 			{
 			case WM_CLOSE:
 				{
-					MY_TRACE(_T("AviUtl::PluginWindowExtension::onWndProc(WM_CLOSE)\n"));
+					MY_TRACE_FUNC("WM_CLOSE, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (::IsWindowVisible(hwnd))
 					{

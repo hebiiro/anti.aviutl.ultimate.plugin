@@ -9,7 +9,6 @@ namespace fgo::filer
 	inline struct Filer : Servant, Magi::CommandID::Plugin
 	{
 		std::shared_ptr<HostWindow> hostWindow;
-		BOOL useCommonDialog = TRUE;
 
 		//
 		// この仮想関数は、このサーヴァントの識別名が必要なときに呼ばれます。
@@ -178,8 +177,8 @@ namespace fgo::filer
 
 				MSXML2::IXMLDOMElementPtr element = document->documentElement;
 
-				getPrivateProfileBool(element, L"useCommonDialog", useCommonDialog);
-				MY_TRACE_INT(useCommonDialog);
+				getPrivateProfileBool(element, L"useCommonDialog", hive.useCommonDialog);
+				MY_TRACE_INT(hive.useCommonDialog);
 
 				hostWindow->load(element);
 			}
@@ -215,7 +214,7 @@ namespace fgo::filer
 				// ドキュメントエレメントを作成します。
 				MSXML2::IXMLDOMElementPtr element = appendElement(document, document, L"config");
 
-				setPrivateProfileBool(element, L"useCommonDialog", useCommonDialog);
+				setPrivateProfileBool(element, L"useCommonDialog", hive.useCommonDialog);
 
 				hostWindow->save(element);
 

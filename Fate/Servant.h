@@ -30,24 +30,24 @@ namespace fgo
 		// DLLの初期化のタイミングで呼び出されます。
 		// DllMain(DLL_PROCESS_ATTACH)を抜けたあとに呼び出されるので安全に初期化ができます。
 		//
-		virtual BOOL on_dll_init(HINSTANCE instance) { return FALSE; }
+		virtual BOOL on_dll_init(HINSTANCE instance) { return TRUE; }
 
 		//
 		// DLLの後始末のタイミングで呼び出されます。
 		// DllMain(DLL_PROCESS_DETACH)に入る前に呼び出されるので安全に初期化ができます。
 		// ※現在未実装。
 		//
-		virtual BOOL on_dll_exit(HINSTANCE instance) { return FALSE; }
+		virtual BOOL on_dll_exit(HINSTANCE instance) { return TRUE; }
 
 		//
 		// 初期化のタイミングで呼び出されます。
 		//
-		virtual BOOL on_init() = 0;
+		virtual BOOL on_init() { return TRUE; };
 
 		//
 		// 後始末のタイミングで呼び出されます。
 		//
-		virtual BOOL on_exit() = 0;
+		virtual BOOL on_exit() { return TRUE; };
 
 		//
 		// ウィンドウの初期化のタイミングで呼び出されます。

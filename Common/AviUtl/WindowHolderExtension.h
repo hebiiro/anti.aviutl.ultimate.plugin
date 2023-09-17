@@ -8,6 +8,11 @@ namespace Tools::AviUtl
 	struct WindowHolderExtension : Window2::Extension
 	{
 		//
+		// ターゲットウィンドウです。
+		//
+		HWND target = 0;
+
+		//
 		// ターゲットウィンドウを返します。
 		//
 		HWND getTarget() const { return target; }
@@ -23,7 +28,7 @@ namespace Tools::AviUtl
 		//
 		void resize(HWND hwnd)
 		{
-//			MY_TRACE(_T("AviUtl::WindowHolderExtension::resize()\n"));
+//			MY_TRACE_FUNC("");
 
 			RECT rc; ::GetClientRect(hwnd, &rc);
 			int x = rc.left;
@@ -42,7 +47,7 @@ namespace Tools::AviUtl
 		//
 		// ウィンドウ拡張の名前です。
 		//
-		inline static const LPCWSTR Name = L"Tools::AviUtl::WindowHolderExtension";
+		inline static constexpr LPCWSTR Name = L"Tools::AviUtl::WindowHolderExtension";
 
 		//
 		// ウィンドウ拡張の名前を返します。
@@ -61,7 +66,7 @@ namespace Tools::AviUtl
 			{
 			case WM_SHOWWINDOW:
 				{
-//					MY_TRACE(_T("WindowHolderExtension::onWndProc(WM_SHOWWINDOW)\n"));
+//					MY_TRACE_FUNC("WM_SHOWWINDOW, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (wParam && ::IsWindow(target))
 						::ShowWindowAsync(target, SW_SHOW);
@@ -70,7 +75,7 @@ namespace Tools::AviUtl
 				}
 			case WM_SIZE:
 				{
-//					MY_TRACE(_T("WindowHolderExtension::onWndProc(WM_SIZE)\n"));
+//					MY_TRACE_FUNC("WM_SIZE, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (::IsWindow(target))
 						resize(hwnd);
@@ -81,9 +86,5 @@ namespace Tools::AviUtl
 
 			return FALSE;
 		}
-
-	public:
-
-		HWND target = 0; // ターゲットウィンドウです。
 	};
 }

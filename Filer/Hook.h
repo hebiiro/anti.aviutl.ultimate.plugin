@@ -5,8 +5,8 @@ namespace fgo::filer
 	//
 	// このクラスはフック処理を担当します。
 	//
-	struct Hook {
-
+	struct Hook
+	{
 		//
 		// 独自のエイリアス読み込み処理を行うためのフラグです。
 		//
@@ -326,7 +326,7 @@ namespace fgo::filer
 		//
 		// このクラスは拡張編集のExEditWindowProc()をフックします。
 		//
-		struct
+		struct ExEditWindowProc_Type
 		{
 			inline static BOOL CDECL hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 			{
@@ -366,7 +366,7 @@ namespace fgo::filer
 		//
 		// このクラスは拡張編集のSettingDialogProc()をフックします。
 		//
-		struct
+		struct SettingDialogProc_Type
 		{
 			inline static LRESULT WINAPI hook(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
@@ -440,7 +440,7 @@ namespace fgo::filer
 		//
 		// このクラスは拡張編集のAddAlias()をフックします。
 		//
-		struct
+		struct AddAlias_Type
 		{
 			inline static BOOL CDECL hook(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 			{

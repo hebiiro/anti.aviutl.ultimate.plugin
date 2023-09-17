@@ -6,7 +6,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Framework">
-      <UniqueIdentifier>{779a83b4-d674-4119-ab61-a6a1a4436317}</UniqueIdentifier>
+      <UniqueIdentifier>{eaba36b5-ad26-4419-820a-981a24e587b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -16,7 +16,11 @@
     <ClInclude Include="Hive.h" />
     <ClInclude Include="Hook.h" />
     <ClInclude Include="Servant.h" />
-    <ClInclude Include="Dialog.h" />
+    <ClInclude Include="MainDialog.h" />
+    <ClInclude Include="resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -28,5 +32,10 @@
     <None Include="Main.def">
       <Filter>Framework</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LastFrame.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -90,7 +90,7 @@ namespace fgo
 
 					// メニューアイテム名を構築します。
 					char name[MAX_PATH] = {};
-					::StringCchPrintfA(name, std::size(name), "%wsを表示", servant->get_servant_display_name());
+					::StringCchPrintfA(name, std::size(name), "%ws", servant->get_servant_display_name());
 					MY_TRACE_STR(name);
 
 					// AviUtlにメニュー項目を追加します。
@@ -155,7 +155,7 @@ namespace fgo
 						MY_TRACE_INT(index);
 
 						// コマンドのインデックスからサーヴァントを取得します。
-						Servant* servant = fate.get_servant<Servant>(index);
+						auto servant = (Servant*)::SendMessageW(listbox, LB_GETITEMDATA, index, 0);
 						MY_TRACE_HEX(servant);
 
 						// サーヴァントを取得できなかった場合は何もしません。

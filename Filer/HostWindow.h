@@ -39,7 +39,7 @@ namespace fgo::filer
 				hive.instance,
 				magi.auin.GetAviUtlWindow(),
 				hive.AppName,
-				0,
+				WS_EX_NOPARENTNOTIFY,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				100, 100, 300, 300))
 			{
