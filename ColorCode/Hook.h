@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Resource.h"
+#include "Hive.h"
 
 namespace fgo::color_code
 {
@@ -8,7 +9,6 @@ namespace fgo::color_code
 	//
 	inline struct Hook
 	{
-		inline static HINSTANCE instance = 0;
 		inline static POINT offset = { 0, 0 };
 
 		//
@@ -29,28 +29,6 @@ namespace fgo::color_code
 		{
 			setPrivateProfileInt(path, L"Config", L"offset.x", offset.x);
 			setPrivateProfileInt(path, L"Config", L"offset.y", offset.y);
-
-			return TRUE;
-		}
-
-		//
-		// DLLの初期化処理です。
-		//
-		BOOL dll_init(HINSTANCE instance)
-		{
-			MY_TRACE_FUNC("0x%08X", instance);
-
-			this->instance = instance;
-
-			return TRUE;
-		}
-
-		//
-		// DLLの後始末処理です。
-		//
-		BOOL dll_exit(HINSTANCE instance)
-		{
-			MY_TRACE_FUNC("0x%08X", instance);
 
 			return TRUE;
 		}
@@ -156,9 +134,9 @@ namespace fgo::color_code
 			// このクラスは拡張編集内のShowDialog()をフックします。
 			//
 			inline static struct {
-				inline static INT_PTR CDECL hook(HINSTANCE _instance, LPCSTR templateName, HWND parent, DLGPROC dialogProc)
+				inline static INT_PTR CDECL hook(HINSTANCE instance, LPCSTR templateName, HWND parent, DLGPROC dialogProc)
 				{
-					MY_TRACE_FUNC("0x%08X, %hs, 0x%08X, 0x%08X", _instance, templateName, parent, dialogProc);
+					MY_TRACE_FUNC("0x%08X, %hs, 0x%08X, 0x%08X", instance, templateName, parent, dialogProc);
 
 					if (_stricmp(templateName, "GET_COLOR") == 0)
 					{
@@ -166,7 +144,7 @@ namespace fgo::color_code
 
 						DialogProc.orig = dialogProc;
 
-						return orig(instance, templateName, parent, DialogProc.hook);
+						return orig(hive.instance, templateName, parent, DialogProc.hook);
 					}
 
 					return orig(instance, templateName, parent, dialogProc);

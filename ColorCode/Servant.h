@@ -31,7 +31,7 @@ namespace fgo::color_code
 		{
 			MY_TRACE_FUNC("0x%08X", instance);
 
-			return hook.dll_init(instance);
+			return hive.dll_init(instance);
 		}
 
 		//
@@ -41,7 +41,7 @@ namespace fgo::color_code
 		{
 			MY_TRACE_FUNC("0x%08X", instance);
 
-			return hook.dll_exit(instance);
+			return hive.dll_exit(instance);
 		}
 
 		//

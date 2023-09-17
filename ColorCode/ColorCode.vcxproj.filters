@@ -18,6 +18,7 @@
     </ClInclude>
     <ClInclude Include="Servant.h" />
     <ClInclude Include="Hook.h" />
+    <ClInclude Include="Hive.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
