@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "MainDialog.h"
 
-namespace fgo::encode_guard
+namespace fgo::single_out
 {
 	//
 	// このクラスはメインウィンドウです。
@@ -19,7 +19,7 @@ namespace fgo::encode_guard
 			return createAsPlugin(
 				hive.instance,
 				magi.auin.GetAviUtlWindow(),
-				hive.AppName,
+				Hive::DisplayName,
 				WS_EX_NOPARENTNOTIFY,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,

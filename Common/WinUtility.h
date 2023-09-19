@@ -155,6 +155,18 @@ inline DWORD modifyExStyle(HWND hwnd, DWORD remove, DWORD add)
 	return setExStyle(hwnd, exStyle);
 }
 
+inline void setEditBoxTextNoNotify(HWND editbox, LPCTSTR text)
+{
+	UINT id = ::SetWindowLongPtr(editbox, GWLP_ID, 0);
+	::SetWindowText(editbox, text);
+	::SetWindowLongPtr(editbox, GWLP_ID, id);
+}
+
+inline void setEditBoxTextNoNotify(HWND dialog, UINT id, LPCTSTR text)
+{
+	setEditBoxTextNoNotify(::GetDlgItem(dialog, id), text);
+}
+
 //--------------------------------------------------------------------
 
 inline HANDLE createFileForRead(LPCTSTR filePath)
