@@ -440,8 +440,8 @@ inline HRESULT WINAPI getPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, 
 	if (hr != S_OK) return hr;
 	if (!(BSTR)value) return S_FALSE;
 
-	int c = _countof(array);
-	for (int i = 0; i < c; i++)
+	size_t c = std::size(array);
+	for (size_t i = 0; i < c; i++)
 	{
 		if (::lstrcmpW(array[i].label, value) == 0)
 		{
@@ -554,8 +554,8 @@ inline HRESULT WINAPI setPrivateProfileColor(LPCWSTR fileName, LPCWSTR appName, 
 template<class T, class A>
 inline HRESULT WINAPI setPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value, const A& array)
 {
-	int c = _countof(array);
-	for (int i = 0; i < c; i++)
+	size_t c = std::size(array);
+	for (size_t i = 0; i < c; i++)
 	{
 		if (array[i].value == value)
 			return setPrivateProfileBSTR(fileName, appName, keyName, array[i].label);

@@ -5,8 +5,10 @@
 #include <locale.h>
 #include <stdexcept>
 #include <algorithm>
+#include <numeric>
 #include <memory>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <list>
 #include <map>

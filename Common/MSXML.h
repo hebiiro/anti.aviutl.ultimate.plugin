@@ -614,9 +614,8 @@ inline HRESULT WINAPI getPrivateProfileLabel(
 	if (hr != S_OK)
 		return hr;
 
-	int c = _countof(array);
-
-	for (int i = 0; i < c; i++)
+	size_t c = std::size(array);
+	for (size_t i = 0; i < c; i++)
 	{
 		if (::lstrcmpW(array[i].label, value) == 0)
 		{
@@ -711,7 +710,7 @@ inline HRESULT getPrivateProfileLOGFONT(const MSXML2::IXMLDOMElementPtr& element
 		getPrivateProfileInt(element, L"lfClipPrecision", outValue.lfClipPrecision);
 		getPrivateProfileInt(element, L"lfQuality", outValue.lfQuality);
 		getPrivateProfileInt(element, L"lfPitchAndFamily", outValue.lfPitchAndFamily);
-		getPrivateProfileString(element, L"lfFaceName", outValue.lfFaceName, _countof(outValue.lfFaceName));
+		getPrivateProfileString(element, L"lfFaceName", outValue.lfFaceName, std::size(outValue.lfFaceName));
 	}
 
 	return S_OK;
@@ -770,9 +769,8 @@ template<class T, class A>
 inline HRESULT WINAPI setPrivateProfileLabel(
 	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, const T& value, const A& array)
 {
-	int c = _countof(array);
-
-	for (int i = 0; i < c; i++)
+	size_t c = std::size(array);
+	for (size_t i = 0; i < c; i++)
 	{
 		if (array[i].value == value)
 			return element->setAttribute(name, array[i].label);
