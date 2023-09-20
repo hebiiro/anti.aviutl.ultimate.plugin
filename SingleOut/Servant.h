@@ -50,6 +50,17 @@ namespace fgo::single_out
 		}
 
 		//
+		// AviUtlにメニューアイテムを追加します。
+		//
+		BOOL addMenuItem(AviUtl::FilterPlugin* fp, LPCWSTR text, UINT id)
+		{
+			char itemText[MAX_PATH] = {};
+			::StringCchPrintfA(itemText, std::size(itemText), "[%ws]%ws", Hive::DisplayName, text);
+
+			return fp->exfunc->add_menu_item(fp, itemText, mainWindow.mainDialog, id, 0, AviUtl::ExFunc::AddMenuItemFlag::None);
+		}
+
+		//
 		// この仮想関数は、ウィンドウの初期化のタイミングで呼ばれます。
 		//
 		BOOL on_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
@@ -67,10 +78,10 @@ namespace fgo::single_out
 
 			hive.mainWindow = mainWindow;
 
-			fp->exfunc->add_menu_item(fp, "現在フレーム画像を保存", mainWindow.mainDialog, IDC_EXPORT_FRAME_RGB, 0, AviUtl::ExFunc::AddMenuItemFlag::None);
-			fp->exfunc->add_menu_item(fp, "現在フレーム画像をアルファ付きで保存", mainWindow.mainDialog, IDC_EXPORT_FRAME_RGBA, 0, AviUtl::ExFunc::AddMenuItemFlag::None);
-			fp->exfunc->add_menu_item(fp, "選択アイテム画像を保存", mainWindow.mainDialog, IDC_EXPORT_ITEM_RGB, 0, AviUtl::ExFunc::AddMenuItemFlag::None);
-			fp->exfunc->add_menu_item(fp, "選択アイテム画像をアルファ付きで保存", mainWindow.mainDialog, IDC_EXPORT_ITEM_RGBA, 0, AviUtl::ExFunc::AddMenuItemFlag::None);
+			addMenuItem(fp, L"現在フレームを保存", IDC_EXPORT_FRAME_RGB);
+			addMenuItem(fp, L"現在フレームをアルファ付きで保存", IDC_EXPORT_FRAME_RGBA);
+			addMenuItem(fp, L"選択アイテムを保存", IDC_EXPORT_ITEM_RGB);
+			addMenuItem(fp, L"選択アイテムをアルファ付きで保存", IDC_EXPORT_ITEM_RGBA);
 
 			return FALSE;
 		}
@@ -348,20 +359,40 @@ namespace fgo::single_out
 
 			if (itemOnly)
 			{
-				BYTE* positionData = magi.auin.GetPositionDataArray();
-				int pd_x = *(int*)(positionData + 0x1C);
-				int pd_y = *(int*)(positionData + 0x20);
-				int pd_w = *(int*)(positionData + 0x24);
-				int pd_h = *(int*)(positionData + 0x28);
+				// アイテムの位置を取得します。
+				AviUtlInternal::SelectItem si = {};
+				int32_t objectIndex = magi.auin.GetCurrentObjectIndex();
+				size_t c = magi.auin.GetSelectItemCount();
+				MY_TRACE_INT(c);
+				for (size_t i = 0; i < c; i++)
+				{
+					AviUtlInternal::SelectItem* si2 = magi.auin.GetSelectItem(i);
 
-				if (pd_x < 0 || pd_w <= 0 || (pd_x + pd_w) > width)
+					MY_TRACE(_T("%d => 0x%08X, %d, %d, %d, %d, %d\n"),
+						i, si2->flags, si2->objectIndex, si2->x, si2->y, si2->w, si2->h);
+
+					if (si2->flags & 0x04 && si2->objectIndex == objectIndex)
+					{
+						si = *si2;
+
+						break;
+					}
+				}
+
+				// アイテムの位置を正規化します。
+				if (si.x < 0) si.w += si.x, si.x = 0;
+				if (si.y < 0) si.h += si.y, si.y = 0;
+				si.w = std::min(si.w, width - si.x);
+				si.h = std::min(si.h, height - si.y);
+
+				if (si.x < 0 || si.w <= 0 || (si.x + si.w) > width)
 				{
 					::MessageBoxW(hive.mainWindow, L"アイテムの位置情報が無効です", Hive::DisplayName, MB_OK);
 
 					return FALSE;
 				}
 
-				if (pd_y < 0 || pd_h <= 0 || (pd_y + pd_h) > height)
+				if (si.y < 0 || si.h <= 0 || (si.y + si.h) > height)
 				{
 					::MessageBoxW(hive.mainWindow, L"アイテムの位置情報が無効です", Hive::DisplayName, MB_OK);
 
@@ -369,21 +400,21 @@ namespace fgo::single_out
 				}
 
 				PixelARGB* dstHead = output.get();
-				PixelARGB* srcHead = output.get() + pd_y * width + pd_x;
+				PixelARGB* srcHead = output.get() + si.y * width + si.x;
 
-				for (int y = 0; y < pd_h; y++)
+				for (int y = 0; y < si.h; y++)
 				{
-					PixelARGB* dstLine = dstHead + y * pd_w;
+					PixelARGB* dstLine = dstHead + y * si.w;
 					PixelARGB* srcLine = srcHead + y * width;
 
-					for (int x = 0; x < pd_w; x++)
+					for (int x = 0; x < si.w; x++)
 					{
 						dstLine[x] = srcLine[x];
 					}
 				}
 
-				width = pd_w;
-				height = pd_h;
+				width = si.w;
+				height = si.h;
 			}
 
 			Bitmap bitmap(width, height, width * 4, PixelFormat32bppARGB, (BYTE*)output.get());

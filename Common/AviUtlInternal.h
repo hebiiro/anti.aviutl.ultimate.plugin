@@ -38,7 +38,30 @@ public: // 拡張編集の変数
 	int* m_exeditFrameNumber = 0; // 拡張編集の最終フレーム番号。
 	int* m_exeditCurrentFrame = 0; // 拡張編集の現在フレーム。
 	HMENU* m_settingDialogMenu[5] = {}; // 設定ダイアログのコンテキストメニュー。
-	BYTE* m_positionDataArray = 0;
+#pragma pack(push)
+#pragma pack(1)
+	struct SelectItem {
+		int32_t objectIndex; // -30
+		uint32_t u9; // -2C
+		uint32_t u8; // -28
+		uint32_t u7; // -24
+		uint32_t u6; // -20
+		uint32_t u5; // -1C
+		int32_t x; // -18
+		int32_t y; // -14
+		int32_t w; // -10
+		int32_t h; // -0C
+		uint16_t u4; // -08
+		uint16_t u3; // -06
+		uint16_t u2; // -04
+		uint16_t u1; // -02
+		uint32_t flags; // 0x04が選択アイテム
+	};
+#pragma pack(pop)
+	int32_t* m_selectItemCount = 0;
+	SelectItem* m_selectItem = 0;
+	int32_t GetSelectItemCount() { return *m_selectItemCount; }
+	SelectItem* GetSelectItem(int32_t index) { return &m_selectItem[index - 1]; }
 
 public: // 拡張編集の関数
 
@@ -167,7 +190,8 @@ public:
 		m_settingDialogMenu[3] = (HMENU*)(m_exedit + 0x167D40); // カメラ制御＆時間制御
 		m_settingDialogMenu[4] = (HMENU*)(m_exedit + 0x167D44); // 音声フィルタオブジェクト
 
-		m_positionDataArray = (BYTE*)(m_exedit + 0x146270);
+		m_selectItemCount = (int32_t*)(m_exedit + 0x17921C);
+		m_selectItem = (SelectItem*)(m_exedit + 0x146270 + 0x04);
 
 		assign(m_ExEditWindowProc, m_exedit + 0x3B620);
 		assign(m_SettingDialogProc, m_exedit + 0x2CDE0);
@@ -365,11 +389,6 @@ public:
 	int GetSettingDialogMenuCount()
 	{
 		return sizeof(m_settingDialogMenu) / sizeof(m_settingDialogMenu[0]);
-	}
-
-	BYTE* GetPositionDataArray()
-	{
-		return m_positionDataArray;
 	}
 
 	BYTE* GetExdata(ExEdit::Object* object, int filterIndex)
