@@ -166,9 +166,9 @@ namespace Tools
 			TEXTMETRIC tm = {}; ::GetTextMetrics(dc, &tm);
 
 			// フォントの高さを返します。
-			// 24 == 最低値
+			// 20 == 最低値
 			// 8 == コントロールのエッジ幅(2 * 2) + 余白(2 * 2)
-			return std::max<int>(24, tm.tmHeight + tm.tmInternalLeading + 8);
+			return std::max<int>(20, tm.tmHeight + 8);
 		}
 	};
 

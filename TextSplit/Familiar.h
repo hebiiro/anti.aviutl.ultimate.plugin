@@ -799,8 +799,11 @@ namespace fgo::text_split
 			::DeleteFileA(m_tempFileName);
 			::DeleteFileA(m_tempFileNameSplit);
 
-			// AviUtlのプレビューウィンドウを再描画します。
-			::PostMessage(m_fp->hwnd, AviUtl::FilterPlugin::WindowMessage::Command, 0, 0);
+			// 拡張編集を再描画します。
+			::InvalidateRect(magi.auin.GetExEditWindow(), 0, 0);
+
+			// AviUtlを再描画します。
+			magi.redraw();
 
 			return TRUE;
 		}

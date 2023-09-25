@@ -29,7 +29,7 @@ namespace fgo
 		};
 
 		AviUtl::FilterPlugin* fp = 0; // フィルタプラグインのポインタです。
-		AviUtlInternal auin; // AviUtl や拡張編集の機能にアクセスするためのオブジェクトです。
+		AviUtlInternal auin; // AviUtlや拡張編集の機能にアクセスするためのオブジェクトです。
 
 		//
 		// 指定されたコンフィグファイル名をフルパスにして返します。
@@ -42,6 +42,11 @@ namespace fgo
 			::StringCchCatW(path, std::size(path), L"Config");
 			::PathAppendW(path, fileName);
 			return path;
+		}
+
+		void redraw()
+		{
+			::PostMessage(fp->hwnd, AviUtl::FilterPlugin::WindowMessage::Command, 0, 0);
 		}
 
 		//
