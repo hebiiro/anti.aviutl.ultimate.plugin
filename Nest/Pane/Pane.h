@@ -72,7 +72,7 @@ namespace fgo::nest
 			: owner(owner)
 		{
 			tab.create(
-				WS_EX_NOPARENTNOTIFY,
+				WS_EX_NOPARENTNOTIFY | WS_EX_COMPOSITED,
 				WC_TABCONTROL,
 				_T("Nest.Tab"),
 				WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
