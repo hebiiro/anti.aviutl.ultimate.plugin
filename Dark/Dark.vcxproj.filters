@@ -38,6 +38,9 @@
       <Filter>Hook\Api</Filter>
     </ClInclude>
     <ClInclude Include="ActCtx.h" />
+    <ClInclude Include="Hook\Api\GetModuleHandle.h">
+      <Filter>Hook\Api</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -168,6 +168,7 @@
     <ClInclude Include="DarkenWindow.h" />
     <ClInclude Include="Hook\Api.h" />
     <ClInclude Include="Hook\Api\CreateWindow.h" />
+    <ClInclude Include="Hook\Api\GetModuleHandle.h" />
     <ClInclude Include="MyDraw.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />

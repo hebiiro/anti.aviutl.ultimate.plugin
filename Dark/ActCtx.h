@@ -53,7 +53,7 @@ namespace fgo::dark
 			//
 			Activator()
 			{
-				MY_TRACE_FUNC("");
+//				MY_TRACE_FUNC("");
 
 				::ActivateActCtx(actctx.hac, &cookie);
 			}
@@ -63,7 +63,7 @@ namespace fgo::dark
 			//
 			~Activator()
 			{
-				MY_TRACE_FUNC("");
+//				MY_TRACE_FUNC("");
 
 				::DeactivateActCtx(0, cookie), cookie = 0;
 			}

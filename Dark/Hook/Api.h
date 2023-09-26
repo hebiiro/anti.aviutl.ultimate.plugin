@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Api/CreateWindow.h"
+#include "Api/GetModuleHandle.h"
 
 namespace fgo::dark::hook
 {
@@ -15,10 +16,11 @@ namespace fgo::dark::hook
 		{
 			MY_TRACE_FUNC("");
 
-			HMODULE user32 = ::GetModuleHandle(_T("user32.dll"));
-
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
+
+			HMODULE kernel32 = ::GetModuleHandle(_T("kernel32.dll"));
+			MY_TRACE_HEX(kernel32);
 
 			Tools::attach(CreateWindowExA);
 			Tools::attach(CreateWindowExW);
@@ -26,6 +28,13 @@ namespace fgo::dark::hook
 			Tools::attach(CreateDialogParamW);
 			Tools::attach(CreateDialogIndirectParamA);
 			Tools::attach(CreateDialogIndirectParamW);
+#if 0
+			Tools::attach(DialogBoxParamA);
+			Tools::attach(DialogBoxParamW);
+			Tools::attach(DialogBoxIndirectParamA);
+			Tools::attach(DialogBoxIndirectParamW);
+#endif
+			Tools::attach(EnumProcessModules, ::GetProcAddress(kernel32, "K32EnumProcessModules"));
 
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
