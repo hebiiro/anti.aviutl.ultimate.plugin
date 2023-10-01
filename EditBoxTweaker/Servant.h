@@ -9,6 +9,7 @@ namespace fgo::editbox_tweaker
 	{
 		BOOL unicodeInput;
 		BOOL ctrlA;
+		BOOL zoomable;
 		int delta;
 		struct Font {
 			_bstr_t name;
@@ -25,6 +26,7 @@ namespace fgo::editbox_tweaker
 		{
 			unicodeInput = TRUE;
 			ctrlA = TRUE;
+			zoomable = TRUE;
 			delta = 0;
 			font.name = L"";
 			font.height = 0;
@@ -99,6 +101,7 @@ namespace fgo::editbox_tweaker
 		{
 			getPrivateProfileInt(path, L"Config", L"unicodeInput", unicodeInput);
 			getPrivateProfileInt(path, L"Config", L"ctrlA", ctrlA);
+			getPrivateProfileInt(path, L"Config", L"zoomable", zoomable);
 			getPrivateProfileInt(path, L"Config", L"delta", delta);
 			getPrivateProfileBSTR(path, L"Config", L"font.name", font.name);
 			getPrivateProfileInt(path, L"Config", L"font.height", font.height);
@@ -106,12 +109,12 @@ namespace fgo::editbox_tweaker
 
 			if (wcslen(font.name) != 0)
 			{
-				// DPI に合わせてフォントのサイズを調整します。
+				// DPIに合わせてフォントのサイズを調整します。
 				int dpi = ::GetSystemDpiForProcess(::GetCurrentProcess());
 				int height = ::MulDiv(font.height, dpi, 96);
 
-				// HFONT を作成します。
-				// 複数行エディットボックスの WM_SETFONT でこのハンドルが渡されます。
+				// HFONTを作成します。
+				// 複数行エディットボックスのWM_SETFONTでこのハンドルが渡されます。
 				font.handle = ::CreateFontW(height, 0,
 					0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
 					0, 0, 0, font.pitch, font.name);
@@ -135,6 +138,7 @@ namespace fgo::editbox_tweaker
 		{
 			setPrivateProfileInt(path, L"Config", L"unicodeInput", unicodeInput);
 			setPrivateProfileInt(path, L"Config", L"ctrlA", ctrlA);
+			setPrivateProfileInt(path, L"Config", L"zoomable", zoomable);
 			setPrivateProfileInt(path, L"Config", L"delta", delta);
 			setPrivateProfileBSTR(path, L"Config", L"font.name", font.name);
 			setPrivateProfileInt(path, L"Config", L"font.height", font.height);
@@ -146,14 +150,14 @@ namespace fgo::editbox_tweaker
 		//
 		// 初期化処理です。
 		// 拡張編集の関数をフックします。
-		// 拡張編集のコンスト値 (コードメモリ) を書き換えます。
+		// 拡張編集のコンスト値を書き換えます。
 		//
 		BOOL init()
 		{
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			// 拡張編集のモジュールハンドルを取得する。
+			// 拡張編集のモジュールハンドルを取得します。
 			auto exedit = magi.auin.GetExEdit();
 
 			Tools::attach(GetMessageA);
@@ -248,6 +252,9 @@ namespace fgo::editbox_tweaker
 				HWND hwnd = orig(exStyle, className, windowName,
 					style, x, y, w, h + servant.delta, parent, menu, instance, param);
 
+				if (servant.zoomable)
+					::SendMessage(hwnd, EM_SETEXTENDEDSTYLE, ES_EX_ZOOMABLE, ES_EX_ZOOMABLE);
+
 				if (servant.font.handle != nullptr)
 					::SetWindowSubclass(hwnd, subclassproc, 0, 0);
 
@@ -257,18 +264,18 @@ namespace fgo::editbox_tweaker
 		} editbox;
 
 		//
-		// この構造体は ::DispatchMesageA() を ::DispatchMesageW() に置き換えるために使用されます。
+		// この構造体は::DispatchMesageA()を::DispatchMesageW()に置き換えるために使用されます。
 		//
 		struct {
-			decltype(&::DispatchMessageA) hook = ::DispatchMessageW;
+			inline static decltype(&::DispatchMessageA) hook = ::DispatchMessageW;
 			inline static decltype(hook) orig = ::DispatchMessageA;
 		} DispatchMessageA;
 
 		//
-		// この構造体は ::PeekMesageA() を ::PeekMesageW() に置き換えるために使用されます。
+		// この構造体は::PeekMesageA()を::PeekMesageW()に置き換えるために使用されます。
 		//
 		struct {
-			decltype(&::PeekMessageA) hook = ::PeekMessageW;
+			inline static decltype(&::PeekMessageA) hook = ::PeekMessageW;
 			inline static decltype(hook) orig = ::PeekMessageA;
 		} PeekMessageA;
 	} servant;
