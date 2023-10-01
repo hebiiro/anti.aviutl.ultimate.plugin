@@ -1,11 +1,9 @@
 ﻿#pragma once
-#include "ActCtx.h"
-#include "DarkenWindow.h"
 
 namespace fgo::dark::hook
 {
 	//
-	// このクラスは::EnumProcessModules()をフックします。
+	// このクラスは出力プラグインのリテラル文字列を書き換えます。
 	//
 	inline struct
 	{
@@ -57,23 +55,12 @@ namespace fgo::dark::hook
 			return Replacer<T, N>(dst, src);
 		}
 
-		inline static BOOL WINAPI hook(
-			_In_ HANDLE hProcess,
-			_Out_writes_bytes_(cb) HMODULE* lphModule,
-			_In_ DWORD cb,
-			_Out_ LPDWORD lpcbNeeded)
+		void hack(LPVOID base, LPVOID offset)
 		{
-			MY_TRACE_FUNC("0x%08X", hProcess);
-
-			// リターンアドレスを取得します。
-			LPVOID offset = (LPVOID)*((DWORD*)&hProcess - 1);
-
-			// リターンアドレスを持つモジュールのベースアドレスを取得します。
-			MEMORY_BASIC_INFORMATION mbi = {};
-			::VirtualQuery(offset, &mbi, sizeof(mbi));
-			LPVOID base = mbi.AllocationBase;
+			MY_TRACE_FUNC("0x%08X, 0x%08X", base, offset);
 
 			// モジュールのメモリを検索します。
+			MEMORY_BASIC_INFORMATION mbi = {};
 			while (::VirtualQuery(offset, &mbi, sizeof(mbi)))
 			{
 				// 検索結果が別のモジュールの場合はループを終了します。
@@ -89,6 +76,9 @@ namespace fgo::dark::hook
 					auto r1 = genReplacer("DarkenWindow\0\0", "UltimateConfig");
 					auto r2 = genReplacer(L"DarkenWindow.aul", L"Dark.aua\0\0\0\0\0\0\0\0");
 					auto r3 = genReplacer(L"DarkenWindowSettings.xml", L"Dark.xml\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");
+
+					LPVOID p2 = memstr(mbi.BaseAddress, mbi.RegionSize, r2.dst);
+					LPVOID p3 = memstr(mbi.BaseAddress, mbi.RegionSize, r3.dst);
 
 					// メモリが検索対象の文字列を持つかチェックします。
 					if (LPVOID p1 = memstr(mbi.BaseAddress, mbi.RegionSize, r1.dst))
@@ -120,6 +110,31 @@ namespace fgo::dark::hook
 				// 次のメモリに移動します。
 				offset = (LPVOID)((DWORD_PTR)mbi.BaseAddress + mbi.RegionSize);
 			}
+		}
+	} auo;
+
+	//
+	// このクラスは::EnumProcessModules()をフックします。
+	//
+	inline struct
+	{
+		inline static BOOL WINAPI hook(
+			_In_ HANDLE hProcess,
+			_Out_writes_bytes_(cb) HMODULE* lphModule,
+			_In_ DWORD cb,
+			_Out_ LPDWORD lpcbNeeded)
+		{
+			MY_TRACE_FUNC("0x%08X", hProcess);
+
+			// リターンアドレスを取得します。
+			LPVOID offset = (LPVOID)*((DWORD*)&hProcess - 1);
+
+			// リターンアドレスを持つモジュールのベースアドレスを取得します。
+			MEMORY_BASIC_INFORMATION mbi = {};
+			::VirtualQuery(offset, &mbi, sizeof(mbi));
+			LPVOID base = mbi.AllocationBase;
+
+			auo.hack(base, offset);
 
 			return orig(hProcess, lphModule, cb, lpcbNeeded);
 		}

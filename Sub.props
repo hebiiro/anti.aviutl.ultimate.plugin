@@ -5,7 +5,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\UltimateAddin\$(TargetFileName)"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\MySpace\AviUtl\aviutl110_test\Plugins\UltimateAddin\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <ClCompile>
       <PreprocessorDefinitions>MY_USE_FILE_LOGGER;%(PreprocessorDefinitions)</PreprocessorDefinitions>

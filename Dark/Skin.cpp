@@ -2759,24 +2759,26 @@ void Skin::setDwm(HWND hwnd, BOOL active)
 		DWMWA_LAST
 	};
 
+	BOOL trace = FALSE;
+
 	if (active)
 	{
 		if (m_dwm.m_activeBorderColor != -1)
 		{
 			HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR , &m_dwm.m_activeBorderColor, sizeof(m_dwm.m_activeBorderColor));
-			MY_TRACE_COM_ERROR(hr);
+			if (trace) MY_TRACE_COM_ERROR(hr);
 		}
 
 		if (m_dwm.m_activeCaptionColor != -1)
 		{
 			HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR , &m_dwm.m_activeCaptionColor, sizeof(m_dwm.m_activeCaptionColor));
-			MY_TRACE_COM_ERROR(hr);
+			if (trace) MY_TRACE_COM_ERROR(hr);
 		}
 
 		if (m_dwm.m_activeTextColor != -1)
 		{
 			HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR , &m_dwm.m_activeTextColor, sizeof(m_dwm.m_activeTextColor));
-			MY_TRACE_COM_ERROR(hr);
+			if (trace) MY_TRACE_COM_ERROR(hr);
 		}
 	}
 	else
@@ -2784,32 +2786,32 @@ void Skin::setDwm(HWND hwnd, BOOL active)
 		if (m_dwm.m_inactiveBorderColor != -1)
 		{
 			HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR , &m_dwm.m_inactiveBorderColor, sizeof(m_dwm.m_inactiveBorderColor));
-			MY_TRACE_COM_ERROR(hr);
+			if (trace) MY_TRACE_COM_ERROR(hr);
 		}
 
 		if (m_dwm.m_inactiveCaptionColor != -1)
 		{
 			HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR , &m_dwm.m_inactiveCaptionColor, sizeof(m_dwm.m_inactiveCaptionColor));
-			MY_TRACE_COM_ERROR(hr);
+			if (trace) MY_TRACE_COM_ERROR(hr);
 		}
 
 		if (m_dwm.m_inactiveTextColor != -1)
 		{
 			HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR , &m_dwm.m_inactiveTextColor, sizeof(m_dwm.m_inactiveTextColor));
-			MY_TRACE_COM_ERROR(hr);
+			if (trace) MY_TRACE_COM_ERROR(hr);
 		}
 	}
 
 	if (m_dwm.m_darkMode != -1)
 	{
 		HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE , &m_dwm.m_darkMode, sizeof(m_dwm.m_darkMode));
-		MY_TRACE_COM_ERROR(hr);
+		if (trace) MY_TRACE_COM_ERROR(hr);
 	}
 
 	if (m_dwm.m_cornerMode != -1)
 	{
 		HRESULT hr = ::DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE , &m_dwm.m_cornerMode, sizeof(m_dwm.m_cornerMode));
-		MY_TRACE_COM_ERROR(hr);
+		if (trace) MY_TRACE_COM_ERROR(hr);
 	}
 }
 
