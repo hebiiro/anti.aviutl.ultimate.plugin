@@ -1,16 +1,9 @@
 ﻿#pragma once
+#include "Hive.h"
 #include "ActCtx.h"
 
 namespace fgo::dark::hook
 {
-	inline LPCSTR safe_string(LPCSTR name) {
-		return ((ULONG_PTR)name > 0x0000FFFF) ? name : "無効";
-	}
-
-	inline LPCWSTR safe_string(LPCWSTR name) {
-		return ((ULONG_PTR)name > 0x0000FFFF) ? name : L"無効";
-	}
-
 	//
 	// このクラスは::CreateWindowExA()をフックします。
 	//
@@ -19,7 +12,7 @@ namespace fgo::dark::hook
 		inline static HWND WINAPI hook(DWORD exStyle, LPCSTR className, LPCSTR windowName, DWORD style,
 			int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 		{
-			MY_TRACE_FUNC("%hs, %hs", safe_string(className), safe_string(windowName));
+			MY_TRACE_FUNC("%hs, %hs", hive.safe_string(className), hive.safe_string(windowName));
 
 			ActCtx::Activator activator;
 
@@ -38,7 +31,7 @@ namespace fgo::dark::hook
 		inline static HWND WINAPI hook(DWORD exStyle, LPCWSTR className, LPCWSTR windowName, DWORD style,
 			int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 		{
-			MY_TRACE_FUNC("%ws, %ws", safe_string(className), safe_string(windowName));
+			MY_TRACE_FUNC("%ws, %ws", hive.safe_string(className), hive.safe_string(windowName));
 
 			ActCtx::Activator activator;
 

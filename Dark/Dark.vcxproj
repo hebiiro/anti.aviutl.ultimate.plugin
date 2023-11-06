@@ -164,55 +164,83 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ActCtx.h" />
-    <ClInclude Include="ClassicHook.h" />
-    <ClInclude Include="DarkenWindow.h" />
+    <ClInclude Include="Gdi\Client.h" />
+    <ClInclude Include="Gdi\Element\AviUtl.h" />
+    <ClInclude Include="Gdi\Element\AviUtlButton.h" />
+    <ClInclude Include="Gdi\Element\Button.h" />
+    <ClInclude Include="Gdi\Element\ComboBox.h" />
+    <ClInclude Include="Gdi\Element\Dialog.h" />
+    <ClInclude Include="Gdi\Element\EditBox.h" />
+    <ClInclude Include="Gdi\Element\ListBox.h" />
+    <ClInclude Include="Gdi\Element\ListView.h" />
+    <ClInclude Include="Gdi\Element\Spin.h" />
+    <ClInclude Include="Gdi\Element\Static.h" />
+    <ClInclude Include="Gdi\Element\Tab.h" />
+    <ClInclude Include="Gdi\Element\ToolBar.h" />
+    <ClInclude Include="Gdi\Element\ToolTip.h" />
+    <ClInclude Include="Gdi\Element\TrackBar.h" />
+    <ClInclude Include="Gdi\Element\TreeView.h" />
+    <ClInclude Include="Gdi\Manager.h" />
+    <ClInclude Include="Gdi\Renderer.h" />
+    <ClInclude Include="Gdi\RendererNc.h" />
+    <ClInclude Include="Hive.h" />
     <ClInclude Include="Hook\Api.h" />
     <ClInclude Include="Hook\Api\CreateWindow.h" />
+    <ClInclude Include="Hook\Api\Gdi.h" />
     <ClInclude Include="Hook\Api\GetModuleHandle.h" />
-    <ClInclude Include="MyDraw.h" />
+    <ClInclude Include="Hook\Api\GetOpenFileName.h" />
+    <ClInclude Include="Hook\Api\LoadIcon.h" />
+    <ClInclude Include="Hook\Api\Theme.h" />
+    <ClInclude Include="Hook\CBT.h" />
+    <ClInclude Include="Hook\ExEdit.h" />
+    <ClInclude Include="Hook\loudness.h" />
+    <ClInclude Include="Painter.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Servant.h" />
     <ClInclude Include="Skin.h" />
-    <ClInclude Include="ThemeHook.h" />
+    <ClInclude Include="Skin\ColorSet.h" />
+    <ClInclude Include="Skin\Config.h" />
+    <ClInclude Include="Skin\Dwm.h" />
+    <ClInclude Include="Skin\Figure\Node.h" />
+    <ClInclude Include="Skin\Figure\Manager.h" />
+    <ClInclude Include="Skin\Icon.h" />
+    <ClInclude Include="Skin\Theme\Manager.h" />
+    <ClInclude Include="Skin\Theme\Part.h" />
+    <ClInclude Include="Skin\Theme\Pocket.h" />
+    <ClInclude Include="Skin\Theme\State.h" />
+    <ClInclude Include="Skin\Theme\VSClass.h" />
+    <ClInclude Include="Theme\Client.h" />
+    <ClInclude Include="Theme\Element\Button.h" />
+    <ClInclude Include="Theme\Element\ComboBox.h" />
+    <ClInclude Include="Theme\Element\CommandModule.h" />
+    <ClInclude Include="Theme\Element\CommonItemsDialog.h" />
+    <ClInclude Include="Theme\Element\EditBox.h" />
+    <ClInclude Include="Theme\Element\Header.h" />
+    <ClInclude Include="Theme\Element\ListBox.h" />
+    <ClInclude Include="Theme\Element\ListView.h" />
+    <ClInclude Include="Theme\Element\Menu.h" />
+    <ClInclude Include="Theme\Element\PreviewPane.h" />
+    <ClInclude Include="Theme\Element\ScrollBar.h" />
+    <ClInclude Include="Theme\Element\Spin.h" />
+    <ClInclude Include="Theme\Element\Static.h" />
+    <ClInclude Include="Theme\Element\Tab.h" />
+    <ClInclude Include="Theme\Element\ToolBar.h" />
+    <ClInclude Include="Theme\Element\ToolTip.h" />
+    <ClInclude Include="Theme\Element\TrackBar.h" />
+    <ClInclude Include="Theme\Element\TreeView.h" />
+    <ClInclude Include="Theme\Element\Window.h" />
+    <ClInclude Include="Theme\Manager.h" />
+    <ClInclude Include="Theme\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AviUtl.cpp" />
-    <ClCompile Include="AviUtlButton.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="ClassicHook.cpp" />
-    <ClCompile Include="ComboBox.cpp" />
-    <ClCompile Include="CommandModule.cpp" />
-    <ClCompile Include="CommonItemsDialog.cpp" />
-    <ClCompile Include="DarkenWindow.cpp" />
-    <ClCompile Include="DarkenWindow_ExEdit.cpp" />
-    <ClCompile Include="Dialog.cpp" />
-    <ClCompile Include="Edit.cpp" />
-    <ClCompile Include="Exedit.cpp" />
-    <ClCompile Include="Header.cpp" />
-    <ClCompile Include="ListBox.cpp" />
-    <ClCompile Include="ListView.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="MyDraw.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PreviewPane.cpp" />
-    <ClCompile Include="ScrollBar.cpp" />
-    <ClCompile Include="Skin.cpp" />
-    <ClCompile Include="Spin.cpp" />
-    <ClCompile Include="Static.cpp" />
-    <ClCompile Include="Tab.cpp" />
-    <ClCompile Include="ThemeHook.cpp" />
-    <ClCompile Include="ToolBar.cpp" />
-    <ClCompile Include="ToolTip.cpp" />
-    <ClCompile Include="TrackBar.cpp" />
-    <ClCompile Include="TreeView.cpp" />
-    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Main.def" />

@@ -1,5 +1,8 @@
 ﻿#include "pch.h"
 #include "Servant.h"
+#include "ActCtx.h"
+#include "Hook/Api.h"
+#include "Hook/CBT.h"
 
 namespace fgo::dark
 {
@@ -13,7 +16,18 @@ namespace fgo::dark
 
 		return &servant;
 	}
-#if 0
+
+	//
+	// エクスポート関数です。
+	// 外部プロセスで使用する場合はこの関数をインポートして呼び出します。
+	//
+	void WINAPI DarkenWindow_init(HWND hwnd)
+	{
+		MY_TRACE(_T("DarkenWindow_init(0x%08X)\n"), hwnd);
+
+		servant.init(hwnd);
+	}
+
 	//
 	// エントリポイントです。
 	//
@@ -23,17 +37,30 @@ namespace fgo::dark
 		{
 		case DLL_PROCESS_ATTACH:
 			{
-				::DisableThreadLibraryCalls(instance);
+				MY_TRACE_FUNC("DLL_PROCESS_ATTACH");
+
+//				::DisableThreadLibraryCalls(instance);
+
+				hive.instance = instance;
+
+				actctx.init(instance);
+				hook::api.init();
+				hook::cbt.init();
 
 				break;
 			}
 		case DLL_PROCESS_DETACH:
 			{
+				MY_TRACE_FUNC("DLL_PROCESS_DETACH");
+
+				hook::cbt.exit();
+				hook::api.exit();
+				actctx.exit();
+
 				break;
 			}
 		}
 
 		return TRUE;
 	}
-#endif
 }

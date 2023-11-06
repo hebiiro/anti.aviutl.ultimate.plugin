@@ -1,759 +1,458 @@
 #pragma once
+#include "Skin/Dwm.h"
+#include "Skin/Icon.h"
+#include "Skin/Figure/Manager.h"
+#include "Skin/Theme/Manager.h"
 
-//--------------------------------------------------------------------
-
-enum MY_STATICPARTS {
-	STAT_ETCHEDEDGE = 2,
-};
-
-enum MY_EDITTEXTSTATES {
-	ETS_STATICTEXT = 9,
-};
-
-//--------------------------------------------------------------------
-namespace Dark {\
-//--------------------------------------------------------------------
-
-enum THEMES {
-	THEME_MENU,
-	THEME_SCROLLBAR,
-	THEME_STATIC,
-	THEME_BUTTON,
-	THEME_EDIT,
-	THEME_LISTBOX,
-	THEME_COMBOBOX,
-	THEME_TOOLTIP,
-	THEME_TRACKBAR,
-	THEME_SPIN,
-	THEME_HEADER,
-	THEME_LISTVIEW,
-	THEME_TREEVIEW,
-	THEME_TOOLBAR,
-	THEME_TAB,
-	THEME_WINDOW,
-	THEME_DIALOG,
-	THEME_CTLCOLOR,
-	THEME_EXEDIT,
-	THEME_MAXSIZE,
-};
-
-enum CUSTOM_PARTS {
-	CTLCOLORDLG = 51,
-	CTLCOLORMSGBOX,
-	CTLCOLORBTN,
-	CTLCOLORSTATIC,
-	CTLCOLOREDIT,
-	CTLCOLORLISTBOX,
-	CTLCOLORSCROLLBAR,
-	WINDOW_WINDOWFACE,
-	WINDOW_DIALOGFACE,
-	WINDOW_WINDOWEDGE,
-	WINDOW_CLIENTEDGE,
-	WINDOW_STATICEDGE,
-	WINDOW_BORDER,
-	WINDOW_RAISEDOUTEREDGE,
-	WINDOW_SUNKENOUTEREDGE,
-	WINDOW_RAISEDEDGE,
-	WINDOW_SUNKENEDGE,
-	WINDOW_BUMPEDGE,
-	WINDOW_ETCHEDEDGE,
-	EXEDIT_ROOT,
-	EXEDIT_LAYER,
-	EXEDIT_LAYEREDGE,
-	EXEDIT_LONGSCALE,
-	EXEDIT_SHORTSCALE,
-	EXEDIT_LAYERBACKGROUND,
-	EXEDIT_GROUPBACKGROUND,
-	EXEDIT_SELECTION,
-	EXEDIT_SELECTIONEDGE,
-	EXEDIT_SELECTIONBK,
-	EXEDIT_LAYERLEFT,
-	EXEDIT_LAYERTOP,
-	EXEDIT_LAYERRIGHT,
-	EXEDIT_LAYERBOTTOM,
-	EXEDIT_LAYERSEPARATOR,
-};
-
-enum CTLCOLOR_STATES {
-	CTLCOLOR_NORMAL = 1,
-	CTLCOLOR_DISABLED = 2,
-	CTLCOLOR_READONLY = 3,
-	CTLCOLOR_STATICTEXT = 4,
-};
-
-enum EXEDIT_LAYER_STATES {
-	EXEDIT_LAYER_ACTIVE = 1,
-	EXEDIT_LAYER_INACTIVE = 2,
-};
-
-enum EXEDIT_LAYERBACKGROUND_STATES {
-	EXEDIT_LAYERBACKGROUND_ACTIVE = 1,
-	EXEDIT_LAYERBACKGROUND_INACTIVE = 2,
-};
-
-enum EXEDIT_GROUPBACKGROUND_STATES {
-	EXEDIT_GROUPBACKGROUND_ACTIVE_1 = 1,
-	EXEDIT_GROUPBACKGROUND_ACTIVE_2 = 2,
-	EXEDIT_GROUPBACKGROUND_ACTIVE_3 = 3,
-	EXEDIT_GROUPBACKGROUND_INACTIVE_1 = 4,
-	EXEDIT_GROUPBACKGROUND_INACTIVE_2 = 5,
-	EXEDIT_GROUPBACKGROUND_INACTIVE_3 = 6,
-};
-
-enum SHADOW_MODE {
-	SHADOW_MODE_OFF,
-	SHADOW_MODE_ON,
-};
-
-enum ROUND_MODE {
-	ROUND_MODE_OFF,
-	ROUND_MODE_ON,
-};
-
-enum STATIC_EDGE_MODE {
-	STATIC_EDGE_MODE_OFF,
-	STATIC_EDGE_MODE_ON,
-};
-
-//--------------------------------------------------------------------
-
-class Figure
+namespace fgo::dark::skin
 {
-protected:
-
-	_bstr_t m_name;
-	int m_ix, m_iy;
-	int m_ox, m_oy;
-	int m_left, m_top, m_right, m_bottom;
-	int m_addLeft, m_addTop, m_addRight, m_addBottom;
-
-public:
-
-	Figure();
-	virtual ~Figure();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-
-	LPCWSTR getName() const { return m_name; }
-};
-
-//--------------------------------------------------------------------
-
-class Null : public Figure
-{
-public:
-
-	Null();
-	virtual ~Null();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class FillRect : public Figure
-{
-protected:
-
-	COLORREF m_fillColor;
-
-public:
-
-	FillRect();
-	virtual ~FillRect();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class FrameRect : public Figure
-{
-protected:
-
-	COLORREF m_edgeColor;
-	int m_edgeWidth;
-
-public:
-
-	FrameRect();
-	virtual ~FrameRect();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class RoundRect : public Figure
-{
-protected:
-
-	COLORREF m_fillColor;
-	COLORREF m_edgeColor;
-	int m_edgeWidth;
-	int m_roundWidth;
-	int m_roundHeight;
-
-public:
-
-	RoundRect();
-	virtual ~RoundRect();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawRectangle : public Figure
-{
-protected:
-
-	COLORREF m_fillColor;
-	COLORREF m_edgeColor;
-	int m_edgeWidth;
-
-public:
-
-	DrawRectangle();
-	virtual ~DrawRectangle();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawAlphaRectangle : public Figure
-{
-protected:
-
-	COLORREF m_fillColor;
-	COLORREF m_edgeColor;
-	int m_edgeWidth;
-	int m_alpha;
-
-public:
-
-	DrawAlphaRectangle();
-	virtual ~DrawAlphaRectangle();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawAlphaRoundRect : public Figure
-{
-protected:
-
-	COLORREF m_fillColor;
-	COLORREF m_edgeColor;
-	int m_edgeWidth;
-	int m_roundWidth;
-	int m_roundHeight;
-	int m_alpha;
-
-public:
-
-	DrawAlphaRoundRect();
-	virtual ~DrawAlphaRoundRect();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawSingleRaisedEdge : public Figure
-{
-public:
-
-	static COLORREF m_topLeftColor;
-	static COLORREF m_bottomRightColor;
-
-	DrawSingleRaisedEdge();
-	virtual ~DrawSingleRaisedEdge();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawSingleSunkenEdge : public Figure
-{
-public:
-
-	static COLORREF m_topLeftColor;
-	static COLORREF m_bottomRightColor;
-
-	DrawSingleSunkenEdge();
-	virtual ~DrawSingleSunkenEdge();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawDoubleRaisedEdge : public Figure
-{
-public:
-
-	static COLORREF m_innerTopLeftColor;
-	static COLORREF m_innerBottomRightColor;
-	static COLORREF m_outerTopLeftColor;
-	static COLORREF m_outerBottomRightColor;
-
-	DrawDoubleRaisedEdge();
-	virtual ~DrawDoubleRaisedEdge();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawDoubleSunkenEdge : public Figure
-{
-public:
-
-	static COLORREF m_innerTopLeftColor;
-	static COLORREF m_innerBottomRightColor;
-	static COLORREF m_outerTopLeftColor;
-	static COLORREF m_outerBottomRightColor;
-
-	DrawDoubleSunkenEdge();
-	virtual ~DrawDoubleSunkenEdge();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawDoubleBumpEdge : public Figure
-{
-public:
-
-	static COLORREF m_innerTopLeftColor;
-	static COLORREF m_innerBottomRightColor;
-	static COLORREF m_outerTopLeftColor;
-	static COLORREF m_outerBottomRightColor;
-
-	DrawDoubleBumpEdge();
-	virtual ~DrawDoubleBumpEdge();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawDoubleEtchedEdge : public Figure
-{
-public:
-
-	static COLORREF m_innerTopLeftColor;
-	static COLORREF m_innerBottomRightColor;
-	static COLORREF m_outerTopLeftColor;
-	static COLORREF m_outerBottomRightColor;
-
-	DrawDoubleEtchedEdge();
-	virtual ~DrawDoubleEtchedEdge();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class TextFigure : public Figure
-{
-protected:
-
-	_bstr_t m_fontName;
-	int m_fontWeight;
-	BOOL m_fontItalic;
-	BOOL m_fontStroke;
-	COLORREF m_fillColor;
-	COLORREF m_foreColor;
-	COLORREF m_backColor;
-	UINT m_format;
-
-public:
-
-	TextFigure();
-	virtual ~TextFigure();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void drawText(HDC dc, LPRECT rc, LPCWSTR text, int c, UINT format);
-	virtual void textOut(HDC dc, int x, int y, UINT options, LPRECT rc, LPCWSTR text, UINT c, CONST INT* dx);
-};
-
-//--------------------------------------------------------------------
-
-class DrawText : public TextFigure
-{
-public:
-
-	DrawText();
-	virtual ~DrawText();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void drawText(HDC dc, LPRECT rc, LPCWSTR text, int c, UINT format);
-	virtual void textOut(HDC dc, int x, int y, UINT options, LPRECT rc, LPCWSTR text, UINT c, CONST INT* dx);
-};
-
-//--------------------------------------------------------------------
-
-class DrawShadowText : public TextFigure
-{
-};
-
-//--------------------------------------------------------------------
-
-class IconFigure : public TextFigure
-{
-protected:
-
-	_bstr_t m_text;
-
-public:
-
-	IconFigure();
-	virtual ~IconFigure();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawIcon : public IconFigure
-{
-public:
-
-	DrawIcon();
-	virtual ~DrawIcon();
-	virtual void load(const MSXML2::IXMLDOMElementPtr& element);
-	virtual void draw(HDC dc, LPRECT rc);
-};
-
-//--------------------------------------------------------------------
-
-class DrawShadowIcon : public IconFigure
-{
-};
-
-//--------------------------------------------------------------------
-
-class ExEditGroup
-{
-public:
-
-	static COLORREF m_color;
-	static float m_alpha;
-};
-
-//--------------------------------------------------------------------
-
-typedef std::shared_ptr<Figure> FigurePtr;
-typedef std::map<_bstr_t, FigurePtr> FigureMap;
-typedef std::vector<FigurePtr> FigureArray;
-
-typedef std::shared_ptr<IconFigure> IconFigurePtr;
-typedef std::map<_bstr_t, IconFigurePtr> IconFigureMap;
-typedef std::vector<IconFigurePtr> IconFigureArray;
-
-typedef std::shared_ptr<TextFigure> TextFigurePtr;
-typedef std::map<_bstr_t, TextFigurePtr> TextFigureMap;
-typedef std::vector<TextFigurePtr> TextFigureArray;
-
-//--------------------------------------------------------------------
-
-class State
-{
-public:
-
-	COLORREF m_fillColor;
-	COLORREF m_textBkColor;
-	COLORREF m_textForeColor;
-	COLORREF m_textBackColor;
-	HBRUSH m_fillBrush;
-
-	FigureArray m_figures;
-	IconFigureArray m_iconFigures;
-	TextFigureArray m_textFigures;
-
-	State();
-	~State();
-
-	HBRUSH getFillBrush();
-	void deleteFillBrush();
-};
-
-typedef std::shared_ptr<State> StatePtr;
-typedef std::vector<StatePtr> StateArray;
-
-//--------------------------------------------------------------------
-
-class Part
-{
-private:
-
-	StateArray m_stateArray;
-
-public:
-
-	Part();
-	StatePtr addState(int stateId);
-	StatePtr getState(int stateId);
-};
-
-typedef std::shared_ptr<Part> PartPtr;
-typedef std::vector<PartPtr> PartArray;
-
-//--------------------------------------------------------------------
-
-class VSClass
-{
-private:
-
-	_bstr_t m_id;
-	PartArray m_partArray;
-
-public:
-
-	VSClass();
-	LPCWSTR getId() const;
-	void setId(LPCWSTR id);
-	PartPtr addPart(int partId);
-	PartPtr getPart(int partId);
-};
-
-typedef std::shared_ptr<VSClass> VSClassPtr;
-typedef std::map<HTHEME, VSClassPtr> VSClassMap;
-
-//--------------------------------------------------------------------
-
-struct StateAttributes
-{
-	COLORREF m_fillColor;
-	COLORREF m_textForeColor;
-	COLORREF m_textBackColor;
-};
-
-//--------------------------------------------------------------------
-
-struct EditIcon
-{
-	struct ChangeColor
+	inline struct Manager
 	{
-		COLORREF m_src;
-		COLORREF m_dst;
-	};
+		FileUpdateCheckers config_checker;
 
-	typedef std::vector<ChangeColor> ChangeColorArray;
-
-	ChangeColorArray m_changeColorArray;
-};
-
-typedef std::shared_ptr<EditIcon> EditIconPtr;
-typedef std::map<_bstr_t, EditIconPtr> EditIconMap;
-
-//--------------------------------------------------------------------
-
-struct DrawIconData
-{
-	_bstr_t m_name;
-	IconHolder m_icon;
-};
-
-typedef std::shared_ptr<DrawIconData> DrawIconDataPtr;
-typedef std::map<HICON, DrawIconDataPtr> DrawIconDataMap;
-
-//--------------------------------------------------------------------
-
-class Skin
-{
-private:
-
-	HINSTANCE m_instance;
-	HWND m_hwnd;
-	FileUpdateCheckers m_fileUpdateCheckers;
-	FigureMap m_figureMap;
-	IconFigureMap m_iconFigureMap;
-	TextFigureMap m_textFigureMap;
-	VSClassMap m_vsclassMap;
-
-	HTHEME m_themes[THEME_MAXSIZE];
-
-	struct XorPen
-	{
-		int m_style = -1;
-		int m_width = -1;
-		COLORREF m_color = CLR_NONE;
-	} m_xorPen;
-
-	struct Dwm
-	{
-		BOOL enable;
-		int m_darkMode;
-		int m_cornerMode;
-		COLORREF m_activeBorderColor;
-		COLORREF m_activeCaptionColor;
-		COLORREF m_activeTextColor;
-		COLORREF m_inactiveBorderColor;
-		COLORREF m_inactiveCaptionColor;
-		COLORREF m_inactiveTextColor;
-	} m_dwm;
-
-	EditIconMap m_editIconMap;
-	DrawIconDataMap m_drawIconDataMap;
-
-	_bstr_t m_skinFileName = L"";
-	int m_shadowMode = SHADOW_MODE_ON;
-	int m_roundMode = ROUND_MODE_ON;
-	int m_staticEdgeMode = STATIC_EDGE_MODE_OFF;
-	BOOL m_useLayerColor = TRUE;
-	BOOL m_useLayerColorEx = FALSE;
-
-public:
-
-	Skin();
-	~Skin();
-
-	static void CALLBACK timerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD time);
-	static BOOL CALLBACK enumWindowsProc(HWND hwnd, LPARAM lParam);
-	static BOOL CALLBACK enumChildWindowsProc(HWND hwnd, LPARAM lParam);
-	void init(HINSTANCE instance, HWND hwnd);
-	BOOL reloadSettings(BOOL force);
-	void reloadSettingsInternal(LPCWSTR fileName);
-	void reloadExEditSettings();
-	void reloadSkinSettings(LPCWSTR fileName);
-	void reloadSkin(LPCWSTR fileName);
-	void loadAttributes(const MSXML2::IXMLDOMElementPtr& parentElement);
-	void loadFigures(const MSXML2::IXMLDOMElementPtr& parentElement);
-	void loadVSClasses(const MSXML2::IXMLDOMElementPtr& parentElement);
-	void loadVSClass(const MSXML2::IXMLDOMElementPtr& parentElement);
-	void loadName(const MSXML2::IXMLDOMElementPtr& parentElement, VSClassPtr& vsclass);
-	void loadPart(const MSXML2::IXMLDOMElementPtr& parentElement, const VSClassPtr& vsclass);
-	void loadState(const MSXML2::IXMLDOMElementPtr& parentElement, const PartPtr& part);
-	void loadFigure(const MSXML2::IXMLDOMElementPtr& parentElement, const StatePtr& state);
-	void loadIconFigure(const MSXML2::IXMLDOMElementPtr& parentElement, const StatePtr& state);
-	void loadTextFigure(const MSXML2::IXMLDOMElementPtr& parentElement, const StatePtr& state);
-	void saveSettings();
-	void saveSettingsInternal(LPCWSTR fileName);
-
-	FigurePtr getFigure(LPCWSTR name);
-	IconFigurePtr getIconFigure(LPCWSTR name);
-	TextFigurePtr getTextFigure(LPCWSTR name);
-
-	VSClassPtr getVSClass(HTHEME theme);
-	VSClassPtr getVSClass(HWND hwnd, LPCWSTR vsclass);
-	int getPartId(LPCWSTR id);
-	int getStateId(LPCWSTR id);
-
-	template<class T>
-	void loadFigure(const MSXML2::IXMLDOMElementPtr& parentElement, LPCWSTR tagName)
-	{
-//		MY_TRACE(_T("Skin::loadFigures(%ws)\n"), tagName);
-
-		MSXML2::IXMLDOMNodeListPtr nodeList = parentElement->getElementsByTagName(tagName);
-		int c = nodeList->length;
-		for (int i = 0; i < c; i++)
+		BOOL init(HWND hwnd)
 		{
-			MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
+			MY_TRACE_FUNC("0x%08X", hwnd);
 
-			FigurePtr figure(new T());
-			figure->load(element);
-			if (m_figureMap.contains(figure->getName())) continue; // すでに同じ名前が使われている場合は追加しない。
-			m_figureMap[figure->getName()] = figure;
-//			MY_TRACE(_T("figure = %ws, %ws\n"), tagName, figure->getName());
+			// DWMを初期化します。
+			dwm.init(hwnd);
+
+			// テーマを初期化します。
+			theme::manager.init();
+
+			// スキンの設定を初期化します。
+			reloadSettingsInternal();
+
+			// コンフィグチェッカー用のタイマーを開始します。
+			::SetTimer(hwnd, (UINT_PTR)this, 1000, onTimerProc);
+
+			return TRUE;
 		}
-	}
 
-	template<class T>
-	void loadIconFigure(const MSXML2::IXMLDOMElementPtr& parentElement, LPCWSTR tagName)
-	{
-//		MY_TRACE(_T("Skin::loadIconFigures(%ws)\n"), tagName);
-
-		MSXML2::IXMLDOMNodeListPtr nodeList = parentElement->getElementsByTagName(tagName);
-		int c = nodeList->length;
-		for (int i = 0; i < c; i++)
+		static void CALLBACK onTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD time)
 		{
-			MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
-
-			IconFigurePtr figure(new T());
-			figure->load(element);
-			if (m_iconFigureMap.contains(figure->getName())) continue; // すでに同じ名前が使われている場合は追加しない。
-			m_iconFigureMap[figure->getName()] = figure;
-//			MY_TRACE(_T("icon figure = %ws, %ws\n"), tagName, figure->getName());
+			if (manager.reloadSettings())
+				hive.redraw();
 		}
-	}
 
-	template<class T>
-	void loadTextFigure(const MSXML2::IXMLDOMElementPtr& parentElement, LPCWSTR tagName)
-	{
-//		MY_TRACE(_T("Skin::loadTextFigures(%ws)\n"), tagName);
-
-		MSXML2::IXMLDOMNodeListPtr nodeList = parentElement->getElementsByTagName(tagName);
-		int c = nodeList->length;
-		for (int i = 0; i < c; i++)
+		BOOL reloadSettings()
 		{
-			MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
+			if (!config_checker.isFileUpdated())
+				return FALSE;
 
-			TextFigurePtr figure(new T());
-			figure->load(element);
-			if (m_textFigureMap.contains(figure->getName())) continue; // すでに同じ名前が使われている場合は追加しない。
-			m_textFigureMap[figure->getName()] = figure;
-//			MY_TRACE(_T("text figure = %ws, %ws\n"), tagName, figure->getName());
+			MY_TRACE_FUNC("");
+
+			config_checker.clear();
+			theme::manager.clear();
+			figure::manager.clear();
+
+			reloadSettingsInternal();
+			reloadExEditSettings();
+
+			return TRUE;
 		}
-	}
 
-	StatePtr getState(HTHEME theme, int partId, int stateId);
-	void getStateAttributes(HTHEME theme, int partId, int stateId, StateAttributes* stateAttributes);
-	BOOL drawBackground(HDC dc, HTHEME theme, int partId, int stateId, LPRECT rc);
-	BOOL drawIcon(HDC dc, HTHEME theme, int partId, int stateId, LPRECT rc);
-	BOOL drawText(HDC dc, HTHEME theme, int partId, int stateId, LPRECT rc, LPCWSTR text, int c, UINT format);
-	BOOL textOut(HDC dc, HTHEME theme, int partId, int stateId, int x, int y, UINT options, LPRECT rc, LPCWSTR text, UINT c, CONST INT* dx);
-	BOOL onDrawThemeBackground(HTHEME theme, HDC dc, int partId, int stateId, LPCRECT rc);
-	BOOL onDrawThemeText(HTHEME theme, HDC dc, int partId, int stateId, LPCWSTR text, int c, DWORD textFlags, LPCRECT rc);
-	BOOL onExtTextOut(HTHEME theme, HDC dc, int partId, int stateId, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx);
+		BOOL reloadSettingsInternal()
+		{
+			MY_TRACE_FUNC("");
 
-	HTHEME getTheme(THEMES theme);
-	static int getCtlColorPartId(UINT message);
+			WCHAR fileName[MAX_PATH] = {};
+			config.getConfigFileName(fileName, std::size(fileName));
 
-	HRESULT getDwm(HWND hwnd);
-	void setDwm(HWND hwnd, BOOL active);
-	void addDrawIconData(HICON icon, LPCWSTR iconName);
-	HICON getDrawIcon(HICON icon);
-	HICON editIcon(HICON originalIcon, LPCWSTR iconName);
+			return reloadSettingsInternal(fileName);
+		}
 
-	_bstr_t getSkinFileName() const { return m_skinFileName; }
-	void setSkinFileName(_bstr_t skinFileName) { m_skinFileName = skinFileName; }
+		BOOL reloadSettingsInternal(LPCWSTR fileName)
+		{
+			MY_TRACE_FUNC("%ws", fileName);
 
-	int getShadowMode() const { return m_shadowMode; }
-	void setShadowMode(int shadowMode) { m_shadowMode = shadowMode; }
+			config_checker.add(fileName);
 
-	int getRoundMode() const { return m_roundMode; }
-	void setRoundMode(int roundMode) { m_roundMode = roundMode; }
+			try
+			{
+				MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
 
-	int getStaticEdgeMode() const { return m_staticEdgeMode; }
-	void setStaticEdgeMode(int staticEdgeMode) { m_staticEdgeMode = staticEdgeMode; }
+				if (document->load(fileName) == VARIANT_FALSE)
+				{
+					MY_TRACE(_T("%ws の読み込みに失敗しました\n"), fileName);
 
-	int getUseLayerColor() const { return m_useLayerColor; }
-	void setUseLayerColor(int useLayerColor) { m_useLayerColor = useLayerColor; }
+					return FALSE;
+				}
 
-	int getUseLayerColorEx() const { return m_useLayerColorEx; }
-	void setUseLayerColorEx(int useLayerColorEx) { m_useLayerColorEx = useLayerColorEx; }
+				MSXML2::IXMLDOMElementPtr element = document->documentElement;
 
-	void getConfigFileName(LPWSTR buffer, size_t bufferSize)
-	{
-		WCHAR fileName[MAX_PATH] = {};
-		::GetModuleFileNameW(m_instance, fileName, std::size(fileName));
-		::PathRemoveFileSpecW(fileName);
-		::PathAppendW(fileName, L"../UltimateConfig");
-		::PathCanonicalizeW(buffer, fileName);
-		::PathAppendW(buffer, L"Dark.xml");
-	}
-};
+				getPrivateProfileString(element, L"skin", config.skinFileName);
+				getPrivateProfileLabel(element, L"shadowMode", config.shadowMode, Config::ShadowMode::label);
+				getPrivateProfileLabel(element, L"roundMode", config.roundMode, Config::RoundMode::label);
+				getPrivateProfileLabel(element, L"staticEdgeMode", config.staticEdgeMode, Config::StaticEdgeMode::label);
+				getPrivateProfileBool(element, L"useLayerColor", config.useLayerColor);
+				getPrivateProfileBool(element, L"useLayerColorEx", config.useLayerColorEx);
 
-//--------------------------------------------------------------------
-} // namespace Dark
+				_bstr_t skin;
+				getPrivateProfileFileName(element, L"skin", skin);
 
-//--------------------------------------------------------------------
+				return reloadSkinSettings(skin);
+			}
+			catch (_com_error& e)
+			{
+				MY_TRACE(_T("%s\n"), e.ErrorMessage());
 
-extern Dark::Skin g_skin;
+				return FALSE;
+			}
+		}
 
-//--------------------------------------------------------------------
+		BOOL reloadExEditSettings()
+		{
+			MY_TRACE_FUNC("");
+
+			uintptr_t exedit = (uintptr_t)::GetModuleHandle(_T("exedit.auf"));
+
+			if (config.staticEdgeMode == Config::StaticEdgeMode::Off)
+			{
+				// ボタンの拡張スタイル(WS_EX_STATICEDGE)を消します。
+				writeAbsoluteAddress(exedit + 0x2ED42 + 1, (uintptr_t)0);
+			}
+
+			{
+				int style = PS_SOLID;
+				int width = 0;
+				COLORREF color = RGB(0x00, 0xff, 0xff);
+
+				if (config.exedit.xorPen.style != -1 &&
+					config.exedit.xorPen.width != -1 &&
+					config.exedit.xorPen.color != CLR_NONE)
+				{
+					style = config.exedit.xorPen.style;
+					width = config.exedit.xorPen.width;
+					color = config.exedit.xorPen.color;
+				}
+
+				HPEN newPen = ::CreatePen(style, width, color);
+				HPEN oldPen = writeAbsoluteAddress(exedit + 0x1538B4, newPen);
+				::DeleteObject(oldPen);
+			}
+
+			{
+				HTHEME theme = skin::theme::manager.getTheme(skin::theme::THEME_EXEDIT);
+				auto state = skin::theme::manager.getState(theme, skin::theme::EXEDIT_SELECTION, 0);
+				if (state && state->fillColor != CLR_NONE)
+					writeAbsoluteAddress(exedit + 0x0003807E, &state->fillColor);
+			}
+			{
+				HTHEME theme = skin::theme::manager.getTheme(skin::theme::THEME_EXEDIT);
+				auto state = skin::theme::manager.getState(theme, skin::theme::EXEDIT_SELECTIONEDGE, 0);
+				if (state && state->fillColor != CLR_NONE)
+					writeAbsoluteAddress(exedit + 0x00038076, &state->fillColor);
+			}
+			{
+				HTHEME theme = skin::theme::manager.getTheme(skin::theme::THEME_EXEDIT);
+				auto state = skin::theme::manager.getState(theme, skin::theme::EXEDIT_SELECTIONBK, 0);
+				if (state && state->fillColor != CLR_NONE)
+					writeAbsoluteAddress(exedit + 0x00038087, &state->fillColor);
+			}
+
+			return TRUE;
+		}
+
+		BOOL reloadSkinSettings(LPCWSTR fileName)
+		{
+			MY_TRACE_FUNC("%ws", fileName);
+
+			{
+				// スキンを変更したとき、前回の値を引き継がないようにデフォルト値に戻しておきます。
+
+				config.exedit.xorPen.style = -1;
+				config.exedit.xorPen.width = -1;
+				config.exedit.xorPen.color = CLR_NONE;
+			}
+
+			config_checker.add(fileName);
+
+			try
+			{
+				MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
+
+				if (document->load(fileName) == VARIANT_FALSE)
+				{
+					MY_TRACE(_T("%ws の読み込みに失敗しました\n"), fileName);
+
+					return FALSE;
+				}
+
+				{
+					// スキンファイルを読み込みます。
+
+					MSXML2::IXMLDOMNodeListPtr nodeList =
+						document->documentElement->selectNodes(L"Skin");
+					int c = nodeList->length;
+					for (int i = 0; i < c; i++)
+					{
+						MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
+
+						_bstr_t fileName;
+						getPrivateProfileFileName(element, L"fileName", fileName);
+
+						reloadSkin(fileName);
+					}
+				}
+
+				return TRUE;
+			}
+			catch (_com_error& e)
+			{
+				MY_TRACE(_T("%s\n"), e.ErrorMessage());
+
+				return FALSE;
+			}
+		}
+
+		BOOL reloadSkin(LPCWSTR fileName)
+		{
+			MY_TRACE_FUNC("%ws", fileName);
+
+			config_checker.add(fileName);
+
+			try
+			{
+				MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
+
+				if (document->load(fileName) == VARIANT_FALSE)
+				{
+					MY_TRACE(_T("%ws の読み込みに失敗しました\n"), fileName);
+
+					return FALSE;
+				}
+
+				loadAttributes(document->documentElement);
+				loadFigures(document->documentElement);
+				loadVSClasses(document->documentElement);
+
+				return TRUE;
+			}
+			catch (_com_error& e)
+			{
+				MY_TRACE(_T("%s\n"), e.ErrorMessage());
+
+				return FALSE;
+			}
+		}
+
+		void loadAttributes(const MSXML2::IXMLDOMElementPtr& parentElement)
+		{
+			MY_TRACE_FUNC("");
+
+			// <Attributes>を読み込みます。
+			MSXML2::IXMLDOMNodeListPtr nodeList = parentElement->selectNodes(L"Attributes");
+			int c = nodeList->length;
+			for (int i = 0; i < c; i++)
+			{
+				MSXML2::IXMLDOMElementPtr element = nodeList->item[i];
+
+				figure::DrawSingleRaisedEdge::loadStatic(element);
+				figure::DrawSingleSunkenEdge::loadStatic(element);
+				figure::DrawDoubleSunkenEdge::loadStatic(element);
+				figure::DrawDoubleBumpEdge::loadStatic(element);
+				figure::DrawDoubleEtchedEdge::loadStatic(element);
+
+				config.load(element);
+				dwm.load(element);
+				icon_manager.load(element);
+				color_set_manager.load(element);
+			}
+		}
+
+		HRESULT loadFigures(const MSXML2::IXMLDOMElementPtr& element)
+		{
+			MY_TRACE_FUNC("");
+
+			return figure::manager.loadFigures(element);
+		}
+
+		HRESULT loadVSClasses(const MSXML2::IXMLDOMElementPtr& element)
+		{
+			MY_TRACE_FUNC("");
+
+			return theme::manager.loadVSClasses(element);
+		}
+
+		BOOL saveSettings()
+		{
+			MY_TRACE_FUNC("");
+
+			return saveSettingsInternal();
+		}
+
+		BOOL saveSettingsInternal()
+		{
+			MY_TRACE_FUNC("");
+
+			WCHAR fileName[MAX_PATH] = {};
+			config.getConfigFileName(fileName, std::size(fileName));
+
+			return saveSettingsInternal(fileName);
+		}
+
+		BOOL saveSettingsInternal(LPCWSTR fileName)
+		{
+			MY_TRACE_FUNC("%ws", fileName);
+
+			try
+			{
+				// ドキュメントを作成します。
+				MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
+
+				// ドキュメントエレメントを作成します。
+				MSXML2::IXMLDOMElementPtr element = appendElement(document, document, L"Settings");
+
+				setPrivateProfileString(element, L"skin", config.skinFileName);
+				setPrivateProfileLabel(element, L"shadowMode", config.shadowMode, Config::ShadowMode::label);
+				setPrivateProfileLabel(element, L"roundMode", config.roundMode, Config::RoundMode::label);
+				setPrivateProfileLabel(element, L"staticEdgeMode", config.staticEdgeMode, Config::StaticEdgeMode::label);
+				setPrivateProfileBool(element, L"useLayerColor", config.useLayerColor);
+				setPrivateProfileBool(element, L"useLayerColorEx", config.useLayerColorEx);
+
+				saveXMLDocument(document, fileName, L"UTF-16");
+
+				return TRUE;
+			}
+			catch (_com_error& e)
+			{
+				MY_TRACE(_T("%s\n"), e.ErrorMessage());
+
+				return FALSE;
+			}
+		}
+
+		//
+		// スキンを選択するためのメニューを表示します。
+		//
+		void showMenu(HWND hwnd)
+		{
+			MY_TRACE_FUNC("0x%08X", hwnd);
+
+			std::wstring origin = magi.getConfigFileName(L"Skin");
+			MY_TRACE_WSTR(origin);
+
+			std::vector<std::wstring> fileNames;
+			{
+				WCHAR folder[MAX_PATH] = {};
+				::StringCchCopyW(folder, std::size(folder), origin.c_str());
+				::PathAppendW(folder, L"*.xml");
+				MY_TRACE_WSTR(folder);
+
+				WIN32_FIND_DATAW ffd = {};
+				HANDLE handle = ::FindFirstFileW(folder, &ffd);
+
+				if (handle == INVALID_HANDLE_VALUE)
+					return;
+
+				do
+				{
+					if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+						continue;
+
+					fileNames.push_back(ffd.cFileName);
+				}
+				while (::FindNextFileW(handle, &ffd));
+
+				::FindClose(handle);
+
+				std::sort(fileNames.begin(), fileNames.end());
+			}
+
+			WCHAR current[MAX_PATH] = {};
+			::StringCchCopyW(current, std::size(current), config.getSkinFileName());
+			::PathStripPathW(current);
+
+			const int ID_SHADOW_MODE = 20000;
+			const int ID_ROUND_MODE = 20001;
+			const int ID_STATIC_EDGE_MODE = 20002;
+			const int ID_USE_LAYER_COLOR_EX = 20003;
+
+			HMENU menu = ::CreatePopupMenu();
+
+			for (int i = 0; i < (int)fileNames.size(); i++)
+			{
+				WCHAR text[MAX_PATH] = {};
+				::StringCchCopyW(text, std::size(text), fileNames[i].c_str());
+				::PathRemoveExtensionW(text);
+
+				::AppendMenuW(menu, MF_STRING, i + 1, text);
+
+				if (::lstrcmpiW(fileNames[i].c_str(), current) == 0)
+					::CheckMenuItem(menu, i + 1, MF_CHECKED);
+			}
+
+			::AppendMenuW(menu, MF_SEPARATOR, -1, 0);
+			::AppendMenuW(menu, MF_STRING, ID_SHADOW_MODE, L"影を付ける");
+			::AppendMenuW(menu, MF_STRING, ID_ROUND_MODE, L"丸くする");
+			::AppendMenuW(menu, MF_STRING, ID_STATIC_EDGE_MODE, L"ボタンにスタティックエッジを付ける");
+			::AppendMenuW(menu, MF_STRING, ID_USE_LAYER_COLOR_EX, L"複数行の色分け");
+
+			if (config.getShadowMode() == Config::ShadowMode::On)
+				::CheckMenuItem(menu, ID_SHADOW_MODE, MF_CHECKED);
+
+			if (config.getRoundMode() == Config::RoundMode::On)
+				::CheckMenuItem(menu, ID_ROUND_MODE, MF_CHECKED);
+
+			if (config.getStaticEdgeMode() == Config::StaticEdgeMode::On)
+				::CheckMenuItem(menu, ID_STATIC_EDGE_MODE, MF_CHECKED);
+
+			if (config.getUseLayerColorEx())
+				::CheckMenuItem(menu, ID_USE_LAYER_COLOR_EX, MF_CHECKED);
+
+			POINT pt; ::GetCursorPos(&pt);
+			int id = ::TrackPopupMenu(menu, TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, 0, hwnd, 0);
+
+			::DestroyMenu(menu);
+
+			if (id > 0 && id <= (int)fileNames.size())
+			{
+				WCHAR fileName[MAX_PATH] = {};
+				::StringCchCopyW(fileName, std::size(fileName), L"Skin");
+				::PathAppendW(fileName, fileNames[id - 1].c_str());
+				MY_TRACE_WSTR(fileName);
+				config.setSkinFileName(fileName);
+
+				saveSettings();
+			}
+			else if (id == ID_SHADOW_MODE)
+			{
+				if (config.getShadowMode() == Config::ShadowMode::On)
+					config.setShadowMode(Config::ShadowMode::Off);
+				else
+					config.setShadowMode(Config::ShadowMode::On);
+
+				saveSettings();
+			}
+			else if (id == ID_ROUND_MODE)
+			{
+				if (config.getRoundMode() == Config::RoundMode::On)
+					config.setRoundMode(Config::RoundMode::Off);
+				else
+					config.setRoundMode(Config::RoundMode::On);
+
+				saveSettings();
+			}
+			else if (id == ID_STATIC_EDGE_MODE)
+			{
+				if (config.getStaticEdgeMode() == Config::StaticEdgeMode::On)
+					config.setStaticEdgeMode(Config::StaticEdgeMode::Off);
+				else
+					config.setStaticEdgeMode(Config::StaticEdgeMode::On);
+
+				saveSettings();
+
+				::MessageBoxW(hwnd, L"このオプションはAviUtlを再起動したときに反映されます", hive.Name, MB_OK);
+			}
+			else if (id == ID_USE_LAYER_COLOR_EX)
+			{
+				config.setUseLayerColorEx(!config.getUseLayerColorEx());
+
+				saveSettings();
+
+				::InvalidateRect(magi.auin.GetExEditWindow(), 0, TRUE);
+			}
+		}
+	} manager;
+}

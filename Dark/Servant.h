@@ -1,5 +1,9 @@
 ﻿#pragma once
-#include "Hook/Api.h"
+#include "Skin.h"
+#include "Gdi/Client.h"
+#include "Theme/Client.h"
+#include "Hook/ExEdit.h"
+#include "Hook/loudness.h"
 
 namespace fgo::dark
 {
@@ -25,32 +29,6 @@ namespace fgo::dark
 		}
 
 		//
-		// この仮想関数は、DLLの初期化のタイミングで呼ばれます。
-		//
-		BOOL on_dll_init(HINSTANCE instance) override
-		{
-			MY_TRACE_FUNC("0x%08X", instance);
-
-			actctx.init(instance);
-			hook::api.init();
-
-			return TRUE;
-		}
-
-		//
-		// この仮想関数は、DLLの後始末のタイミングで呼ばれます。
-		//
-		BOOL on_dll_exit(HINSTANCE instance) override
-		{
-			MY_TRACE_FUNC("0x%08X", instance);
-
-			hook::api.exit();
-			actctx.exit();
-
-			return TRUE;
-		}
-
-		//
 		// この仮想関数は、初期化のタイミングで呼ばれます。
 		//
 		BOOL on_init() override
@@ -65,8 +43,19 @@ namespace fgo::dark
 					get_servant_display_name(), MB_OK | MB_ICONWARNING);
 			}
 
-			if (!load()) return FALSE;
-			if (!init()) return FALSE;
+			// AviUtlウィンドウをサブクラス化します。
+			gdi::client.subclass(hive.aviutlWindow);
+			::InvalidateRect(hive.aviutlWindow, 0, FALSE);
+
+			// 拡張編集をフックします。
+			hook::exedit.init();
+
+			// ラウドネスメーターをフックします。
+			hook::loudness.init();
+
+			// スキンの拡張編集用の設定を読み込みます。
+			skin::manager.reloadExEditSettings();
+
 			return TRUE;
 		}
 
@@ -77,75 +66,26 @@ namespace fgo::dark
 		{
 			MY_TRACE_FUNC("");
 
-			if (!save()) return FALSE;
-			if (!exit()) return FALSE;
 			return TRUE;
 		}
 
 		//
-		// コンフィグファイルのフルパスを返します。
+		// 初期化処理を実行します。
 		//
-		inline static std::wstring getConfigFileName()
+		BOOL init(HWND hwnd)
 		{
-			return magi.getConfigFileName(L"Dark.ini");
-		}
+			static BOOL isInitialized = FALSE;
+			if (isInitialized) return FALSE;
+			isInitialized = TRUE;
 
-		//
-		// コンフィグファイル名を取得し、設定を読み込みます。
-		//
-		BOOL load()
-		{
-			MY_TRACE_FUNC("");
+			// hwndがAviUtlウィンドウだとみなします。
+			hive.aviutlWindow = hwnd;
 
-			return load(getConfigFileName().c_str());
-		}
+			// テーマレンダラの利用を開始します。
+			theme::client.init(hwnd);
 
-		//
-		// コンフィグファイルから設定を読み込みます。
-		//
-		BOOL load(LPCWSTR path)
-		{
-			MY_TRACE_FUNC("%ws", path);
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグファイル名を取得し、設定を保存します。
-		//
-		BOOL save()
-		{
-			MY_TRACE_FUNC("");
-
-			return save(getConfigFileName().c_str());
-		}
-
-		//
-		// コンフィグファイルに設定を保存します。
-		//
-		BOOL save(LPCWSTR path)
-		{
-			MY_TRACE_FUNC("%ws", path);
-
-			return TRUE;
-		}
-
-		//
-		// 初期化処理です。
-		//
-		BOOL init()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理です。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
+			// スキンを初期化します。
+			skin::manager.init(hwnd);
 
 			return TRUE;
 		}

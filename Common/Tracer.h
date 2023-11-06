@@ -3,7 +3,7 @@
 
 #ifdef _DEBUG
 #define MY_TRACE(format, ...)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, format, __VA_ARGS__)
-#define MY_TRACE_EX(format, ...)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, _T(__FUNCSIG__), _T(format), __VA_ARGS__)
+#define MY_TRACE_EX(format, ...)		Tools::Tracer::output_format_with_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), _T(format), __VA_ARGS__)
 #define MY_TRACE_BINARY(buf, c)		Tools::Tracer::output_binary(_T(__FILE__), __LINE__, buf, c)
 #define MY_TRACE_FUNC(format, ...)	Tools::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), _T(format), __VA_ARGS__)
 #else
@@ -169,7 +169,7 @@ namespace Tools {
 		// 関数名付きで書式化された文字列を出力します。
 		//
 		template <class... Args>
-		static void output_format(LPCTSTR file, int line, LPCTSTR func, LPCTSTR format, Args... args) {
+		static void output_format_with_func(LPCTSTR file, int line, LPCTSTR func, LPCTSTR format, Args... args) {
 			//
 			// funcからfunc_nameを構築します。
 			//
