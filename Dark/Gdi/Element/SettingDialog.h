@@ -28,9 +28,13 @@ namespace fgo::dark::gdi
 			return 0;
 		}
 
-		LRESULT onSubclassProc(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		LRESULT onSubclassProc(Reflector* reflector, State* currentState) override
 		{
-			switch (message)
+			HWND hwnd = currentState->hwnd;
+			WPARAM wParam = currentState->wParam;
+			LPARAM lParam = currentState->lParam;
+
+			switch (currentState->message)
 			{
 			case WM_ERASEBKGND:
 				{
@@ -61,7 +65,7 @@ namespace fgo::dark::gdi
 					{
 						MY_TRACE(_T("アニメーション効果が追加されました\n"));
 
-						LRESULT result = __super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+						LRESULT result = __super::onSubclassProc(reflector, currentState);
 						HWND combobox = getComboBox(hwnd);
 						MY_TRACE_HEX(combobox);
 						::SendMessage(hwnd, WM_CTLCOLOREDIT, 0, (LPARAM)combobox);
@@ -72,7 +76,7 @@ namespace fgo::dark::gdi
 				}
 			}
 
-			return __super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+			return __super::onSubclassProc(reflector, currentState);
 		}
 
 		int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush) override

@@ -43,9 +43,7 @@ namespace fgo::dark
 					get_servant_display_name(), MB_OK | MB_ICONWARNING);
 			}
 
-			// AviUtlウィンドウをサブクラス化します。
-			gdi::client.subclass(hive.aviutlWindow);
-			::InvalidateRect(hive.aviutlWindow, 0, FALSE);
+			init(magi.auin.GetAviUtlWindow());
 
 			// 拡張編集をフックします。
 			hook::exedit.init();

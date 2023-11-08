@@ -60,6 +60,7 @@ namespace fgo::dark
 		// このクラスはフックする前のオリジナルのAPIを保持します。
 		//
 		struct {
+			LRESULT (WINAPI *CallWindowProcInternal)(WNDPROC wndProc, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 			int (WINAPI *FillRect)(HDC dc, LPCRECT rc, HBRUSH brush) = 0;
 			BOOL (WINAPI *DrawFrame)(HDC dc, LPRECT rc, UINT width, UINT type) = 0;
 			BOOL (WINAPI *DrawFrameControl)(HDC dc, LPRECT rc, UINT type, UINT state) = 0;

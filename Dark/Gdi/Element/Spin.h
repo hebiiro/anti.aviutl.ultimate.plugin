@@ -6,13 +6,14 @@ namespace fgo::dark::gdi
 {
 	inline struct SpinRenderer : Renderer
 	{
-		LRESULT onSubclassProc(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		LRESULT onSubclassProc(Reflector* reflector, State* currentState) override
 		{
-			switch (message)
+			switch (currentState->message)
 			{
 			case WM_ERASEBKGND:
 				{
-					HDC dc = (HDC)wParam;
+					HWND hwnd = currentState->hwnd;
+					HDC dc = (HDC)currentState->wParam;
 					RECT rc; ::GetClientRect(hwnd, &rc);
 					DWORD style = getStyle(hwnd);
 					HTHEME theme = skin::theme::manager.getTheme(skin::theme::THEME_WINDOW);
@@ -22,7 +23,7 @@ namespace fgo::dark::gdi
 				}
 			}
 
-			return __super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+			return __super::onSubclassProc(reflector, currentState);
 		}
 
 		int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush) override

@@ -3,11 +3,23 @@
 #include "Api/GetModuleHandle.h"
 #include "Api/LoadIcon.h"
 #include "Api/GetOpenFileName.h"
+#include "Api/CallWindowProc.h"
 #include "Api/Gdi.h"
 #include "Api/Theme.h"
 
 namespace fgo::dark::hook
 {
+	//
+	// リターン先のアドレスを返します。
+	//
+	__declspec(naked) inline void getRetAddr()
+	{
+		__asm {
+			MOV EAX,[ESP]
+			RETN
+		}
+	}
+
 	//
 	// このクラスはAPIをフックします。
 	//
@@ -44,7 +56,7 @@ namespace fgo::dark::hook
 			Tools::attach(DialogBoxIndirectParamA);
 			Tools::attach(DialogBoxIndirectParamW);
 #endif
-			Tools::attach(EnumProcessModules, ::GetProcAddress(kernel32, "K32EnumProcessModules"));
+//			Tools::attach(EnumProcessModules, ::GetProcAddress(kernel32, "K32EnumProcessModules"));
 #if 1
 			Tools::attach(GetOpenFileNameA, ::GetProcAddress(comdlg32, "GetOpenFileNameA"));
 			Tools::attach(GetOpenFileNameW, ::GetProcAddress(comdlg32, "GetOpenFileNameW"));
@@ -58,6 +70,13 @@ namespace fgo::dark::hook
 			Tools::attach(DrawIconEx);
 			Tools::attach(LoadMenuA);
 
+			// 2B = 7671339B - 76713370
+			uintptr_t address1 = ::CallWindowProcW((WNDPROC)getRetAddr, 0, 0, 0, 0) - 0x2B;
+			BYTE code[1] = {};
+			::ReadProcessMemory(::GetCurrentProcess(), (LPCVOID)address1, code, sizeof(code), 0);
+			if (code[0] == 0xCC) address1 += 0x01;
+			Tools::attach(CallWindowProcInternal, address1);
+
 			Tools::attach(FillRect);
 //			Tools::attach(DrawFrame, ::GetProcAddress(user32, "DrawFrame"));
 //			Tools::attach(DrawFrameControl);
@@ -68,13 +87,13 @@ namespace fgo::dark::hook
 			Tools::attach(ExtTextOutW);
 //			Tools::attach(PatBlt);
 
-			Tools::attach(DrawThemeParentBackground);
+//			Tools::attach(DrawThemeParentBackground);
 			Tools::attach(DrawThemeBackground);
 			Tools::attach(DrawThemeBackgroundEx);
 			Tools::attach(DrawThemeText);
 			Tools::attach(DrawThemeTextEx);
-			Tools::attach(DrawThemeIcon);
-			Tools::attach(DrawThemeEdge);
+//			Tools::attach(DrawThemeIcon);
+//			Tools::attach(DrawThemeEdge);
 #if 0
 			Tools::attach(OpenThemeData);
 			Tools::attach(OpenThemeDataForDpi);
@@ -88,6 +107,7 @@ namespace fgo::dark::hook
 				return FALSE;
 			}
 
+			hive.orig.CallWindowProcInternal = CallWindowProcInternal.orig;
 			hive.orig.FillRect = FillRect.orig;
 			hive.orig.DrawFrame = DrawFrame.orig;
 			hive.orig.DrawFrameControl = DrawFrameControl.orig;

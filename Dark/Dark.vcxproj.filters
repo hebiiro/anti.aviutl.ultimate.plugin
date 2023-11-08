@@ -58,9 +58,6 @@
     <ClInclude Include="Hook\Api\GetModuleHandle.h">
       <Filter>Hook\Api</Filter>
     </ClInclude>
-    <ClInclude Include="Hook\CBT.h">
-      <Filter>Hook</Filter>
-    </ClInclude>
     <ClInclude Include="Hook\Api\Theme.h">
       <Filter>Hook\Api</Filter>
     </ClInclude>
@@ -236,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="Skin\Icon.h">
       <Filter>Skin</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\CallWindowProc.h">
+      <Filter>Hook\Api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

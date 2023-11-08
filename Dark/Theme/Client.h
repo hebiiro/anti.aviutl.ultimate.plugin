@@ -69,7 +69,7 @@ namespace fgo::dark::theme
 			manager.addRenderer(hwnd, L"Explorer::" VSCLASS_TOOLBAR, &toolbarRenderer);
 			manager.addRenderer(hwnd, L"Explorer::" VSCLASS_TAB, &tabRenderer);
 			manager.addRenderer(hwnd, L"Explorer::" VSCLASS_WINDOW, &windowRenderer);
-#if 0
+#if 1
 			manager.addRenderer(hwnd, L"Combobox::" VSCLASS_LISTBOX, &listboxRenderer);
 			manager.addRenderer(hwnd, L"CFD::" VSCLASS_COMBOBOX, &comboboxRenderer);
 			manager.addRenderer(hwnd, L"CFD::" VSCLASS_HEADER, &headerRenderer);

@@ -2,7 +2,6 @@
 #include "Servant.h"
 #include "ActCtx.h"
 #include "Hook/Api.h"
-#include "Hook/CBT.h"
 
 namespace fgo::dark
 {
@@ -39,13 +38,12 @@ namespace fgo::dark
 			{
 				MY_TRACE_FUNC("DLL_PROCESS_ATTACH");
 
-//				::DisableThreadLibraryCalls(instance);
+				::DisableThreadLibraryCalls(instance);
 
 				hive.instance = instance;
 
 				actctx.init(instance);
 				hook::api.init();
-				hook::cbt.init();
 
 				break;
 			}
@@ -53,7 +51,6 @@ namespace fgo::dark
 			{
 				MY_TRACE_FUNC("DLL_PROCESS_DETACH");
 
-				hook::cbt.exit();
 				hook::api.exit();
 				actctx.exit();
 

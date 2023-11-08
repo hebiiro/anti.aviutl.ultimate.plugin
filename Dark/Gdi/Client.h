@@ -24,18 +24,20 @@ namespace fgo::dark::gdi
 	//
 	inline struct Client
 	{
+		inline static constexpr LPCTSTR PropName = _T("fgo::dark::gdi::Client");
+
 		inline static struct : Reflector
 		{
-			LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+			LRESULT onWndProc(State* currentState) override
 			{
-				return origProc(hwnd, message, wParam, lParam);
+				return origProc(currentState);
 			}
 		} reflector;
 
 		//
-		// ウィンドウにGDIレンダラをアタッチします。
+		// GDIレンダラをウィンドウにアタッチします。
 		//
-		void attach(HWND hwnd, LPCTSTR className)
+		inline static void attachWindow(HWND hwnd, LPCTSTR className)
 		{
 			MY_TRACE_FUNC("0x%08X, %s", hwnd, className);
 
@@ -79,19 +81,16 @@ namespace fgo::dark::gdi
 		}
 
 		//
-		// ウィンドウをサブクラス化します。
+		// ウィンドウを微調整します。
 		//
-		BOOL subclass(HWND hwnd)
+		inline static void tweakWindow(HWND hwnd, LPCTSTR className)
 		{
-			TCHAR className[MAX_PATH] = {};
-			::GetClassName(hwnd, className, std::size(className));
-
-			// GDIレンダラをアタッチします。
-			attach(hwnd, className);
+			MY_TRACE_FUNC("0x%08X, %s", hwnd, className);
 
 			if (getStyle(hwnd) & WS_CAPTION)
 			{
-				skin::dwm.set(hwnd, FALSE);
+				if (!hive.lockRenderer)
+					skin::dwm.set(hwnd, FALSE);
 			}
 			else if (::lstrcmpi(className, WC_STATIC) == 0)
 			{
@@ -104,78 +103,55 @@ namespace fgo::dark::gdi
 				if (::lstrcmp(windowText, _T("ラウドネスメーター(全体)")) == 0)
 					modifyStyle(hwnd, 0, SS_CENTERIMAGE);
 			}
-
-			return hookWndProc(hwnd);
-		}
-#if 0
-		inline static constexpr LPCTSTR PropName = _T("fgo::dark::gdi::Client");
-
-		//
-		// ウィンドウプロシージャをフックします。
-		//
-		BOOL hookWndProc(HWND hwnd)
-		{
-			WNDPROC orig = (WNDPROC)::GetWindowLongPtr(hwnd, GWLP_WNDPROC);
-			::SetProp(hwnd, PropName, orig);
-			return !!::SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)wndProc);
 		}
 
 		//
-		// ウィンドウプロシージャです。
+		// ウィンドウを初期化します。
 		//
-		inline static LRESULT CALLBACK wndProc(
-			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		inline static void initWindow(HWND hwnd)
 		{
-			return onWndProc(hwnd, message, wParam, lParam);
+			MY_TRACE_FUNC("0x%08X", hwnd);
+
+			// ウィンドウのクラス名を取得します。
+			TCHAR className[MAX_PATH] = {};
+			::GetClassName(hwnd, className, std::size(className));
+			MY_TRACE_TSTR(className);
+
+			// GDIレンダラをアタッチします。
+			attachWindow(hwnd, className);
+
+			// ウィンドウを微調整します。
+			tweakWindow(hwnd, className);
 		}
 
 		//
 		// オリジナルのウィンドウプロシージャを呼び出します。
 		//
-		inline static LRESULT CALLBACK origProc(
-			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		inline static LRESULT CALLBACK origProc(State* currentState)
 		{
-			WNDPROC orig = (WNDPROC)::GetProp(hwnd, PropName);
-			if (!orig) return ::DefWindowProc(hwnd, message, wParam, lParam);
-			return ::CallWindowProc(orig, hwnd, message, wParam, lParam);
-		}
-#else
-		//
-		// ウィンドウプロシージャをフックします。
-		//
-		BOOL hookWndProc(HWND hwnd)
-		{
-			return ::SetWindowSubclass(hwnd, subclassProc, (UINT_PTR)this, (DWORD_PTR)this);
+			return hive.orig.CallWindowProcInternal(currentState->wndProc, currentState->hwnd, currentState->message, currentState->wParam, currentState->lParam);
 		}
 
-		//
-		// サブクラスプロシージャです。
-		//
-		inline static LRESULT CALLBACK subclassProc(
-			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam,
-			UINT_PTR id, DWORD_PTR refData)
-		{
-			return onWndProc(hwnd, message, wParam, lParam);
-		}
-
-		//
-		// オリジナルのウィンドウプロシージャを呼び出します。
-		//
-		inline static LRESULT CALLBACK origProc(
-			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-		{
-			return ::DefSubclassProc(hwnd, message, wParam, lParam);
-		}
-#endif
 		//
 		// ウィンドウプロシージャのハンドラです。
 		//
 		inline static LRESULT CALLBACK onWndProc(
-			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+			WNDPROC wndProc, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
+			State currentState = { wndProc, hwnd, message, wParam, lParam };
+
+			if (message == WM_NCCREATE && !::GetProp(hwnd, PropName))
+			{
+				::SetProp(hwnd, PropName, &client);
+
+				initWindow(hwnd);
+			}
+
+//			MY_TRACE_FUNC("0x%08X(0x%08X), 0x%08X, 0x%08X, 0x%08X, 0x%08X", wndProc, currentProc, hwnd, message, wParam, lParam);
+
 			// レンダラの使用が抑制されている場合はデフォルト処理のみ行います。
 			if (hive.lockRenderer)
-				return origProc(hwnd, message, wParam, lParam);
+				return origProc(&currentState);
 
 			switch (message)
 			{
@@ -201,7 +177,7 @@ namespace fgo::dark::gdi
 					HDC dc = (HDC)wParam;
 					HWND control = (HWND)lParam;
 					BOOL enable = ::IsWindowEnabled(control);
-					HBRUSH brush = (HBRUSH)origProc(hwnd, message, wParam, lParam);
+					HBRUSH brush = (HBRUSH)origProc(&currentState);
 //					HBRUSH dcBrush = (HBRUSH)::GetStockObject(DC_BRUSH);
 					COLORREF bkColor = ::GetBkColor(dc);
 //					COLORREF brushColor = my::getBrushColor(brush);
@@ -257,7 +233,7 @@ namespace fgo::dark::gdi
 					HDC dc = (HDC)wParam;
 					HWND control = (HWND)lParam;
 					BOOL enable = ::IsWindowEnabled(control);
-					HBRUSH brush = (HBRUSH)origProc(hwnd, message, wParam, lParam);
+					HBRUSH brush = (HBRUSH)origProc(&currentState);
 //					COLORREF bkColor = ::GetBkColor(dc);
 //					COLORREF brushColor = my::getBrushColor(brush);
 //					MY_TRACE(_T("brush = 0x%08X, bkColor = 0x%08X, brushColor = 0x%08X\n"), brush, bkColor, brushColor);
@@ -334,7 +310,7 @@ namespace fgo::dark::gdi
 						{
 							auto renderer = Renderer::fromHandle(nm->hwndFrom);
 							if (renderer)
-								return renderer->onCustomDraw(&reflector, hwnd, message, wParam, lParam);
+								return renderer->onCustomDraw(&reflector, &currentState);
 
 							break;
 						}
@@ -359,12 +335,12 @@ namespace fgo::dark::gdi
 
 			LRESULT result = 0;
 			auto oldState = manager.getCurrentState();
-			manager.setCurrentState(hwnd, message, wParam, lParam);
+			manager.setCurrentState(currentState);
 			auto renderer = Renderer::fromHandle(hwnd);
 			if (renderer)
-				result = renderer->onSubclassProc(&reflector, hwnd, message, wParam, lParam);
+				result = renderer->onSubclassProc(&reflector, &currentState);
 			else
-				result = origProc(hwnd, message, wParam, lParam);
+				result = origProc(&currentState);
 			manager.setCurrentState(oldState);
 			return result;
 		}

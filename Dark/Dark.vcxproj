@@ -185,13 +185,13 @@
     <ClInclude Include="Gdi\RendererNc.h" />
     <ClInclude Include="Hive.h" />
     <ClInclude Include="Hook\Api.h" />
+    <ClInclude Include="Hook\Api\CallWindowProc.h" />
     <ClInclude Include="Hook\Api\CreateWindow.h" />
     <ClInclude Include="Hook\Api\Gdi.h" />
     <ClInclude Include="Hook\Api\GetModuleHandle.h" />
     <ClInclude Include="Hook\Api\GetOpenFileName.h" />
     <ClInclude Include="Hook\Api\LoadIcon.h" />
     <ClInclude Include="Hook\Api\Theme.h" />
-    <ClInclude Include="Hook\CBT.h" />
     <ClInclude Include="Hook\ExEdit.h" />
     <ClInclude Include="Hook\loudness.h" />
     <ClInclude Include="Painter.h" />

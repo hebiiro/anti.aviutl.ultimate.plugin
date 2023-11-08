@@ -6,13 +6,15 @@ namespace fgo::dark::gdi
 {
 	inline struct TreeViewRenderer : Renderer
 	{
-		LRESULT onCustomDraw(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		LRESULT onCustomDraw(Reflector* reflector, State* currentState) override
 		{
-			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X",
+				currentState->hwnd, currentState->message,
+				currentState->wParam, currentState->lParam);
 #if 1
 			// テキストの色と背景色を指定します。(選択アイテム以外)
 
-			NMTVCUSTOMDRAW* cd = (NMTVCUSTOMDRAW*)lParam;
+			NMTVCUSTOMDRAW* cd = (NMTVCUSTOMDRAW*)currentState->lParam;
 
 			switch (cd->nmcd.dwDrawStage)
 			{
@@ -35,7 +37,7 @@ namespace fgo::dark::gdi
 				}
 			}
 #endif
-			return __super::onCustomDraw(reflector, hwnd, message, wParam, lParam);
+			return __super::onCustomDraw(reflector, currentState);
 		}
 
 		int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush) override

@@ -6,14 +6,15 @@ namespace fgo::dark::gdi
 {
 	struct RendererNc : Renderer
 	{
-		LRESULT onSubclassProc(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		LRESULT onSubclassProc(Reflector* reflector, State* currentState) override
 		{
-			switch (message)
+			switch (currentState->message)
 			{
 			case WM_NCPAINT:
 				{
-					__super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+					__super::onSubclassProc(reflector, currentState);
 
+					HWND hwnd = currentState->hwnd;
 					HDC dc = ::GetWindowDC(hwnd);
 					RECT rc; ::GetWindowRect(hwnd, &rc);
 					POINT origin = { rc.left, rc.top };
@@ -61,7 +62,7 @@ namespace fgo::dark::gdi
 				}
 			}
 
-			return __super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+			return __super::onSubclassProc(reflector, currentState);
 		}
 	};
 }

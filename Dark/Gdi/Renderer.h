@@ -5,6 +5,7 @@ namespace fgo::dark::gdi
 {
 	struct State
 	{
+		WNDPROC wndProc = 0;
 		HWND hwnd = 0;
 		UINT message = 0;
 		WPARAM wParam = 0;
@@ -13,7 +14,7 @@ namespace fgo::dark::gdi
 
 	struct Reflector
 	{
-		virtual LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
+		virtual LRESULT onWndProc(State* currentState) = 0;
 	};
 
 	struct Renderer
@@ -38,14 +39,14 @@ namespace fgo::dark::gdi
 			return (Renderer*)::GetProp(hwnd, PropName);
 		}
 
-		virtual LRESULT onSubclassProc(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		virtual LRESULT onSubclassProc(Reflector* reflector, State* currentState)
 		{
-			return reflector->onWndProc(hwnd, message, wParam, lParam);
+			return reflector->onWndProc(currentState);
 		}
 
-		virtual LRESULT onCustomDraw(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		virtual LRESULT onCustomDraw(Reflector* reflector, State* currentState)
 		{
-			return reflector->onWndProc(hwnd, message, wParam, lParam);
+			return reflector->onWndProc(currentState);
 		}
 
 		virtual int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush)

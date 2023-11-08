@@ -6,9 +6,9 @@ namespace fgo::dark::gdi
 {
 	inline struct TrackBarRenderer : Renderer
 	{
-		LRESULT onSubclassProc(Reflector* reflector, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		LRESULT onSubclassProc(Reflector* reflector, State* currentState) override
 		{
-			switch (message)
+			switch (currentState->message)
 			{
 			case WM_ERASEBKGND:
 				{
@@ -18,11 +18,12 @@ namespace fgo::dark::gdi
 				}
 			case WM_LBUTTONDOWN:
 				{
-					LRESULT result = __super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+					LRESULT result = __super::onSubclassProc(reflector, currentState);
 
 					// コモンコントロールをバージョン6にすると、
 					// WM_LBUTTONDOWNでSB_THUMBTRACKが送られてこなくなります。
 					// なので、SB_THUMBTRACKを手動で送ります。
+					HWND hwnd = currentState->hwnd;
 					int pos = (int)::SendMessage(hwnd, TBM_GETPOS, 0, 0);
 					::SendMessage(::GetParent(hwnd), WM_HSCROLL, MAKEWPARAM(SB_THUMBTRACK, pos), (LPARAM)hwnd);
 
@@ -30,7 +31,7 @@ namespace fgo::dark::gdi
 				}
 			}
 
-			return __super::onSubclassProc(reflector, hwnd, message, wParam, lParam);
+			return __super::onSubclassProc(reflector, currentState);
 		}
 
 		int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush) override
