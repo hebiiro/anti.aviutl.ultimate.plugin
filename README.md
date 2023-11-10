@@ -16,6 +16,7 @@
 
 ## 更新履歴
 
+* r7 - 2023/11/10 Darkをリファクタリング
 * r6 - 2023/09/26 SingleOut・TextSplit・ItemAlignを追加
 * r5 - 2023/09/17 ColorCode・DialogPosition・LastFrame・Namecage・EncodeGuardを追加
 * r4 - 2023/09/16 ダブルクリックでペインを最大化できる機能を追加
@@ -26,7 +27,7 @@
 ## 動作確認
 
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版35 https://scrapbox.io/nazosauna/patch.aul
+* (共存確認) patch.aul r43 謎さうなフォーク版41 https://scrapbox.io/nazosauna/patch.aul
 
 ## クレジット
 
