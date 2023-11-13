@@ -427,6 +427,14 @@ namespace fgo::nest
 		}
 
 		//
+		// ドッキング状態ならTRUEを返します。
+		//
+		BOOL isDocking() const
+		{
+			return ::GetParent(*this) == *dockContainer;
+		}
+
+		//
 		// リスナーを返します。
 		//
 		Listener* getListener() const

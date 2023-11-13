@@ -18,10 +18,8 @@ namespace fgo::nest
 	{
 		struct CommandID
 		{
-			static const UINT SUB_WINDOW_BEGIN = 100;
-			static const UINT SUB_WINDOW_END = 200;
-			static const UINT SUB_PROCESS_BEGIN = 200;
-			static const UINT SUB_PROCESS_END = 300;
+			static const UINT SHUTTLE_BEGIN = 100;
+			static const UINT SHUTTLE_END = 300;
 			static const UINT SHOW_CONFIG_DIALOG = 1000;
 			static const UINT IMPORT_LAYOUT = 1001;
 			static const UINT EXPORT_LAYOUT = 1002;
@@ -37,6 +35,8 @@ namespace fgo::nest
 		struct Saver {
 			virtual HRESULT saveConfig(LPCWSTR fileName, BOOL _export) = 0;
 		}; std::shared_ptr<Saver> saver;
+
+		HMENU subMenu[Category::MaxSize] = {};
 
 		//
 		// コンストラクタです。
@@ -165,13 +165,63 @@ namespace fgo::nest
 
 			HMENU menu = ::GetSystemMenu(*this, FALSE);
 			int index = 0;
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subWindowManager.menu, _T("サブウィンドウ"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subProcessManager.menu, _T("サブプロセス"));
+
+			// サブメニューを作成し、システムメニューに追加します。
+			for (size_t i = 0; i < std::size(subMenu); i++)
+			{
+				subMenu[i] = ::CreatePopupMenu();
+
+				::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subMenu[i], Category::labels[i]);
+			}
+
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::CREATE_SUB_WINDOW, _T("サブウィンドウを新規作成"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::IMPORT_LAYOUT, _T("レイアウトのインポート"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::EXPORT_LAYOUT, _T("レイアウトのエクスポート"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::SHOW_CONFIG_DIALOG, _T("ネストの設定"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
+		}
+
+		//
+		// システムメニューのサブメニューを初期化します。
+		//
+		void initSystemMenuPopup()
+		{
+			MY_TRACE_FUNC("");
+
+			// 一旦すべての項目を削除します。
+			for (auto& menu : subMenu)
+				while (::DeleteMenu(menu, 0, MF_BYPOSITION)){}
+
+			// フローティング状態のシャトルをサブメニューに追加します。
+			UINT id = CommandID::SHUTTLE_BEGIN;
+			for (auto& pair : shuttleManager.shuttles)
+			{
+				auto& shuttle = pair.second;
+
+				// ドッキング状態のシャトルは除外します。
+				if (shuttle->isDocking()) continue;
+
+				// シャトルのカテゴリを取得します。
+				int category = getCategory(shuttle.get());
+				if (category == Category::None) continue;
+
+				// 追加先メニューを取得します。
+				HMENU menu = subMenu[category];
+
+				// メニューアイテムを追加します。
+				::AppendMenu(menu, MF_STRING, id, shuttle->name);
+
+				// シャトルが表示されているなら
+				if (::IsWindowVisible(*shuttle))
+				{
+					// メニューアイテムにチェックを入れます。
+					::CheckMenuItem(menu, id, MF_CHECKED);
+				}
+
+				// IDをインクリメントします。
+				id++;
+			}
 		}
 
 		//
@@ -423,19 +473,19 @@ namespace fgo::nest
 			case WM_SYSCHAR:
 			case WM_SYSDEADCHAR:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_***KEY***, 0x%08X, 0x%08X, 0x%08X)\n"), message, wParam, lParam);
+					MY_TRACE_FUNC("WM_***KEY***, 0x%08X, 0x%08X, 0x%08X", message, wParam, lParam);
 
 					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
 				}
 			case WM_NCACTIVATE:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_NCACTIVATE, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_NCACTIVATE, 0x%08X, 0x%08X", wParam, lParam);
 
 					break;
 				}
 			case WM_ACTIVATE: // 「patch.aul」用の処理です。
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_ACTIVATE, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_ACTIVATE, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (LOWORD(wParam) == WA_INACTIVE)
 						::SendMessage(hive.aviutlWindow, message, wParam, lParam);
@@ -444,7 +494,7 @@ namespace fgo::nest
 				}
 			case WM_MENUSELECT: // 「patch.aul」用の処理です。
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_MENUSELECT, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_MENUSELECT, 0x%08X, 0x%08X", wParam, lParam);
 
 					::SendMessage(hive.aviutlWindow, message, wParam, lParam);
 
@@ -452,13 +502,13 @@ namespace fgo::nest
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_CLOSE, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_CLOSE, 0x%08X, 0x%08X", wParam, lParam);
 
 					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
 				}
 			case WM_COMMAND:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_COMMAND, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, 0x%08X, 0x%08X", wParam, lParam);
 
 					UINT id = LOWORD(wParam);
 
@@ -497,10 +547,26 @@ namespace fgo::nest
 				}
 			case WM_SYSCOMMAND:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_SYSCOMMAND, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_SYSCOMMAND, 0x%08X, 0x%08X", wParam, lParam);
 
-					if (subWindowManager.executeMenu(wParam)) break;
-					if (subProcessManager.executeMenu(wParam)) break;
+					if (wParam >= CommandID::SHUTTLE_BEGIN && wParam < CommandID::SHUTTLE_END)
+					{
+						HMENU menu = ::GetSystemMenu(hwnd, FALSE);
+						UINT id = (UINT)wParam;
+
+						// メニューアイテムのテキストを取得します。
+						TCHAR text[MAX_PATH] = {};
+						::GetMenuString(menu, id, text, std::size(text), MF_BYCOMMAND);
+						MY_TRACE_TSTR(text);
+
+						// テキストからシャトルを取得します。ドッキングできるかチェックもします。
+						auto shuttle = shuttleManager.get(text);
+						if (!shuttle) break;
+
+						::SendMessage(*shuttle, WM_CLOSE, 0, 0);
+
+						break;
+					}
 
 					switch (wParam)
 					{
@@ -553,29 +619,23 @@ namespace fgo::nest
 				}
 			case WM_INITMENUPOPUP:
 				{
-					subWindowManager.onInitMenuPopup(wParam, lParam);
-					subProcessManager.onInitMenuPopup(wParam, lParam);
+					initSystemMenuPopup();
 
 					break;
 				}
 			case WM_CREATE:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_CREATE)\n"));
+					MY_TRACE_FUNC("WM_CREATE");
 
 					hive.theme = ::OpenThemeData(hwnd, VSCLASS_WINDOW);
 					MY_TRACE_HEX(hive.theme);
-
-					subWindowManager.init(CommandID::SUB_WINDOW_BEGIN, CommandID::SUB_WINDOW_END);
-					subProcessManager.init(CommandID::SUB_PROCESS_BEGIN, CommandID::SUB_PROCESS_END);
 
 					break;
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("MainWindow::onWndProc(WM_DESTROY)\n"));
+					MY_TRACE_FUNC("WM_DESTROY");
 
-					subProcessManager.exit();
-					subWindowManager.exit();
 					::CloseThemeData(hive.theme), hive.theme = 0;
 
 					break;
@@ -592,6 +652,7 @@ namespace fgo::nest
 
 					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, End", hwnd, wParam, lParam);
 
+					// メインウィンドウのタイトルを更新します。
 					refreshTitle();
 
 					break;

@@ -196,13 +196,22 @@ namespace fgo::nest
 
 		struct Category
 		{
-			static const int None = 0;
-			static const int Primary = 1;
-			static const int Secondary = 2;
-			static const int SubWindow = 3;
-			static const int SubProcess = 4;
-			static const int Ultimate = 5;
-			static const int Filer = 6;
+			static constexpr int None = -1;
+			static constexpr int Primary = 0;
+			static constexpr int Secondary = 1;
+			static constexpr int SubWindow = 2;
+			static constexpr int SubProcess = 3;
+			static constexpr int Ultimate = 4;
+			static constexpr int Filer = 5;
+			static constexpr int MaxSize = 6;
+			inline static constexpr LPCTSTR labels[] = {
+				_T("プライマリ"),
+				_T("セカンダリ"),
+				_T("サブウィンドウ"),
+				_T("サブプロセス"),
+				_T("アルティメット"),
+				_T("ファイラ"),
+			};
 		};
 
 		//
@@ -301,19 +310,16 @@ namespace fgo::nest
 
 			// メニューを作成します。
 			HMENU menu = ::CreatePopupMenu();
-			HMENU primaryMenu = ::CreatePopupMenu();
-			HMENU secondaryMenu = ::CreatePopupMenu();
-			HMENU subWindowMenu = ::CreatePopupMenu();
-			HMENU subProcessMenu = ::CreatePopupMenu();
-			HMENU ultimateMenu = ::CreatePopupMenu();
-			HMENU filerMenu = ::CreatePopupMenu();
 
-			::AppendMenu(menu, MF_POPUP, (UINT)primaryMenu, _T("プライマリ"));
-			::AppendMenu(menu, MF_POPUP, (UINT)secondaryMenu, _T("セカンダリ"));
-			::AppendMenu(menu, MF_POPUP, (UINT)subWindowMenu, _T("サブウィンドウ"));
-			::AppendMenu(menu, MF_POPUP, (UINT)subProcessMenu, _T("サブプロセス"));
-			::AppendMenu(menu, MF_POPUP, (UINT)ultimateMenu, _T("アルティメット"));
-			::AppendMenu(menu, MF_POPUP, (UINT)filerMenu, _T("ファイラ"));
+			// サブメニューを作成します。
+			HMENU subMenu[Category::MaxSize] = {};
+			for (size_t i = 0; i < std::size(subMenu); i++)
+			{
+				subMenu[i] = ::CreatePopupMenu();
+
+				::AppendMenu(menu, MF_POPUP, (UINT)subMenu[i], Category::labels[i]);
+			}
+
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_NONE, _T("分割なし"));
 			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_VERT, _T("垂直線で分割"));
@@ -346,17 +352,12 @@ namespace fgo::nest
 				{
 					auto& shuttle = pair.second;
 
-					// 追加先メニューを判定します。
-					HMENU menu = primaryMenu;
-					switch (getCategory(shuttle.get()))
-					{
-					case Category::Primary: menu = primaryMenu; break;
-					case Category::Secondary: menu = secondaryMenu; break;
-					case Category::SubWindow: menu = subWindowMenu; break;
-					case Category::SubProcess: menu = subProcessMenu; break;
-					case Category::Ultimate: menu = ultimateMenu; break;
-					case Category::Filer: menu = filerMenu; break;
-					}
+					// シャトルのカテゴリを取得します。
+					int category = getCategory(shuttle.get());
+					if (category == Category::None) continue;
+
+					// 追加先メニューを取得します。
+					HMENU menu = subMenu[category];
 
 					// メニューアイテムを追加します。
 					::AppendMenu(menu, MF_STRING, id, shuttle->name);
