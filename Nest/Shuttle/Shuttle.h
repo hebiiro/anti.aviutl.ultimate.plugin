@@ -8,7 +8,7 @@ namespace fgo::nest
 	//
 	// このクラスはコンテナに格納されるシャトルです。
 	//
-	struct Shuttle : Tools::Window, Container::Listener, std::enable_shared_from_this<Shuttle>
+	struct Shuttle : Tools::Window, Container::Content, std::enable_shared_from_this<Shuttle>
 	{
 		//
 		// このクラスはシャトルのリスナーです。
@@ -84,7 +84,7 @@ namespace fgo::nest
 		//
 		// デストラクタです。
 		//
-		virtual ~Shuttle()
+		~Shuttle() override
 		{
 			MY_TRACE_FUNC("0x%08X, %ws", (HWND)*this, (BSTR)name);
 
@@ -122,19 +122,18 @@ namespace fgo::nest
 			// ターゲットウィンドウのウィンドウ矩形を取得しておきます。
 			RECT rc; ::GetWindowRect(*this, &rc);
 			MY_TRACE_RECT2(rc);
-			int x = rc.left;
-			int y = rc.top;
-			int w = getWidth(rc);
-			int h = getHeight(rc);
 
 			// コンテナを作成します。
 			dockContainer = createDockContainer();
 			floatContainer = createFloatContainer();
 
 			// ターゲットのウィンドウスタイルを変更します。
+			// さらにSWP_FRAMECHANGEDを使用してスタイルを完全に適用させます。
 			DWORD style = onGetTargetNewStyle();
-			::SetWindowLong(*this, GWL_STYLE, style | WS_CHILD);
+			setStyle(*this, style | WS_CHILD);
 			modifyExStyle(*this, 0, WS_EX_NOPARENTNOTIFY);
+			::SetWindowPos(*this, 0, 0, 0, 0, 0,
+				SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
 			// ターゲットのウィンドウタイトルを取得します。
 			TCHAR text[MAX_PATH] = {};
@@ -145,13 +144,14 @@ namespace fgo::nest
 			// 一時的にターゲットウィンドウを非表示にします。
 			::ShowWindow(*this, SW_HIDE);
 
+			// ターゲットのメニューをフローティングコンテナに移し替えます。
+			::SetMenu(*floatContainer, ::GetMenu(*this));
+
 			// ターゲットの親をフローティングコンテナに変更します。
 			::SetParent(*this, *floatContainer);
 
-			// ::SetWindowPos() を呼び出し、フック処理を促します。
-			// コンテナの種類によってはコンテナのウィンドウサイズが調整されます。
-			::SetWindowPos(*this, 0, x, y, w, h,
-				SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			// ターゲットがあった位置にフローティングコンテナを移動します。
+			floatContainer->setContainerPosition(&rc);
 
 			// ターゲットが表示状態ならフローティングコンテナを表示します。
 			if (visible)
@@ -170,7 +170,7 @@ namespace fgo::nest
 		virtual std::shared_ptr<Container> createDockContainer()
 		{
 			// ドッキングコンテナのスタイルを決定します。
-			DWORD style = ::GetWindowLong(*this, GWL_STYLE);
+			DWORD style = getStyle(*this);
 			DWORD dockStyle = WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
 			// ドッキングコンテナのタイプを決定します。
@@ -186,7 +186,7 @@ namespace fgo::nest
 		virtual std::shared_ptr<Container> createFloatContainer()
 		{
 			// フローティングコンテナのスタイルを決定します。
-			DWORD style = ::GetWindowLong(*this, GWL_STYLE);
+			DWORD style = getStyle(*this);
 			DWORD floatStyle = WS_CAPTION | WS_SYSMENU | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 			floatStyle |= style & (WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 
@@ -213,8 +213,8 @@ namespace fgo::nest
 		//
 		virtual DWORD onGetTargetNewStyle()
 		{
-			// ※ WS_CAPTION を外さないとエディットボックスでマウス処理が行われなくなります。
-			DWORD style = ::GetWindowLong(*this, GWL_STYLE);
+			// ※WS_CAPTIONを外さないとエディットボックスでマウス処理が行われなくなります。
+			DWORD style = getStyle(*this);
 			style &= ~(WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 			return style;
 		}
@@ -222,7 +222,7 @@ namespace fgo::nest
 		//
 		// ターゲットウィンドウのハンドルを返します。
 		//
-		HWND getTarget() override
+		HWND getHWND() override
 		{
 			return *this;
 		}
@@ -230,7 +230,7 @@ namespace fgo::nest
 		//
 		// ターゲットウィンドウの位置を調整します。
 		//
-		void onSetTargetWindowPos(LPRECT rc) override
+		BOOL reviseContentPosition(LPRECT rc) override
 		{
 			// スクロールバーがあるときは、その分矩形を縮小させます。
 
@@ -238,14 +238,8 @@ namespace fgo::nest
 
 			if (style & WS_VSCROLL) rc->right -= ::GetSystemMetrics(SM_CXVSCROLL);
 			if (style & WS_HSCROLL) rc->bottom -= ::GetSystemMetrics(SM_CYHSCROLL);
-		}
 
-		//
-		// コンテナのウィンドウプロシージャです。
-		//
-		LRESULT onContainerWndProc(Container* container, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, BOOL* skipDefault) override
-		{
-			return 0;
+			return TRUE;
 		}
 
 		//
@@ -253,7 +247,7 @@ namespace fgo::nest
 		//
 		void postNcDestroy() override
 		{
-			MY_TRACE(_T("Shuttle::postNcDestroy()\n"));
+			MY_TRACE_FUNC("");
 
 			__super::postNcDestroy();
 
@@ -267,17 +261,6 @@ namespace fgo::nest
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
 //			MY_TRACE_FUNC("%s, 0x%08X, 0x%08X, 0x%08X, 0x%08X", (LPCTSTR)name, hwnd, message, wParam, lParam);
-
-			auto container = Tools::Window::fromHandle<Container>(::GetParent(hwnd), Container::ClassName);
-			if (container)
-			{
-				// 先にコンテナにメッセージを処理させます。
-
-				BOOL skipDefault = FALSE;
-				LRESULT lr = container->onTargetWndProc(
-					hwnd, message, wParam, lParam, &skipDefault);
-				if (skipDefault) return lr;
-			}
 
 			switch (message)
 			{
@@ -314,8 +297,13 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("%s, WM_SHOWWINDOW, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
-					// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
-					::ShowWindowAsync(::GetParent(hwnd), wParam ? SW_SHOW : SW_HIDE);
+					auto container = getCurrentContainer();
+					if (container)
+					{
+						// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
+						// ここで::ShowWindowAsync()を使用すると一部ウィンドウ(拡張編集)の表示がおかしくなります。
+						::ShowWindow(*container, wParam ? SW_SHOW : SW_HIDE);
+					}
 
 					break;
 				}
@@ -325,8 +313,12 @@ namespace fgo::nest
 
 					LPCTSTR newText = (LPCTSTR)lParam;
 
-					// コンテナのウィンドウテキストを変更します。
-					::SetWindowText(::GetParent(hwnd), newText);
+					auto container = getCurrentContainer();
+					if (container)
+					{
+						// コンテナのウィンドウテキストを変更します。
+						::SetWindowText(*container, newText);
+					}
 
 					// リスナーにテキストの変更を通知します。
 					if (listener)
@@ -339,7 +331,7 @@ namespace fgo::nest
 				{
 					{
 						// 「キーフレームプラグイン」用の処理です。
-						// 子ウィンドウにすると WM_ACTIVATE が発生しなくなるので、
+						// 子ウィンドウにするとWM_ACTIVATEが発生しなくなるので、
 						// ここで手動で発生させます。
 						WPARAM active = (message == WM_SETFOCUS) ? WA_ACTIVE : WA_INACTIVE;
 						::SendMessage(hwnd, WM_ACTIVATE, active, 0);
@@ -363,8 +355,42 @@ namespace fgo::nest
 				{
 					// 設定ダイアログは縦に長くなるので、
 					// ウィンドウの限界サイズを増やしておきます。
-					MINMAXINFO* mmi = (MINMAXINFO*)lParam;
+					auto mmi = (MINMAXINFO*)lParam;
 					mmi->ptMaxTrackSize.y *= 3;
+
+					break;
+				}
+			case WM_WINDOWPOSCHANGING:
+				{
+					MY_TRACE_FUNC("%s, WM_WINDOWPOSCHANGING, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
+
+					auto container = getCurrentContainer();
+					if (container)
+					{
+						auto wp = (WINDOWPOS*)lParam;
+						if (!(wp->flags & SWP_NOMOVE) ||
+							!(wp->flags & SWP_NOSIZE))
+						{
+							container->onContentPosChanging(wp);
+						}
+					}
+
+					break;
+				}
+			case WM_WINDOWPOSCHANGED:
+				{
+					MY_TRACE_FUNC("%s, WM_WINDOWPOSCHANGED, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
+
+					auto container = getCurrentContainer();
+					if (container)
+					{
+						auto wp = (WINDOWPOS*)lParam;
+						if (!(wp->flags & SWP_NOMOVE) ||
+							!(wp->flags & SWP_NOSIZE))
+						{
+							container->onContentPosChanged(wp);
+						}
+					}
 
 					break;
 				}
@@ -396,7 +422,7 @@ namespace fgo::nest
 		//
 		void resize(LPCRECT rc)
 		{
-			dockContainer->onResizeDockContainer(rc);
+			dockContainer->setContainerPosition(rc);
 		}
 
 		//
@@ -412,7 +438,7 @@ namespace fgo::nest
 			::SetWindowText(*floatContainer, text);
 
 			// まず現在のターゲットの位置からフローティングコンテナの位置を算出します。
-			floatContainer->onResizeFloatContainer();
+			floatContainer->onFloatContainer();
 
 			// ターゲットの親ウィンドウをフローティングコンテナに切り替えます。
 			::SetParent(*this, *floatContainer);
@@ -431,7 +457,17 @@ namespace fgo::nest
 		//
 		BOOL isDocking() const
 		{
+			if (!dockContainer) return FALSE;
+
 			return ::GetParent(*this) == *dockContainer;
+		}
+
+		//
+		// このシャトルが現在格納されているコンテナを返します。
+		//
+		std::shared_ptr<Container> getCurrentContainer() const
+		{
+			return isDocking() ? dockContainer : floatContainer;
 		}
 
 		//

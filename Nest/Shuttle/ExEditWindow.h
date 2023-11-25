@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Shuttle.h"
-#include "SubProcess/PSDToolKit.h"
 
 namespace fgo::nest
 {
@@ -16,7 +15,7 @@ namespace fgo::nest
 		//
 		void init(const _bstr_t& name, HWND hwnd)
 		{
-			MY_TRACE(_T("ExEditWindow::init(%s, 0x%08X)\n"), (LPCTSTR)name, hwnd);
+			MY_TRACE_FUNC("%s, 0x%08X", (LPCTSTR)name, hwnd);
 
 			__super::init(name, hwnd);
 
@@ -49,17 +48,21 @@ namespace fgo::nest
 
 		DWORD onGetTargetNewStyle() override
 		{
-			// ※ WS_CAPTION を外すとウィンドウの高さ調節にズレが生じるので外さないようにします。
-			DWORD style = ::GetWindowLong(*this, GWL_STYLE);
+			// ※WS_CAPTIONを外すとウィンドウの高さ調節にズレが生じるので外さないようにします。
+			DWORD style = getStyle(*this);
 			style &= ~(WS_POPUP | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 			return style;
 		}
 
-		void onSetTargetWindowPos(LPRECT rc) override
+		//
+		// ターゲットウィンドウのサイズを修正します。
+		//
+		BOOL reviseContentPosition(LPRECT rc) override
 		{
-			// ターゲットウィンドウのサイズを微調整します。
 			rc->bottom -= magi.auin.GetLayerHeight() / 2;
 			::SendMessage(*this, WM_SIZING, WMSZ_BOTTOM, (LPARAM)rc);
+
+			return TRUE;
 		}
 
 		//

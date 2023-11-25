@@ -14,7 +14,7 @@ namespace fgo::nest::hook
 		//
 		void init()
 		{
-			MY_TRACE(_T("GetMessage::init()\n"));
+			MY_TRACE_FUNC("");
 
 			hook = ::SetWindowsHookEx(WH_GETMESSAGE, hookProc, 0, ::GetCurrentThreadId());
 			MY_TRACE_HEX(hook);
@@ -25,7 +25,7 @@ namespace fgo::nest::hook
 		//
 		void exit()
 		{
-			MY_TRACE(_T("GetMessage::exit()\n"));
+			MY_TRACE_FUNC("");
 
 			::UnhookWindowsHookEx(hook), hook = 0;
 		}
@@ -34,7 +34,7 @@ namespace fgo::nest::hook
 		{
 			if (code == HC_ACTION && wParam == PM_REMOVE)
 			{
-				MSG* msg = (MSG*)lParam;
+				auto msg = (MSG*)lParam;
 
 				switch (msg->message)
 				{

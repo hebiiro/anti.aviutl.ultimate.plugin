@@ -70,7 +70,7 @@ namespace fgo::nest::hook::aviutl
 
 		inline UINT __fastcall doHook(UINT u1, UINT u2, UINT u3, UINT u4, UINT u5, UINT u6)
 		{
-			MY_TRACE(_T("AviUtl::PlayMain::doHook()\n"));
+			MY_TRACE_FUNC("");
 
 			// フラグが立っていない場合はデフォルト処理のみ行います。
 			if (!hive.showPlayer)
@@ -172,7 +172,7 @@ namespace fgo::nest::hook::aviutl
 
 		inline UINT __fastcall doHook(UINT u1, UINT u2, UINT u3, UINT u4, UINT u5)
 		{
-			MY_TRACE(_T("AviUtl::PlayMain::doHook()\n"));
+			MY_TRACE_FUNC("");
 
 			// フラグが立っていない場合はデフォルト処理のみ行います。
 			if (!hive.showPlayer)
@@ -238,7 +238,7 @@ namespace fgo::nest::hook::aviutl
 	//
 	inline BOOL init()
 	{
-		MY_TRACE(_T("AviUtl::init()\n"));
+		MY_TRACE_FUNC("");
 
 		TCHAR fileName[MAX_PATH] = {};
 		::GetModuleFileName(0, fileName, std::size(fileName));
@@ -265,7 +265,7 @@ namespace fgo::nest::hook::aviutl
 	//
 	inline BOOL exit()
 	{
-		MY_TRACE(_T("AviUtl::exit()\n"));
+		MY_TRACE_FUNC("");
 
 		return TRUE;
 	}

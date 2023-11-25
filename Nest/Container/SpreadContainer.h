@@ -4,53 +4,48 @@
 namespace fgo::nest
 {
 	//
-	// このクラスはターゲットウィンドウをクライアント領域全体まで広げるコンテナです。
+	// このクラスはコンテンツをクライアント領域全体まで広げるコンテナです。
 	//
 	struct SpreadContainer : Container
 	{
 		//
 		// コンストラクタです。
 		//
-		SpreadContainer(Listener* listener, DWORD style)
-			: Container(listener, style)
+		SpreadContainer(Content* content, DWORD style)
+			: Container(content, style)
 		{
 		}
 
 		//
 		// デストラクタです。
 		//
-		~SpreadContainer()
+		~SpreadContainer() override
 		{
 		}
 
 		//
-		// コンテナのウィンドウプロシージャです。
+		// コンテンツの位置を変更するために呼ばれます。
 		//
-		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		BOOL setContentPosition() override
 		{
-			switch (message)
-			{
-			case WM_SIZE:
-				{
-					// ターゲットウィンドウをコンテナウィンドウのクライアント領域全体まで広げます。
+			// コンテンツをコンテナのクライアント領域全体まで広げます。
 
-					HWND target = listener->getTarget();
+			// コンテンツのHWNDを取得します。
+			HWND hwnd = content->getHWND();
 
-					RECT rc; ::GetClientRect(hwnd, &rc);
-					clientToWindow(target, &rc);
-					listener->onSetTargetWindowPos(&rc);
-					int x = rc.left;
-					int y = rc.top;
-					int w = rc.right - rc.left;
-					int h = rc.bottom - rc.top;
+			// コンテナのクライアント矩形を取得します。
+			RECT rc; ::GetClientRect(*this, &rc);
 
-					hive.true_SetWindowPos(target, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+			// コンテナのクライアント矩形をコンテンツのウィンドウ矩形に変換します。
+			clientToWindow(hwnd, &rc);
 
-					return 0;
-				}
-			}
+			// rcを元にしてコンテンツから最適な位置を取得します。
+			content->reviseContentPosition(&rc);
 
-			return __super::onWndProc(hwnd, message, wParam, lParam);
+			// コンテンツの位置を変更します。
+			setWindowPos(hwnd, &rc);
+
+			return TRUE;
 		}
 	};
 }

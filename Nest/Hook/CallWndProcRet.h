@@ -3,9 +3,9 @@
 namespace fgo::nest::hook
 {
 	//
-	// このクラスはWH_CBTをフックします。
+	// このクラスはWH_CALLWNDPROCRETをフックします。
 	//
-	inline static struct CBT
+	inline static struct CallWndProcRet
 	{
 		HHOOK hook = 0;
 
@@ -16,7 +16,7 @@ namespace fgo::nest::hook
 		{
 			MY_TRACE_FUNC("");
 
-			hook = ::SetWindowsHookEx(WH_CBT, hookProc, 0, ::GetCurrentThreadId());
+			hook = ::SetWindowsHookEx(WH_CALLWNDPROCRET, hookProc, 0, ::GetCurrentThreadId());
 			MY_TRACE_HEX(hook);
 		}
 
@@ -31,31 +31,42 @@ namespace fgo::nest::hook
 		}
 
 		//
-		// WH_CBTのフックプロシージャです。
+		// WH_CALLWNDPROCRETのフックプロシージャです。
 		//
 		static LRESULT CALLBACK hookProc(int code, WPARAM wParam, LPARAM lParam)
 		{
-			switch (code)
-			{
-			case HCBT_CREATEWND:
-				{
-					// ここでAviUtlウィンドウをサブクラス化すると謎のエラーが発生してしまうので、
-					// ポスト先でサブクラス化します。
-					// その他のウィンドウもAviUtlウィンドウのあとに処理したいので、
-					// やはりポスト先でサブクラス化します。
+			if (code != HC_ACTION)
+				return ::CallNextHookEx(0, code, wParam, lParam);
 
-					HWND hwnd = (HWND)wParam;
-					auto cw = (CBT_CREATEWND*)lParam;
+			auto cwpr = (CWPRETSTRUCT*)lParam;
+
+			switch (cwpr->message)
+			{
+			case WM_NCCREATE:
+				{
+					MY_TRACE_INT(cwpr->lResult);
+
+					if (cwpr->lResult == -1)
+						break;
+
+					auto hwnd = cwpr->hwnd;
+
+					// ウィンドウ名を取得します。
+					TCHAR windowName[MAX_PATH] = {};
+					::GetWindowText(hwnd, windowName, std::size(windowName));
+					MY_TRACE_TSTR(windowName);
 
 					// ウィンドウがフック対象かチェックします。
-					if (isHookTarget(hwnd, cw->lpcs->lpszName))
+					if (isHookTarget(hwnd, windowName))
 					{
-						// ウィンドウ名を取得します。
-						// ここで確保されたメモリはMainWindowのWM_INIT_SHUTTLEで開放されます。
-						LPTSTR windowName = new TCHAR[MAX_PATH] {};
-						::StringCchCopy(windowName, MAX_PATH, cw->lpcs->lpszName);
+						// ここで確保したメモリはMainWindowのWM_INIT_SHUTTLEで開放します。
+						auto orig = new Hive::OrigWindow();
 
-						::PostMessage(hive.mainWindow, Hive::WindowMessage::WM_INIT_SHUTTLE, (WPARAM)hwnd, (LPARAM)windowName);
+						// ウィンドウ名を取得します。
+						::StringCchCopy(orig->windowName, std::size(orig->windowName), windowName);
+
+						// MainWindowにWM_INIT_SHUTTLEを送信します。
+						::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_INIT_SHUTTLE, (WPARAM)hwnd, (LPARAM)orig);
 					}
 
 					break;
@@ -96,5 +107,5 @@ namespace fgo::nest::hook
 
 			return FALSE;
 		}
-	} cbt;
+	} call_wnd_proc_ret;
 }

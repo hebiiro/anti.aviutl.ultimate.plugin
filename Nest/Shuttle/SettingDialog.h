@@ -13,7 +13,7 @@ namespace fgo::nest
 		//
 		void init(const _bstr_t& name, HWND hwnd)
 		{
-			MY_TRACE(_T("SettingDialog::init(%s, 0x%08X)\n"), (LPCTSTR)name, hwnd);
+			MY_TRACE_FUNC("%s, 0x%08X", (LPCTSTR)name, hwnd);
 
 			__super::init(name, hwnd);
 		}
@@ -46,37 +46,15 @@ namespace fgo::nest
 
 			return std::make_shared<ScrollContainer>(this, floatStyle);
 		}
-
+#if 0 // この処理を有効にしてもトラックバーなどのチラツキが発生します。
 		//
-		// コンテナのウィンドウプロシージャです。
+		// ターゲットウィンドウに適用する新しいスタイルを返します。
 		//
-		LRESULT onContainerWndProc(Container* container, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, BOOL* skipDefault) override
+		DWORD onGetTargetNewStyle() override
 		{
-			switch (message)
-			{
-			case WM_RBUTTONDOWN:
-				{
-					::SetFocus(*this);
-
-					// このまま WM_RBUTTONUP に処理を続けます。
-				}
-			case WM_RBUTTONUP:
-				{
-					// マウス座標を取得します。
-					POINT point = LP2PT(lParam);
-
-					// コンテナウィンドウの座標系から設定ダイアログの座標系へ変換します。
-					::MapWindowPoints(hwnd, *this, &point, 1);
-
-					// 設定ダイアログにメッセージを転送します。
-					*skipDefault = TRUE;
-					return ::SendMessage(*this, message, wParam, MAKELPARAM(point.x, point.y));
-				}
-			}
-
-			return __super::onContainerWndProc(container, hwnd, message, wParam, lParam, skipDefault);
+			return __super::onGetTargetNewStyle() | WS_CLIPCHILDREN;
 		}
-
+#endif
 		//
 		// ターゲットのウィンドウプロシージャです。
 		//
@@ -88,7 +66,7 @@ namespace fgo::nest
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("SettingDialog::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, 0x%08X, 0x%08X", wParam, lParam);
 
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
@@ -111,12 +89,21 @@ namespace fgo::nest
 				}
 			case WM_SIZE:
 				{
+					MY_TRACE_FUNC("WM_SIZE, 0x%08X, 0x%08X", wParam, lParam);
+
 					// 「patch.aul」用の処理です。
 					// 設定ダイアログが高速描画されているときは
 					// 親ウィンドウ(コンテナ)を手動で再描画する必要があります。
 					::InvalidateRect(::GetParent(hwnd), 0, FALSE);
 
 					break;
+				}
+			case WM_MOUSEWHEEL:
+			case WM_MOUSEHWHEEL:
+				{
+					// マウスホイールでスクロールするために
+					// 既定の処理をブロックし、コンテナウィンドウへバイパスします。
+					return ::SendMessage(::GetParent(hwnd), message, wParam, lParam);
 				}
 			}
 

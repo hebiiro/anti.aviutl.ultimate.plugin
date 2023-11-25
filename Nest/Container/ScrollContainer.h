@@ -11,53 +11,98 @@ namespace fgo::nest
 		//
 		// コンストラクタです。
 		//
-		ScrollContainer(Listener* listener, DWORD style)
-			: Container(listener, style)
+		ScrollContainer(Content* content, DWORD style)
+			: Container(content, style)
 		{
 		}
 
 		//
 		// デストラクタです。
 		//
-		~ScrollContainer()
+		~ScrollContainer() override
 		{
 		}
 
 		//
 		// スクロール範囲を更新します。
 		//
-		void updateScrollBar()
+		BOOL updateScrollBar()
 		{
-			// ターゲットウィンドウを取得します。
-			HWND target = listener->getTarget();
+			MY_TRACE_FUNC("");
 
-			RECT rc; ::GetClientRect(target, &rc);
-			int w = rc.right - rc.left;
-			int h = rc.bottom - rc.top;
+			// コンテンツのHWNDを取得します。
+			HWND hwnd = content->getHWND();
 
+			// コンテンツのクライアント矩形を取得します。
+			RECT rc; ::GetClientRect(hwnd, &rc);
+
+			// コンテンツのクライアント矩形の幅と高さを算出します。
+			int contentSize[2] = { getWidth(rc), getHeight(rc) };
+
+			// コンテナのクライアント矩形を取得します。
 			RECT rcContainer; ::GetClientRect(*this, &rcContainer);
-			int cw = rcContainer.right - rcContainer.left;
-			int ch = rcContainer.bottom - rcContainer.top;
 
+			// スクロールバーの有無によってコンテナのクライアント矩形を調整します。
+			DWORD style = getStyle(*this);
+			if (style & WS_VSCROLL) rcContainer.right += ::GetSystemMetrics(SM_CXVSCROLL);
+			if (style & WS_HSCROLL) rcContainer.bottom += ::GetSystemMetrics(SM_CYHSCROLL);
+
+			// コンテナのクライアント矩形の幅と高さを算出します。
+			int containerSize[2] = { getWidth(rcContainer), getHeight(rcContainer) };
+
+			constexpr int h = 0;
+			constexpr int v = 1;
+
+			if (contentSize[h] > containerSize[h])
+			{
+				// コンテンツの横幅の方が大きいので水平スクロールバーが必要です。
+				// なので、コンテナの縦幅を水平スクロールバーの太さの分だけ小さくします。
+				containerSize[v] -= ::GetSystemMetrics(SM_CYHSCROLL);
+
+				if (contentSize[v] > containerSize[v])
+				{
+					// コンテンツの縦幅の方が大きいので垂直スクロールバーが必要です。
+					// なので、コンテナの横幅を垂直スクロールバーの太さの分だけ小さくします。
+					containerSize[h] -= ::GetSystemMetrics(SM_CXVSCROLL);
+				}
+			}
+			else if (contentSize[v] > containerSize[v])
+			{
+				// コンテンツの縦幅の方が大きいので垂直スクロールバーが必要です。
+				// なので、コンテナの横幅を垂直スクロールバーの太さの分だけ小さくします。
+				containerSize[h] -= ::GetSystemMetrics(SM_CXVSCROLL);
+
+				if (contentSize[h] > containerSize[h])
+				{
+					// コンテンツの横幅の方が大きいので水平スクロールバーが必要です。
+					// なので、コンテナの縦幅を水平スクロールバーの太さの分だけ小さくします。
+					containerSize[v] -= ::GetSystemMetrics(SM_CYHSCROLL);
+				}
+			}
+
+			// スクロール範囲を変更します。
 			SCROLLINFO si = { sizeof(si) };
 			si.fMask = SIF_PAGE | SIF_RANGE;
 			si.nMin = 0;
-			si.nMax = w - 1;
-			si.nPage = cw;
-			::SetScrollInfo(*this, SB_HORZ, &si, TRUE);
-			si.nMin = 0;
-			si.nMax = h - 1;
-			si.nPage = ch;
-			::SetScrollInfo(*this, SB_VERT, &si, TRUE);
+			for (size_t i = 0; i < std::size(contentSize); i++) {
+				si.nMax = contentSize[i] - 1;
+				si.nPage = containerSize[i];
+				::SetScrollInfo(*this, i, &si, TRUE);
+			}
 
+			// NC領域の変更を通知します。
 			::SetWindowPos(*this, 0, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+			return TRUE;
 		}
 
 		//
 		// スクロール位置を変更します。
 		//
-		void scroll(int bar, WPARAM wParam)
+		void scroll(int bar, WPARAM wParam, int delta = 1)
 		{
+			MY_TRACE_FUNC("");
+
 			SCROLLINFO si = { sizeof(si) };
 			si.fMask = SIF_POS | SIF_RANGE;
 			::GetScrollInfo(*this, bar, &si);
@@ -66,10 +111,10 @@ namespace fgo::nest
 			{
 			case SB_LEFT:      si.nPos = si.nMin; break;
 			case SB_RIGHT:     si.nPos = si.nMax; break;
-			case SB_LINELEFT:  si.nPos += -10; break;
-			case SB_LINERIGHT: si.nPos +=  10; break;
-			case SB_PAGELEFT:  si.nPos += -60; break;
-			case SB_PAGERIGHT: si.nPos +=  60; break;
+			case SB_LINELEFT:  si.nPos += -10 * delta; break;
+			case SB_LINERIGHT: si.nPos +=  10 * delta; break;
+			case SB_PAGELEFT:  si.nPos += -60 * delta; break;
+			case SB_PAGERIGHT: si.nPos +=  60 * delta; break;
 			case SB_THUMBTRACK:
 			case SB_THUMBPOSITION: si.nPos = HIWORD(wParam); break;
 			}
@@ -78,129 +123,150 @@ namespace fgo::nest
 		}
 
 		//
-		// ターゲットウィンドウの位置を再計算します。
-		// ターゲットウィンドウの位置のみを調整します。
+		// コンテンツの位置を更新します(位置のみ変更します)。
 		//
-		void recalcLayout()
+		BOOL updateContentPos()
 		{
-			// ターゲットウィンドウを取得します。
-			HWND target = listener->getTarget();
+			MY_TRACE_FUNC("");
 
+			// コンテンツのHWNDを取得します。
+			HWND hwnd = content->getHWND();
+
+			// スクロール量を取得します。
+			int scrollPos[2] = {};
+			for (size_t i = 0; i < std::size(scrollPos); i++)
+				scrollPos[i] = ::GetScrollPos(*this, i);
+
+			// コンテナのクライアント矩形(の左上座標)を取得します。
 			RECT rc = { 0, 0 };
-			clientToWindow(target, &rc);
-			int x = rc.left;
-			int y = rc.top;
 
-			x -= ::GetScrollPos(*this, SB_HORZ);
-			y -= ::GetScrollPos(*this, SB_VERT);
+			// クライアント矩形をウィンドウ矩形に変換します。
+			clientToWindow(hwnd, &rc);
 
-			hive.true_SetWindowPos(target, 0, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
-		}
+			// ウィンドウ矩形の左上の座標を取得します。
+			int pos[2] = { rc.left, rc.top };
 
-		//
-		// ドッキングコンテナのサイズを再計算するときに呼ばれます。
-		//
-		void onResizeDockContainer(LPCRECT rc) override
-		{
-			// ターゲットウィンドウを取得します。
-			HWND target = listener->getTarget();
+			// 座標をスクロールの分だけずらします。
+			for (size_t i = 0; i < std::size(pos); i++)
+				pos[i] -= scrollPos[i];
 
-			// フローティングコンテナを取得します。
-			// (ただし、ドッキング完了後に呼び出された場合は parent はこのコンテナになります)
-			HWND parent = ::GetParent(target);
+			// コンテンツの位置を変更します。
+			::SetWindowPos(hwnd, 0, pos[0], pos[1], 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 
-			// rc からドッキングコンテナの新しい位置を取得します。
-			int x = rc->left;
-			int y = rc->top;
-			int w = rc->right - rc->left;
-			int h = rc->bottom - rc->top;
-
-			x = std::min<int>(rc->left, rc->right);
-			y = std::min<int>(rc->top, rc->bottom);
-			w = std::max<int>(w, 0);
-			h = std::max<int>(h, 0);
-
-			// ドッキングコンテナの位置を更新します。
-			hive.true_SetWindowPos(*this, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
-
-			// コンテナのサイズが変更されたのでスクロール範囲を更新します。
-			// スクロール位置を更新する前にこの処理を行う必要があります。
-			updateScrollBar();
-
-			// フローティングコンテナのスクロール位置をドッキングコンテナに適用します。
-			::SetScrollPos(*this, SB_HORZ, ::GetScrollPos(parent, SB_HORZ), TRUE);
-			::SetScrollPos(*this, SB_VERT, ::GetScrollPos(parent, SB_VERT), TRUE);
-
-			// スクロール位置が更新されたのでレイアウトを再計算します。
-			recalcLayout();
-		}
-
-		//
-		// ターゲットがフローティング状態になるときに呼ばれます。
-		//
-		void onResizeFloatContainer() override
-		{
-			// ターゲットウィンドウを取得します。
-			HWND target = listener->getTarget();
-
-			// ドッキングコンテナを取得します。
-			HWND parent = ::GetParent(target);
-
-			// ドッキングコンテナのクライアント矩形からフローティングコンテナの新しい位置を取得します。
-			RECT rc; ::GetClientRect(parent, &rc);
-			::MapWindowPoints(parent, 0, (LPPOINT)&rc, 2);
-			clientToWindow(*this, &rc);
-			int x = rc.left;
-			int y = rc.top;
-			int w = getWidth(rc);
-			int h = getHeight(rc);
-
-			// フローティングコンテナの位置を更新します。
-			hive.true_SetWindowPos(*this, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
-
-			// コンテナのサイズが変更されたのでスクロール範囲を更新します。
-			// スクロール位置を更新する前にこの処理を行う必要があります。
-			updateScrollBar();
-
-			// ドッキングコンテナのスクロール位置をフローティングコンテナに適用します。
-			::SetScrollPos(*this, SB_HORZ, ::GetScrollPos(parent, SB_HORZ), TRUE);
-			::SetScrollPos(*this, SB_VERT, ::GetScrollPos(parent, SB_VERT), TRUE);
-
-			// スクロール位置が更新されたのでレイアウトを再計算します。
-			recalcLayout();
-		}
-
-		//
-		// コンテナの位置を再計算するときに呼ばれます。
-		//
-		BOOL onSetContainerPos(WINDOWPOS* wp) override
-		{
-			if (!__super::onSetContainerPos(wp)) return FALSE;
-
-			// スクロールバーとレイアウトを更新します。
-			updateScrollBar();
-			recalcLayout();
+			// 強制再描画でスクロールに素早く追従させます。
+			::UpdateWindow(hwnd);
 
 			return TRUE;
 		}
 
 		//
-		// ターゲットのウィンドウプロシージャです。
+		// コンテナを正規化されたrcの位置に移動します。
 		//
-		LRESULT onTargetWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, BOOL* skipDefault) override
+		void setContainerPosition(LPCRECT rc) override
 		{
-			switch (message)
-			{
-			case WM_MOUSEWHEEL:
-				{
-					// マウスホイールでスクロールするために
-					// 既定の処理をブロックし、コンテナウィンドウへバイパスします。
-					*skipDefault = TRUE;
-					return ::SendMessage(*this, message, wParam, lParam);
-				}
-			}
+			MY_TRACE_FUNC("%d, %d, %d, %d", rc->left, rc->top, rc->right, rc->bottom);
 
-			return __super::onTargetWndProc(hwnd, message, wParam, lParam, skipDefault);
+			// ロックされている場合は何もしません。
+			if (locks()) return;
+
+			// ロックします。
+			Locker locker(this);
+
+			// コンテンツのHWNDを取得します。
+			HWND hwnd = content->getHWND();
+
+			// コンテンツが格納されている現在のコンテナを取得します。
+			// (ドッキング完了後に呼び出された場合はparentはこのコンテナになります)
+			HWND parent = ::GetParent(hwnd);
+
+			// 現在のコンテナのスクロール位置を取得しておきます。
+			int scrollPos[2] = {};
+			for (size_t i = 0; i < std::size(scrollPos); i++)
+				scrollPos[i] = ::GetScrollPos(parent, i);
+
+			// このコンテナの位置を変更します。
+			__super::setContainerPosition(rc);
+
+			// このコンテナのサイズが変更されたのでスクロール範囲を更新します。
+			// スクロール位置を更新する前にこの処理を行う必要があります。
+			updateScrollBar();
+
+			// 現在のコンテナのスクロール位置をこのコンテナに適用します。
+			for (size_t i = 0; i < std::size(scrollPos); i++)
+				::SetScrollPos(*this, i, scrollPos[i], TRUE);
+
+			// スクロール位置が更新されたのでコンテンツの位置を更新します。
+			updateContentPos();
+		}
+
+		//
+		// コンテナがフローティング状態になるときに呼ばれます。
+		//
+		void onFloatContainer() override
+		{
+			MY_TRACE_FUNC("");
+
+			// コンテンツのHWNDを取得します。
+			HWND hwnd = content->getHWND();
+
+			// コンテンツが格納されている現在のコンテナ(ドッキングコンテナ)を取得します。
+			HWND parent = ::GetParent(hwnd);
+
+			// 現在のコンテナのクライアント矩形を取得します。
+			RECT rc; ::GetClientRect(parent, &rc);
+
+			// クライント座標からスクリーン座標に変換します。
+			::MapWindowPoints(parent, 0, (LPPOINT)&rc, 2);
+
+			// 現在のコンテナのクライアント矩形をこのコンテナのウィンドウ矩形に変換します。
+			clientToWindow(*this, &rc);
+
+			// このコンテナの位置を変更します。
+			setContainerPosition(&rc);
+		}
+
+		//
+		// コンテンツの位置を修正するために呼ばれます。
+		//
+		BOOL reviseContentPosition(WINDOWPOS* wp) override
+		{
+			MY_TRACE_FUNC("");
+
+			if (!__super::reviseContentPosition(wp)) return FALSE;
+
+			// コンテンツの位置をスクロールの分だけずらします。
+			wp->x -= ::GetScrollPos(*this, SB_HORZ);
+			wp->y -= ::GetScrollPos(*this, SB_VERT);
+
+			return TRUE;
+		}
+
+		//
+		// コンテンツの位置を変更します。
+		//
+		BOOL setContentPosition() override
+		{
+			MY_TRACE_FUNC("");
+
+			// スクロールバーとコンテナの位置を更新します。
+			updateScrollBar();
+			updateContentPos();
+
+			return TRUE;
+		}
+
+		//
+		// コンテンツの位置が変更されたときに(コンテンツから)呼ばれます。
+		//
+		BOOL onContentPosChanged(WINDOWPOS* wp) override
+		{
+			MY_TRACE_FUNC("");
+
+			if (!__super::onContentPosChanged(wp)) return FALSE;
+
+			updateScrollBar();
+
+			return TRUE;
 		}
 
 		//
@@ -208,45 +274,47 @@ namespace fgo::nest
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-			switch (message)
-			{
-			case WM_SIZE:
-				{
-					// スクロールバーとレイアウトを更新します。
-					updateScrollBar();
-					recalcLayout();
-
-					return 0; // コンテナのデフォルト処理は実行しません。
-				}
-			}
-
 			LRESULT result = __super::onWndProc(hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case WM_VSCROLL:
 				{
-					// 縦スクロールに応じてスクロールしてからレイアウトを再計算します。
+					// 縦スクロールに応じてスクロールしてからコンテンツの位置を更新します。
+					Locker lcoker(this);
 					scroll(SB_VERT, wParam);
-					recalcLayout();
+					updateContentPos();
 
 					break;
 				}
 			case WM_HSCROLL:
 				{
-					// 横スクロールに応じてスクロールしてからレイアウトを再計算します。
+					// 横スクロールに応じてスクロールしてからコンテンツの位置を更新します。
+					Locker lcoker(this);
 					scroll(SB_HORZ, wParam);
-					recalcLayout();
+					updateContentPos();
 
 					break;
 				}
 			case WM_MOUSEWHEEL:
 				{
-					MY_TRACE(_T("ScrollContainer::onWndProc(WM_MOUSEWHEEL, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSEWHEEL, 0x%08X, 0x%08X", wParam, lParam);
 
-					// ホイールに応じてスクロールしてからレイアウトを再計算します。
-					scroll(SB_VERT, ((int)wParam > 0) ? SB_PAGEUP : SB_PAGEDOWN);
-					recalcLayout();
+					// ホイールに応じてスクロールしてからコンテンツの位置を更新します。
+					Locker lcoker(this);
+					scroll(SB_VERT, SB_PAGEUP, GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
+					updateContentPos();
+
+					break;
+				}
+			case WM_MOUSEHWHEEL:
+				{
+					MY_TRACE_FUNC("WM_MOUSEHWHEEL, 0x%08X, 0x%08X", wParam, lParam);
+
+					// ホイールに応じてスクロールしてからコンテンツの位置を更新します。
+					Locker lcoker(this);
+					scroll(SB_HORZ, SB_PAGELEFT, GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA);
+					updateContentPos();
 
 					break;
 				}

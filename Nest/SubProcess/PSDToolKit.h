@@ -22,7 +22,7 @@ namespace fgo::nest
 			//
 			void init(PSDToolKit* shuttle, HWND dialog)
 			{
-				MY_TRACE(_T("PSDToolKit::Undock::init(0x%08X, 0x%08X)\n"), (HWND)*shuttle, dialog);
+				MY_TRACE_FUNC("0x%08X, 0x%08X", (HWND)*shuttle, dialog);
 
 				this->dialog = dialog;
 
@@ -52,7 +52,7 @@ namespace fgo::nest
 //				::SetWindowLong(hwnd, GWL_HWNDPARENT, 0); // この処理は必要ないようです。
 				::SetWindowLong(hwnd, GWL_STYLE, WS_CAPTION | WS_SYSMENU |
 					WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS);
-				hive.true_SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
+				::SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
 
 				// クライアント矩形をウィンドウ矩形に変換します。
 				clientToWindow(hwnd, &rc);
@@ -62,7 +62,7 @@ namespace fgo::nest
 				int y = rc.top;
 				int w = getWidth(rc);
 				int h = getHeight(rc);
-				hive.true_SetWindowPos(hwnd, HWND_TOPMOST, x, y, w, h, SWP_ASYNCWINDOWPOS | SWP_SHOWWINDOW);
+				::SetWindowPos(hwnd, HWND_TOPMOST, x, y, w, h, SWP_ASYNCWINDOWPOS | SWP_SHOWWINDOW);
 
 				// サブプロセスウィンドウの後ろに行かないように、
 				// ダイアログの親ウィンドウをサブプロセスウィンドウに変更します。
@@ -74,7 +74,7 @@ namespace fgo::nest
 			//
 			void exit()
 			{
-				MY_TRACE(_T("PSDToolKit::Undock::exit()\n"));
+				MY_TRACE_FUNC("");
 
 				if (!hwnd) return;
 

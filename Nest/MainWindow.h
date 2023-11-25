@@ -673,14 +673,14 @@ namespace fgo::nest
 				}
 			case Hive::WindowMessage::WM_INIT_SHUTTLE: // シャトルを初期化するために通知されます。
 				{
-					HWND hwnd = (HWND)wParam;
-					LPTSTR windowName = (LPTSTR)lParam;
+					auto hwnd = (HWND)wParam;
+					auto orig = (Hive::OrigWindow*)lParam;
 
 					// シャトルを初期化します。
-					initShuttle(hwnd, windowName);
+					initShuttle(hwnd, orig->windowName);
 
 					// メモリを開放します。
-					delete[] windowName;
+					delete orig;
 
 					break;
 				}

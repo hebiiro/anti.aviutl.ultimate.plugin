@@ -123,7 +123,7 @@ namespace fgo::nest::hook
 	{
 		inline static BOOL WINAPI hook(DWORD threadId, WNDENUMPROC enumProc, LPARAM lParam)
 		{
-			MY_TRACE(_T("::EnumThreadWindows(%d, 0x%08X, 0x%08X)\n"), threadId, enumProc, lParam);
+//			MY_TRACE(_T("::EnumThreadWindows(%d, 0x%08X, 0x%08X)\n"), threadId, enumProc, lParam);
 
 			// 「イージング設定時短プラグイン」用の処理です。
 			if (threadId == ::GetCurrentThreadId() && enumProc && lParam)

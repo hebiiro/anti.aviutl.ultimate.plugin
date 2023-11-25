@@ -31,6 +31,8 @@ namespace fgo::nest
 		inline static const LPCTSTR PropName = _T("RootPane");
 		inline static std::shared_ptr<Pane> hotBorderPane;
 
+		LPARAM mouseMovePos = -1; // WM_MOUSEMOVEのLPARAMです。
+
 		//
 		// ルートペインを作成し、ウィンドウに関連付けます。
 		//
@@ -138,7 +140,7 @@ namespace fgo::nest
 				if (mii.hSubMenu)
 				{
 					HMENU subMenu = ::CreatePopupMenu();
-					copyMenu(mii.hSubMenu, subMenu);
+					copyMenu(subMenu, mii.hSubMenu);
 					mii.hSubMenu = subMenu;
 				}
 
@@ -151,7 +153,7 @@ namespace fgo::nest
 		//
 		BOOL showTargetMenu(HWND dockSite, POINT point)
 		{
-			MY_TRACE(_T("DockSite::showTargetMenu(%d, %d)\n"), point.x, point.y);
+			MY_TRACE_FUNC("%d, %d", point.x, point.y);
 
 			// 最初のペインを取得します。
 			auto first = getFirstPane(dockSite);
@@ -485,7 +487,7 @@ namespace fgo::nest
 				{
 					NMHDR* header = (NMHDR*)lParam;
 
-					MY_TRACE_FUNC("WM_NOTIFY, %d\n", header->code);
+					MY_TRACE_FUNC("WM_NOTIFY, %d", header->code);
 
 					switch (header->code)
 					{
@@ -784,6 +786,10 @@ namespace fgo::nest
 				}
 			case WM_MOUSEMOVE:
 				{
+					// 同じ座標のWM_MOUSEMOVEが大量に送られてくるので間引きます。
+					if (mouseMovePos == lParam) break;
+					mouseMovePos = lParam;
+
 //					MY_TRACE_FUNC("WM_MOUSEMOVE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// マウス座標を取得します。
@@ -834,7 +840,7 @@ namespace fgo::nest
 				}
 			case WM_MOUSELEAVE:
 				{
-					MY_TRACE_FUNC("WM_MOUSELEAVE, 0x%08X, 0x%08X", wParam, lParam);
+//					MY_TRACE_FUNC("WM_MOUSELEAVE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// ホットボーダーが存在する場合は
 					if (hotBorderPane)

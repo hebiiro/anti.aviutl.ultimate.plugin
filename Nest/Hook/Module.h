@@ -18,7 +18,7 @@ namespace fgo::nest::hook
 		//
 		BOOL init()
 		{
-			MY_TRACE(_T("Module::init()\n"));
+			MY_TRACE_FUNC("");
 
 			aviutl::init();
 			ExEdit::init();
@@ -35,7 +35,7 @@ namespace fgo::nest::hook
 		//
 		BOOL exit()
 		{
-			MY_TRACE(_T("Module::exit()\n"));
+			MY_TRACE_FUNC("");
 
 			return TRUE;
 		}

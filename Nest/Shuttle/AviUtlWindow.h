@@ -13,7 +13,7 @@ namespace fgo::nest
 		//
 		void init(const _bstr_t& name, HWND hwnd)
 		{
-			MY_TRACE(_T("AviUtlWindow::init(%s, 0x%08X)\n"), (LPCTSTR)name, hwnd);
+			MY_TRACE_FUNC("%s, 0x%08X", (LPCTSTR)name, hwnd);
 
 			__super::init(name, hwnd);
 
@@ -50,7 +50,7 @@ namespace fgo::nest
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE(_T("AviUtlWindow::onWndProc(WM_DESTROY, 0x%08X, 0x%08X)\n"), wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, 0x%08X, 0x%08X", wParam, lParam);
 
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
@@ -59,7 +59,7 @@ namespace fgo::nest
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE(_T("AviUtlWindow::onWndProc(WM_CLOSE)\n"));
+					MY_TRACE_FUNC("WM_CLOSE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// AviUtlが終了しようとしているので設定を保存します。
 					::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_SAVE_CONFIG, 0, 0);
@@ -68,7 +68,7 @@ namespace fgo::nest
 				}
 			case WM_SETTEXT:
 				{
-					MY_TRACE(_T("AviUtlWindow::onWndProc(WM_SETTEXT)\n"));
+					MY_TRACE_FUNC("WM_SETTEXT, 0x%08X, 0x%08X", wParam, lParam);
 
 					LRESULT lr = __super::onWndProc(hwnd, message, wParam, lParam);
 

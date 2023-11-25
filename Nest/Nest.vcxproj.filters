@@ -87,9 +87,6 @@
     <ClInclude Include="Hook\Api\Menu.h">
       <Filter>Hook\API</Filter>
     </ClInclude>
-    <ClInclude Include="Hook\Api\MoveWindow.h">
-      <Filter>Hook\API</Filter>
-    </ClInclude>
     <ClInclude Include="Hook\Api\FindWindow.h">
       <Filter>Hook\API</Filter>
     </ClInclude>
@@ -125,11 +122,11 @@
     <ClInclude Include="SubProcess\PSDToolKit.h">
       <Filter>Element\SubProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Hook\CBT.h">
-      <Filter>Hook</Filter>
-    </ClInclude>
     <ClInclude Include="Pane\RootPane.h">
       <Filter>Element\Pane</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\CallWndProcRet.h">
+      <Filter>Hook</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

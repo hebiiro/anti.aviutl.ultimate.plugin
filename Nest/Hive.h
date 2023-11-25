@@ -18,6 +18,12 @@ namespace fgo::nest
 			static const UINT WM_REFRESH_TITLE = WM_APP + 5;
 		};
 
+		struct OrigWindow
+		{
+			DWORD exStyle = 0;
+			TCHAR windowName[MAX_PATH] = {};
+		};
+
 		struct SubProcess {
 			BOOL dock = FALSE;
 			TCHAR run[MAX_PATH] = {};
@@ -125,31 +131,6 @@ namespace fgo::nest
 				parent, 0, instance, 0);
 
 			return hwnd;
-		}
-
-		//
-		// フックする前のオリジナルの ::SetWindowPos() です。
-		//
-		inline static decltype(&::SetWindowPos) true_SetWindowPos = 0;
-
-		//
-		// 強制的に WM_SIZE を送信する ::SetWindowPos() です。
-		//
-		inline static void forceSetWindowPos(HWND hwnd, HWND insertAfter, int x, int y, int w, int h, UINT flags)
-		{
-			RECT rcOld; ::GetWindowRect(hwnd, &rcOld);
-			true_SetWindowPos(hwnd, insertAfter, x, y, w, h, flags);
-
-			if (!(flags & SWP_NOSIZE))
-			{
-				RECT rcNew; ::GetWindowRect(hwnd, &rcNew);
-
-				if (getWidth(rcOld) == getWidth(rcNew) && getHeight(rcOld) == getHeight(rcNew))
-				{
-					// ウィンドウサイズは変更されなかったが、強制的に WM_SIZE を送信する。
-					::SendMessage(hwnd, WM_SIZE, 0, 0);
-				}
-			}
 		}
 	} hive;
 }

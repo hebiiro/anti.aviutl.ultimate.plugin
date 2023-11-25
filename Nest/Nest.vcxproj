@@ -173,8 +173,7 @@
     <ClInclude Include="Hook\Api.h" />
     <ClInclude Include="Hook\Api\FindWindow.h" />
     <ClInclude Include="Hook\Api\Menu.h" />
-    <ClInclude Include="Hook\Api\MoveWindow.h" />
-    <ClInclude Include="Hook\CBT.h" />
+    <ClInclude Include="Hook\CallWndProcRet.h" />
     <ClInclude Include="Hook\GetMessage.h" />
     <ClInclude Include="Hook\Module.h" />
     <ClInclude Include="Hook\Module\AviUtl.h" />

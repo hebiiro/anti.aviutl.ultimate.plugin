@@ -58,8 +58,8 @@ namespace fgo::nest
 		int splitMode = SplitMode::none;
 		int origin = Origin::bottomRight;
 		BOOL isBorderLocked = FALSE;
-		int border = 0; // ボーダーの位置。
-		int dragOffset = 0; // ドラッグ処理に使う。
+		int border = 0; // ボーダーの位置です。
+		int dragOffset = 0; // ドラッグ処理に使用します。
 
 		Tab tab;
 		std::shared_ptr<Pane> children[2];
@@ -72,7 +72,7 @@ namespace fgo::nest
 			: owner(owner)
 		{
 			tab.create(
-				WS_EX_NOPARENTNOTIFY | WS_EX_COMPOSITED,
+				WS_EX_NOPARENTNOTIFY,
 				WC_TABCONTROL,
 				_T("Nest.Tab"),
 				WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
@@ -260,7 +260,7 @@ namespace fgo::nest
 					{
 						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
 
-						hive.true_SetWindowPos(*shuttle->dockContainer, HWND_TOP, 0, 0, 0, 0,
+						::SetWindowPos(*shuttle->dockContainer, HWND_TOP, 0, 0, 0, 0,
 							SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
 						::ShowWindowAsync(*shuttle, SW_SHOW);
 					}
@@ -343,7 +343,7 @@ namespace fgo::nest
 		//
 		void removeShuttle(Shuttle* shuttle)
 		{
-			MY_TRACE(_T("Pane::removeShuttle(0x%08X)\n"), shuttle);
+			MY_TRACE_FUNC("0x%08X", shuttle);
 
 			// 指定されたシャトルを保持しているかチェックします。
 			int index = findTab(shuttle);
@@ -381,7 +381,7 @@ namespace fgo::nest
 		//
 		void removeAllShuttles()
 		{
-			MY_TRACE(_T("Pane::removeAllShuttles()\n"));
+			MY_TRACE_FUNC("");
 
 			// すべてのシャトルをフローティング状態にします。
 
@@ -587,7 +587,7 @@ namespace fgo::nest
 
 		void normalize()
 		{
-//			MY_TRACE(_T("Pane::normalize()\n"));
+//			MY_TRACE_FUNC("");
 
 			switch (splitMode)
 			{
@@ -610,7 +610,7 @@ namespace fgo::nest
 		//
 		virtual void recalcLayout(LPCRECT rc, const std::shared_ptr<Pane>& limited)
 		{
-//			MY_TRACE(_T("Pane::recalcLayout()\n"));
+//			MY_TRACE_FUNC("");
 
 			if (::IsIconic(owner))
 				return;
@@ -620,7 +620,7 @@ namespace fgo::nest
 
 			int c = getTabCount();
 
-			// タブが 2 個以上あるなら
+			// タブが2個以上あるなら
 			if (c >= 2 && (!limited || this == limited.get()))
 			{
 				switch (tabMode)
@@ -635,7 +635,7 @@ namespace fgo::nest
 						modifyStyle(tab, TCS_BOTTOM, 0);
 
 						// タブコントロールを表示します。
-						hive.true_SetWindowPos(tab, HWND_TOP,
+						::SetWindowPos(tab, HWND_TOP,
 							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 						break;
@@ -650,7 +650,7 @@ namespace fgo::nest
 						modifyStyle(tab, TCS_BOTTOM, 0);
 
 						// タブコントロールを表示します。
-						hive.true_SetWindowPos(tab, HWND_TOP,
+						::SetWindowPos(tab, HWND_TOP,
 							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 						break;
@@ -665,14 +665,14 @@ namespace fgo::nest
 						modifyStyle(tab, 0, TCS_BOTTOM);
 
 						// タブコントロールを表示します。
-						hive.true_SetWindowPos(tab, HWND_TOP,
+						::SetWindowPos(tab, HWND_TOP,
 							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 						break;
 					}
 				}
 			}
-			// タブが 1 個以下なら
+			// タブが1個以下なら
 			else
 			{
 				// タブコントロールを非表示にします。
@@ -750,7 +750,7 @@ namespace fgo::nest
 
 		std::shared_ptr<Pane> hitTestPane(POINT point)
 		{
-			// point がこのペインの範囲外なら
+			// pointがこのペインの範囲外なら
 			if (!::PtInRect(&position, point))
 				return 0; // ヒットしていないので0を返します。
 
@@ -768,8 +768,8 @@ namespace fgo::nest
 					{
 						if (!child) continue;
 
-						std::shared_ptr<Pane> retValue = child->hitTestPane(point);
-						if (retValue) return retValue;
+						auto pane = child->hitTestPane(point);
+						if (pane) return pane;
 					}
 
 					break;
@@ -781,7 +781,7 @@ namespace fgo::nest
 
 		std::shared_ptr<Pane> hitTestBorder(POINT point)
 		{
-			// point がこのペインの範囲外なら
+			// pointがこのペインの範囲外なら
 			if (!::PtInRect(&position, point))
 				return 0; // ヒットしていないので0を返します。
 
@@ -798,7 +798,7 @@ namespace fgo::nest
 					{
 						int absBorder = absoluteX(border);
 
-						// point がボーダーの範囲内なら
+						// pointがボーダーの範囲内なら
 						if (point.x >= absBorder && point.x < absBorder + borderWidth)
 							return shared_from_this(); // ヒットしているのでこのペインを返します。
 
@@ -808,7 +808,7 @@ namespace fgo::nest
 					{
 						int absBorder = absoluteY(border);
 
-						// point がボーダーの範囲内なら
+						// pointがボーダーの範囲内なら
 						if (point.y >= absBorder && point.y < absBorder + borderWidth)
 							return shared_from_this(); // ヒットしているのでこのペインを返します。
 
@@ -826,8 +826,8 @@ namespace fgo::nest
 			{
 				if (!child) continue;
 
-				std::shared_ptr<Pane> retValue = child->hitTestBorder(point);
-				if (retValue) return retValue;
+				auto pane = child->hitTestBorder(point);
+				if (pane) return pane;
 			}
 
 			return 0;
@@ -908,7 +908,7 @@ namespace fgo::nest
 							int partId = WP_BORDER;
 							int stateId = CS_INACTIVE;
 
-							// テーマ API を使用してボーダーを描画します。
+							// テーマAPIを使用してボーダーを描画します。
 							::DrawThemeBackground(hive.theme, dc, partId, stateId, &rc, 0);
 						}
 						// テーマを使用しないなら
@@ -954,12 +954,12 @@ namespace fgo::nest
 				// テーマを使用するなら
 				if (hive.useTheme)
 				{
-					// ウィンドウの状態から stateId を取得します。
+					// ウィンドウの状態からstateIdを取得します。
 					int stateId = CS_ACTIVE;
 					if (::GetFocus() != *shuttle) stateId = CS_INACTIVE;
 					if (!::IsWindowEnabled(*shuttle)) stateId = CS_DISABLED;
 
-					// テーマ API を使用してタイトルを描画します。
+					// テーマAPIを使用してタイトルを描画します。
 					::DrawThemeBackground(hive.theme, dc, WP_CAPTION, stateId, &rc, 0);
 
 					{
@@ -981,7 +981,7 @@ namespace fgo::nest
 				// テーマを使用しないなら
 				else
 				{
-					// 直接 GDI を使用して描画します。
+					// 直接GDIを使用して描画します。
 
 					COLORREF captionColor = hive.activeCaptionColor;
 					COLORREF captionTextColor = hive.activeCaptionTextColor;

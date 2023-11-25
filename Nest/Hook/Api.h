@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "Api/MoveWindow.h"
 #include "Api/Menu.h"
 #include "Api/FindWindow.h"
 
@@ -17,13 +16,9 @@ namespace fgo::nest::hook
 		{
 			MY_TRACE(_T("Api::init()\n"));
 
-			HMODULE user32 = ::GetModuleHandle(_T("user32.dll"));
-
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			Tools::attach(MoveWindow);
-			Tools::attach(SetWindowPos);
 			Tools::attach(GetMenu);
 			Tools::attach(SetMenu);
 			Tools::attach(DrawMenuBar);
@@ -38,8 +33,6 @@ namespace fgo::nest::hook
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
 				MY_TRACE(_T("API フックに成功しました\n"));
-
-				hive.true_SetWindowPos = SetWindowPos.orig;
 
 				return TRUE;
 			}
