@@ -68,7 +68,7 @@ namespace fgo
 			.func_init = func_init,
 			.func_exit = func_exit,
 			.func_WndProc = func_WndProc,
-			.information = "アルティメットプラグイン r7",
+			.information = "アルティメットプラグイン r8",
 		};
 
 		static AviUtl::FilterPluginDLL audio_filter = {
