@@ -14,7 +14,7 @@ namespace fgo::nest::hook
 		//
 		BOOL init()
 		{
-			MY_TRACE(_T("Api::init()\n"));
+			MY_TRACE_FUNC("");
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
@@ -49,7 +49,7 @@ namespace fgo::nest::hook
 		//
 		BOOL exit()
 		{
-			MY_TRACE(_T("Api::exit()\n"));
+			MY_TRACE_FUNC("");
 
 			return TRUE;
 		}

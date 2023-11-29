@@ -67,13 +67,7 @@ namespace fgo::nest
 			RECT rc; ::GetClientRect(*this, &rc);
 			int w = getWidth(rc);
 			int h = getHeight(rc);
-
-			UINT flags = SWP_NOZORDER | SWP_ASYNCWINDOWPOS;
-
-			if (::IsWindowVisible(*this))
-				flags |= SWP_SHOWWINDOW;
-
-			::SetWindowPos(window, 0, 0, 0, w, h, flags);
+			::SetWindowPos(window, 0, 0, 0, w, h, SWP_NOZORDER | SWP_ASYNCWINDOWPOS);
 		}
 
 		//
@@ -125,7 +119,7 @@ namespace fgo::nest
 
 					// このウィンドウが表示されるとき、サブプロセスウィンドウも表示状態にします。
 					if (wParam && ::IsWindow(window))
-						::ShowWindowAsync(window, SW_SHOW);
+						::ShowWindowAsync(window, SW_RESTORE);
 
 					break;
 				}
@@ -158,8 +152,14 @@ namespace fgo::nest
 								modifyStyle(window, remove, add);
 								modifyExStyle(window, 0, WS_EX_NOPARENTNOTIFY);
 								::SetParent(window, hwnd);
-								resize();
-								::ShowWindowAsync(window, SW_SHOW);
+
+								// コンソールウィンドウ用の処理です。
+								// 最小化されているので元に戻します。
+								::ShowWindowAsync(window, SW_RESTORE);
+
+								// コンソールウィンドウ用の処理です。
+								// WM_SIZEをポストしてresize()を実行します。
+								::PostMessage(hwnd, WM_SIZE, 0, 0);
 							}
 
 							break;

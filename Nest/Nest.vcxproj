@@ -198,6 +198,7 @@
     <ClInclude Include="SubProcess.h" />
     <ClInclude Include="SubProcessManager.h" />
     <ClInclude Include="SubProcess\Bouyomisan.h" />
+    <ClInclude Include="SubProcess\Console.h" />
     <ClInclude Include="SubProcess\PSDToolKit.h" />
     <ClInclude Include="SubWindow.h" />
     <ClInclude Include="SubWindowManager.h" />

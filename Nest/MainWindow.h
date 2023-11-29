@@ -7,6 +7,7 @@
 #include "SubProcess.h"
 #include "SubProcess/PSDToolKit.h"
 #include "SubProcess/Bouyomisan.h"
+#include "SubProcess/Console.h"
 
 namespace fgo::nest
 {
@@ -50,7 +51,7 @@ namespace fgo::nest
 		//
 		virtual ~MainWindow()
 		{
-			MY_TRACE(_T("MainWindow::~MainWindow(), 0x%08X\n"), (HWND)*this);
+			MY_TRACE_FUNC("0x%08X", (HWND)*this);
 		}
 
 		//
@@ -58,7 +59,7 @@ namespace fgo::nest
 		//
 		BOOL create(const std::shared_ptr<Loader>& loader, const std::shared_ptr<Saver>& saver)
 		{
-			MY_TRACE(_T("MainWindow::create()\n"));
+			MY_TRACE_FUNC("");
 
 			this->loader = loader;
 			this->saver = saver;
@@ -296,7 +297,7 @@ namespace fgo::nest
 		//
 		BOOL loadConfig()
 		{
-			MY_TRACE(_T("MainWindow::loadConfig()\n"));
+			MY_TRACE_FUNC("");
 
 			return loadConfig(magi.getConfigFileName(L"Nest.xml").c_str(), FALSE);
 		}
@@ -307,7 +308,7 @@ namespace fgo::nest
 		//
 		BOOL loadConfig(LPCWSTR fileName, BOOL _import)
 		{
-			MY_TRACE(_T("MainWindow::loadConfig(%ws, %d)\n"), fileName, _import);
+			MY_TRACE_FUNC("%ws, %d", fileName, _import);
 
 			HRESULT hr = loader->loadConfig(fileName, _import);
 
@@ -364,7 +365,7 @@ namespace fgo::nest
 		//
 		BOOL saveConfig()
 		{
-			MY_TRACE(_T("MainWindow::saveConfig()\n"));
+			MY_TRACE_FUNC("");
 
 			return saveConfig(magi.getConfigFileName(L"Nest.xml").c_str(), FALSE);
 		}
@@ -375,7 +376,7 @@ namespace fgo::nest
 		//
 		BOOL saveConfig(LPCWSTR fileName, BOOL _export)
 		{
-			MY_TRACE(_T("MainWindow::saveConfig(%ws, %d)\n"), fileName, _export);
+			MY_TRACE_FUNC("%ws, %d", fileName, _export);
 
 			return saver->saveConfig(fileName, _export) == S_OK;
 		}
@@ -450,6 +451,13 @@ namespace fgo::nest
 			if (hive.bouyomisan.dock) {
 				const LPCTSTR name = Hive::Bouyomisan::Name;
 				auto shuttle = bouyomisan = std::make_shared<Bouyomisan>();
+				shuttle->create(name, *this);
+				shuttle->init(name, *shuttle);
+			}
+
+			if (hive.console.dock) {
+				const LPCTSTR name = Hive::Console::Name;
+				auto shuttle = console = std::make_shared<Console>();
 				shuttle->create(name, *this);
 				shuttle->init(name, *shuttle);
 			}

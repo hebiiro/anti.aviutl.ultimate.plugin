@@ -173,7 +173,7 @@ namespace fgo::nest
 		//
 		void onInitShuttle(const std::shared_ptr<Shuttle>& shuttle) override
 		{
-			MY_TRACE(_T("ShuttleManager::onInitShuttle(%ws)\n"), (LPCWSTR)shuttle->name);
+			MY_TRACE_FUNC("%ws", (LPCWSTR)shuttle->name);
 
 			add(shuttle, shuttle->name);
 		}
@@ -183,7 +183,7 @@ namespace fgo::nest
 		//
 		void onExitShuttle(const std::shared_ptr<Shuttle>& shuttle) override
 		{
-			MY_TRACE(_T("ShuttleManager::onExitShuttle(%ws)\n"), (LPCWSTR)shuttle->name);
+			MY_TRACE_FUNC("%ws", (LPCWSTR)shuttle->name);
 
 			// このシャトルをコレクションから削除します。
 			erase(shuttle);

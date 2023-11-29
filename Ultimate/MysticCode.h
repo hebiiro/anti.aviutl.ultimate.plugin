@@ -33,7 +33,7 @@ namespace fgo
 
 		BOOL init()
 		{
-			MY_TRACE(_T("MysticCode::init()\n"));
+			MY_TRACE_FUNC("");
 
 			// AviUtl関連のアドレス情報を初期化します。
 			magi.auin.initAviUtlAddress();
@@ -48,7 +48,7 @@ namespace fgo
 
 		BOOL exit()
 		{
-			MY_TRACE(_T("MysticCode::exit()\n"));
+			MY_TRACE_FUNC("");
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());

@@ -128,6 +128,9 @@
     <ClInclude Include="Hook\CallWndProcRet.h">
       <Filter>Hook</Filter>
     </ClInclude>
+    <ClInclude Include="SubProcess\Console.h">
+      <Filter>Element\SubProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

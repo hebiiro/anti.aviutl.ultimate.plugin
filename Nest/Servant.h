@@ -122,7 +122,7 @@ namespace fgo::nest
 				//
 				BOOL rename(HWND target, LPCWSTR name) override
 				{
-					MY_TRACE(_T("Exports::Shuttle::rename(0x%08X, %ws)\n"), target, name);
+					MY_TRACE_FUNC("0x%08X, %ws", target, name);
 
 					auto shuttle = fgo::nest::Shuttle::getPointer(target);
 					if (!shuttle) return FALSE;
@@ -135,7 +135,7 @@ namespace fgo::nest
 				//
 				BOOL is_empty_name(LPCWSTR name) override
 				{
-					MY_TRACE(_T("Exports::Shuttle::is_empty_name(%ws)\n"), name);
+					MY_TRACE_FUNC("%ws", name);
 
 					return !shuttleManager.get(name);
 				}
@@ -165,6 +165,7 @@ namespace fgo::nest
 		{
 			hive.psdtoolkit.load(path, L"PSDToolKit");
 			hive.bouyomisan.load(path, L"Bouyomisan");
+			hive.console.load(path, L"Console");
 
 			return TRUE;
 		}
@@ -184,6 +185,7 @@ namespace fgo::nest
 		{
 			hive.psdtoolkit.save(path, L"PSDToolKit");
 			hive.bouyomisan.save(path, L"Bouyomisan");
+			hive.console.save(path, L"Console");
 
 			return TRUE;
 		}

@@ -53,6 +53,10 @@ namespace fgo::nest
 			inline static const LPCTSTR Name = _T("棒読みさん(外部)");
 		} bouyomisan;
 
+		struct Console : SubProcess {
+			inline static const LPCTSTR Name = _T("コンソール");
+		} console;
+
 		inline static const LPCTSTR AppName = _T("ネスト");
 		inline static const LPCTSTR SubWindowClassName = _T("Nest.SubWindow");
 		inline static const LPCTSTR SubProcessClassName = _T("Nest.SubProcess");
@@ -111,7 +115,7 @@ namespace fgo::nest
 		//
 		HWND createPopupWindow(HWND parent)
 		{
-			MY_TRACE(_T("createPopupWindow(0x%08X)\n"), parent);
+			MY_TRACE_FUNC("0x%08X", parent);
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;

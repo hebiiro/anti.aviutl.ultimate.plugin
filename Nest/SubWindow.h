@@ -61,7 +61,7 @@ namespace fgo::nest
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE(_T("SubWindow::onWndProc(0x%08X, WM_CREATE, 0x%08X, 0x%08X)\n"), hwnd,  wParam, lParam);
+					MY_TRACE_FUNC("0x%08X, WM_CREATE, 0x%08X, 0x%08X", hwnd,  wParam, lParam);
 
 					// このサブウィンドウをマネージャーに追加します。
 					// これにより、現存するすべてのサブウィンドウにアクセスできるようになります。
@@ -71,7 +71,7 @@ namespace fgo::nest
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE(_T("SubWindow::onWndProc(0x%08X, WM_CLOSE, 0x%08X, 0x%08X)\n"), hwnd,  wParam, lParam);
+					MY_TRACE_FUNC("0x%08X, WM_CLOSE, 0x%08X, 0x%08X", hwnd,  wParam, lParam);
 
 					if (::GetKeyState(VK_SHIFT) < 0)
 					{

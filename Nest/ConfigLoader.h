@@ -67,16 +67,16 @@ namespace fgo::nest
 					getPrivateProfileBool(element, L"showPlayer", hive.showPlayer);
 				}
 
-				// 事前に <subWindow> を読み込みます。
+				// 事前に<subWindow>を読み込みます。
 				preLoadSubWindow(element);
 
-				// <mainWindow> を読み込ます。
+				// <mainWindow>を読み込みます。
 				loadMainWindow(element);
 
-				// <subWindow> を読み込ます。
+				// <subWindow>を読み込みます。
 				loadSubWindow(element);
 
-				// <floatShuttle> を読み込ます。
+				// <floatShuttle>を読み込みます。
 				loadFloatShuttle(element);
 
 				MY_TRACE(_T("設定ファイルの読み込みに成功しました\n"));
@@ -91,8 +91,8 @@ namespace fgo::nest
 			}
 		}
 
-		// 事前に <subWindow> を読み込みます。
-		// これにより、レイアウトを読み込みます前に必要なすべてのサブウィンドウが存在する状態になります。
+		// 事前に<subWindow>を読み込みます。
+		// これにより、レイアウトを読み込む前に必要なすべてのサブウィンドウが存在する状態になります。
 		HRESULT preLoadSubWindow(const MSXML2::IXMLDOMElementPtr& element)
 		{
 			MY_TRACE_FUNC("");
@@ -100,7 +100,7 @@ namespace fgo::nest
 			// 一旦すべてのサブウィンドウを削除します。
 			subWindowManager.clear();
 
-			// <subWindow> を読み込みます。
+			// <subWindow>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
@@ -120,12 +120,12 @@ namespace fgo::nest
 			return S_OK;
 		}
 
-		// <mainWindow> を読み込みます。
+		// <mainWindow>を読み込みます。
 		HRESULT loadMainWindow(const MSXML2::IXMLDOMElementPtr& element)
 		{
 			MY_TRACE_FUNC("");
 
-			// <mainWindow> を読み込みます。
+			// <mainWindow>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"hub|mainWindow");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
@@ -140,7 +140,7 @@ namespace fgo::nest
 				// ウィンドウ位置を読み込みます。
 				getPrivateProfileWindow(mainWindowElement, L"placement", hive.mainWindow);
 
-				// <pane> を読み込みます。
+				// <pane>を読み込みます。
 				MSXML2::IXMLDOMNodeListPtr nodeList = mainWindowElement->selectNodes(L"pane");
 				int c = std::min<int>(1, nodeList->length);
 				for (int i = 0; i < c; i++)
@@ -154,12 +154,12 @@ namespace fgo::nest
 			return S_OK;
 		}
 
-		// <subWindow> を読み込みます。
+		// <subWindow>を読み込みます。
 		HRESULT loadSubWindow(const MSXML2::IXMLDOMElementPtr& element)
 		{
 			MY_TRACE_FUNC("");
 
-			// <subWindow> を読み込みます。
+			// <subWindow>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
@@ -179,7 +179,7 @@ namespace fgo::nest
 				auto root = SubWindow::getRootPane(*shuttle);
 				if (!root) continue;
 
-				// <pane> を読み込みます。
+				// <pane>を読み込みます。
 				MSXML2::IXMLDOMNodeListPtr nodeList = subWindowElement->selectNodes(L"pane");
 				int c = std::min<int>(1, nodeList->length);
 				for (int i = 0; i < c; i++)
@@ -193,7 +193,7 @@ namespace fgo::nest
 			return S_OK;
 		}
 
-		// <pane> を読み込みます。
+		// <pane>を読み込みます。
 		HRESULT loadPane(const MSXML2::IXMLDOMElementPtr& paneElement, const std::shared_ptr<Pane>& pane)
 		{
 			MY_TRACE_FUNC("");
@@ -214,7 +214,7 @@ namespace fgo::nest
 			MY_TRACE_INT(current);
 
 			{
-				// <dockShuttle> を読み込みます。
+				// <dockShuttle>を読み込みます。
 				MSXML2::IXMLDOMNodeListPtr nodeList = paneElement->selectNodes(L"dockShuttle");
 				int c = nodeList->length;
 				for (int i = 0; i < c; i++)
@@ -234,7 +234,7 @@ namespace fgo::nest
 			pane->setCurrentIndex(current);
 			pane->refreshCurrent();
 
-			// <pane> を読み込みます。
+			// <pane>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = paneElement->selectNodes(L"pane");
 			int c = std::min<int>(2, nodeList->length);
 			for (int i = 0; i < c; i++)
@@ -248,12 +248,12 @@ namespace fgo::nest
 			return S_OK;
 		}
 
-		// <floatShuttle> を読み込みます。
+		// <floatShuttle>を読み込みます。
 		HRESULT loadFloatShuttle(const MSXML2::IXMLDOMElementPtr& element)
 		{
 			MY_TRACE_FUNC("");
 
-			// <floatShuttle> を読み込みます。
+			// <floatShuttle>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"floatShuttle");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
