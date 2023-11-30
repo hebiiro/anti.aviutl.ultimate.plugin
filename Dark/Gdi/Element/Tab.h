@@ -8,7 +8,7 @@ namespace fgo::dark::gdi
 	{
 		int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush) override
 		{
-			MY_TRACE_FUNC("0x%08X, (%ws), 0x%08X", dc, hive.safe_string(rc), brush);
+//			MY_TRACE_FUNC("0x%08X, (%ws), 0x%08X", dc, hive.safe_string(rc), brush);
 
 			{
 				HTHEME theme = skin::theme::manager.getTheme(skin::theme::THEME_TAB);

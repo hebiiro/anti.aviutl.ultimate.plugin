@@ -15,7 +15,7 @@ namespace fgo::dark::theme
 
 		HRESULT onDrawThemeBackground(HTHEME theme, HDC dc, int partId, int stateId, LPCRECT rc, LPCRECT rcClip) override
 		{
-			MY_TRACE_FUNC("0x%08X, 0x%08X, %d, %d, (%ws), (%ws)", theme, dc, partId, stateId, hive.safe_string(rc), hive.safe_string(rcClip));
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, %d, %d, (%ws), (%ws)", theme, dc, partId, stateId, hive.safe_string(rc), hive.safe_string(rcClip));
 
 			{
 				if (skin::theme::manager.onDrawThemeBackground(theme, dc, partId, stateId, rc))
@@ -34,7 +34,7 @@ namespace fgo::dark::theme
 
 		HRESULT onDrawThemeText(HTHEME theme, HDC dc, int partId, int stateId, LPCWSTR text, int c, DWORD textFlags, DWORD textFlags2, LPCRECT rc) override
 		{
-			MY_TRACE_FUNC("0x%08X, 0x%08X, %d, %d, %ws, 0x%08X, 0x%08X, (%ws)", theme, dc, partId, stateId, hive.safe_string(text, c), textFlags, textFlags2, hive.safe_string(rc));
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, %d, %d, %ws, 0x%08X, 0x%08X, (%ws)", theme, dc, partId, stateId, hive.safe_string(text, c), textFlags, textFlags2, hive.safe_string(rc));
 
 			{
 				if (skin::theme::manager.onDrawThemeText(theme, dc, partId, stateId, text, c, textFlags, rc))

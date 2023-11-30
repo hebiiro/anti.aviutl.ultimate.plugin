@@ -3,9 +3,9 @@
 namespace Share::Filer {
 	namespace Message {
 		inline const UINT PreInit =				WM_APP + 100;
-		inline const UINT PostInit =			WM_APP + 101;
+		inline const UINT PostInit =				WM_APP + 101;
 		inline const UINT PreExit =				WM_APP + 102;
-		inline const UINT PostExit =			WM_APP + 103;
+		inline const UINT PostExit =				WM_APP + 103;
 		inline const UINT PostInitFilerWindow =	WM_APP + 200;
 		inline const UINT PostExitFilerWindow =	WM_APP + 201;
 		inline const UINT PostInitFilerDialog =	WM_APP + 300;

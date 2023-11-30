@@ -1,3 +1,4 @@
 EXPORTS
 	get_servant
-	DarkenWindow_init
+	dark_init
+	dark_getNamedColor

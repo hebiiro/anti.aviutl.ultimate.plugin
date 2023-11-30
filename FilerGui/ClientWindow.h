@@ -71,12 +71,12 @@ public:
 		MY_TRACE_HEX(dark);
 		if (!dark) return FALSE;
 
-		void (WINAPI* DarkenWindow_init)(HWND hwnd) = 0;
-		Tools::get_proc(dark, "DarkenWindow_init", DarkenWindow_init);
-		MY_TRACE_HEX(DarkenWindow_init);
-		if (!DarkenWindow_init) return FALSE;
+		void (WINAPI* dark_init)(HWND hwnd) = 0;
+		Tools::get_proc(dark, "dark_init", dark_init);
+		MY_TRACE_HEX(dark_init);
+		if (!dark_init) return FALSE;
 
-		DarkenWindow_init(hwnd);
+		dark_init(hwnd);
 
 		return TRUE;
 	}

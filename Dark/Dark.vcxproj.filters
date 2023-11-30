@@ -237,6 +237,9 @@
     <ClInclude Include="Hook\Api\CallWindowProc.h">
       <Filter>Hook\Api</Filter>
     </ClInclude>
+    <ClInclude Include="Skin\Exports.h">
+      <Filter>Skin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

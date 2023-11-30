@@ -1,28 +1,18 @@
 ﻿#pragma once
+#include "Skin/Exports.h"
 
 namespace fgo::dark::skin
 {
-	struct ColorSet
-	{
-		COLORREF fillColor;
-		COLORREF edgeColor;
-		COLORREF textBkColor;
-		COLORREF textForeColor;
-		COLORREF textBackColor;
-
-		struct Type
-		{
-			static const int fillColor = 0;
-			static const int edgeColor = 1;
-			static const int textBkColor = 2;
-			static const int textForeColor = 3;
-			static const int textBackColor = 4;
-		};
-	};
-
 	inline struct ColorSetManager
 	{
 		std::map<_bstr_t, ColorSet> collection;
+
+		ColorSet* get(LPCWSTR name)
+		{
+			auto it = collection.find(name);
+			if (it == collection.end()) return FALSE;
+			return &it->second;
+		}
 
 		inline HRESULT WINAPI getPrivateProfileNamedColor(
 			const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, COLORREF& outValue, int type)

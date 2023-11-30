@@ -202,6 +202,7 @@
     <ClInclude Include="Skin\ColorSet.h" />
     <ClInclude Include="Skin\Config.h" />
     <ClInclude Include="Skin\Dwm.h" />
+    <ClInclude Include="Skin\Exports.h" />
     <ClInclude Include="Skin\Figure\Node.h" />
     <ClInclude Include="Skin\Figure\Manager.h" />
     <ClInclude Include="Skin\Icon.h" />

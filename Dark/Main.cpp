@@ -20,11 +20,23 @@ namespace fgo::dark
 	// エクスポート関数です。
 	// 外部プロセスで使用する場合はこの関数をインポートして呼び出します。
 	//
-	void WINAPI DarkenWindow_init(HWND hwnd)
+	BOOL WINAPI dark_init(HWND hwnd)
 	{
-		MY_TRACE(_T("DarkenWindow_init(0x%08X)\n"), hwnd);
+		MY_TRACE_FUNC("0x%08X", hwnd);
 
-		servant.init(hwnd);
+		return servant.init(hwnd);
+	}
+
+	//
+	// エクスポート関数です。
+	// 指定された名前のカラーセットを返します。
+	// 指定された名前のカラーセットが存在しない場合は0を返します。
+	//
+	skin::ColorSet* WINAPI dark_getNamedColor(LPCWSTR name)
+	{
+		MY_TRACE_FUNC("%s", name);
+
+		return skin::color_set_manager.get(name);
 	}
 
 	//

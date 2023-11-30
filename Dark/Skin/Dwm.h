@@ -5,6 +5,17 @@ namespace fgo::dark::skin
 {
 	inline struct Dwm
 	{
+		enum MY_DWMWINDOWATTRIBUTE
+		{
+			DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
+			DWMWA_WINDOW_CORNER_PREFERENCE = 33,
+			DWMWA_BORDER_COLOR = 34,
+			DWMWA_CAPTION_COLOR = 35,
+			DWMWA_TEXT_COLOR = 36,
+			DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
+			DWMWA_LAST
+		};
+
 		BOOL enable = FALSE;
 		int darkMode = -1;
 		int cornerMode = -1;
@@ -28,16 +39,9 @@ namespace fgo::dark::skin
 		{
 			MY_TRACE_FUNC("0x%08X", hwnd);
 
-			enum MY_DWMWINDOWATTRIBUTE
-			{
-				DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
-				DWMWA_WINDOW_CORNER_PREFERENCE = 33,
-				DWMWA_BORDER_COLOR = 34,
-				DWMWA_CAPTION_COLOR = 35,
-				DWMWA_TEXT_COLOR = 36,
-				DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
-				DWMWA_LAST
-			};
+			// トップレベルウィンドウを取得します。
+			while (HWND parent = ::GetParent(hwnd))
+				hwnd = parent;
 
 			int cornerMode = 0;
 			return ::DwmGetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE , &cornerMode, sizeof(cornerMode));
@@ -48,17 +52,6 @@ namespace fgo::dark::skin
 			MY_TRACE_FUNC("0x%08X, %d", hwnd, active);
 
 			if (!enable) return;
-
-			enum MY_DWMWINDOWATTRIBUTE
-			{
-				DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
-				DWMWA_WINDOW_CORNER_PREFERENCE = 33,
-				DWMWA_BORDER_COLOR = 34,
-				DWMWA_CAPTION_COLOR = 35,
-				DWMWA_TEXT_COLOR = 36,
-				DWMWA_VISIBLE_FRAME_BORDER_THICKNESS,
-				DWMWA_LAST
-			};
 
 			BOOL trace = FALSE;
 

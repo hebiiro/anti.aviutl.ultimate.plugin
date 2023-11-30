@@ -106,7 +106,7 @@ namespace fgo::dark::skin::figure
 			{
 				fillColor = colorSet.fillColor;
 			}
-			getPrivateProfileNamedColor(element, L"fillColor", fillColor, ColorSet::Type::Type::fillColor);
+			getPrivateProfileNamedColor(element, L"fillColor", fillColor, ColorSet::Type::fillColor);
 		}
 
 		void draw(HDC dc, LPRECT rc) override
@@ -142,7 +142,7 @@ namespace fgo::dark::skin::figure
 			{
 				edgeColor = colorSet.edgeColor;
 			}
-			getPrivateProfileNamedColor(element, L"edgeColor", edgeColor, ColorSet::Type::Type::edgeColor);
+			getPrivateProfileNamedColor(element, L"edgeColor", edgeColor, ColorSet::Type::edgeColor);
 			getPrivateProfileInt(element, L"edgeWidth", edgeWidth);
 		}
 
@@ -186,8 +186,8 @@ namespace fgo::dark::skin::figure
 				fillColor = colorSet.fillColor;
 				edgeColor = colorSet.edgeColor;
 			}
-			getPrivateProfileNamedColor(element, L"fillColor", fillColor, ColorSet::Type::Type::fillColor);
-			getPrivateProfileNamedColor(element, L"edgeColor", edgeColor, ColorSet::Type::Type::edgeColor);
+			getPrivateProfileNamedColor(element, L"fillColor", fillColor, ColorSet::Type::fillColor);
+			getPrivateProfileNamedColor(element, L"edgeColor", edgeColor, ColorSet::Type::edgeColor);
 			getPrivateProfileInt(element, L"edgeWidth", edgeWidth);
 			getPrivateProfileInt(element, L"roundWidth", roundWidth);
 			getPrivateProfileInt(element, L"roundHeight", roundHeight);
@@ -231,8 +231,8 @@ namespace fgo::dark::skin::figure
 				fillColor = colorSet.fillColor;
 				edgeColor = colorSet.edgeColor;
 			}
-			getPrivateProfileNamedColor(element, L"fillColor", fillColor, ColorSet::Type::Type::fillColor);
-			getPrivateProfileNamedColor(element, L"edgeColor", edgeColor, ColorSet::Type::Type::edgeColor);
+			getPrivateProfileNamedColor(element, L"fillColor", fillColor, ColorSet::Type::fillColor);
+			getPrivateProfileNamedColor(element, L"edgeColor", edgeColor, ColorSet::Type::edgeColor);
 			getPrivateProfileInt(element, L"edgeWidth", edgeWidth);
 		}
 
