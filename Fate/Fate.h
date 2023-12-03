@@ -207,6 +207,89 @@ namespace fgo
 		}
 
 		//
+		// サーヴァントにフィルタの設定が更新されたことを通知します。
+		// 内部的に使用されます。
+		//
+		BOOL fire_update(AviUtl::FilterPlugin* fp, AviUtl::FilterPlugin::UpdateStatus status)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_update(fp, status);
+			return result;
+		}
+
+		//
+		// サーヴァントに出力の開始を通知します。
+		// 内部的に使用されます。
+		//
+		BOOL fire_save_start(AviUtl::FilterPlugin* fp, int32_t s, int32_t e, AviUtl::EditHandle* editp)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_save_start(fp, s, e, editp);
+			return result;
+		}
+
+		//
+		// サーヴァントに出力の終了を通知します。
+		// 内部的に使用されます。
+		//
+		BOOL fire_save_end(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_save_end(fp, editp);
+			return result;
+		}
+
+		//
+		// 不明。
+		//
+		BOOL fire_is_saveframe(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t saveno, int32_t frame, int32_t fps, int32_t edit_flag, int32_t inter)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_is_saveframe(fp, editp, saveno, frame, fps, edit_flag, inter);
+			return result;
+		}
+
+		//
+		// サーヴァントにプロジェクトファイルの読み込みを通知します。
+		// 内部的に使用されます。
+		//
+		BOOL fire_project_load(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t size)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_project_load(fp, editp, data, size);
+			return result;
+		}
+
+		//
+		// サーヴァントにプロジェクトファイルの保存を通知します。
+		// 内部的に使用されます。
+		//
+		BOOL fire_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t* size)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_project_save(fp, editp, data, size);
+			return result;
+		}
+
+		//
+		// サーヴァントにタイトルを変更させます。
+		// 内部的に使用されます。
+		//
+		BOOL fire_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, LPSTR title, int32_t max_title)
+		{
+			BOOL result = FALSE;
+			for (const auto& pair : servants.map)
+				result |= pair.second.servant->on_modify_title(fp, editp, title, max_title);
+			return result;
+		}
+
+		//
 		// このプロセスで唯一のインスタンスを返します。
 		// 内部的に使用されます。
 		//

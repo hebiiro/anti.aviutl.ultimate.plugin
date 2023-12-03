@@ -97,6 +97,62 @@ namespace fgo
 			return FALSE;
 		}
 
+		//
+		// フィルタの設定が更新されたときに呼び出されます。
+		//
+		virtual BOOL on_update(AviUtl::FilterPlugin* fp, AviUtl::FilterPlugin::UpdateStatus status)
+		{
+			return FALSE;
+		}
+
+		//
+		// 出力を開始するときに呼び出されます。
+		//
+		virtual BOOL on_save_start(AviUtl::FilterPlugin* fp, int32_t s, int32_t e, AviUtl::EditHandle* editp)
+		{
+			return FALSE;
+		}
+
+		//
+		// 出力を終了するときに呼び出されます。
+		//
+		virtual BOOL on_save_end(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp)
+		{
+			return FALSE;
+		}
+
+		//
+		// 不明。
+		//
+		virtual BOOL on_is_saveframe(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t saveno, int32_t frame, int32_t fps, int32_t edit_flag, int32_t inter)
+		{
+			return FALSE;
+		}
+
+		//
+		// プロジェクトファイルを読み込むときに呼び出されます。
+		//
+		virtual BOOL on_project_load(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t size)
+		{
+			return FALSE;
+		}
+
+		//
+		// プロジェクトファイルを保存するときに呼び出されます。
+		//
+		virtual BOOL on_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t* size)
+		{
+			return FALSE;
+		}
+
+		//
+		// タイトルを変更する必要があるときに呼び出されます。
+		//
+		virtual BOOL on_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, LPSTR title, int32_t max_title)
+		{
+			return FALSE;
+		}
+
 		using addr_t = ULONG_PTR;
 
 		//

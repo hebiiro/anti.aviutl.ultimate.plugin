@@ -43,6 +43,41 @@ namespace fgo
 		return story.func_WndProc(hwnd, message, wParam, lParam, editp, fp);
 	}
 
+	BOOL func_update(AviUtl::FilterPlugin* fp, AviUtl::FilterPlugin::UpdateStatus status)
+	{
+		return story.func_update(fp, status);
+	}
+
+	BOOL func_save_start(AviUtl::FilterPlugin* fp, int32_t s, int32_t e, AviUtl::EditHandle* editp)
+	{
+		return story.func_save_start(fp, s, e, editp);
+	}
+
+	BOOL func_save_end(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp)
+	{
+		return story.func_save_end(fp, editp);
+	}
+
+	BOOL func_is_saveframe(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t saveno, int32_t frame, int32_t fps, int32_t edit_flag, int32_t inter)
+	{
+		return story.func_is_saveframe(fp, editp, saveno, frame, fps, edit_flag, inter);
+	}
+
+	BOOL func_project_load(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t size)
+	{
+		return story.func_project_load(fp, editp, data, size);
+	}
+
+	BOOL func_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t* size)
+	{
+		return story.func_project_save(fp, editp, data, size);
+	}
+
+	BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, LPSTR title, int32_t max_title)
+	{
+		return story.func_modify_title(fp, editp, title, max_title);
+	}
+
 	//
 	// エントリポイント
 	//
@@ -67,8 +102,15 @@ namespace fgo
 			.func_proc = func_video_proc,
 			.func_init = func_init,
 			.func_exit = func_exit,
+			.func_update = func_update,
 			.func_WndProc = func_WndProc,
 			.information = "アルティメットプラグイン r8",
+			.func_save_start = func_save_start,
+			.func_save_end = func_save_end,
+			.func_is_saveframe = func_is_saveframe,
+			.func_project_load = func_project_load,
+			.func_project_save = func_project_save,
+			.func_modify_title = func_modify_title,
 		};
 
 		static AviUtl::FilterPluginDLL audio_filter = {
