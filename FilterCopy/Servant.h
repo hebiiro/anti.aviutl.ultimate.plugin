@@ -509,7 +509,7 @@ namespace fgo::filter_copy
 
 		struct AddAlias {
 			//
-			// 拡張編集内の AddAlias() 関数と置き換えられます。
+			// 拡張編集内のAddAlias()関数と置き換えられます。
 			//
 			inline static BOOL CDECL hook(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 			{
@@ -535,6 +535,9 @@ namespace fgo::filter_copy
 			MY_TRACE_INT(filterIndex);
 			if (filterIndex < 0) return FALSE;
 
+			// カメラ制御のフラグを取得しておきます。
+			ExEdit::Object::Flag camera = object->flag & ExEdit::Object::Flag::Camera;
+
 			int insertPos = filterIndex; // フィルタを挿入する位置です。
 			BOOL retValue = FALSE; // 戻り値です。
 
@@ -558,6 +561,9 @@ namespace fgo::filter_copy
 				insertPos++;
 				retValue = TRUE;
 			}
+
+			// カメラ制御のフラグを復元します。
+			object->flag |= camera;
 
 			return retValue;
 		}
