@@ -148,7 +148,7 @@ namespace fgo
 		//
 		// タイトルを変更する必要があるときに呼び出されます。
 		//
-		virtual BOOL on_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, LPSTR title, int32_t max_title)
+		virtual BOOL on_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t frame, LPSTR title, int32_t max_title)
 		{
 			return FALSE;
 		}

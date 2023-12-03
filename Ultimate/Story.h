@@ -123,9 +123,9 @@ namespace fgo
 			return fate.fire_project_save(fp, editp, data, size);
 		}
 
-		BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, LPSTR title, int32_t max_title)
+		BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t frame, LPSTR title, int32_t max_title)
 		{
-			return fate.fire_modify_title(fp, editp, title, max_title);
+			return fate.fire_modify_title(fp, editp, frame, title, max_title);
 		}
 
 		BOOL DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)

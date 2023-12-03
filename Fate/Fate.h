@@ -281,11 +281,11 @@ namespace fgo
 		// サーヴァントにタイトルを変更させます。
 		// 内部的に使用されます。
 		//
-		BOOL fire_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, LPSTR title, int32_t max_title)
+		BOOL fire_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t frame, LPSTR title, int32_t max_title)
 		{
 			BOOL result = FALSE;
 			for (const auto& pair : servants.map)
-				result |= pair.second.servant->on_modify_title(fp, editp, title, max_title);
+				result |= pair.second.servant->on_modify_title(fp, editp, frame, title, max_title);
 			return result;
 		}
 
