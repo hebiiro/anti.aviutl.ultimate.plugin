@@ -180,7 +180,7 @@ namespace fgo::filter_copy
 			//
 			BOOL init(const Prep& prep)
 			{
-				MY_TRACE(_T("Order::init()\n"));
+				MY_TRACE_FUNC("");
 
 				flag = prep.object->flag;
 				filters.clear();
@@ -196,7 +196,7 @@ namespace fgo::filter_copy
 			//
 			BOOL add(const Prep& prep, int filterIndex)
 			{
-				MY_TRACE(_T("Order::order(%d)\n"), filterIndex);
+				MY_TRACE_FUNC("%d", filterIndex);
 
 				if (filterIndex == 0)
 					return FALSE; // 先頭のフィルタはコピーしません。
@@ -315,6 +315,9 @@ namespace fgo::filter_copy
 				magi.auin.DrawSettingDialog(objectIndex);
 				magi.auin.HideControls();
 				magi.auin.ShowControls(magi.auin.GetCurrentObjectIndex());
+
+				// これを実行しないとプレビューが更新されません。
+				::PostMessage(magi.fp->hwnd, AviUtl::FilterPlugin::WindowMessage::Command, 0, 0);
 			}
 
 			return retValue;
@@ -325,7 +328,7 @@ namespace fgo::filter_copy
 		//
 		BOOL pasteFilter()
 		{
-			MY_TRACE(_T("pasteFilter()\n"));
+			MY_TRACE_FUNC("");
 
 			// カレントオブジェクトのインデックスを取得します。
 			int objectIndex = magi.auin.GetCurrentObjectIndex();
@@ -517,7 +520,7 @@ namespace fgo::filter_copy
 
 		BOOL onAddAlias(LPCSTR fileName, BOOL flag1, BOOL flag2, int objectIndex)
 		{
-			MY_TRACE(_T("AddAlias(%hs, %d, %d, %d)\n"), fileName, flag1, flag2, objectIndex);
+			MY_TRACE_FUNC("%hs, %d, %d, %d", fileName, flag1, flag2, objectIndex);
 
 			if (!flagPasteFilter) // フラグが立っていない場合はデフォルトの処理を行います。
 				return addAlias.orig(fileName, flag1, flag2, objectIndex);
