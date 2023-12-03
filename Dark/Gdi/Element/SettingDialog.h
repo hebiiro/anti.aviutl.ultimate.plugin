@@ -31,10 +31,13 @@ namespace fgo::dark::gdi
 		LRESULT onSubclassProc(Reflector* reflector, State* currentState) override
 		{
 			HWND hwnd = currentState->hwnd;
+			UINT message = currentState->message;
 			WPARAM wParam = currentState->wParam;
 			LPARAM lParam = currentState->lParam;
 
-			switch (currentState->message)
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+
+			switch (message)
 			{
 			case WM_ERASEBKGND:
 				{

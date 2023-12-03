@@ -173,6 +173,7 @@
     <ClInclude Include="Gdi\Element\EditBox.h" />
     <ClInclude Include="Gdi\Element\ListBox.h" />
     <ClInclude Include="Gdi\Element\ListView.h" />
+    <ClInclude Include="Gdi\Element\SettingDialog.h" />
     <ClInclude Include="Gdi\Element\Spin.h" />
     <ClInclude Include="Gdi\Element\Static.h" />
     <ClInclude Include="Gdi\Element\Tab.h" />
