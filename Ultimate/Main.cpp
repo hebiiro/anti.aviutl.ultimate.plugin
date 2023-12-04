@@ -104,7 +104,7 @@ namespace fgo
 			.func_exit = func_exit,
 			.func_update = func_update,
 			.func_WndProc = func_WndProc,
-			.information = "アルティメットプラグイン r8",
+			.information = "アルティメットプラグイン r9",
 			.func_save_start = func_save_start,
 			.func_save_end = func_save_end,
 			.func_is_saveframe = func_is_saveframe,
