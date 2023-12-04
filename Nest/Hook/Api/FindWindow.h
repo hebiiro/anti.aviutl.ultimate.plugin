@@ -99,16 +99,12 @@ namespace fgo::nest::hook
 					return hive.exeditWindow;
 				}
 
-				HWND retValue = orig(hwnd, cmd);
-
-				if (retValue == hive.mainWindow)
+				if (Shuttle::getPointer(hwnd))
 				{
 					// 「スクリプト並べ替え管理」「シークバー＋」などの一般的なプラグイン用の処理です。
-					// メインウィンドウがオーナーになっている場合はAviUtlウィンドウを返すようにします。
+					// シャトルのオーナーが要求されたときはAviUtlウィンドウを返すようにします。
 					return hive.aviutlWindow;
 				}
-
-				return retValue;
 			}
 
 			return orig(hwnd, cmd);
