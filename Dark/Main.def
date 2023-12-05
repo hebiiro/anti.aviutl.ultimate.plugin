@@ -1,4 +1,5 @@
 EXPORTS
 	get_servant
 	dark_init
+	dark_getCurrentId
 	dark_getNamedColor

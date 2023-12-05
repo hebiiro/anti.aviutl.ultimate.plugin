@@ -9,6 +9,7 @@ namespace fgo::dark::skin
 	inline struct Manager
 	{
 		FileUpdateCheckers config_checker;
+		UINT currentId = 0;
 
 		BOOL init(HWND hwnd)
 		{
@@ -20,8 +21,8 @@ namespace fgo::dark::skin
 			// テーマを初期化します。
 			theme::manager.init();
 
-			// スキンの設定を初期化します。
-			reloadSettingsInternal();
+			// スキンの設定を読み込みます。
+			reloadSettings();
 
 			// コンフィグチェッカー用のタイマーを開始します。
 			::SetTimer(hwnd, (UINT_PTR)this, 1000, onTimerProc);
@@ -31,15 +32,15 @@ namespace fgo::dark::skin
 
 		static void CALLBACK onTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD time)
 		{
-			if (manager.reloadSettings())
-				hive.redraw();
+			if (manager.config_checker.isFileUpdated())
+			{
+				if (manager.reloadSettings())
+					hive.redraw();
+			}
 		}
 
 		BOOL reloadSettings()
 		{
-			if (!config_checker.isFileUpdated())
-				return FALSE;
-
 			MY_TRACE_FUNC("");
 
 			config_checker.clear();
@@ -48,6 +49,9 @@ namespace fgo::dark::skin
 
 			reloadSettingsInternal();
 			reloadExEditSettings();
+
+			// スキンが更新されたことを判別できるように、IDも更新(インクリメント)します。
+			currentId++;
 
 			return TRUE;
 		}

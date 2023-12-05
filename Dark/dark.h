@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace fgo::dark::skin
+namespace Dark
 {
 	struct ColorSet
 	{
@@ -20,8 +20,9 @@ namespace fgo::dark::skin
 		};
 	};
 
-	struct Exports
+	struct Api
 	{
+		UINT (WINAPI* dark_getCurrentId)() = 0;
 		ColorSet* (WINAPI* dark_getNamedColor)(LPCWSTR name) = 0;
 
 		//
@@ -39,6 +40,10 @@ namespace fgo::dark::skin
 			// どちらも取得できなかった場合は失敗します。
 			if (!dark) return FALSE;
 
+			// dark_getCurrentIdを取得します。
+			dark_getCurrentId = (decltype(dark_getCurrentId))::GetProcAddress(dark, "dark_getCurrentId");
+			if (!dark_getCurrentId) return FALSE; // エクスポート関数を取得できなかった場合は失敗します。
+
 			// dark_getNamedColorを取得します。
 			dark_getNamedColor = (decltype(dark_getNamedColor))::GetProcAddress(dark, "dark_getNamedColor");
 			if (!dark_getNamedColor) return FALSE; // エクスポート関数を取得できなかった場合は失敗します。
@@ -47,11 +52,21 @@ namespace fgo::dark::skin
 		}
 
 		//
-		// ダークモードが有効ならTRUEを返します。
+		// ダークモードプラグインが有効ならTRUEを返します。
 		//
 		BOOL isEnabled()
 		{
 			return !!dark_getNamedColor;
+		}
+
+		//
+		// 現在のスキンのIDを返します。
+		//
+		UINT getCurrentId()
+		{
+			if (!dark_getCurrentId) return 0;
+
+			return dark_getCurrentId();
 		}
 
 		//
@@ -64,5 +79,5 @@ namespace fgo::dark::skin
 
 			return dark_getNamedColor(name);
 		}
-	} exports;
+	};
 }

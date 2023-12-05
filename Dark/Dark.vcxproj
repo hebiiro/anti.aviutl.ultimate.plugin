@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ActCtx.h" />
+    <ClInclude Include="dark.h" />
     <ClInclude Include="Gdi\Client.h" />
     <ClInclude Include="Gdi\Element\AviUtl.h" />
     <ClInclude Include="Gdi\Element\AviUtlButton.h" />
@@ -203,7 +204,6 @@
     <ClInclude Include="Skin\ColorSet.h" />
     <ClInclude Include="Skin\Config.h" />
     <ClInclude Include="Skin\Dwm.h" />
-    <ClInclude Include="Skin\Exports.h" />
     <ClInclude Include="Skin\Figure\Node.h" />
     <ClInclude Include="Skin\Figure\Manager.h" />
     <ClInclude Include="Skin\Icon.h" />

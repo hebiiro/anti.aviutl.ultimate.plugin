@@ -29,6 +29,15 @@ namespace fgo::dark
 
 	//
 	// エクスポート関数です。
+	// 現在のスキンのIDを返します。
+	//
+	UINT WINAPI dark_getCurrentId()
+	{
+		return skin::manager.currentId;
+	}
+
+	//
+	// エクスポート関数です。
 	// 指定された名前のカラーセットを返します。
 	// 指定された名前のカラーセットが存在しない場合は0を返します。
 	//

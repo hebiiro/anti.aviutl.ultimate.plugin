@@ -1,8 +1,10 @@
 ﻿#pragma once
-#include "Skin/Exports.h"
+#include "dark.h"
 
 namespace fgo::dark::skin
 {
+	using ColorSet = Dark::ColorSet;
+
 	inline struct ColorSetManager
 	{
 		std::map<_bstr_t, ColorSet> collection;

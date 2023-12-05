@@ -237,12 +237,10 @@
     <ClInclude Include="Hook\Api\CallWindowProc.h">
       <Filter>Hook\Api</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\Exports.h">
-      <Filter>Skin</Filter>
-    </ClInclude>
     <ClInclude Include="Gdi\Element\SettingDialog.h">
       <Filter>Renderer\Gdi\Element</Filter>
     </ClInclude>
+    <ClInclude Include="dark.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -43,16 +43,13 @@ namespace fgo::dark
 					get_servant_display_name(), MB_OK | MB_ICONWARNING);
 			}
 
-			init(magi.auin.GetAviUtlWindow());
-
 			// 拡張編集をフックします。
 			hook::exedit.init();
 
 			// ラウドネスメーターをフックします。
 			hook::loudness.init();
 
-			// スキンの拡張編集用の設定を読み込みます。
-			skin::manager.reloadExEditSettings();
+			init(magi.auin.GetAviUtlWindow());
 
 			return TRUE;
 		}
