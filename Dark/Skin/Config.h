@@ -32,6 +32,15 @@ namespace fgo::dark::skin
 			};
 		};
 
+		struct OmitFileDialog {
+			static const int Off = 0;
+			static const int On = 1;
+			inline static const Hive::Label label[] = {
+				{ L"Off", Off },
+				{ L"On", On },
+			};
+		};
+
 		struct ExEdit {
 			struct Group {
 				COLORREF color = CLR_NONE;
@@ -50,6 +59,7 @@ namespace fgo::dark::skin
 		int staticEdgeMode = StaticEdgeMode::Off;
 		BOOL useLayerColor = TRUE;
 		BOOL useLayerColorEx = FALSE;
+		int omitFileDialog = OmitFileDialog::On;
 
 		_bstr_t getSkinFileName() const { return skinFileName; }
 		void setSkinFileName(_bstr_t newSkinFileName) { skinFileName = newSkinFileName; }
@@ -63,11 +73,14 @@ namespace fgo::dark::skin
 		int getStaticEdgeMode() const { return staticEdgeMode; }
 		void setStaticEdgeMode(int newStaticEdgeMode) { staticEdgeMode = newStaticEdgeMode; }
 
-		int getUseLayerColor() const { return useLayerColor; }
-		void setUseLayerColor(int newUseLayerColor) { useLayerColor = newUseLayerColor; }
+		BOOL getUseLayerColor() const { return useLayerColor; }
+		void setUseLayerColor(BOOL newUseLayerColor) { useLayerColor = newUseLayerColor; }
 
-		int getUseLayerColorEx() const { return useLayerColorEx; }
-		void setUseLayerColorEx(int newUseLayerColorEx) { useLayerColorEx = newUseLayerColorEx; }
+		BOOL getUseLayerColorEx() const { return useLayerColorEx; }
+		void setUseLayerColorEx(BOOL newUseLayerColorEx) { useLayerColorEx = newUseLayerColorEx; }
+
+		int getOmitFileDialog() const { return omitFileDialog; }
+		void setOmitFileDialog(int newOmitFileDialog) { omitFileDialog = newOmitFileDialog; }
 
 		inline static void getConfigFolderName(LPWSTR buffer, size_t bufferSize)
 		{

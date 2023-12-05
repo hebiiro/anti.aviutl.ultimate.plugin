@@ -91,6 +91,7 @@ namespace fgo::dark::skin
 				getPrivateProfileLabel(element, L"staticEdgeMode", config.staticEdgeMode, Config::StaticEdgeMode::label);
 				getPrivateProfileBool(element, L"useLayerColor", config.useLayerColor);
 				getPrivateProfileBool(element, L"useLayerColorEx", config.useLayerColorEx);
+				getPrivateProfileLabel(element, L"omitFileDialog", config.omitFileDialog, Config::OmitFileDialog::label);
 
 				_bstr_t skin;
 				getPrivateProfileFileName(element, L"skin", skin);
@@ -372,6 +373,7 @@ namespace fgo::dark::skin
 			const int ID_ROUND_MODE = 20001;
 			const int ID_STATIC_EDGE_MODE = 20002;
 			const int ID_USE_LAYER_COLOR_EX = 20003;
+			const int ID_OMIT_FILE_DIALOG = 20004;
 
 			HMENU menu = ::CreatePopupMenu();
 
@@ -392,6 +394,7 @@ namespace fgo::dark::skin
 			::AppendMenuW(menu, MF_STRING, ID_ROUND_MODE, L"丸くする");
 			::AppendMenuW(menu, MF_STRING, ID_STATIC_EDGE_MODE, L"ボタンにスタティックエッジを付ける");
 			::AppendMenuW(menu, MF_STRING, ID_USE_LAYER_COLOR_EX, L"複数行の色分け");
+			::AppendMenuW(menu, MF_STRING, ID_OMIT_FILE_DIALOG, L"ファイル選択ダイアログを除外する");
 
 			if (config.getShadowMode() == Config::ShadowMode::On)
 				::CheckMenuItem(menu, ID_SHADOW_MODE, MF_CHECKED);
@@ -404,6 +407,9 @@ namespace fgo::dark::skin
 
 			if (config.getUseLayerColorEx())
 				::CheckMenuItem(menu, ID_USE_LAYER_COLOR_EX, MF_CHECKED);
+
+			if (config.getOmitFileDialog() == Config::OmitFileDialog::On)
+				::CheckMenuItem(menu, ID_OMIT_FILE_DIALOG, MF_CHECKED);
 
 			POINT pt; ::GetCursorPos(&pt);
 			int id = ::TrackPopupMenu(menu, TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, 0, hwnd, 0);
@@ -456,6 +462,15 @@ namespace fgo::dark::skin
 				saveSettings();
 
 				::InvalidateRect(magi.auin.GetExEditWindow(), 0, TRUE);
+			}
+			else if (id == ID_OMIT_FILE_DIALOG)
+			{
+				if (config.getOmitFileDialog() == Config::OmitFileDialog::On)
+					config.setOmitFileDialog(Config::OmitFileDialog::Off);
+				else
+					config.setOmitFileDialog(Config::OmitFileDialog::On);
+
+				saveSettings();
 			}
 		}
 	} manager;

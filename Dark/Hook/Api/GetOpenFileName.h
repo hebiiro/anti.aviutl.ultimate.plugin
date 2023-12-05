@@ -7,12 +7,16 @@ namespace fgo::dark::hook
 	//
 	struct RendererLocker {
 		RendererLocker() {
-			hive.lockRenderer = TRUE;
-//			hive.redraw();
+			if (skin::config.getOmitFileDialog() == skin::Config::OmitFileDialog::On) {
+				hive.lockRenderer = TRUE;
+//				hive.redraw();
+			}
 		}
 		~RendererLocker() {
-			hive.lockRenderer = FALSE;
-			hive.redraw();
+			if (skin::config.getOmitFileDialog() == skin::Config::OmitFileDialog::On) {
+				hive.lockRenderer = FALSE;
+				hive.redraw();
+			}
 		}
 	};
 
