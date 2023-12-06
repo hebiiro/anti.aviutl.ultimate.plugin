@@ -80,57 +80,6 @@ namespace fgo::dark
 			HRESULT (WINAPI *DrawThemeEdge)(HTHEME theme, HDC dc, int partId, int stateId, LPCRECT destRect, UINT edge, UINT flags, LPRECT contentRect) = 0;
 		} orig;
 
-		// プロセス内のすべてのウィンドウを再描画します。
-		void redraw()
-		{
-			::EnumWindows(enumWindowsProc, 0);
-		}
-
-		inline static BOOL CALLBACK enumWindowsProc(HWND hwnd, LPARAM lParam)
-		{
-			DWORD pid = 0;
-			DWORD tid = ::GetWindowThreadProcessId(hwnd, &pid);
-
-			if (pid == ::GetCurrentProcessId())
-			{
-				MY_TRACE(_T("Skin::enumWindowsProc(0x%08X)\n"), hwnd);
-
-				::RedrawWindow(hwnd, 0, 0,
-					RDW_ERASE | RDW_FRAME | RDW_INTERNALPAINT |
-					RDW_INVALIDATE | RDW_ALLCHILDREN);
-				::EnumChildWindows(hwnd, enumChildWindowsProc, lParam);
-			}
-
-			return TRUE;
-		}
-
-		inline static BOOL CALLBACK enumChildWindowsProc(HWND hwnd, LPARAM lParam)
-		{
-			TCHAR className[MAX_PATH] = {};
-			::GetClassName(hwnd, className, std::size(className));
-
-			if (::lstrcmpi(className, TRACKBAR_CLASS) == 0)
-			{
-				// トラックバー用。
-				::SendMessage(hwnd, WM_SETFOCUS, 0, 0);
-			}
-			else if (::lstrcmpi(className, WC_BUTTON) == 0)
-			{
-				// ボタン用。
-				HICON icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0);
-				::SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);
-			}
-			else
-			{
-				::RedrawWindow(hwnd, 0, 0,
-					RDW_ERASE | RDW_FRAME | RDW_INTERNALPAINT |
-					RDW_INVALIDATE | RDW_ALLCHILDREN);
-				::EnumChildWindows(hwnd, enumChildWindowsProc, lParam);
-			}
-
-			return TRUE;
-		}
-
 		// hwndからステートIDを取得します。スキン関係のクラスで実装したほうがいいかも。
 		inline static int getStateId(HWND hwnd) {
 			return (int)(uintptr_t)::GetProp(hwnd, _T("fgo::dark::gdi::State"));

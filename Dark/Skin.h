@@ -33,10 +33,7 @@ namespace fgo::dark::skin
 		static void CALLBACK onTimerProc(HWND hwnd, UINT message, UINT_PTR timerId, DWORD time)
 		{
 			if (manager.config_checker.isFileUpdated())
-			{
-				if (manager.reloadSettings())
-					hive.redraw();
-			}
+				manager.reloadSettings();
 		}
 
 		BOOL reloadSettings()
@@ -52,6 +49,9 @@ namespace fgo::dark::skin
 
 			// スキンが更新されたことを判別できるように、IDも更新(インクリメント)します。
 			currentId++;
+
+			// すべてのウィンドウを再描画します。
+			redraw();
 
 			return TRUE;
 		}
@@ -472,6 +472,63 @@ namespace fgo::dark::skin
 
 				saveSettings();
 			}
+		}
+
+		// プロセス内のすべてのウィンドウを再描画します。
+		static void redraw()
+		{
+			MY_TRACE_FUNC("");
+
+			::EnumWindows(enumWindowsProc, 0);
+		}
+
+		static BOOL CALLBACK enumWindowsProc(HWND hwnd, LPARAM lParam)
+		{
+			DWORD pid = 0;
+			DWORD tid = ::GetWindowThreadProcessId(hwnd, &pid);
+
+			if (pid == ::GetCurrentProcessId())
+				redrawWindow(hwnd);
+
+			return TRUE;
+		}
+
+		// 指定されたウィンドウとその子ウィンドウを再描画します。
+		static void redrawWindow(HWND hwnd)
+		{
+			MY_TRACE_FUNC("0x%08X", hwnd);
+
+			if (::GetWindowLong(hwnd, GWL_STYLE) & WS_CAPTION)
+				dwm.set(hwnd, hwnd == ::GetActiveWindow());
+
+			::RedrawWindow(hwnd, 0, 0,
+				RDW_ERASE | RDW_FRAME | RDW_INTERNALPAINT |
+				RDW_INVALIDATE | RDW_ALLCHILDREN);
+			::EnumChildWindows(hwnd, enumChildWindowsProc, 0);
+		}
+
+		static BOOL CALLBACK enumChildWindowsProc(HWND hwnd, LPARAM lParam)
+		{
+			TCHAR className[MAX_PATH] = {};
+			::GetClassName(hwnd, className, std::size(className));
+
+			if (::lstrcmpi(className, TRACKBAR_CLASS) == 0)
+			{
+				// トラックバー用。
+				::SendMessage(hwnd, WM_SETFOCUS, 0, 0);
+			}
+			else if (::lstrcmpi(className, WC_BUTTON) == 0)
+			{
+				// ボタン用。
+				HICON icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0);
+				::SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);
+			}
+			else
+			{
+				redrawWindow(hwnd);
+			}
+
+			return TRUE;
 		}
 	} manager;
 }
