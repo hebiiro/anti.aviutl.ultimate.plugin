@@ -75,6 +75,32 @@ namespace fgo::nest
 		}
 
 		//
+		// HWNDに対応するフィルタを返します。
+		//
+		static AviUtl::FilterPlugin* getFilter(HWND hwnd)
+		{
+			// magi.fpがまだ設定されていない場合は失敗します。
+			if (!magi.fp) return 0;
+
+			// AviUtl::SysInfoを取得します。
+			AviUtl::SysInfo si = {};
+			magi.fp->exfunc->get_sys_info(0, &si);
+
+			// 全てのフィルタを列挙します。
+			for (int i = 0; i < si.filter_n; i++)
+			{
+				// フィルタを取得します。
+				auto fp = magi.fp->exfunc->get_filterp(i);
+				if (!fp) continue; // フィルタが0の場合はスキップします。
+
+				// フィルタとhwndが一致する場合はそのフィルタを返します。
+				if (fp->hwnd == hwnd) return fp;
+			}
+
+			return 0;
+		}
+
+		//
 		// コンストラクタです。
 		//
 		Shuttle()
@@ -296,6 +322,18 @@ namespace fgo::nest
 			case WM_SHOWWINDOW:
 				{
 					MY_TRACE_FUNC("%s, WM_SHOWWINDOW, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
+
+					// フィルタウィンドウかチェックします。
+					auto fp = getFilter(hwnd);
+					if (fp)
+					{
+						// wParamがTRUE、is_filter_window_disp()がFALSE、またはその逆の場合は
+						if (!!wParam == !fp->exfunc->is_filter_window_disp(fp))
+						{
+							// WM_CLOSEを送信してAviUtlにフィルタウィンドウの表示状態を切り替えさせます。
+							::SendMessage(*this, WM_CLOSE, 0, 0);
+						}
+					}
 
 					auto container = getCurrentContainer();
 					if (container)
