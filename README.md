@@ -17,6 +17,7 @@
 
 ## 更新履歴
 
+* r10 - 2023/12/08 [Nest]フィルタウィンドウがAviUtlの表示状態と同じになるように修正しました
 * r9 - 2023/12/04 DirtyCheckを追加
 * r8 - 2023/11/27 [Nest]サイズ変更をAPIフックではなくウィンドウメッセージで処理するように変更
 * r7 - 2023/11/10 Darkをリファクタリング
@@ -30,7 +31,7 @@
 ## 動作確認
 
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版42 https://scrapbox.io/nazosauna/patch.aul
+* (共存確認) patch.aul r43 謎さうなフォーク版43 https://scrapbox.io/nazosauna/patch.aul
 
 ## クレジット
 
