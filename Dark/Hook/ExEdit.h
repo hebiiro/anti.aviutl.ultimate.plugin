@@ -45,7 +45,7 @@ namespace fgo::dark::hook
 		{
 			::ExEdit::LayerSetting* layer = fgo::magi.auin.GetLayerSetting(drawingLayerIndex);
 
-			// ステート ID を取得します。
+			// ステートIDを取得します。
 			int stateId = 0;
 			if (!(layer->flag & ::ExEdit::LayerSetting::Flag::UnDisp))
 			{
@@ -144,11 +144,11 @@ namespace fgo::dark::hook
 
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
-				MY_TRACE(_T("API フックに成功しました\n"));
+				MY_TRACE(_T("APIフックに成功しました\n"));
 			}
 			else
 			{
-				MY_TRACE(_T("API フックに失敗しました\n"));
+				MY_TRACE(_T("APIフックに失敗しました\n"));
 			}
 		}
 
