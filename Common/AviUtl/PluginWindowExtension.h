@@ -27,6 +27,8 @@ namespace Tools::AviUtl
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = instance;
 			wc.lpszClassName = className;
+			wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
+			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
 			::RegisterClass(&wc);
 
 			return window.create(
