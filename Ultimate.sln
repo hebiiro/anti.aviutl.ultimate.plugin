@@ -58,6 +58,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirtyCheck", "DirtyCheck\Di
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SceneSelect", "SceneSelect\SceneSelect.vcxproj", "{5E20F31E-26E3-4C79-A24D-DAB459915E8C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DialogSize", "DialogSize\DialogSize.vcxproj", "{04EA249D-8DD8-49C6-9606-4BA0954BF58E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -390,6 +392,22 @@ Global
 		{5E20F31E-26E3-4C79-A24D-DAB459915E8C}.RelStatic|x64.Build.0 = Release|x64
 		{5E20F31E-26E3-4C79-A24D-DAB459915E8C}.RelStatic|x86.ActiveCfg = Release|Win32
 		{5E20F31E-26E3-4C79-A24D-DAB459915E8C}.RelStatic|x86.Build.0 = Release|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Debug|x64.ActiveCfg = Debug|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Debug|x64.Build.0 = Debug|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Debug|x86.ActiveCfg = Debug|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Debug|x86.Build.0 = Debug|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.DebugStatic|x64.ActiveCfg = Debug|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.DebugStatic|x64.Build.0 = Debug|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.DebugStatic|x86.ActiveCfg = Debug|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.DebugStatic|x86.Build.0 = Debug|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Release|x64.ActiveCfg = Release|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Release|x64.Build.0 = Release|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Release|x86.ActiveCfg = Release|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.Release|x86.Build.0 = Release|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.RelStatic|x64.ActiveCfg = Release|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.RelStatic|x64.Build.0 = Release|x64
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.RelStatic|x86.ActiveCfg = Release|Win32
+		{04EA249D-8DD8-49C6-9606-4BA0954BF58E}.RelStatic|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
