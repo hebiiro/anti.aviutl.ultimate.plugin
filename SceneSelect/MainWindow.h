@@ -66,6 +66,10 @@ namespace fgo::scene_select
 
 			loadConfig(configFileName.c_str());
 
+			// 固定サイズモードのときははサイズ変更枠を取り除きます。
+			if (fixedSizeMode)
+				modifyStyle(*this, WS_THICKFRAME, 0);
+
 			calcLayout(*this);
 			redraw();
 
