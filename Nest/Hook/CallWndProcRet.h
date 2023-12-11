@@ -66,7 +66,7 @@ namespace fgo::nest::hook
 						::StringCchCopy(orig->windowName, std::size(orig->windowName), windowName);
 
 						// MainWindowにWM_INIT_SHUTTLEを送信します。
-						::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_INIT_SHUTTLE, (WPARAM)hwnd, (LPARAM)orig);
+						::PostMessage(hive.mainWindow, Hive::WindowMessage::WM_INIT_SHUTTLE, (WPARAM)hwnd, (LPARAM)orig);
 					}
 
 					break;
