@@ -4,7 +4,7 @@
 namespace fgo::namecage
 {
 	//
-	// このクラスは最終フレームを自動的に調整します。
+	// このクラスはアイテム名がタイムラインから出ないようにします。
 	//
 	inline struct Namecage : Servant
 	{
