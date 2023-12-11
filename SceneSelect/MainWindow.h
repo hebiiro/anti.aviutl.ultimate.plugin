@@ -31,14 +31,13 @@ namespace fgo::scene_select
 		HTHEME themeWindow = 0;
 		HTHEME themeButton = 0;
 
-		int hotScene = -1;
-		int dragScene = -1;
+		int hotButton = -1;
+		int dragButton = -1;
 		std::vector<RECT> buttonRectArray;
 
 		int layoutMode = LayoutMode::Horz;
-		int rowLimit = 10;
-		int colLimit = 10;
-		int sceneCount = MaxSceneCount;
+		int wrap = 10;
+		int buttonCount = MaxSceneCount;
 		BOOL fixedSizeMode = FALSE;
 		int buttonWidth = 80;
 		int buttonHeight = 24;
@@ -93,9 +92,8 @@ namespace fgo::scene_select
 			MY_TRACE_FUNC("%ws", configFileName);
 
 			getPrivateProfileLabel(configFileName, L"Config", L"layoutMode", layoutMode, LayoutMode::label);
-			getPrivateProfileInt(configFileName, L"Config", L"rowLimit", rowLimit);
-			getPrivateProfileInt(configFileName, L"Config", L"colLimit", colLimit);
-			getPrivateProfileInt(configFileName, L"Config", L"sceneCount", sceneCount);
+			getPrivateProfileInt(configFileName, L"Config", L"wrap", wrap);
+			getPrivateProfileInt(configFileName, L"Config", L"buttonCount", buttonCount);
 			getPrivateProfileBool(configFileName, L"Config", L"fixedSizeMode", fixedSizeMode);
 			getPrivateProfileInt(configFileName, L"Config", L"buttonWidth", buttonWidth);
 			getPrivateProfileInt(configFileName, L"Config", L"buttonHeight", buttonHeight);
@@ -110,9 +108,8 @@ namespace fgo::scene_select
 			MY_TRACE_FUNC("%ws", configFileName);
 
 			setPrivateProfileLabel(configFileName, L"Config", L"layoutMode", layoutMode, LayoutMode::label);
-			setPrivateProfileInt(configFileName, L"Config", L"rowLimit", rowLimit);
-			setPrivateProfileInt(configFileName, L"Config", L"colLimit", colLimit);
-			setPrivateProfileInt(configFileName, L"Config", L"sceneCount", sceneCount);
+			setPrivateProfileInt(configFileName, L"Config", L"wrap", wrap);
+			setPrivateProfileInt(configFileName, L"Config", L"buttonCount", buttonCount);
 			setPrivateProfileBool(configFileName, L"Config", L"fixedSizeMode", fixedSizeMode);
 			setPrivateProfileInt(configFileName, L"Config", L"buttonWidth", buttonWidth);
 			setPrivateProfileInt(configFileName, L"Config", L"buttonHeight", buttonHeight);
@@ -128,11 +125,11 @@ namespace fgo::scene_select
 		}
 
 		//
-		// 指定されたシーンインデックスが有効ならTRUEを返します。
+		// 指定されたボタンのインデックスが有効ならTRUEを返します。
 		//
-		inline BOOL isSceneIndexValid(int sceneIndex)
+		inline BOOL isButtonIndexValid(int buttonIndex)
 		{
-			return sceneIndex >= 0 && sceneIndex < sceneCount;
+			return buttonIndex >= 0 && buttonIndex < buttonCount;
 		}
 
 		//
@@ -152,7 +149,7 @@ namespace fgo::scene_select
 		//
 		void calcLayoutVert(HWND hwnd)
 		{
-			buttonRectArray.resize(sceneCount);
+			buttonRectArray.resize(buttonCount);
 
 			RECT clientRect; ::GetClientRect(hwnd, &clientRect);
 			int clientX = clientRect.left;
@@ -160,16 +157,16 @@ namespace fgo::scene_select
 			int clientW = clientRect.right - clientRect.left;
 			int clientH = clientRect.bottom - clientRect.top;
 
-			int rowCount = (rowLimit > 0) ? rowLimit : 5;
-			int colCount = (sceneCount - 1) / rowCount + 1;
+			int rowCount = (wrap > 0) ? wrap : 5;
+			int colCount = (buttonCount - 1) / rowCount + 1;
 
-			int sceneIndex = 0;
+			int buttonIndex = 0;
 
 			for (int col = 0; col < colCount; col++)
 			{
-				for (int row = 0; row < rowCount; row++, sceneIndex++)
+				for (int row = 0; row < rowCount; row++, buttonIndex++)
 				{
-					if (sceneIndex >= sceneCount) break;
+					if (buttonIndex >= buttonCount) break;
 
 					RECT rc = {};
 
@@ -188,7 +185,7 @@ namespace fgo::scene_select
 						rc.bottom = clientY + ::MulDiv(clientH, row + 1, rowCount);
 					}
 
-					buttonRectArray[sceneIndex] = rc;
+					buttonRectArray[buttonIndex] = rc;
 				}
 			}
 
@@ -208,7 +205,7 @@ namespace fgo::scene_select
 		//
 		void calcLayoutHorz(HWND hwnd)
 		{
-			buttonRectArray.resize(sceneCount);
+			buttonRectArray.resize(buttonCount);
 
 			RECT clientRect; ::GetClientRect(hwnd, &clientRect);
 			int clientX = clientRect.left;
@@ -216,16 +213,16 @@ namespace fgo::scene_select
 			int clientW = clientRect.right - clientRect.left;
 			int clientH = clientRect.bottom - clientRect.top;
 
-			int colCount = (colLimit > 0) ? colLimit : 5;
-			int rowCount = (sceneCount - 1) / colCount + 1;
+			int colCount = (wrap > 0) ? wrap : 5;
+			int rowCount = (buttonCount - 1) / colCount + 1;
 
-			int sceneIndex = 0;
+			int buttonIndex = 0;
 
 			for (int row = 0; row < rowCount; row++)
 			{
-				for (int col = 0; col < colCount; col++, sceneIndex++)
+				for (int col = 0; col < colCount; col++, buttonIndex++)
 				{
-					if (sceneIndex >= sceneCount) break;
+					if (buttonIndex >= buttonCount) break;
 
 					RECT rc = {};
 
@@ -244,7 +241,7 @@ namespace fgo::scene_select
 						rc.bottom = clientY + ::MulDiv(clientH, row + 1, rowCount);
 					}
 
-					buttonRectArray[sceneIndex] = rc;
+					buttonRectArray[buttonIndex] = rc;
 				}
 			}
 
@@ -306,13 +303,13 @@ namespace fgo::scene_select
 			// ボタンを描画します。
 			for (int i = 0; i < (int)buttonRectArray.size(); i++)
 			{
-				int sceneIndex = i;
+				int buttonIndex = i;
 				const RECT& rc = buttonRectArray[i];
 
 				// シーン名を取得します。
 				WCHAR text[MAX_PATH] = {};
 				{
-					ExEdit::SceneSetting* scene = magi.auin.GetSceneSetting(sceneIndex);
+					ExEdit::SceneSetting* scene = magi.auin.GetSceneSetting(buttonIndex);
 
 					if (scene->name)
 					{
@@ -320,10 +317,10 @@ namespace fgo::scene_select
 					}
 					else
 					{
-						if (sceneIndex == 0)
+						if (buttonIndex == 0)
 							::StringCchCopyW(text, std::size(text), L"Root");
 						else
-							::StringCchPrintfW(text, std::size(text), L"%d", sceneIndex);
+							::StringCchPrintfW(text, std::size(text), L"%d", buttonIndex);
 					}
 				}
 
@@ -331,13 +328,13 @@ namespace fgo::scene_select
 				int partId = BP_PUSHBUTTON;
 				int stateId = PBS_NORMAL;
 				{
-					if (sceneIndex == magi.auin.GetCurrentSceneIndex())
+					if (buttonIndex == magi.auin.GetCurrentSceneIndex())
 					{
 						stateId = PBS_PRESSED;
 					}
-					else if (sceneIndex == dragScene)
+					else if (buttonIndex == dragButton)
 					{
-						if (sceneIndex == hotScene)
+						if (buttonIndex == hotButton)
 						{
 							stateId = PBS_PRESSED;
 						}
@@ -346,7 +343,7 @@ namespace fgo::scene_select
 							stateId = PBS_HOT;
 						}
 					}
-					else if (sceneIndex == hotScene)
+					else if (buttonIndex == hotButton)
 					{
 						stateId = PBS_HOT;
 					}
@@ -457,12 +454,12 @@ namespace fgo::scene_select
 					// マウスカーソルの座標を取得します。
 					POINT point = LP2PT(lParam);
 
-					// ドラッグを開始するシーンを取得します。
-					dragScene = hitTest(hwnd, point);
-					MY_TRACE_INT(dragScene);
+					// ドラッグを開始するボタンを取得します。
+					dragButton = hitTest(hwnd, point);
+					MY_TRACE_INT(dragButton);
 
-					// ドラッグシーンが無効なら
-					if (!isSceneIndexValid(dragScene))
+					// ドラッグボタンが無効なら
+					if (!isButtonIndexValid(dragButton))
 						break; // 何もしません。
 
 					// マウスキャプチャを開始します。
@@ -486,26 +483,26 @@ namespace fgo::scene_select
 						// マウスキャプチャを終了します。
 						::ReleaseCapture();
 
-						// ホットシーンを取得します。
-						hotScene = hitTest(hwnd, point);
-						MY_TRACE_INT(hotScene);
+						// ホットボタンを取得します。
+						hotButton = hitTest(hwnd, point);
+						MY_TRACE_INT(hotButton);
 
-						// ドラッグシーンとホットシーンが同じなら
-						if (dragScene == hotScene)
+						// ドラッグボタンとホットボタンが同じなら
+						if (dragButton == hotButton)
 						{
-							// ドラッグシーンが有効かつ現在のシーンと違うなら
-							if (isSceneIndexValid(dragScene) && dragScene != magi.auin.GetCurrentSceneIndex())
+							// ドラッグボタンが有効かつ現在のシーンと違うなら
+							if (isButtonIndexValid(dragButton) && dragButton != magi.auin.GetCurrentSceneIndex())
 							{
 								// ボタンが押されたのでシーンを変更します。
-								magi.auin.SetScene(dragScene, magi.auin.GetFilter(magi.fp, "拡張編集"), magi.auin.GetEditp());
+								magi.auin.SetScene(dragButton, magi.auin.GetFilter(magi.fp, "拡張編集"), magi.auin.GetEditp());
 
 								// AviUtlのプレビューウィンドウを再描画します。
 								magi.redraw();
 							}
 						}
 
-						// ドラッグシーンを初期値に戻します。
-						dragScene = -1;
+						// ドラッグボタンを初期値に戻します。
+						dragButton = -1;
 
 						// 再描画します。
 						redraw();
@@ -522,18 +519,18 @@ namespace fgo::scene_select
 
 					if (::GetCapture() == hwnd)
 					{
-						// マウス座標にあるシーンを取得します。
-						int scene = hitTest(hwnd, point);
+						// マウス座標にあるボタンを取得します。
+						int button = hitTest(hwnd, point);
 
-						// ドラッグシーンとマウス座標にあるシーンが異なるなら
-						if (dragScene != scene)
-							scene = -1; // マウス座標にあるシーンを無効にします。
+						// ドラッグボタンとマウス座標にあるボタンが異なるなら
+						if (dragButton != button)
+							button = -1; // マウス座標にあるボタンを無効にします。
 
-						// ホットシーンとマウス座標にあるシーンが異なるなら
-						if (hotScene != scene)
+						// ホットボタンとマウス座標にあるボタンが異なるなら
+						if (hotButton != button)
 						{
-							// ホットシーンを更新します。
-							hotScene = scene;
+							// ホットボタンを更新します。
+							hotButton = button;
 
 							// 再描画します。
 							redraw();
@@ -542,16 +539,16 @@ namespace fgo::scene_select
 					else
 					{
 						// マウス座標にあるシーンを取得します。
-						int scene = hitTest(hwnd, point);
+						int button = hitTest(hwnd, point);
 
-						// ホットシーンとマウス座標にあるシーンが異なるなら
-						if (hotScene != scene)
+						// ホットボタンとマウス座標にあるボタンが異なるなら
+						if (hotButton != button)
 						{
-							// ホットシーンを更新します。
-							hotScene = scene;
+							// ホットボタンを更新します。
+							hotButton = button;
 
-							// ホットシーンが有効かつマウスキャプチャ中でないなら
-							if (hotScene >= 0)
+							// ホットボタンが有効かつマウスキャプチャ中でないなら
+							if (hotButton >= 0)
 							{
 								// WM_MOUSELEAVEが発行されるようにします。
 								TRACKMOUSEEVENT tme = { sizeof(tme) };
@@ -571,11 +568,11 @@ namespace fgo::scene_select
 				{
 					MY_TRACE_FUNC("WM_MOUSELEAVE, 0x%08X, 0x%08X", wParam, lParam);
 
-					// ホットシーンが有効なら
-					if (hotScene >= 0)
+					// ホットボタンが有効なら
+					if (hotButton >= 0)
 					{
-						// ホットシーンを初期値に戻します。
-						hotScene = -1;
+						// ホットボタンを初期値に戻します。
+						hotButton = -1;
 
 						// 再描画します。
 						redraw();
@@ -606,15 +603,12 @@ namespace fgo::scene_select
 			{
 				create(hive.instance, MAKEINTRESOURCE(IDD_CONFIG), parent);
 
-				::SendDlgItemMessage(*this, IDC_ROW_COUNT_SPIN, UDM_SETRANGE32, 1, 50);
-				::SendDlgItemMessage(*this, IDC_COL_COUNT_SPIN, UDM_SETRANGE32, 1, 50);
-				::SendDlgItemMessage(*this, IDC_SCENE_COUNT_SPIN, UDM_SETRANGE32, 1, 50);
-				::SendDlgItemMessage(*this, IDC_VOICE_SPIN, UDM_SETRANGE32, 0, 10);
+				::SendDlgItemMessage(*this, IDC_WRAP_SPIN, UDM_SETRANGE32, 1, 50);
+				::SendDlgItemMessage(*this, IDC_BUTTON_COUNT_SPIN, UDM_SETRANGE32, 1, 50);
 
 				setComboBox(IDC_LAYOUT_MODE, mainWindow->layoutMode, _T("水平方向"), _T("垂直方向"));
-				setInt(IDC_ROW_COUNT, mainWindow->rowLimit);
-				setInt(IDC_COL_COUNT, mainWindow->colLimit);
-				setInt(IDC_SCENE_COUNT, mainWindow->sceneCount);
+				setInt(IDC_WRAP, mainWindow->wrap);
+				setInt(IDC_BUTTON_COUNT, mainWindow->buttonCount);
 				setCheck(IDC_FIXED_SIZE, mainWindow->fixedSizeMode);
 				setInt(IDC_BUTTON_WIDTH, mainWindow->buttonWidth);
 				setInt(IDC_BUTTON_HEIGHT, mainWindow->buttonHeight);
