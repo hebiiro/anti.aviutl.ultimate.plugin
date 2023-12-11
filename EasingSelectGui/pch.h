@@ -1,0 +1,5 @@
+﻿#include "framework.h"
+#include "Fate/Grand Order"
+#include "Share/EasingSelect.h"
+#include "Common/MFC.h"
+#include "Common/Gdiplus.h"

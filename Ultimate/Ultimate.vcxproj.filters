@@ -148,6 +148,9 @@
     <ClInclude Include="..\Common\AviUtl\SliderPanel.h">
       <Filter>Common\AviUtl</Filter>
     </ClInclude>
+    <ClInclude Include="..\Share\EasingSelect.h">
+      <Filter>Share</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
