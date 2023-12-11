@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "FilerDialog.h"
 
 class ClientWindow : public CWnd
@@ -10,41 +10,41 @@ public:
 	std::shared_ptr<FileUpdateChecker> config_file_checker;
 
 	//
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚·B
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã™ã€‚
 	//
 	ClientWindow(HWND hostWindow)
 	{
 		MY_TRACE_FUNC("0x%08X", hostWindow);
 
-		// ƒNƒ‰ƒCƒAƒ“ƒgƒEƒBƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·B
+		// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ã¾ã™ã€‚
 		if (!Create())
-			throw _T("ƒNƒ‰ƒCƒAƒ“ƒgƒEƒBƒ“ƒhƒE‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½");
+			throw _T("ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ");
 
-		// DarkƒAƒhƒCƒ“‚ğ“Ç‚İ‚İ‚Ü‚·B
+		// Darkã‚¢ãƒ‰ã‚¤ãƒ³ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 		if (!loadDark(hostWindow, *this))
-			MY_TRACE(_T("DarkƒAƒhƒCƒ“‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½\n"));
+			MY_TRACE(_T("Darkã‚¢ãƒ‰ã‚¤ãƒ³ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ\n"));
 
-		// ƒzƒXƒgƒEƒBƒ“ƒhƒE‚ÉƒNƒ‰ƒCƒAƒ“ƒgƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹‚ğ“n‚µ‚Ü‚·B
+		// ãƒ›ã‚¹ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’æ¸¡ã—ã¾ã™ã€‚
 		Share::Filer::HostWindow::setClientWindow(hostWindow, *this);
 
-		// ƒNƒ‰ƒCƒAƒ“ƒgƒEƒBƒ“ƒhƒE‚ğƒƒCƒ“ƒEƒBƒ“ƒhƒE‚Éİ’è‚µ‚Ü‚·B
+		// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¨­å®šã—ã¾ã™ã€‚
 		hive->mainWindow = *this;
 
-		// ƒNƒ‰ƒCƒAƒ“ƒgƒEƒBƒ“ƒhƒE‚ğMFC‚ÌƒƒCƒ“ƒEƒBƒ“ƒhƒE‚Éİ’è‚µ‚Ü‚·B
+		// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’MFCã®ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«è¨­å®šã—ã¾ã™ã€‚
 		AfxGetApp()->m_pMainWnd = this;
 
-		// ƒzƒXƒgƒEƒBƒ“ƒhƒE‚ğŠÄ‹‚·‚éƒ^ƒCƒ}[‚ğì¬‚µ‚Ü‚·B
+		// ãƒ›ã‚¹ãƒˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç›£è¦–ã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼ã‚’ä½œæˆã—ã¾ã™ã€‚
 		SetTimer(Hive::TimerID::CheckHostWindow, 1000, 0);
 
-		// ƒRƒ“ƒtƒBƒOƒtƒ@ƒCƒ‹ƒ`ƒFƒbƒJ[‚ğì¬‚µ‚Ü‚·B
+		// ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ãƒã‚§ãƒƒã‚«ãƒ¼ã‚’ä½œæˆã—ã¾ã™ã€‚
 		config_file_checker = std::make_shared<FileUpdateChecker>(hive->configFileName);
 
-		// ƒRƒ“ƒtƒBƒOƒtƒ@ƒCƒ‹‚ğŠÄ‹‚·‚éƒ^ƒCƒ}[‚ğì¬‚µ‚Ü‚·B
+		// ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç›£è¦–ã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼ã‚’ä½œæˆã—ã¾ã™ã€‚
 		SetTimer(Hive::TimerID::CheckConfig, 1000, 0);
 	}
 
 	//
-	// ƒfƒXƒgƒ‰ƒNƒ^‚Å‚·B
+	// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã™ã€‚
 	//
 	~ClientWindow()
 	{
@@ -52,7 +52,7 @@ public:
 	}
 
 	//
-	// DarkƒAƒhƒCƒ“‚ª‘¶İ‚·‚éê‡‚Í“Ç‚İ‚İ‚Ü‚·B
+	// Darkã‚¢ãƒ‰ã‚¤ãƒ³ãŒå­˜åœ¨ã™ã‚‹å ´åˆã¯èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 	//
 	inline static BOOL loadDark(HWND hostWindow, HWND hwnd)
 	{
@@ -82,7 +82,7 @@ public:
 	}
 
 	//
-	// ƒEƒBƒ“ƒhƒE‚ğì¬‚µ‚Ü‚·B
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ã¾ã™ã€‚
 	//
 	BOOL Create()
 	{
@@ -102,7 +102,7 @@ public:
 	}
 
 	//
-	// ƒRƒ“ƒtƒBƒOƒtƒ@ƒCƒ‹‚©‚çİ’è‚ğ“Ç‚İ‚İ‚Ü‚·B
+	// ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰è¨­å®šã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 	//
 	HRESULT loadConfig()
 	{
@@ -114,7 +114,7 @@ public:
 
 			if (document->load(hive->configFileName) == VARIANT_FALSE)
 			{
-				MY_TRACE(_T("%s ‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½\n"), hive->configFileName);
+				MY_TRACE(_T("%s ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ\n"), hive->configFileName);
 
 				return S_FALSE;
 			}
@@ -133,7 +133,7 @@ public:
 	}
 
 	//
-	// İ’è‚ğ“Ç‚İ‚İ‚Ü‚·B
+	// è¨­å®šã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 	//
 	HRESULT load(const MSXML2::IXMLDOMElementPtr& element)
 	{
@@ -160,7 +160,7 @@ public:
 	}
 
 	//
-	// ƒRƒ“ƒtƒBƒOƒtƒ@ƒCƒ‹‚©‚çİ’è‚ğ“Ç‚İ‚İ‚Ü‚·B
+	// ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰è¨­å®šã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 	//
 	HRESULT saveConfig()
 	{
@@ -172,7 +172,7 @@ public:
 
 			if (document->load(hive->configFileName) == VARIANT_FALSE)
 			{
-				MY_TRACE(_T("%s ‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½\n"), hive->configFileName);
+				MY_TRACE(_T("%s ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ\n"), hive->configFileName);
 
 				return S_FALSE;
 			}
@@ -193,7 +193,7 @@ public:
 	}
 
 	//
-	// İ’è‚ğ•Û‘¶‚µ‚Ü‚·B
+	// è¨­å®šã‚’ä¿å­˜ã—ã¾ã™ã€‚
 	//
 	HRESULT save(const MSXML2::IXMLDOMElementPtr& element)
 	{

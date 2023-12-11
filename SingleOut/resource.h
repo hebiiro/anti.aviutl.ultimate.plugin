@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ �Ő������ꂽ�C���N���[�h �t�@�C���B
-// SingleOut.rc �Ŏg�p
+﻿//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// SingleOut.rc で使用
 //
 #define IDD_MAIN_DIALOG                 100
 #define IDC_QUALITY_LABEL               1000

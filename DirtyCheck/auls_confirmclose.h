@@ -1,21 +1,21 @@
-////////////////////////////////////////////////////////////////////////////////
+ï»¿////////////////////////////////////////////////////////////////////////////////
 // auls_confirmclose.cpp
-// •ÒW“à—e‚ª•ÏX‚³‚ê‚Ä‚¢‚é‚Ì‚İI—¹Šm”F‚·‚é‚æ‚¤‚É‚·‚éƒvƒ‰ƒOƒCƒ“
+// ç·¨é›†å†…å®¹ãŒå¤‰æ›´ã•ã‚Œã¦ã„ã‚‹æ™‚ã®ã¿çµ‚äº†ç¢ºèªã™ã‚‹ã‚ˆã†ã«ã™ã‚‹ãƒ—ãƒ©ã‚°ã‚¤ãƒ³
 // -----------------------------------------------------------------------------
-// •â‘«î•ñ
-// LoadLibrary ‚Å©•ª©g‚ÌQÆƒJƒEƒ“ƒg‚ğ‘‚â‚µ‚Ä‚¨‚©‚È‚¢‚Æ
-// I—¹‚ÉƒvƒƒZƒX‚ª’·ŠÔA‚ ‚é‚¢‚Í‚¸‚Á‚Æc‚Á‚Ä‚µ‚Ü‚¤B
+// è£œè¶³æƒ…å ±
+// LoadLibrary ã§è‡ªåˆ†è‡ªèº«ã®å‚ç…§ã‚«ã‚¦ãƒ³ãƒˆã‚’å¢—ã‚„ã—ã¦ãŠã‹ãªã„ã¨
+// çµ‚äº†æ™‚ã«ãƒ—ãƒ­ã‚»ã‚¹ãŒé•·æ™‚é–“ã€ã‚ã‚‹ã„ã¯ãšã£ã¨æ®‹ã£ã¦ã—ã¾ã†ã€‚
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 namespace fgo::dirty_check
 {
-	LPCSTR FILTER_NAME = "I—¹Šm”F";
-	LPCSTR FILTER_INFORMATION = "AulsI—¹Šm”F v1.2 forked by karoterra";
+	LPCSTR FILTER_NAME = "çµ‚äº†ç¢ºèª";
+	LPCSTR FILTER_INFORMATION = "Aulsçµ‚äº†ç¢ºèª v1.2 forked by karoterra";
 
-	LPCSTR EXEDIT_NAME = "Šg’£•ÒW";
-	LPCSTR EXEDIT_92 = "Šg’£•ÒW(exedit) version 0.92 by ‚j‚d‚m‚­‚ñ";
+	LPCSTR EXEDIT_NAME = "æ‹¡å¼µç·¨é›†";
+	LPCSTR EXEDIT_92 = "æ‹¡å¼µç·¨é›†(exedit) version 0.92 by ï¼«ï¼¥ï¼®ãã‚“";
 
 	inline struct DirtyFlag
 	{
@@ -24,7 +24,7 @@ namespace fgo::dirty_check
 		bool g_dirty_flag = false;
 
 		//
-		// Šg’£•ÒW‚ÌƒtƒBƒ‹ƒ^‚ğ•Ô‚µ‚Ü‚·B
+		// æ‹¡å¼µç·¨é›†ã®ãƒ•ã‚£ãƒ«ã‚¿ã‚’è¿”ã—ã¾ã™ã€‚
 		//
 		static AviUtl::FilterPlugin* get_exedit(AviUtl::FilterPlugin* fp)
 		{
@@ -40,37 +40,37 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ‰Šú‰»ˆ—‚ğs‚¢‚Ü‚·B
+		// åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
 		//
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
-			// Šg’£•ÒW‚ğæ“¾‚µ‚Ü‚·B
+			// æ‹¡å¼µç·¨é›†ã‚’å–å¾—ã—ã¾ã™ã€‚
 			auto exedit = get_exedit(fp);
 			if (exedit == nullptr) {
-				MessageBoxA(fp->hwnd, "‘Î‰‚·‚éŠg’£•ÒW‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB", FILTER_NAME, MB_OK | MB_ICONERROR);
+				MessageBoxA(fp->hwnd, "å¯¾å¿œã™ã‚‹æ‹¡å¼µç·¨é›†ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚", FILTER_NAME, MB_OK | MB_ICONERROR);
 				return FALSE;
 			}
 
-			// Šg’£•ÒW‚ÌƒAƒ“ƒhƒDID‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾‚µ‚Ü‚·B
+			// æ‹¡å¼µç·¨é›†ã®ã‚¢ãƒ³ãƒ‰ã‚¥IDã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å–å¾—ã—ã¾ã™ã€‚
 			g_undo_id_ptr = reinterpret_cast<int*>(reinterpret_cast<size_t>(exedit->dll_hinst) + 0x244E08 + 12);
 
 			return TRUE;
 		}
 
 		//
-		// w’è‚³‚ê‚½wp‚ªƒgƒŠƒK[‚È‚çtrue‚ğ•Ô‚µ‚Ü‚·B
+		// æŒ‡å®šã•ã‚ŒãŸwpãŒãƒˆãƒªã‚¬ãƒ¼ãªã‚‰trueã‚’è¿”ã—ã¾ã™ã€‚
 		//
 		bool is_trigger_wp(WPARAM wp)
 		{
-			return wp == 5157	// •Â‚¶‚é
-				|| wp == 5097	// ŠJ‚­
-				|| wp == 5118	// •ÒWƒvƒƒWƒFƒNƒg‚ğŠJ‚­
-				|| (5596 <= wp && wp <= 5603)	// Å‹ßg‚Á‚½ƒtƒ@ƒCƒ‹1-8
+			return wp == 5157	// é–‰ã˜ã‚‹
+				|| wp == 5097	// é–‹ã
+				|| wp == 5118	// ç·¨é›†ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’é–‹ã
+				|| (5596 <= wp && wp <= 5603)	// æœ€è¿‘ä½¿ã£ãŸãƒ•ã‚¡ã‚¤ãƒ«1-8
 				;
 		}
 
 		//
-		// w’è‚³‚ê‚½ƒEƒBƒ“ƒhƒEƒƒbƒZ[ƒW‚ªƒgƒŠƒK[‚È‚çtrue‚ğ•Ô‚µ‚Ü‚·B
+		// æŒ‡å®šã•ã‚ŒãŸã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒãƒˆãƒªã‚¬ãƒ¼ãªã‚‰trueã‚’è¿”ã—ã¾ã™ã€‚
 		//
 		bool is_trigger_message(UINT msg, WPARAM wp)
 		{
@@ -81,7 +81,7 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğ•Ô‚µ‚Ü‚·B
+		// ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’è¿”ã—ã¾ã™ã€‚
 		//
 		bool get()
 		{
@@ -89,8 +89,8 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
-		// ƒ_[ƒeƒB[‚Èê‡‚Ítrue‚ğ•Ô‚µ‚Ü‚·B
+		// ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
+		// ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãªå ´åˆã¯trueã‚’è¿”ã—ã¾ã™ã€‚
 		//
 		bool check()
 		{
@@ -101,7 +101,7 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğ‰Šú’l‚É–ß‚µ‚Ü‚·B
+		// ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’åˆæœŸå€¤ã«æˆ»ã—ã¾ã™ã€‚
 		//
 		void clear()
 		{
@@ -116,16 +116,16 @@ namespace fgo::dirty_check
 		WNDPROC orig = 0;
 
 		//
-		// AviUtlƒEƒBƒ“ƒhƒE‚ÌƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ‚ğƒtƒbƒN‚µ‚Ü‚·B
+		// AviUtlã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£ã‚’ãƒ•ãƒƒã‚¯ã—ã¾ã™ã€‚
 		//
 		static LRESULT CALLBACK hook(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		{
 			if (dirty_flag.is_trigger_message(msg, wp)) {
-				int id = MessageBoxA(hwnd, "•ÏX‚³‚ê‚½•ÒWƒf[ƒ^‚ª‚ ‚è‚Ü‚·B•Û‘¶‚µ‚Ü‚·‚©H",
+				int id = MessageBoxA(hwnd, "å¤‰æ›´ã•ã‚ŒãŸç·¨é›†ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã™ã€‚ä¿å­˜ã—ã¾ã™ã‹ï¼Ÿ",
 					FILTER_NAME, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
 				if (id == IDYES) {
-					SendMessage(hwnd, WM_COMMAND, 1024, 0); // •ÒWƒvƒƒWƒFƒNƒg‚Ìã‘‚«
-					if (dirty_flag.get()) return 0; // •Û‘¶‚ªƒLƒƒƒ“ƒZƒ‹‚³‚ê‚½‚çI—¹‚µ‚È‚¢
+					SendMessage(hwnd, WM_COMMAND, 1024, 0); // ç·¨é›†ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä¸Šæ›¸ã
+					if (dirty_flag.get()) return 0; // ä¿å­˜ãŒã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚ŒãŸã‚‰çµ‚äº†ã—ãªã„
 				}
 				else if (id == IDCANCEL) return 0;
 			}
@@ -133,14 +133,14 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ‰Šú‰»ˆ—‚ğs‚¢‚Ü‚·B
+		// åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã„ã¾ã™ã€‚
 		//
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
-			// AviUtlƒEƒBƒ“ƒhƒE‚ğæ“¾‚µ‚Ü‚·B
+			// AviUtlã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å–å¾—ã—ã¾ã™ã€‚
 			hwnd = GetWindow(fp->hwnd, GW_OWNER);
 
-			// AviUtlƒEƒBƒ“ƒhƒE‚ğƒTƒuƒNƒ‰ƒX‰»‚µ‚Ü‚·B
+			// AviUtlã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ã‚µãƒ–ã‚¯ãƒ©ã‚¹åŒ–ã—ã¾ã™ã€‚
 			orig = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)hook);
 
 			return TRUE;
@@ -165,11 +165,11 @@ namespace fgo::dirty_check
 		switch (msg) {
 		case AviUtl::FilterPlugin::WindowMessage::Update:
 			if (!fp->exfunc->is_editing(editp)) break;
-			// ƒvƒƒWƒFƒNƒg‚ª•ÏX‚³‚ê‚½‚©‚à‚µ‚ê‚È‚¢‚Ì‚Åƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
+			// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãŒå¤‰æ›´ã•ã‚ŒãŸã‹ã‚‚ã—ã‚Œãªã„ã®ã§ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
 			dirty_flag.check();
 			break;
 		case AviUtl::FilterPlugin::WindowMessage::FileClose:
-			// ƒvƒƒWƒFƒNƒg‚ª•Â‚¶‚ç‚ê‚½‚Ì‚Åƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğƒNƒŠƒA‚µ‚Ü‚·B
+			// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãŒé–‰ã˜ã‚‰ã‚ŒãŸã®ã§ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’ã‚¯ãƒªã‚¢ã—ã¾ã™ã€‚
 			dirty_flag.clear();
 			break;
 		}
@@ -178,14 +178,14 @@ namespace fgo::dirty_check
 
 	BOOL func_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void*, int*)
 	{
-		// ƒvƒƒWƒFƒNƒg‚ª•Û‘¶‚³‚ê‚½‚Ì‚Åƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğƒNƒŠƒA‚µ‚Ü‚·B
+		// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãŒä¿å­˜ã•ã‚ŒãŸã®ã§ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’ã‚¯ãƒªã‚¢ã—ã¾ã™ã€‚
 		dirty_flag.clear();
 		return FALSE;
 	}
 
 	BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int frame, LPSTR title, int max_title)
 	{
-		// ƒvƒƒWƒFƒNƒg‚ª•ÏX‚³‚ê‚½‚©‚à‚µ‚ê‚È‚¢‚Ì‚Åƒ_[ƒeƒB[ƒtƒ‰ƒO‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
+		// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãŒå¤‰æ›´ã•ã‚ŒãŸã‹ã‚‚ã—ã‚Œãªã„ã®ã§ãƒ€ãƒ¼ãƒ†ã‚£ãƒ¼ãƒ•ãƒ©ã‚°ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
 		if (!dirty_flag.check()) return FALSE;
 		std::string str(title);
 		sprintf_s(title, max_title, "* %s", str.c_str());

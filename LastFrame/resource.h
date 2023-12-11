@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ �Ő������ꂽ�C���N���[�h �t�@�C���B
-// LastFrame.rc �Ŏg�p
+﻿//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// LastFrame.rc で使用
 //
 #define IDD_MAIN_DIALOG                 100
 #define IDC_ENABLE                      1000

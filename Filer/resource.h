@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ �Ő������ꂽ�C���N���[�h �t�@�C���B
-// Filer.rc �Ŏg�p
+﻿//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// Filer.rc で使用
 //
 #define IDD_MAIN_DIALOG                 101
 #define IDD_GET_FILER_NAME              102

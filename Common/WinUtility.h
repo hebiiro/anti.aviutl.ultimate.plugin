@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 //--------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ inline POINT operator-(const POINT& a, const POINT& b)
 
 inline void GetMonitorRect(POINT point, RECT& rect)
 {
-	// ƒEƒBƒ“ƒhƒE‚ª•\Ž¦‚³‚ê‚Ä‚¢‚éƒfƒBƒXƒvƒŒƒCî•ñ‚ðŽæ“¾‚·‚é
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	HMONITOR monitor = ::MonitorFromPoint(point, MONITOR_DEFAULTTONEAREST);
 	MONITORINFOEX monitor_info = {};
 	monitor_info.cbSize = sizeof(monitor_info);
@@ -59,7 +59,7 @@ inline void GetMonitorRect(POINT point, RECT& rect)
 
 inline void GetMonitorRect(HWND hWnd, RECT& rect)
 {
-	// ƒEƒBƒ“ƒhƒE‚ª•\Ž¦‚³‚ê‚Ä‚¢‚éƒfƒBƒXƒvƒŒƒCî•ñ‚ðŽæ“¾‚·‚é
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤æƒ…å ±ã‚’å–å¾—ã™ã‚‹
 	HMONITOR monitor = ::MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
 	MONITORINFOEX monitor_info = {};
 	monitor_info.cbSize = sizeof(monitor_info);
@@ -102,7 +102,7 @@ inline BOOL setWindowRect(HWND hwnd, LPCRECT rc, UINT flags = 0)
 }
 
 //
-// hwnd2‚ªhwnd1‚Ì‘cæƒEƒBƒ“ƒhƒE‚Ìê‡‚ÍTRUE‚ð•Ô‚µ‚Ü‚·B
+// hwnd2ãŒhwnd1ã®ç¥–å…ˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®å ´åˆã¯TRUEã‚’è¿”ã—ã¾ã™ã€‚
 //
 inline BOOL isAncestor(HWND hwnd1, HWND hwnd2)
 {

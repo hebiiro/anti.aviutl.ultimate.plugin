@@ -1,6 +1,6 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ �Ő������ꂽ�C���N���[�h �t�@�C���B
-// EncodeGuard.rc �Ŏg�p
+﻿//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// EncodeGuard.rc で使用
 //
 #define IDD_MAIN_DIALOG                 100
 #define IDC_CHECK_RANGE                 1000

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace Tools
 {
@@ -338,7 +338,7 @@ namespace Tools
 
 	inline void drawLine(NVGcontext* vg, float mx, float my, float lx, float ly, const DesignBase::Stroke& stroke)
 	{
-		const float offset = DesignBase::offset; // ü‚ÍƒIƒtƒZƒbƒg‚ð—^‚¦‚È‚¢‚Æ‚Ú‚â‚¯‚éB
+		const float offset = DesignBase::offset; // ç·šã¯ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ä¸Žãˆãªã„ã¨ã¼ã‚„ã‘ã‚‹ã€‚
 
 		nvgBeginPath(vg);
 		nvgMoveTo(vg, mx + offset, my + offset);
@@ -349,7 +349,7 @@ namespace Tools
 
 	inline void drawText(NVGcontext* vg, LPCSTR text, float x, float y, const DesignBase::Text& design, int fontId)
 	{
-//		const float offset = DesignBase::offset; // ƒeƒLƒXƒg‚ÍƒIƒtƒZƒbƒg‚ð—^‚¦‚é‚Æ‹t‚É‚Ú‚â‚¯‚éB
+//		const float offset = DesignBase::offset; // ãƒ†ã‚­ã‚¹ãƒˆã¯ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’ä¸Žãˆã‚‹ã¨é€†ã«ã¼ã‚„ã‘ã‚‹ã€‚
 		const float offset = 0;
 
 		struct Point { float x, y; };
@@ -359,7 +359,7 @@ namespace Tools
 		textPos.y = y + offset;
 
 		nvgFontSize(vg, (float)design.height);
-		nvgFontFaceId(vg, fontId); // nvgFontSize() ‚Ì‚ ‚Æ‚ÉŒÄ‚Î‚È‚¯‚ê‚Î‚È‚ç‚È‚¢B
+		nvgFontFaceId(vg, fontId); // nvgFontSize() ã®ã‚ã¨ã«å‘¼ã°ãªã‘ã‚Œã°ãªã‚‰ãªã„ã€‚
 
 		if (design.shadow.dilate > 0.0f || design.shadow.blur > 0.0f)
 		{

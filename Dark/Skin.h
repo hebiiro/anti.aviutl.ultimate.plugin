@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Skin/Dwm.h"
 #include "Skin/Icon.h"
 #include "Skin/Figure/Manager.h"
@@ -15,16 +15,16 @@ namespace fgo::dark::skin
 		{
 			MY_TRACE_FUNC("0x%08X", hwnd);
 
-			// DWM‚ğ‰Šú‰»‚µ‚Ü‚·B
+			// DWMã‚’åˆæœŸåŒ–ã—ã¾ã™ã€‚
 			dwm.init(hwnd);
 
-			// ƒe[ƒ}‚ğ‰Šú‰»‚µ‚Ü‚·B
+			// ãƒ†ãƒ¼ãƒã‚’åˆæœŸåŒ–ã—ã¾ã™ã€‚
 			theme::manager.init();
 
-			// ƒXƒLƒ“‚Ìİ’è‚ğ“Ç‚İ‚İ‚Ü‚·B
+			// ã‚¹ã‚­ãƒ³ã®è¨­å®šã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 			reloadSettings();
 
-			// ƒRƒ“ƒtƒBƒOƒ`ƒFƒbƒJ[—p‚Ìƒ^ƒCƒ}[‚ğŠJn‚µ‚Ü‚·B
+			// ã‚³ãƒ³ãƒ•ã‚£ã‚°ãƒã‚§ãƒƒã‚«ãƒ¼ç”¨ã®ã‚¿ã‚¤ãƒãƒ¼ã‚’é–‹å§‹ã—ã¾ã™ã€‚
 			::SetTimer(hwnd, (UINT_PTR)this, 1000, onTimerProc);
 
 			return TRUE;
@@ -47,10 +47,10 @@ namespace fgo::dark::skin
 			reloadSettingsInternal();
 			reloadExEditSettings();
 
-			// ƒXƒLƒ“‚ªXV‚³‚ê‚½‚±‚Æ‚ğ”»•Ê‚Å‚«‚é‚æ‚¤‚ÉAID‚àXV(ƒCƒ“ƒNƒŠƒƒ“ƒg)‚µ‚Ü‚·B
+			// ã‚¹ã‚­ãƒ³ãŒæ›´æ–°ã•ã‚ŒãŸã“ã¨ã‚’åˆ¤åˆ¥ã§ãã‚‹ã‚ˆã†ã«ã€IDã‚‚æ›´æ–°(ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ)ã—ã¾ã™ã€‚
 			currentId++;
 
-			// ‚·‚×‚Ä‚ÌƒEƒBƒ“ƒhƒE‚ğÄ•`‰æ‚µ‚Ü‚·B
+			// ã™ã¹ã¦ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å†æç”»ã—ã¾ã™ã€‚
 			redraw();
 
 			return TRUE;
@@ -78,7 +78,7 @@ namespace fgo::dark::skin
 
 				if (document->load(fileName) == VARIANT_FALSE)
 				{
-					MY_TRACE(_T("%ws ‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½\n"), fileName);
+					MY_TRACE(_T("%ws ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ\n"), fileName);
 
 					return FALSE;
 				}
@@ -114,7 +114,7 @@ namespace fgo::dark::skin
 
 			if (config.staticEdgeMode == Config::StaticEdgeMode::Off)
 			{
-				// ƒ{ƒ^ƒ“‚ÌŠg’£ƒXƒ^ƒCƒ‹(WS_EX_STATICEDGE)‚ğÁ‚µ‚Ü‚·B
+				// ãƒœã‚¿ãƒ³ã®æ‹¡å¼µã‚¹ã‚¿ã‚¤ãƒ«(WS_EX_STATICEDGE)ã‚’æ¶ˆã—ã¾ã™ã€‚
 				writeAbsoluteAddress(exedit + 0x2ED42 + 1, (uintptr_t)0);
 			}
 
@@ -164,7 +164,7 @@ namespace fgo::dark::skin
 			MY_TRACE_FUNC("%ws", fileName);
 
 			{
-				// ƒXƒLƒ“‚ğ•ÏX‚µ‚½‚Æ‚«A‘O‰ñ‚Ì’l‚ğˆø‚«Œp‚ª‚È‚¢‚æ‚¤‚ÉƒfƒtƒHƒ‹ƒg’l‚É–ß‚µ‚Ä‚¨‚«‚Ü‚·B
+				// ã‚¹ã‚­ãƒ³ã‚’å¤‰æ›´ã—ãŸã¨ãã€å‰å›ã®å€¤ã‚’å¼•ãç¶™ãŒãªã„ã‚ˆã†ã«ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤ã«æˆ»ã—ã¦ãŠãã¾ã™ã€‚
 
 				config.exedit.xorPen.style = -1;
 				config.exedit.xorPen.width = -1;
@@ -179,13 +179,13 @@ namespace fgo::dark::skin
 
 				if (document->load(fileName) == VARIANT_FALSE)
 				{
-					MY_TRACE(_T("%ws ‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½\n"), fileName);
+					MY_TRACE(_T("%ws ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ\n"), fileName);
 
 					return FALSE;
 				}
 
 				{
-					// ƒXƒLƒ“ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ‚Ü‚·B
+					// ã‚¹ã‚­ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 
 					MSXML2::IXMLDOMNodeListPtr nodeList =
 						document->documentElement->selectNodes(L"Skin");
@@ -223,7 +223,7 @@ namespace fgo::dark::skin
 
 				if (document->load(fileName) == VARIANT_FALSE)
 				{
-					MY_TRACE(_T("%ws ‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½\n"), fileName);
+					MY_TRACE(_T("%ws ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ\n"), fileName);
 
 					return FALSE;
 				}
@@ -246,7 +246,7 @@ namespace fgo::dark::skin
 		{
 			MY_TRACE_FUNC("");
 
-			// <Attributes>‚ğ“Ç‚İ‚İ‚Ü‚·B
+			// <Attributes>ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
 			MSXML2::IXMLDOMNodeListPtr nodeList = parentElement->selectNodes(L"Attributes");
 			int c = nodeList->length;
 			for (int i = 0; i < c; i++)
@@ -303,10 +303,10 @@ namespace fgo::dark::skin
 
 			try
 			{
-				// ƒhƒLƒ…ƒƒ“ƒg‚ğì¬‚µ‚Ü‚·B
+				// ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
 				MSXML2::IXMLDOMDocumentPtr document(__uuidof(MSXML2::DOMDocument));
 
-				// ƒhƒLƒ…ƒƒ“ƒgƒGƒŒƒƒ“ƒg‚ğì¬‚µ‚Ü‚·B
+				// ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã‚’ä½œæˆã—ã¾ã™ã€‚
 				MSXML2::IXMLDOMElementPtr element = appendElement(document, document, L"Settings");
 
 				setPrivateProfileString(element, L"skin", config.skinFileName);
@@ -329,7 +329,7 @@ namespace fgo::dark::skin
 		}
 
 		//
-		// ƒXƒLƒ“‚ğ‘I‘ğ‚·‚é‚½‚ß‚Ìƒƒjƒ…[‚ğ•\¦‚µ‚Ü‚·B
+		// ã‚¹ã‚­ãƒ³ã‚’é¸æŠã™ã‚‹ãŸã‚ã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
 		//
 		void showMenu(HWND hwnd)
 		{
@@ -390,11 +390,11 @@ namespace fgo::dark::skin
 			}
 
 			::AppendMenuW(menu, MF_SEPARATOR, -1, 0);
-			::AppendMenuW(menu, MF_STRING, ID_SHADOW_MODE, L"‰e‚ğ•t‚¯‚é");
-			::AppendMenuW(menu, MF_STRING, ID_ROUND_MODE, L"ŠÛ‚­‚·‚é");
-			::AppendMenuW(menu, MF_STRING, ID_STATIC_EDGE_MODE, L"ƒ{ƒ^ƒ“‚ÉƒXƒ^ƒeƒBƒbƒNƒGƒbƒW‚ğ•t‚¯‚é");
-			::AppendMenuW(menu, MF_STRING, ID_USE_LAYER_COLOR_EX, L"•¡”s‚ÌF•ª‚¯");
-			::AppendMenuW(menu, MF_STRING, ID_OMIT_FILE_DIALOG, L"ƒtƒ@ƒCƒ‹‘I‘ğƒ_ƒCƒAƒƒO‚ğœŠO‚·‚é");
+			::AppendMenuW(menu, MF_STRING, ID_SHADOW_MODE, L"å½±ã‚’ä»˜ã‘ã‚‹");
+			::AppendMenuW(menu, MF_STRING, ID_ROUND_MODE, L"ä¸¸ãã™ã‚‹");
+			::AppendMenuW(menu, MF_STRING, ID_STATIC_EDGE_MODE, L"ãƒœã‚¿ãƒ³ã«ã‚¹ã‚¿ãƒ†ã‚£ãƒƒã‚¯ã‚¨ãƒƒã‚¸ã‚’ä»˜ã‘ã‚‹");
+			::AppendMenuW(menu, MF_STRING, ID_USE_LAYER_COLOR_EX, L"è¤‡æ•°è¡Œã®è‰²åˆ†ã‘");
+			::AppendMenuW(menu, MF_STRING, ID_OMIT_FILE_DIALOG, L"ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’é™¤å¤–ã™ã‚‹");
 
 			if (config.getShadowMode() == Config::ShadowMode::On)
 				::CheckMenuItem(menu, ID_SHADOW_MODE, MF_CHECKED);
@@ -453,7 +453,7 @@ namespace fgo::dark::skin
 
 				saveSettings();
 
-				::MessageBoxW(hwnd, L"‚±‚ÌƒIƒvƒVƒ‡ƒ“‚ÍAviUtl‚ğÄ‹N“®‚µ‚½‚Æ‚«‚É”½‰f‚³‚ê‚Ü‚·", hive.Name, MB_OK);
+				::MessageBoxW(hwnd, L"ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯AviUtlã‚’å†èµ·å‹•ã—ãŸã¨ãã«åæ˜ ã•ã‚Œã¾ã™", hive.Name, MB_OK);
 			}
 			else if (id == ID_USE_LAYER_COLOR_EX)
 			{
@@ -474,7 +474,7 @@ namespace fgo::dark::skin
 			}
 		}
 
-		// ƒvƒƒZƒX“à‚Ì‚·‚×‚Ä‚ÌƒEƒBƒ“ƒhƒE‚ğÄ•`‰æ‚µ‚Ü‚·B
+		// ãƒ—ãƒ­ã‚»ã‚¹å†…ã®ã™ã¹ã¦ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å†æç”»ã—ã¾ã™ã€‚
 		static void redraw()
 		{
 			MY_TRACE_FUNC("");
@@ -493,7 +493,7 @@ namespace fgo::dark::skin
 			return TRUE;
 		}
 
-		// w’è‚³‚ê‚½ƒEƒBƒ“ƒhƒE‚Æ‚»‚ÌqƒEƒBƒ“ƒhƒE‚ğÄ•`‰æ‚µ‚Ü‚·B
+		// æŒ‡å®šã•ã‚ŒãŸã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¨ãã®å­ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’å†æç”»ã—ã¾ã™ã€‚
 		static void redrawWindow(HWND hwnd)
 		{
 			MY_TRACE_FUNC("0x%08X", hwnd);
@@ -514,12 +514,12 @@ namespace fgo::dark::skin
 
 			if (::lstrcmpi(className, TRACKBAR_CLASS) == 0)
 			{
-				// ƒgƒ‰ƒbƒNƒo[—pB
+				// ãƒˆãƒ©ãƒƒã‚¯ãƒãƒ¼ç”¨ã€‚
 				::SendMessage(hwnd, WM_SETFOCUS, 0, 0);
 			}
 			else if (::lstrcmpi(className, WC_BUTTON) == 0)
 			{
-				// ƒ{ƒ^ƒ“—pB
+				// ãƒœã‚¿ãƒ³ç”¨ã€‚
 				HICON icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0);
 				::SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);
 			}
