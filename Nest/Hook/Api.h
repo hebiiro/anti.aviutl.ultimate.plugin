@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Api/CreateWindow.h"
 #include "Api/Menu.h"
 #include "Api/FindWindow.h"
 
@@ -15,6 +16,8 @@ namespace fgo::nest::hook
 		BOOL init()
 		{
 			MY_TRACE_FUNC("");
+
+			if (!create_window.init()) return FALSE;
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
@@ -50,6 +53,8 @@ namespace fgo::nest::hook
 		BOOL exit()
 		{
 			MY_TRACE_FUNC("");
+
+			create_window.exit();
 
 			return TRUE;
 		}

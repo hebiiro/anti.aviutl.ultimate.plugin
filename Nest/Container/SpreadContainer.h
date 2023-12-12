@@ -47,5 +47,15 @@ namespace fgo::nest
 
 			return TRUE;
 		}
+
+		//
+		// コンテンツの位置にフィットするようにコンテナの位置を変更します。
+		//
+		BOOL fitContainerPosition(const WINDOWPOS* content_wp) override
+		{
+			MY_TRACE_FUNC("");
+
+			return TRUE;
+		}
 	};
 }

@@ -4,7 +4,6 @@
 #include "ConfigLoader.h"
 #include "ConfigSaver.h"
 #include "Hook/Api.h"
-#include "Hook/CallWndProcRet.h"
 #include "Hook/GetMessage.h"
 #include "Hook/Module.h"
 
@@ -51,7 +50,6 @@ namespace fgo::nest
 			}
 
 			hook::api.init();
-			hook::call_wnd_proc_ret.init();
 			hook::get_message.init();
 
 			return TRUE;
@@ -65,7 +63,6 @@ namespace fgo::nest
 			MY_TRACE_FUNC("");
 
 			hook::get_message.exit();
-			hook::call_wnd_proc_ret.exit();
 			hook::api.exit();
 
 			return TRUE;

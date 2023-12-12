@@ -145,30 +145,51 @@ namespace fgo::nest
 			BOOL visible = ::IsWindowVisible(*this);
 			MY_TRACE_INT(visible);
 
-			// ターゲットウィンドウのウィンドウ矩形を取得しておきます。
-			RECT rc; ::GetWindowRect(*this, &rc);
-			MY_TRACE_RECT2(rc);
+			// ウィンドウの無駄な描画を抑制するため、
+			// 一時的にターゲットウィンドウを非表示にします。
+			::ShowWindow(*this, SW_HIDE);
+
+			// ターゲットウィンドウのクライアント矩形を取得しておきます。
+			RECT rcClient; ::GetClientRect(*this, &rcClient);
+			MY_TRACE_RECT2(rcClient);
+
+			// クライアント矩形をスクリーン座標に変換しておきます。
+			::MapWindowPoints(*this, 0, (LPPOINT)&rcClient, 2);
+			MY_TRACE_RECT2(rcClient);
+
+			// 設定ダイアログの初期位置は縦に長過ぎたりするので微調整します。
+			if (wcscmp(name, L"* 設定ダイアログ") == 0)
+			{
+				rcClient.right += ::GetSystemMetrics(SM_CXSIZEFRAME) * 2;
+				rcClient.bottom /= 2;
+			}
 
 			// コンテナを作成します。
 			dockContainer = createDockContainer();
 			floatContainer = createFloatContainer();
 
 			// ターゲットのウィンドウスタイルを変更します。
-			// さらにSWP_FRAMECHANGEDを使用してスタイルを完全に適用させます。
 			DWORD style = onGetTargetNewStyle();
 			setStyle(*this, style | WS_CHILD);
 			modifyExStyle(*this, 0, WS_EX_NOPARENTNOTIFY);
-			::SetWindowPos(*this, 0, 0, 0, 0, 0,
-				SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+			// ウィンドウスタイルが変更されたので
+			// ターゲットのウィンドウ矩形を算出し、更新します。
+			{
+				DWORD style = getStyle(*this);
+				DWORD exStyle = getExStyle(*this);
+				HMENU menu = ::GetMenu(*this);
+
+				RECT rcWindow = rcClient;
+				::AdjustWindowRectEx(&rcWindow, style, !!menu, exStyle);
+				::SetWindowPos(*this, 0, 0, 0, getWidth(rcWindow), getHeight(rcWindow),
+					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			}
 
 			// ターゲットのウィンドウタイトルを取得します。
 			TCHAR text[MAX_PATH] = {};
 			::GetWindowText(*this, text, std::size(text));
 			::SetWindowText(*floatContainer, text);
-
-			// ウィンドウの無駄な描画を抑制するため、
-			// 一時的にターゲットウィンドウを非表示にします。
-			::ShowWindow(*this, SW_HIDE);
 
 			// ターゲットのメニューをフローティングコンテナに移し替えます。
 			::SetMenu(*floatContainer, ::GetMenu(*this));
@@ -177,7 +198,11 @@ namespace fgo::nest
 			::SetParent(*this, *floatContainer);
 
 			// ターゲットがあった位置にフローティングコンテナを移動します。
-			floatContainer->setContainerPosition(&rc);
+			{
+				RECT rcWindow = rcClient;
+				clientToWindow(*floatContainer, &rcWindow);
+				floatContainer->setContainerPosition(&rcWindow);
+			}
 
 			// ターゲットが表示状態ならフローティングコンテナを表示します。
 			if (visible)

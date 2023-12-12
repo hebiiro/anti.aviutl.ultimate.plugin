@@ -125,11 +125,11 @@
     <ClInclude Include="Pane\RootPane.h">
       <Filter>Element\Pane</Filter>
     </ClInclude>
-    <ClInclude Include="Hook\CallWndProcRet.h">
-      <Filter>Hook</Filter>
-    </ClInclude>
     <ClInclude Include="SubProcess\Console.h">
       <Filter>Element\SubProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook\Api\CreateWindow.h">
+      <Filter>Hook\API</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

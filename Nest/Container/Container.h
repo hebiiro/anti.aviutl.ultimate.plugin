@@ -263,8 +263,20 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("");
 
+			// コンテンツのウィンドウ矩形を取得します。
+			RECT rc = wp2rc(content_wp);
+
+			// ウィンドウ矩形をクライアント矩形に変換します。
+			windowToClient(content->getHWND(), &rc);
+
+			// クライアント座標からスクリーン座標に変換します。
+			::MapWindowPoints(*this, 0, (LPPOINT)&rc, 2);
+
+			// クライアント矩形をウィンドウ矩形に変換します。
+			clientToWindow(*this, &rc);
+
 			// コンテナの位置を変更します。
-//			setWindowPos(*this, content_wp);
+			setWindowPos(*this, &rc, content_wp->flags);
 
 			return TRUE;
 		}

@@ -13,7 +13,7 @@ namespace fgo::nest::hook
 			return hive.mainWindow;
 
 		Shuttle* shuttle = Shuttle::getPointer(hwnd);
-		if (shuttle)
+		if (shuttle && shuttle->floatContainer)
 			return *shuttle->floatContainer;
 
 		return hwnd;
@@ -26,7 +26,7 @@ namespace fgo::nest::hook
 	{
 		inline static HMENU WINAPI hook(HWND hwnd)
 		{
-//			MY_TRACE(_T("::GetMenu(0x%08X)\n"), hwnd);
+//			MY_TRACE_FUNC("0x%08X", hwnd);
 
 			hwnd = getMenuOwner(hwnd);
 
@@ -64,7 +64,7 @@ namespace fgo::nest::hook
 	{
 		inline static BOOL WINAPI hook(HWND hwnd)
 		{
-//			MY_TRACE(_T("::DrawMenuBar(0x%08X)\n"), hwnd);
+//			MY_TRACE_FUNC("0x%08X", hwnd);
 
 			hwnd = getMenuOwner(hwnd);
 

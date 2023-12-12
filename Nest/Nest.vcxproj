@@ -171,9 +171,9 @@
     <ClInclude Include="DockSite.h" />
     <ClInclude Include="Hive.h" />
     <ClInclude Include="Hook\Api.h" />
+    <ClInclude Include="Hook\Api\CreateWindow.h" />
     <ClInclude Include="Hook\Api\FindWindow.h" />
     <ClInclude Include="Hook\Api\Menu.h" />
-    <ClInclude Include="Hook\CallWndProcRet.h" />
     <ClInclude Include="Hook\GetMessage.h" />
     <ClInclude Include="Hook\Module.h" />
     <ClInclude Include="Hook\Module\AviUtl.h" />

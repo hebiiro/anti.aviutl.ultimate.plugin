@@ -234,6 +234,21 @@ namespace fgo::nest::hook::aviutl
 	}
 
 	//
+	// このクラスは::AdjustWindowRectEx()をフックします。
+	// カラーパレットがドッキングしているマイパレットを表示するのを防ぎます。
+	//
+	inline static struct
+	{
+		static BOOL WINAPI hook(LPRECT rc, DWORD style, BOOL menu, DWORD exStyle)
+		{
+			MY_TRACE_FUNC("0x%08X, %d, 0x%08X", style, menu, exStyle);
+
+			return TRUE;
+		}
+		inline static decltype(&hook) orig = 0;
+	} AdjustWindowRectEx;
+
+	//
 	// AviUtl用フックの初期化処理です。
 	//
 	inline BOOL init()
@@ -248,7 +263,7 @@ namespace fgo::nest::hook::aviutl
 
 		g_movieplaymain = ::GetPrivateProfileInt(_T("system"), _T("movieplaymain"), 0, fileName);
 
-		uintptr_t aviutl = (uintptr_t)::GetModuleHandle(0);
+		auto aviutl = (uintptr_t)::GetModuleHandle(0);
 		MY_TRACE_HEX(aviutl);
 
 		DetourTransactionBegin();
@@ -256,6 +271,10 @@ namespace fgo::nest::hook::aviutl
 
 		PlayMain::init(aviutl);
 		PlaySub::init(aviutl);
+
+		// aviutl.exe内の::AdjustWindowRectEx()をフックします。
+		Tools::attach_import(AdjustWindowRectEx, (HMODULE)aviutl, "AdjustWindowRectEx");
+		MY_TRACE_HEX(AdjustWindowRectEx.orig);
 
 		return DetourTransactionCommit() == NO_ERROR;
 	}

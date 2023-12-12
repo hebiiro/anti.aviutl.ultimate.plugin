@@ -256,6 +256,16 @@ namespace fgo::nest
 		}
 
 		//
+		// コンテンツの位置にフィットするようにコンテナの位置を変更します。
+		//
+		BOOL fitContainerPosition(const WINDOWPOS* content_wp) override
+		{
+			MY_TRACE_FUNC("");
+
+			return TRUE;
+		}
+
+		//
 		// コンテンツの位置が変更されたときに(コンテンツから)呼ばれます。
 		//
 		BOOL onContentPosChanged(WINDOWPOS* wp) override
