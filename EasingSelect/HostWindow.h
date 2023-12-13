@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Hive.h"
+#include "Hook.h"
 #include "Gui.h"
 
 namespace fgo::easing_select
@@ -8,6 +10,11 @@ namespace fgo::easing_select
 	//
 	struct HostWindow : Tools::AviUtl::PluginWindow
 	{
+		//
+		// フックです。
+		//
+		std::shared_ptr<Hook> hook;
+
 		//
 		// GUIプロセスです。
 		//
@@ -32,6 +39,7 @@ namespace fgo::easing_select
 				throw _T("ホストウィンドウの失敗しました");
 			}
 
+			hook = std::make_shared<Hook>();
 			gui = std::make_shared<Gui>(*this);
 		}
 
@@ -50,15 +58,9 @@ namespace fgo::easing_select
 		{
 			switch (message)
 			{
-			case Share::EasingSelect::Message::Update:
+			case Share::EasingSelect::Message::FireNotify:
 				{
-					MY_TRACE_FUNC("Share::EasingSelect::Message::Update, 0x%08X, 0x%08X", wParam, lParam);
-
-					break;
-				}
-			case WM_WINDOWPOSCHANGING:
-				{
-					MY_TRACE_FUNC("WM_WINDOWPOSCHANGING, 0x%08X, 0x%08X", wParam, lParam);
+					MY_TRACE_FUNC("Share::EasingSelect::Message::FireNotify, 0x%08X, 0x%08X", wParam, lParam);
 
 					if (gui)
 						::PostThreadMessage(gui->pi.dwThreadId, Share::EasingSelect::Message::Notify, 0, 0);

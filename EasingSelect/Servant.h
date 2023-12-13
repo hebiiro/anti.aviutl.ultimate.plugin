@@ -4,9 +4,9 @@
 namespace fgo::easing_select
 {
 	//
-	// このクラスは AviUtl にファイラを追加します。
+	// このクラスは画像からイージング番号を選択できるようにします。
 	//
-	inline struct EasingSelect : Servant, Magi::CommandID::Plugin
+	inline struct EasingSelect : Servant
 	{
 		std::shared_ptr<HostWindow> hostWindow;
 
@@ -84,25 +84,6 @@ namespace fgo::easing_select
 			{
 				// ホストウィンドウを削除します。
 				hostWindow = 0;
-			}
-
-			return FALSE;
-		}
-
-		//
-		// この仮想関数は、ウィンドウのコマンドのタイミングで呼ばれます。
-		//
-		BOOL on_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
-		{
-			switch (wParam)
-			{
-			case ID_ADDIN:
-				{
-					if (hostWindow)
-						Tools::AviUtl::PluginWindowExtension::show(*hostWindow);
-
-					break;
-				}
 			}
 
 			return FALSE;

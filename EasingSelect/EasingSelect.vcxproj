@@ -163,8 +163,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GetParamSmallDialog.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Hive.h" />
+    <ClInclude Include="Hook.h" />
     <ClInclude Include="HostWindow.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />

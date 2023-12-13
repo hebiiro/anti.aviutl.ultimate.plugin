@@ -20,6 +20,8 @@
     <ClInclude Include="pch.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Hook.h" />
+    <ClInclude Include="GetParamSmallDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
