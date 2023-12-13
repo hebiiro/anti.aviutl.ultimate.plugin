@@ -50,25 +50,29 @@ namespace fgo::scene_select
 			// コンフィグファイル名をセットします。
 			configFileName = magi.getConfigFileName(L"SceneSelect.ini");
 
+			loadConfig(configFileName.c_str());
+
+			DWORD style = WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+			DWORD exStyle = WS_EX_NOPARENTNOTIFY;
+
+			// 固定サイズモードのときははサイズ変更枠を取り除きます。
+			if (fixedSizeMode)
+				style &= ~WS_THICKFRAME;
+
 			// ウィンドウを作成します。
 			// このウィンドウはAviUtlプラグインウィンドウのように振る舞います。
 			if (!createAsPlugin(
 				hive.instance,
 				magi.auin.GetAviUtlWindow(),
 				hive.DisplayName,
-				WS_EX_NOPARENTNOTIFY,
-				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
-				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+				exStyle,
+				style,
 				100, 100, 300, 300))
 			{
 				return FALSE;
 			}
 
-			loadConfig(configFileName.c_str());
-
-			// 固定サイズモードのときははサイズ変更枠を取り除きます。
-			if (fixedSizeMode)
-				modifyStyle(*this, WS_THICKFRAME, 0);
+			loadWindowConfig(configFileName.c_str());
 
 			calcLayout(*this);
 			redraw();
@@ -81,6 +85,7 @@ namespace fgo::scene_select
 		//
 		BOOL exit()
 		{
+			saveWindowConfig(configFileName.c_str());
 			saveConfig(configFileName.c_str());
 
 			destroy();
@@ -101,7 +106,6 @@ namespace fgo::scene_select
 			getPrivateProfileBool(configFileName, L"Config", L"fixedSizeMode", fixedSizeMode);
 			getPrivateProfileInt(configFileName, L"Config", L"buttonWidth", buttonWidth);
 			getPrivateProfileInt(configFileName, L"Config", L"buttonHeight", buttonHeight);
-			getPrivateProfileWindow(configFileName, L"MainWindow", *this);
 		}
 
 		//
@@ -117,6 +121,25 @@ namespace fgo::scene_select
 			setPrivateProfileBool(configFileName, L"Config", L"fixedSizeMode", fixedSizeMode);
 			setPrivateProfileInt(configFileName, L"Config", L"buttonWidth", buttonWidth);
 			setPrivateProfileInt(configFileName, L"Config", L"buttonHeight", buttonHeight);
+		}
+
+		//
+		// ウィンドウの設定をファイルから読み込みます。
+		//
+		void loadWindowConfig(LPCWSTR configFileName)
+		{
+			MY_TRACE_FUNC("%ws", configFileName);
+
+			getPrivateProfileWindow(configFileName, L"MainWindow", *this);
+		}
+
+		//
+		// ウィンドウの設定をファイルに保存します。
+		//
+		void saveWindowConfig(LPCWSTR configFileName)
+		{
+			MY_TRACE_FUNC("%ws", configFileName);
+
 			setPrivateProfileWindow(configFileName, L"MainWindow", *this);
 		}
 
