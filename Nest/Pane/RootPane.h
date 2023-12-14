@@ -38,12 +38,12 @@ namespace fgo::nest
 		//
 		void setMaximizedPane(const std::shared_ptr<Pane>& newMaximizedPane)
 		{
-			if (maximizedPane != newMaximizedPane)
-			{
-				maximizedPane = newMaximizedPane;
+			if (newMaximizedPane.get() == this) return;
+			if (maximizedPane == newMaximizedPane) return;
 
-				showTab(shared_from_this(), !maximizedPane);
-			}
+			maximizedPane = newMaximizedPane;
+
+			showTab(shared_from_this(), !maximizedPane);
 		}
 
 		//
