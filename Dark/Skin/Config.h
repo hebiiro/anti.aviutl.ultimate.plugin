@@ -85,7 +85,7 @@ namespace fgo::dark::skin
 		inline static void getConfigFolderName(LPWSTR buffer, size_t bufferSize)
 		{
 			WCHAR fileName[MAX_PATH] = {};
-			::GetModuleFileNameW(fgo::dark::hive.instance, fileName, std::size(fileName));
+			::GetModuleFileNameW(hive.instance, fileName, std::size(fileName));
 			::PathRemoveFileSpecW(fileName);
 			::PathAppendW(fileName, L"../UltimateConfig");
 			::PathCanonicalizeW(buffer, fileName);

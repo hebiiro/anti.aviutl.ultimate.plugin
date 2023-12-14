@@ -142,6 +142,8 @@ namespace fgo::dark::hook
 			Tools::attach_call(ShowLayerNameDialog, exedit + 0x426D2);
 			Tools::attach(DrawLayerBackground, exedit + 0x00038410);
 
+			Tools::attach_import(CreatePen, (HMODULE)exedit, "CreatePen");
+
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
 				MY_TRACE(_T("APIフックに成功しました\n"));
@@ -248,7 +250,7 @@ namespace fgo::dark::hook
 				if (state && state->fillColor != CLR_NONE)
 				{
 					RECT rc = { mx, my, mx + 1, ly };
-					fgo::dark::painter::fillRect(dc, &rc, state->fillColor);
+					painter::fillRect(dc, &rc, state->fillColor);
 				}
 			}
 			inline static decltype(&hook) orig = 0;
@@ -264,7 +266,7 @@ namespace fgo::dark::hook
 				if (state && state->fillColor != CLR_NONE)
 				{
 					RECT rc = { mx, my, mx + 1, ly };
-					fgo::dark::painter::fillRect(dc, &rc, state->fillColor);
+					painter::fillRect(dc, &rc, state->fillColor);
 				}
 			}
 			inline static decltype(&hook) orig = 0;
@@ -304,7 +306,7 @@ namespace fgo::dark::hook
 					::SetDCBrushColor(dc, color);
 				}
 
-				return fgo::dark::hive.orig.FillRect(dc, rc, (HBRUSH)::GetStockObject(DC_BRUSH));
+				return hive.orig.FillRect(dc, rc, (HBRUSH)::GetStockObject(DC_BRUSH));
 			}
 			inline static decltype(&hook) orig = 0;
 		} FillLayerBackground;
@@ -331,7 +333,7 @@ namespace fgo::dark::hook
 					// ブレンドしたカラーを適用します。
 					::SetDCBrushColor(dc, color);
 				}
-				return fgo::dark::hive.orig.FillRect(dc, rc, brush);
+				return hive.orig.FillRect(dc, rc, brush);
 			}
 			inline static decltype(&hook) orig = 0;
 		} FillGroupBackground;
@@ -503,12 +505,27 @@ namespace fgo::dark::hook
 					MY_TRACE(_T("「レイヤー名」ダイアログをフックします\n"));
 
 					LayerNameDialogProc.orig = dialogProc;
-					return orig(fgo::dark::hive.instance, templateName, parent, LayerNameDialogProc.hook);
+					return orig(hive.instance, templateName, parent, LayerNameDialogProc.hook);
 				}
 
 				return orig(instance, templateName, parent, dialogProc);
 			}
 			inline static decltype(&hook) orig = 0;
 		} ShowLayerNameDialog;
+
+		struct {
+			inline static HPEN WINAPI hook(int style, int width, COLORREF color)
+			{
+				if (style == PS_SOLID && width == 0 && color == RGB(0x00, 0xff, 0xff))
+				{
+					if (skin::config.exedit.xorPen.style != -1) style = skin::config.exedit.xorPen.style;
+					if (skin::config.exedit.xorPen.width != -1) width = skin::config.exedit.xorPen.width;
+					if (skin::config.exedit.xorPen.color != CLR_NONE) color = skin::config.exedit.xorPen.color;
+				}
+
+				return orig(style, width, color);
+			}
+			inline static decltype(&hook) orig = 0;
+		} CreatePen;
 	} exedit;
 }
