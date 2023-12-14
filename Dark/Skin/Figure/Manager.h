@@ -60,9 +60,9 @@ namespace fgo::dark::skin::figure
 				loadNode<DrawDoubleBumpEdge>(element, L"DrawDoubleBumpEdge");
 				loadNode<DrawDoubleEtchedEdge>(element, L"DrawDoubleEtchedEdge");
 				loadTextNode<DrawText>(element, L"DrawText");
-				loadTextNode<DrawText>(element, L"DrawShadowText");
+				loadTextNode<TextNode>(element, L"DrawShadowText");
 				loadIconNode<DrawIcon>(element, L"DrawIcon");
-				loadIconNode<DrawIcon>(element, L"DrawShadowIcon");
+				loadIconNode<IconNode>(element, L"DrawShadowIcon");
 			}
 
 			return S_OK;
