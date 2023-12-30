@@ -17,6 +17,7 @@
 
 ## 更新履歴
 
+* r14 - 2023/12/30 FontPreviewを追加しました
 * r13 - 2023/12/15 DarkとNestのバグフィックス
 * r12 - 2023/12/13 EasingSelectを追加しました
 * r11 - 2023/12/09 SceneSelectを追加しました
@@ -34,7 +35,7 @@
 ## 動作確認
 
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版43 https://scrapbox.io/nazosauna/patch.aul
+* (共存確認) patch.aul r43 謎さうなフォーク版45 https://scrapbox.io/nazosauna/patch.aul
 
 ## クレジット
 
