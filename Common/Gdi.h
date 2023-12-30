@@ -38,6 +38,7 @@ public:
 
 	GdiObjSelector(HDC dc, HGDIOBJ gdiobj)
 	{
+		m_dc = dc;
 		m_gdiobj = ::SelectObject(dc, gdiobj);
 	}
 
