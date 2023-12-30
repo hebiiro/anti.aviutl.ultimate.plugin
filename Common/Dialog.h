@@ -102,6 +102,11 @@ namespace Tools
 			return dialog->onDlgProc(hwnd, message, wParam, lParam);
 		}
 
+		BOOL setText(UINT id, LPCTSTR text)
+		{
+			return ::SetDlgItemText(*this, id, text);
+		}
+
 		BOOL setInt(UINT id, int value)
 		{
 			return ::SetDlgItemInt(*this, id, value, TRUE);
@@ -128,6 +133,13 @@ namespace Tools
 			::SendDlgItemMessage(*this, id, CB_ADDSTRING, 0, (LPARAM)text);
 
 			setComboBox(id, value, std::forward<Tail>(tail)...);
+		}
+
+		_bstr_t getText(UINT id)
+		{
+			TCHAR text[MAX_PATH] = {};
+			::GetDlgItemText(*this, id, text, std::size(text));
+			return text;
 		}
 
 		int getInt(UINT id)
