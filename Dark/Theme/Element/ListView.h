@@ -45,12 +45,26 @@ namespace fgo::dark::theme
 		{
 			MY_TRACE_FUNC("0x%08X, 0x%08X, %d, %d, %ws, 0x%08X, 0x%08X, (%ws)", theme, dc, partId, stateId, hive.safe_string(text, c), textFlags, textFlags2, hive.safe_string(rc));
 
+			// ここはOSからは呼ばれませんが、その他のアプリから呼ばれる可能性があるため処理します。
+
+			{
+				if (skin::theme::manager.onDrawThemeText(theme, dc, partId, stateId, text, c, textFlags, rc))
+					return S_OK;
+			}
+
 			return hive.orig.DrawThemeText(theme, dc, partId, stateId, text, c, textFlags, textFlags2, rc);
 		}
 
 		HRESULT onDrawThemeTextEx(HTHEME theme, HDC dc, int partId, int stateId, LPCWSTR text, int c, DWORD textFlags, LPRECT rc, const DTTOPTS* options) override
 		{
 			MY_TRACE_FUNC("0x%08X, 0x%08X, %d, %d, %ws, 0x%08X, (%ws), 0x%08X", theme, dc, partId, stateId, hive.safe_string(text, c), textFlags, hive.safe_string(rc), options);
+
+			// ここはOSからは呼ばれませんが、その他のアプリから呼ばれる可能性があるため処理します。
+
+			{
+				if (skin::theme::manager.onDrawThemeText(theme, dc, partId, stateId, text, c, textFlags, rc))
+					return S_OK;
+			}
 
 			return hive.orig.DrawThemeTextEx(theme, dc, partId, stateId, text, c, textFlags, rc, options);
 		}
