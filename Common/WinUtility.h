@@ -67,6 +67,16 @@ inline void GetMonitorRect(HWND hWnd, RECT& rect)
 	rect = monitor_info.rcWork;
 }
 
+inline void getMonitorRect(POINT point, LPRECT rc)
+{
+	GetMonitorRect(point, *rc);
+}
+
+inline void getMonitorRect(HWND hwnd, LPRECT rc)
+{
+	GetMonitorRect(hwnd, *rc);
+}
+
 inline void clientToWindow(HWND hwnd, LPRECT rc)
 {
 	RECT rcWindow; ::GetWindowRect(hwnd, &rcWindow);
