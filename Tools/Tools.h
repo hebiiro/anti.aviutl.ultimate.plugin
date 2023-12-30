@@ -107,6 +107,21 @@ namespace Tools {
 		return retValue;
 	}
 
+	// 絶対アドレスを書き換える。
+	template<class T>
+	inline void set_abs_addr_block(addr_t address, const T& x)
+	{
+		HANDLE process = ::GetCurrentProcess();
+
+		// 絶対アドレスから読み込む。
+		T retValue = {};
+		::ReadProcessMemory(process, (LPVOID)address, &retValue, sizeof(retValue), NULL);
+		// 絶対アドレスを書き換える。
+		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), NULL);
+		// 命令キャッシュをフラッシュする。
+		::FlushInstructionCache(process, (LPVOID)address, sizeof(x));
+	}
+
 	// 指定アドレスの値に x を加算する。
 	inline void add_int32(addr_t address, int value)
 	{
