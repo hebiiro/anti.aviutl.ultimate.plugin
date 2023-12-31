@@ -398,6 +398,11 @@ public:
 		return exdataTable + offset + 0x0004;
 	}
 
+	HWND GetFontComboBox() const
+	{
+		return *(HWND*)(m_exedit + 0x0023630C);
+	}
+
 public:
 
 	static int GetFilterIndex(ExEdit::Object* object, int filterId)
