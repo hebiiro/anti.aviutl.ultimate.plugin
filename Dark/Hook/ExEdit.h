@@ -119,6 +119,9 @@ namespace fgo::dark::hook
 
 			font = (HFONT*)(exedit + 0x00167D84);
 
+			Tools::attach_abs_call(FillTimelineHeader, exedit + 0x0003826C); // タイムライン左上部分の塗りつぶし。
+			Tools::attach_abs_call(FillTimelineHeader, exedit + 0x00037F4F); // タイムラインヘッダー部分の塗りつぶし。
+
 			Tools::attach_abs_call(DrawRootText, exedit + 0x0003833E);
 			Tools::attach_abs_call(DrawRootEdge, exedit + 0x0003836A);
 			Tools::attach_abs_call(DrawLayerText, exedit + 0x00037CFF);
@@ -155,6 +158,20 @@ namespace fgo::dark::hook
 		}
 
 		inline static struct {
+			inline static BOOL WINAPI hook(HDC dc, LPCRECT rc, HBRUSH brush)
+			{
+				MY_TRACE_FUNC("0x%08X, 0x%08X", dc, brush);
+
+				HTHEME theme = skin::theme::manager.getTheme(skin::theme::THEME_WINDOW);
+				if (skin::theme::manager.onDrawThemeBackground(theme, dc, skin::theme::WINDOW_DIALOGFACE, 0, rc))
+					return TRUE;
+
+				return TRUE;
+			}
+			inline static decltype(&hook) orig = ::FillRect;
+		} FillTimelineHeader;
+
+		inline static struct {
 			inline static BOOL WINAPI hook(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
 				MY_TRACE_FUNC("0x%08X, %d, %d, 0x%08X", dc, x, y, options);
@@ -168,7 +185,7 @@ namespace fgo::dark::hook
 
 				return TRUE;
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::ExtTextOutA;
 		} DrawRootText;
 
 		inline static struct {
@@ -182,7 +199,7 @@ namespace fgo::dark::hook
 
 				return TRUE;
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::DrawEdge;
 		} DrawRootEdge;
 
 		inline static struct {
@@ -223,7 +240,7 @@ namespace fgo::dark::hook
 
 				return ::ExtTextOutA(dc, x, y, options, rc, text, c, dx);
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::ExtTextOutA;
 		} DrawLayerText;
 
 		inline static struct {
@@ -237,7 +254,7 @@ namespace fgo::dark::hook
 
 				return ::DrawEdge(dc, rc, edge, flags);
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::DrawEdge;
 		} DrawLayerEdge;
 
 		inline static struct {
@@ -308,7 +325,7 @@ namespace fgo::dark::hook
 
 				return hive.orig.FillRect(dc, rc, (HBRUSH)::GetStockObject(DC_BRUSH));
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::FillRect;
 		} FillLayerBackground;
 
 		//
@@ -335,7 +352,7 @@ namespace fgo::dark::hook
 				}
 				return hive.orig.FillRect(dc, rc, brush);
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::FillRect;
 		} FillGroupBackground;
 
 		inline static struct {
@@ -525,7 +542,7 @@ namespace fgo::dark::hook
 
 				return orig(style, width, color);
 			}
-			inline static decltype(&hook) orig = 0;
+			inline static decltype(&hook) orig = ::CreatePen;
 		} CreatePen;
 	} exedit;
 }
