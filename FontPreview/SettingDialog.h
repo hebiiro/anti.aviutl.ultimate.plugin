@@ -64,6 +64,9 @@ namespace fgo::font_preview
 			COMBOBOXINFO cbi = { sizeof(cbi) };
 			::GetComboBoxInfo(combobox, &cbi);
 
+			// 一旦リストボックスを非表示にします。
+			::ShowWindow(cbi.hwndList, SW_HIDE);
+
 			RECT rcComboBox; ::GetWindowRect(combobox, &rcComboBox);
 
 			RECT rcListBox = { 0, 0, hive.listboxWidth, hive.listboxHeight };
@@ -155,8 +158,8 @@ namespace fgo::font_preview
 			// リストボックス本体の位置を変更します。
 			::SetWindowPos(cbi.hwndList, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
 
-			// リストボックスの描画を再開します。
-			::SendMessage(cbi.hwndList, WM_SETREDRAW, TRUE, 0);
+			// リストボックスを表示します。
+			::ShowWindow(cbi.hwndList, SW_SHOW);
 
 			return TRUE;
 		}
@@ -265,11 +268,6 @@ namespace fgo::font_preview
 
 					if (id == Hive::ControlID::FontComboBox && code == CBN_DROPDOWN)
 					{
-						// ちらつき防止の為、一旦リストボックスの描画を停止します。
-						COMBOBOXINFO cbi = { sizeof(cbi) };
-						::GetComboBoxInfo(sender, &cbi);
-						::SendMessage(cbi.hwndList, WM_SETREDRAW, FALSE, 0);
-
 						// このタイミングでは早すぎるので
 						// 一旦メッセージをポストしてから処理します。
 						::PostMessage(hwnd, Hive::WindowMessage::DropDown, 0, (LPARAM)sender);
