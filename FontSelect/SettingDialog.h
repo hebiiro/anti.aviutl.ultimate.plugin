@@ -50,13 +50,10 @@ namespace fgo::font_select
 			// メニューを表示します。
 			POINT point; ::GetCursorPos(&point);
 			UINT id = ::TrackPopupMenu(menu, TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, 0, hive.mainWindow, 0);
-
-			// 選択アイテムからフォント名を取得します。
-			WCHAR fontName[MAX_PATH] = {};
-			::GetMenuStringW(menu, id, fontName, std::size(fontName), MF_BYCOMMAND);
+			if (id == 0) return FALSE;
 
 			// 選択されたフォントをフォントのコンボボックスに適用します。
-			if (CB_ERR == ::SendMessageW(combobox, CB_SELECTSTRING, -1, (LPARAM)fontName)) return FALSE;
+			if (CB_ERR == ::SendMessageW(combobox, CB_SETCURSEL, id - 1, 0)) return FALSE;
 
 			// 選択フォントが変更されたことを設定ダイアログに通知します。
 			::SendMessageW(::GetParent(combobox), WM_COMMAND,

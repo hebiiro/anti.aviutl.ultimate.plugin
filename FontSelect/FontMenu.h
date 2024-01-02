@@ -32,10 +32,8 @@ namespace fgo::font_select
 			std::wstringstream stream(string);
 			if (!stream) return;
 
-			UINT item_id = 1; // 最初のアイテムIDです。
-
 			// テキストファイルを読み込みます。
-			read(stream, menu, item_id);
+			read(stream, menu);
 		}
 
 		//
@@ -72,7 +70,7 @@ namespace fgo::font_select
 		//
 		// 文字列ストリームからメニューを構築します。
 		//
-		BOOL read(std::wstringstream& stream, HMENU menu, UINT& item_id)
+		BOOL read(std::wstringstream& stream, HMENU menu)
 		{
 			std::wstring line;
 			while (std::getline(stream, line))
@@ -108,7 +106,7 @@ namespace fgo::font_select
 						::AppendMenuW(menu, MF_POPUP, (UINT)subMenu, &line[1]);
 
 						// 読み込み対象をサブメニューに変えて処理を続けます。
-						read(stream, subMenu, item_id);
+						read(stream, subMenu);
 					}
 				}
 				// グループ行ではない場合は
@@ -120,13 +118,15 @@ namespace fgo::font_select
 						std::wregex re(line);
 
 						// 拡張編集が読み込んでいるフォント名を列挙します。
-						for (const auto& fontName : fonts.collection)
+						for (size_t i = 0; i < fonts.collection.size(); i++)
 						{
+							const auto& fontName = fonts.collection[i];
+
 							// フォント名がlineにマッチするなら
 							if (std::regex_search(fontName, re))
 							{
 								// アイテムをメニューに追加します。
-								::AppendMenuW(menu, MF_STRING | MF_OWNERDRAW, item_id++, fontName.c_str());
+								::AppendMenuW(menu, MF_STRING | MF_OWNERDRAW, i + 1, fontName.c_str());
 							}
 						}
 					}
@@ -137,7 +137,7 @@ namespace fgo::font_select
 						::StringCchPrintfW(text, std::size(text), L"%sは文法エラーです", line.c_str());
 
 						// 正規表現の文法エラーであることをユーザーに知らせます。
-						::AppendMenuW(menu, MF_STRING, item_id++, text);
+						::AppendMenuW(menu, MF_STRING, 0, text);
 					}
 				}
 			}
