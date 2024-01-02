@@ -134,7 +134,7 @@ namespace fgo::font_preview
 				w = std::min<int>(w, getWidth(rcMonitor));
 
 				// リストボックスのレフトがモニタのレフトからはみ出す場合は
-				if (rcComboBox.left - w < rcMonitor.left)
+				if (rcComboBox.left < rcMonitor.left)
 				{
 					// リストボックスのレフトがモニタのレフトと一致するように配置します。
 					x = rcMonitor.left;
