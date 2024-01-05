@@ -1,0 +1,122 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 68, 92
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CLIPSIBLINGS | WS_SYSMENU
+EXSTYLE WS_EX_NOPARENTNOTIFY | WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "適用",IDC_ZOOM_0_APPLY,40,0,28,12
+    EDITTEXT        IDC_ZOOM_0,0,0,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_ZOOM_0_SPIN,"msctls_updown32",UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HORZ,20,0,20,12
+    PUSHBUTTON      "適用",IDC_ZOOM_1_APPLY,40,16,28,12
+    EDITTEXT        IDC_ZOOM_1,0,16,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_ZOOM_1_SPIN,"msctls_updown32",UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HORZ,20,16,20,12
+    PUSHBUTTON      "適用",IDC_ZOOM_2_APPLY,40,32,28,12
+    EDITTEXT        IDC_ZOOM_2,0,32,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_ZOOM_2_SPIN,"msctls_updown32",UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HORZ,20,32,20,12
+    PUSHBUTTON      "適用",IDC_ZOOM_3_APPLY,40,48,28,12
+    EDITTEXT        IDC_ZOOM_3,0,48,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_ZOOM_3_SPIN,"msctls_updown32",UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HORZ,20,48,20,12
+    PUSHBUTTON      "適用",IDC_ZOOM_4_APPLY,40,64,28,12
+    EDITTEXT        IDC_ZOOM_4,0,64,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_ZOOM_4_SPIN,"msctls_updown32",UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HORZ,20,64,20,12
+    PUSHBUTTON      "適用",IDC_ZOOM_5_APPLY,40,80,28,12
+    EDITTEXT        IDC_ZOOM_5,0,80,20,12,ES_CENTER | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_ZOOM_5_SPIN,"msctls_updown32",UDS_ALIGNRIGHT | UDS_ARROWKEYS | UDS_HORZ,20,80,20,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_MAIN_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 61
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 85
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_MAIN_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

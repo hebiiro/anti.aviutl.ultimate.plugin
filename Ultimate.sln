@@ -68,6 +68,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FontPreview", "FontPreview\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FontSelect", "FontSelect\FontSelect.vcxproj", "{6738BA93-5F7C-40A7-9407-FBF6525FFA04}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZoomSelect", "ZoomSelect\ZoomSelect.vcxproj", "{AF909173-77CA-4F05-8B83-56F2942A2ED8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -480,6 +482,22 @@ Global
 		{6738BA93-5F7C-40A7-9407-FBF6525FFA04}.RelStatic|x64.Build.0 = Release|x64
 		{6738BA93-5F7C-40A7-9407-FBF6525FFA04}.RelStatic|x86.ActiveCfg = Release|Win32
 		{6738BA93-5F7C-40A7-9407-FBF6525FFA04}.RelStatic|x86.Build.0 = Release|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Debug|x64.ActiveCfg = Debug|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Debug|x64.Build.0 = Debug|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Debug|x86.ActiveCfg = Debug|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Debug|x86.Build.0 = Debug|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.DebugStatic|x64.ActiveCfg = Debug|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.DebugStatic|x64.Build.0 = Debug|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.DebugStatic|x86.ActiveCfg = Debug|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.DebugStatic|x86.Build.0 = Debug|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Release|x64.ActiveCfg = Release|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Release|x64.Build.0 = Release|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Release|x86.ActiveCfg = Release|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.Release|x86.Build.0 = Release|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.RelStatic|x64.ActiveCfg = Release|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.RelStatic|x64.Build.0 = Release|x64
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.RelStatic|x86.ActiveCfg = Release|Win32
+		{AF909173-77CA-4F05-8B83-56F2942A2ED8}.RelStatic|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
