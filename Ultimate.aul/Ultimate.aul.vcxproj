@@ -106,7 +106,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\MySpace\AviUtl\aviutl110_test\Plugins\$(TargetName)"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "$(AviUtlPluginFolder)\$(TargetName).aul"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,7 +129,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\MySpace\AviUtl\aviutl110_test\Plugins\$(TargetName)"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "$(AviUtlPluginFolder)\$(TargetName).aul"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -148,7 +148,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\$(TargetName)"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "$(AviUtlPluginFolder)\$(TargetName).aul"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,7 +171,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\$(TargetName)"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "$(AviUtlPluginFolder)\$(TargetName).aul"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

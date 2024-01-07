@@ -12,7 +12,7 @@
       <ModuleDefinitionFile>Main.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\MySpace\AviUtl\aviutl110_test\Plugins\UltimateAddin\$(TargetName).aua"</Command>
+      <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "$(UltimateAddinFolder)\$(TargetName).aua"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />

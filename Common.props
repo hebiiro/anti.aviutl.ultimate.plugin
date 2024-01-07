@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <AviUtlExe>aviutl.exe</AviUtlExe>
+    <AviUtlFolder>C:\MySpace\AviUtl\aviutl110_test</AviUtlFolder>
+    <AviUtlPluginFolder>$(AviUtlFolder)\Plugins</AviUtlPluginFolder>
+    <UltimateAddinFolder>$(AviUtlPluginFolder)\UltimateAddin</UltimateAddinFolder>
+    <UltimateConfigFolder>$(AviUtlPluginFolder)\UltimateConfig</UltimateConfigFolder>
+    <AviUtlDebugExe>aviutl.exe</AviUtlDebugExe>
+    <AviUtlDebugFolder>C:\MySpace\AviUtl\aviutl110_test_psd2</AviUtlDebugFolder>
+  </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(SolutionDir)_bin\</OutDir>
     <IntDir>$(SolutionDir)_obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
@@ -16,5 +24,27 @@
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BuildMacro Include="AviUtlExe">
+      <Value>$(AviUtlExe)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AviUtlFolder">
+      <Value>$(AviUtlFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AviUtlPluginFolder">
+      <Value>$(AviUtlPluginFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="UltimateAddinFolder">
+      <Value>$(UltimateAddinFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="UltimateConfigFolder">
+      <Value>$(UltimateConfigFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AviUtlDebugExe">
+      <Value>$(AviUtlDebugExe)</Value>
+    </BuildMacro>
+    <BuildMacro Include="AviUtlDebugFolder">
+      <Value>$(AviUtlDebugFolder)</Value>
+    </BuildMacro>
+  </ItemGroup>
 </Project>
