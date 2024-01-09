@@ -1,6 +1,7 @@
 ﻿#include "framework.h"
 #include "Fate/Grand Order"
 #include "Share/Filer.h"
+#include "Dark/dark.h"
 
 #include <shobjidl.h>
 _COM_SMARTPTR_TYPEDEF(IExplorerBrowser, __uuidof(IExplorerBrowser));

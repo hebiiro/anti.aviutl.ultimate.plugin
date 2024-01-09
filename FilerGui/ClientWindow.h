@@ -7,6 +7,7 @@ public:
 
 	inline static const LPCTSTR ClassName = _T("FilerGui");
 
+	std::shared_ptr<Dark::Module> dark;
 	std::shared_ptr<FileUpdateChecker> config_file_checker;
 
 	//
@@ -20,9 +21,10 @@ public:
 		if (!Create())
 			throw _T("クライアントウィンドウの作成に失敗しました");
 
-		// Darkアドインを読み込みます。
-		if (!loadDark(hostWindow, *this))
-			MY_TRACE(_T("Darkアドインの読み込みに失敗しました\n"));
+		// Darkアドインまたは黒窓でダークモード化します。
+		dark = std::make_shared<Dark::Module>();
+		if (!dark->init(hostWindow, *this))
+			MY_TRACE(_T("ダークモード化に失敗しました\n"));
 
 		// ホストウィンドウにクライアントウィンドウのハンドルを渡します。
 		Share::Filer::HostWindow::setClientWindow(hostWindow, *this);
@@ -52,36 +54,6 @@ public:
 	}
 
 	//
-	// Darkアドインが存在する場合は読み込みます。
-	//
-	inline static BOOL loadDark(HWND hostWindow, HWND hwnd)
-	{
-		MY_TRACE_FUNC("0x%08X, 0x%08X", hostWindow, hwnd);
-
-		if (!Share::Filer::HostWindow::getDark(hostWindow))
-			return FALSE;
-
-		TCHAR fileName[MAX_PATH] = {};
-		::GetModuleFileName(AfxGetInstanceHandle(), fileName, std::size(fileName));
-		::PathRemoveFileSpec(fileName);
-		::PathAppend(fileName, _T("Dark.aua"));
-		MY_TRACE_TSTR(fileName);
-
-		HMODULE dark = ::LoadLibrary(fileName);
-		MY_TRACE_HEX(dark);
-		if (!dark) return FALSE;
-
-		void (WINAPI* dark_init)(HWND hwnd) = 0;
-		Tools::get_proc(dark, "dark_init", dark_init);
-		MY_TRACE_HEX(dark_init);
-		if (!dark_init) return FALSE;
-
-		dark_init(hwnd);
-
-		return TRUE;
-	}
-
-	//
 	// ウィンドウを作成します。
 	//
 	BOOL Create()
@@ -106,7 +78,7 @@ public:
 	//
 	HRESULT loadConfig()
 	{
-		MY_TRACE(_T("ClientWindow::loadConfig()\n"));
+		MY_TRACE_FUNC("");
 
 		try
 		{
@@ -137,7 +109,7 @@ public:
 	//
 	HRESULT load(const MSXML2::IXMLDOMElementPtr& element)
 	{
-		MY_TRACE(_T("ClientWindow::load()\n"));
+		MY_TRACE_FUNC("");
 
 		for (auto& filerDialog : FilerDialog::collection)
 		{
@@ -164,7 +136,7 @@ public:
 	//
 	HRESULT saveConfig()
 	{
-		MY_TRACE(_T("ClientWindow::saveConfig()\n"));
+		MY_TRACE_FUNC("");
 
 		try
 		{
@@ -197,7 +169,7 @@ public:
 	//
 	HRESULT save(const MSXML2::IXMLDOMElementPtr& element)
 	{
-		MY_TRACE(_T("ClientWindow::save()\n"));
+		MY_TRACE_FUNC("");
 
 		for (auto& filerDialog : FilerDialog::collection)
 		{

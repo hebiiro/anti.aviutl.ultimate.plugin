@@ -20,6 +20,9 @@ namespace Dark
 		};
 	};
 
+	//
+	// ダークモードプラグインのAPIを管理します。
+	//
 	struct Api
 	{
 		UINT (WINAPI* dark_getCurrentId)() = 0;
@@ -78,6 +81,61 @@ namespace Dark
 			if (!dark_getNamedColor) return 0;
 
 			return dark_getNamedColor(name);
+		}
+	};
+
+	//
+	// ダークモードプラグインを管理します。
+	//
+	struct Module : Api {
+		HMODULE dark = 0;
+
+		//
+		// ダークモードプラグインをロードします。
+		// 外部プロセスから最初に1回だけ呼び出してください。
+		// hostWindowはAviUtlプロセス内のウィンドウを指定してください。
+		// clientWindowは現在のプロセスのウィンドウを指定してください。
+		//
+		BOOL init(HWND hostWindow, HWND clientWindow)
+		{
+			DWORD pid = 0;
+			DWORD tid = ::GetWindowThreadProcessId(hostWindow, &pid);
+			HANDLE host = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+			if (!host) return FALSE;
+
+			HMODULE modules[1024] = {};
+			DWORD c = 0;
+			if (::EnumProcessModules(host, modules, sizeof(modules), &c)) {
+				c /= sizeof(HMODULE);
+				for (DWORD i = 0; i < c; i++) {
+					char fileName[MAX_PATH] = {};
+					::GetModuleFileNameExA(host, modules[i], fileName, std::size(fileName));
+					if (::StrStrIA(fileName, "Dark.aua")) {
+						HMODULE dark = ::LoadLibraryExA(fileName, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+						BOOL (WINAPI* dark_init)(HWND hwnd) =
+							(decltype(dark_init))::GetProcAddress(dark, "dark_init");
+						if (!dark_init) continue;
+						dark_init(clientWindow);
+						this->dark = dark;
+						break;
+					}
+					else if (::StrStrIA(fileName, "DarkenWindow.aul")) {
+						HMODULE dark = ::LoadLibraryExA(fileName, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+						void (WINAPI* DarkenWindow_init)(HWND hwnd) =
+							(decltype(DarkenWindow_init))::GetProcAddress(dark, "DarkenWindow_init");
+						if (!DarkenWindow_init) continue;
+						DarkenWindow_init(clientWindow);
+						this->dark = dark;
+						break;
+					}
+				}
+			}
+
+			::CloseHandle(host);
+
+			if (!this->dark) return FALSE;
+
+			return __super::init();
 		}
 	};
 }
