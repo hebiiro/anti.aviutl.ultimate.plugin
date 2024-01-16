@@ -32,6 +32,17 @@ namespace Tools
 		};
 
 		template<class T>
+		struct Float : Prop {
+			UINT id; T& value;
+			Float(Dialog* dialog, UINT id, T& value, LPCTSTR format) : id(id), value(value) {
+				dialog->setFloat(id, value, format);
+			}
+			void apply(Dialog* dialog) override {
+				value = dialog->getFloat(id);
+			}
+		};
+
+		template<class T>
 		struct Check : Prop {
 			UINT id; T& value;
 			Check(Dialog* dialog, UINT id, T& value) : id(id), value(value) {
@@ -45,6 +56,9 @@ namespace Tools
 		template<class T>
 		struct ComboBox : Prop {
 			UINT id; T& value;
+			ComboBox(Dialog* dialog, UINT id, T& value) : id(id), value(value) {
+				dialog->setComboBox(id, value);
+			}
 			template <class... Tail>
 			ComboBox(Dialog* dialog, UINT id, T& value, LPCTSTR text, Tail&&... tail) : id(id), value(value) {
 				dialog->setComboBox(id, value, text, std::forward<Tail>(tail)...);
@@ -67,8 +81,18 @@ namespace Tools
 		};
 
 		template<class T>
+		void setFloat(UINT id, T& value, LPCTSTR format) {
+			props.emplace_back(std::make_shared<Float<T>>(this, id, value, format));
+		};
+
+		template<class T>
 		void setCheck(UINT id, T& value) {
 			props.emplace_back(std::make_shared<Check<T>>(this, id, value));
+		};
+
+		template<class T>
+		void setComboBox(UINT id, T& value) {
+			props.emplace_back(std::make_shared<ComboBox<T>>(this, id, value));
 		};
 
 		template<class T, class... Tail>

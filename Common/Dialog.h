@@ -117,6 +117,13 @@ namespace Tools
 			return ::SetDlgItemInt(*this, id, value, FALSE);
 		}
 
+		BOOL setFloat(UINT id, float value, LPCTSTR format)
+		{
+			TCHAR text[MAX_PATH];
+			::StringCbPrintf(text, sizeof(text), format, value);
+			return ::SetDlgItemText(*this, id, text);
+		}
+
 		void setCheck(UINT id, BOOL value)
 		{
 			::SendDlgItemMessage(*this, id, BM_SETCHECK, value ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -150,6 +157,13 @@ namespace Tools
 		UINT getUInt(UINT id)
 		{
 			return ::GetDlgItemInt(*this, id, 0, FALSE);
+		}
+
+		float getFloat(UINT id)
+		{
+			TCHAR text[MAX_PATH];
+			::GetDlgItemText(*this, id, text, MAX_PATH);
+			return _tcstof(text, 0);
 		}
 
 		BOOL getCheck(UINT id)
