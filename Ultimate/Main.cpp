@@ -115,6 +115,7 @@ namespace fgo
 
 		static AviUtl::FilterPluginDLL audio_filter = {
 			.flag =
+				AviUtl::FilterPlugin::Flag::AudioFilter |
 				AviUtl::FilterPlugin::Flag::NoConfig |
 				AviUtl::FilterPlugin::Flag::AlwaysActive |
 				AviUtl::FilterPlugin::Flag::ExInformation,
