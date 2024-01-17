@@ -164,7 +164,10 @@ namespace fgo::editbox_tweaker
 
 			if (unicodeInput) {
 				Tools::attach(DispatchMessageA);
-				Tools::attach(PeekMessageA);
+				// ::PeekMessageA()を::PeekMessageW()に置き換えてしまうと
+				// フックしていないエディットボックスで日本語入力ができなくなってしまうので
+				// ::PeekMessageA()は置き換えないようにします。
+//				Tools::attach(PeekMessageA);
 			}
 
 			// 拡張編集内の::CreateWindowExW()の呼び出しをフックします。
