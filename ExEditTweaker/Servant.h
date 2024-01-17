@@ -3,7 +3,7 @@
 namespace fgo::exedit_tweaker
 {
 	//
-	// このクラスはエディットボックスを微調整します。
+	// このクラスは拡張編集を微調整します。
 	//
 	inline struct ExEditTweaker : Servant
 	{
