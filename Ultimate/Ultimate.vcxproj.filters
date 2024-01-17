@@ -151,6 +151,9 @@
     <ClInclude Include="..\Share\EasingSelect.h">
       <Filter>Share</Filter>
     </ClInclude>
+    <ClInclude Include="..\Share\AudioGraph.h">
+      <Filter>Share</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
