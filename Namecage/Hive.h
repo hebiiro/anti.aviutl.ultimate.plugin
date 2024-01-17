@@ -7,8 +7,10 @@ namespace fgo::namecage
 	//
 	inline struct Hive
 	{
-		inline static const LPCTSTR AppName = _T("アイテム名常時表示");
+		inline static const LPCWSTR Name = L"Namecage";
+		inline static const LPCWSTR DisplayName = L"アイテム名常時表示";
 
 		HINSTANCE instance = 0;
+		int offset = -6;
 	} hive;
 }

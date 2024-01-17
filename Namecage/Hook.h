@@ -9,22 +9,6 @@ namespace fgo::namecage
 	inline struct Hook
 	{
 		//
-		// コンフィグファイルから設定を読み込みます。
-		//
-		BOOL load(LPCWSTR path)
-		{
-			return TRUE;
-		}
-
-		//
-		// コンフィグファイルに設定を保存します。
-		//
-		BOOL save(LPCWSTR path)
-		{
-			return TRUE;
-		}
-
-		//
 		// 初期化処理です。
 		//
 		BOOL init()
@@ -72,7 +56,9 @@ namespace fgo::namecage
 				MY_TRACE_RECT2(rc[0]); // クリッピング矩形です。
 				MY_TRACE_RECT2(rc[1]); // アイテム全体の矩形です。
 
-				x = std::max<int>(70, x);
+				// 70は拡張編集内の定数です。
+				// それにユーザーが指定できるオフセットを加えます。
+				x = std::max<int>(70 + hive.offset, x);
 
 				return orig(dc, x, y, options, rc, text, c, dx);
 			}

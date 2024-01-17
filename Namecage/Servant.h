@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Hive.h"
+#include "Config.h"
 #include "Hook.h"
 
 namespace fgo::namecage
@@ -13,7 +15,7 @@ namespace fgo::namecage
 		//
 		LPCWSTR get_servant_name() override
 		{
-			return L"Namecage";
+			return Hive::Name;
 		}
 
 		//
@@ -21,7 +23,7 @@ namespace fgo::namecage
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"アイテム名常時表示";
+			return Hive::DisplayName;
 		}
 
 		//
@@ -67,6 +69,7 @@ namespace fgo::namecage
 					get_servant_display_name(), MB_OK | MB_ICONWARNING);
 			}
 
+			config.init();
 			hook.init();
 
 			return FALSE;
@@ -78,6 +81,7 @@ namespace fgo::namecage
 		BOOL on_window_exit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
 		{
 			hook.exit();
+			config.exit();
 
 			return FALSE;
 		}
