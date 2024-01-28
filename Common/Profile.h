@@ -12,6 +12,11 @@ inline HRESULT WINAPI getPrivateProfileBSTR(LPCWSTR fileName, LPCWSTR appName, L
 	return S_OK;
 }
 
+inline HRESULT WINAPI getPrivateProfileEscapeBSTR(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, _bstr_t& outValue)
+{
+	return getPrivateProfileBSTR(fileName, appName, keyName, outValue);
+}
+
 template<class T>
 inline HRESULT WINAPI getPrivateProfileString(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, T& outValue)
 {
@@ -489,6 +494,15 @@ template<class T>
 inline HRESULT WINAPI setPrivateProfileBSTR(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value)
 {
 	::WritePrivateProfileStringW(appName, keyName, value, fileName);
+	return S_OK;
+}
+
+template<class T>
+inline HRESULT WINAPI setPrivateProfileEscapeBSTR(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value)
+{
+	WCHAR text[MAX_PATH] = {};
+	::StringCchPrintfW(text, std::size(text), L"\"%ws\"", (LPCWSTR)value);
+	::WritePrivateProfileStringW(appName, keyName, text, fileName);
 	return S_OK;
 }
 
