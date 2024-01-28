@@ -26,6 +26,7 @@ namespace fgo::font_preview
 		int listboxWidth = 400; // リストボックスの幅。
 		int listboxHeight = 600; // リストボックスの高さ。
 		_bstr_t previewText = L"AaＡａあア亜"; // プレビュー用に表示するテキスト。
+		BOOL marge = FALSE;
 
 		template <class... Args>
 		int messageBox(Args... args) {

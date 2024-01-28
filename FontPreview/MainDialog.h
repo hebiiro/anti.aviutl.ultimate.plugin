@@ -39,6 +39,7 @@ namespace fgo::font_preview
 			setInt(IDC_LISTBOX_HEIGHT, hive.listboxHeight);
 			setText(IDC_PREVIEW_TEXT, hive.previewText);
 			setComboBox(IDC_PAINT_MODE, paint.mode);
+			setCheck(IDC_MARGE, hive.marge);
 			setText(IDC_NORMAL_THEME, paint.state[Paint::StateID::Normal].name);
 			setUInt(IDC_NORMAL_FILL, paint.state[Paint::StateID::Normal].color.fill);
 			setUInt(IDC_NORMAL_TEXT, paint.state[Paint::StateID::Normal].color.text);
@@ -62,6 +63,7 @@ namespace fgo::font_preview
 			hive.listboxWidth = getInt(IDC_LISTBOX_WIDTH);
 			hive.listboxHeight = getInt(IDC_LISTBOX_HEIGHT);
 			hive.previewText = getText(IDC_PREVIEW_TEXT);
+			hive.marge = getCheck(IDC_MARGE);
 			paint.mode = getComboBox(IDC_PAINT_MODE);
 			paint.state[Paint::StateID::Normal].name = getText(IDC_NORMAL_THEME);
 			paint.state[Paint::StateID::Normal].color.fill = getUInt(IDC_NORMAL_FILL);
@@ -110,6 +112,12 @@ namespace fgo::font_preview
 					case IDC_PAINT_MODE:
 						{
 							if (code == CBN_SELCHANGE) updateConfig();
+
+							break;
+						}
+					case IDC_MARGE:
+						{
+							updateConfig();
 
 							break;
 						}

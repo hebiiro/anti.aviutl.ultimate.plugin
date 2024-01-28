@@ -225,6 +225,15 @@ namespace fgo::font_preview
 					int bkMode = ::SetBkMode(dc, TRANSPARENT);
 					COLORREF textColor = ::SetTextColor(dc, paint.getTextColor(stateId));
 
+					std::wstring previewText = (LPCWSTR)hive.previewText;
+					UINT previewFormat = DT_RIGHT | DT_BOTTOM | DT_NOPREFIX;
+
+					if (hive.marge)
+					{
+						previewText = text + previewText;
+						previewFormat = DT_LEFT | DT_TOP | DT_NOPREFIX;
+					}
+
 					{
 						// プレビュー用のテキストを描画します。
 
@@ -234,9 +243,10 @@ namespace fgo::font_preview
 							DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, text.c_str());
 						GdiObjSelector fontSelector(dc, font);
 
-						::DrawTextW(dc, hive.previewText, -1, &rc, DT_RIGHT | DT_BOTTOM | DT_NOPREFIX);
+						::DrawTextW(dc, previewText.c_str(), -1, &rc, previewFormat);
 					}
 
+					if (!hive.marge)
 					{
 						// フォント名を描画します。
 

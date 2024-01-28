@@ -118,7 +118,7 @@ namespace fgo::font_preview
 		//
 		inline static std::wstring getConfigFileName()
 		{
-			return magi.getConfigFileName(L"FontPreview.ini");
+			return magi.getConfigFileName(hive.Name) + L".ini";
 		}
 
 		//
@@ -139,7 +139,8 @@ namespace fgo::font_preview
 			getPrivateProfileInt(path, L"Config", L"itemHeight", hive.itemHeight);
 			getPrivateProfileInt(path, L"Config", L"listboxWidth", hive.listboxWidth);
 			getPrivateProfileInt(path, L"Config", L"listboxHeight", hive.listboxHeight);
-			getPrivateProfileBSTR(path, L"Config", L"previewText", hive.previewText);
+			getPrivateProfileEscapeBSTR(path, L"Config", L"previewText", hive.previewText);
+			getPrivateProfileBool(path, L"Config", L"marge", hive.marge);
 			getPrivateProfileLabel(path, L"Config", L"paint.mode", paint.mode, Paint::Mode::label);
 			getPrivateProfileBSTR(path, L"Config", L"paint.normal.name", paint.state[Paint::StateID::Normal].name);
 			getPrivateProfileColor(path, L"Config", L"paint.normal.fill", paint.state[Paint::StateID::Normal].color.fill);
@@ -172,7 +173,8 @@ namespace fgo::font_preview
 			setPrivateProfileInt(path, L"Config", L"itemHeight", hive.itemHeight);
 			setPrivateProfileInt(path, L"Config", L"listboxWidth", hive.listboxWidth);
 			setPrivateProfileInt(path, L"Config", L"listboxHeight", hive.listboxHeight);
-			setPrivateProfileBSTR(path, L"Config", L"previewText", hive.previewText);
+			setPrivateProfileEscapeBSTR(path, L"Config", L"previewText", hive.previewText);
+			setPrivateProfileBool(path, L"Config", L"marge", hive.marge);
 			setPrivateProfileLabel(path, L"Config", L"paint.mode", paint.mode, Paint::Mode::label);
 			setPrivateProfileBSTR(path, L"Config", L"paint.normal.name", paint.state[Paint::StateID::Normal].name);
 			setPrivateProfileColor(path, L"Config", L"paint.normal.fill", paint.state[Paint::StateID::Normal].color.fill);
