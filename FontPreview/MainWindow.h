@@ -7,7 +7,7 @@ namespace fgo::font_preview
 	// このクラスはメインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	struct MainWindow : Tools::AviUtl::PluginWindow
+	inline struct MainWindow : Tools::AviUtl::PluginWindow
 	{
 		MainDialog mainDialog;
 
@@ -66,5 +66,5 @@ namespace fgo::font_preview
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
-	};
+	} mainWindow;
 }

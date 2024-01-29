@@ -6,7 +6,7 @@ namespace fgo::font_preview
 	//
 	// このクラスは設定ダイアログのサブクラスです。
 	//
-	struct SettingDialog : Tools::Window
+	inline struct SettingDialog : Tools::Window
 	{
 		//
 		// コンボボックス内の指定されたアイテムのテキストを返します。
@@ -303,5 +303,5 @@ namespace fgo::font_preview
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
-	};
+	} settingDialog;
 }

@@ -23,6 +23,7 @@
     <ClInclude Include="SettingDialog.h" />
     <ClInclude Include="Hook.h" />
     <ClInclude Include="Paint.h" />
+    <ClInclude Include="Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

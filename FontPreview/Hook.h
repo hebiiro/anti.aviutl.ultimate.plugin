@@ -6,7 +6,7 @@ namespace fgo::font_preview
 	//
 	// このクラスはフック処理を担当します。
 	//
-	struct Hook
+	inline struct Hook
 	{
 		//
 		// 初期化を行います。
@@ -40,5 +40,5 @@ namespace fgo::font_preview
 
 			return TRUE;
 		}
-	};
+	} hook;
 }
