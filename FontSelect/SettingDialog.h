@@ -7,7 +7,7 @@ namespace fgo::font_select
 	//
 	// このクラスは設定ダイアログのサブクラスです。
 	//
-	struct SettingDialog : Tools::Window
+	inline struct SettingDialog : Tools::Window
 	{
 		//
 		// 初期化処理を行います。
@@ -104,5 +104,5 @@ namespace fgo::font_select
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
-	};
+	} settingDialog;
 }

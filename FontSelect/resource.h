@@ -13,6 +13,7 @@
 #define IDC_PAINT_MODE                  1021
 #define IDC_PREVIEW_TEXT_LABEL          1022
 #define IDC_PREVIEW_TEXT                1023
+#define IDC_MARGE                       1024
 #define IDC_NORMAL_THEME_LABEL          1030
 #define IDC_NORMAL_THEME                1031
 #define IDC_NORMAL_FILL_LABEL           1032

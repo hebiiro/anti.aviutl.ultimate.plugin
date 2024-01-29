@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
     <ClInclude Include="FontCollection.h" />
     <ClInclude Include="FontMenu.h" />
     <ClInclude Include="Hive.h" />

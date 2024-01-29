@@ -22,6 +22,7 @@ namespace fgo::font_select
 		int itemHeight = 48; // アイテムの高さ。
 		int fontHeight = 34; // フォントの高さ。
 		_bstr_t previewText = L"おはヨーOl|0123456789"; // プレビュー用に表示するテキスト。
+		BOOL marge = FALSE;
 		BOOL useContextMenu = TRUE; // コンテキストメニューを使用するかどうか。
 		BOOL useBackward = TRUE; // 戻るボタンを使用するかどうか。
 		BOOL useForward = TRUE; // 進むボタンを使用するかどうか。

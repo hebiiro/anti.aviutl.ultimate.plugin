@@ -7,7 +7,7 @@ namespace fgo::font_select
 	// このクラスはメインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	struct MainWindow : Tools::AviUtl::PluginWindow
+	inline struct MainWindow : Tools::AviUtl::PluginWindow
 	{
 		MainDialog mainDialog;
 
@@ -86,6 +86,15 @@ namespace fgo::font_select
 
 					int bkMode = ::SetBkMode(dc, TRANSPARENT);
 
+					std::wstring previewText = (LPCWSTR)hive.previewText;
+					UINT previewFormat = DT_RIGHT | DT_BOTTOM | DT_SINGLELINE | DT_NOPREFIX;
+
+					if (hive.marge)
+					{
+						previewText = fontName + previewText;
+						previewFormat = DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX;
+					}
+
 					{
 						// プレビュー用のテキストを描画します。
 
@@ -97,11 +106,12 @@ namespace fgo::font_select
 
 						COLORREF textColor = ::SetTextColor(dc, paint.getFontColor(stateId));
 
-						::DrawTextW(dc, hive.previewText, -1, &rc, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE | DT_NOPREFIX);
+						::DrawTextW(dc, previewText.c_str(), -1, &rc, previewFormat);
 
 						::SetTextColor(dc, textColor);
 					}
 
+					if (!hive.marge)
 					{
 						// フォント名を描画します。
 
@@ -162,5 +172,5 @@ namespace fgo::font_select
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
-	};
+	} mainWindow;
 }

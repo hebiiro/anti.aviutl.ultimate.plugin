@@ -39,6 +39,7 @@ namespace fgo::font_select
 			setInt(IDC_FONT_HEIGHT, hive.fontHeight);
 			setText(IDC_PREVIEW_TEXT, hive.previewText);
 			setComboBox(IDC_PAINT_MODE, paint.mode);
+			setCheck(IDC_MARGE, hive.marge);
 			setText(IDC_NORMAL_THEME, paint.state[Paint::StateID::Normal].name);
 			setUInt(IDC_NORMAL_FILL, paint.state[Paint::StateID::Normal].color.fill);
 			setUInt(IDC_NORMAL_TEXT, paint.state[Paint::StateID::Normal].color.text);
@@ -67,6 +68,7 @@ namespace fgo::font_select
 			hive.itemHeight = getInt(IDC_ITEM_HEIGHT);
 			hive.fontHeight = getInt(IDC_FONT_HEIGHT);
 			hive.previewText = getText(IDC_PREVIEW_TEXT);
+			hive.marge = getCheck(IDC_MARGE);
 			paint.mode = getComboBox(IDC_PAINT_MODE);
 			paint.state[Paint::StateID::Normal].name = getText(IDC_NORMAL_THEME);
 			paint.state[Paint::StateID::Normal].color.fill = getUInt(IDC_NORMAL_FILL);
@@ -147,6 +149,7 @@ namespace fgo::font_select
 
 							return TRUE;
 						}
+					case IDC_MARGE:
 					case IDC_USE_CONTEXT_MENU:
 					case IDC_USE_BACKWARD:
 					case IDC_USE_FORWARD:

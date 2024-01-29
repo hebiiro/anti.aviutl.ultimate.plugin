@@ -24,6 +24,7 @@
     <ClInclude Include="Paint.h" />
     <ClInclude Include="FontMenu.h" />
     <ClInclude Include="FontCollection.h" />
+    <ClInclude Include="Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
