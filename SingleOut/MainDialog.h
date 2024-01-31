@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Resource.h"
 #include "Hive.h"
+#include "Action.h"
 #include "Common/AviUtl/SliderPanel.h"
 
 namespace fgo::single_out
@@ -10,6 +11,7 @@ namespace fgo::single_out
 	//
 	struct MainDialog : Tools::Dialog
 	{
+		BOOL lock = FALSE;
 		Tools::AviUtl::SliderPanel<int, Tools::AviUtl::IntExchanger<int>> quality;
 
 		//
@@ -25,7 +27,40 @@ namespace fgo::single_out
 		//
 		BOOL create(HWND parent)
 		{
-			return __super::create(hive.instance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), parent);
+			if (!__super::create(hive.instance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), parent))
+				return FALSE;
+
+//			setComboBox(IDC_CONFIRM_OVERWRITE, paint.mode, _T("確認する"), _T("確認しない"));
+
+			return TRUE;
+		}
+
+		//
+		// コントロールの値を更新します。
+		//
+		BOOL updateControls()
+		{
+			if (lock) return FALSE;
+
+			lock = TRUE;
+
+			quality.setValue(hive.quality);
+
+			lock = FALSE;
+
+			return TRUE;
+		}
+
+		//
+		// コンフィグの値を更新します。
+		//
+		BOOL updateConfig()
+		{
+			if (lock) return FALSE;
+
+			hive.quality = quality.getValue();
+
+			return TRUE;
 		}
 
 		//
@@ -114,10 +149,10 @@ namespace fgo::single_out
 					{
 					case IDOK:
 					case IDCANCEL: return 0;
-					case IDC_EXPORT_FRAME_RGB: hive.commander->onExportImage(FALSE, FALSE); break;
-					case IDC_EXPORT_FRAME_RGBA: hive.commander->onExportImage(TRUE, FALSE); break;
-					case IDC_EXPORT_ITEM_RGB: hive.commander->onExportImage(FALSE, TRUE); break;
-					case IDC_EXPORT_ITEM_RGBA: hive.commander->onExportImage(TRUE, TRUE); break;
+					case IDC_EXPORT_FRAME_RGB: action.onExportImage(FALSE, FALSE); break;
+					case IDC_EXPORT_FRAME_RGBA: action.onExportImage(TRUE, FALSE); break;
+					case IDC_EXPORT_ITEM_RGB: action.onExportImage(FALSE, TRUE); break;
+					case IDC_EXPORT_ITEM_RGBA: action.onExportImage(TRUE, TRUE); break;
 					case IDC_QUALITY: if (code == EN_CHANGE) hive.quality = quality.onChangeText(); break;
 					}
 

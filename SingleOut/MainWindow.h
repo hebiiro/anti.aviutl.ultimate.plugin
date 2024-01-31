@@ -7,15 +7,18 @@ namespace fgo::single_out
 	// このクラスはメインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	struct MainWindow : Tools::AviUtl::PluginWindow
+	inline struct MainWindow : Tools::AviUtl::PluginWindow
 	{
 		MainDialog mainDialog;
 
 		//
-		// ウィンドウを作成します。
+		// 初期化を行います。
 		//
-		BOOL create()
+		BOOL init()
 		{
+			MY_TRACE_FUNC("");
+
+			// プラグインウィンドウのようなウィンドウを作成します。
 			return createAsPlugin(
 				hive.instance,
 				magi.auin.GetAviUtlWindow(),
@@ -24,6 +27,16 @@ namespace fgo::single_out
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				100, 100, 300, 300);
+		}
+
+		//
+		// 後始末を行います。
+		//
+		BOOL exit()
+		{
+			MY_TRACE_FUNC("");
+
+			return destroy();
 		}
 
 		//
@@ -53,5 +66,5 @@ namespace fgo::single_out
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
-	};
+	} mainWindow;
 }

@@ -163,6 +163,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="Hive.h" />
     <ClInclude Include="MainDialog.h" />
     <ClInclude Include="MainWindow.h" />

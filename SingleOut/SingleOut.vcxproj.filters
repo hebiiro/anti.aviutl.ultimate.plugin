@@ -20,6 +20,8 @@
     <ClInclude Include="resource.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
