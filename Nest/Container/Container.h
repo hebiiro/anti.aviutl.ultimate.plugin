@@ -357,12 +357,34 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_CHAR:
+			case WM_DEADCHAR:
+			case WM_SYSKEYDOWN:
+			case WM_SYSKEYUP:
+			case WM_SYSCHAR:
+			case WM_SYSDEADCHAR:
+				{
+					// モーダルダイアログを閉じた直後などで
+					// ショートカットキーが利かなくなっていた問題に対処．
+					// メッセージをAviUtlのメインウィンドウに転送します．
+					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
+				}
 			case WM_ACTIVATE:
 			case WM_COMMAND:
 			case WM_CLOSE:
 				{
 					// メッセージをそのままターゲットウィンドウに転送します。
 					return ::SendMessage(content->getHWND(), message, wParam, lParam);
+				}
+			case WM_SYSCOMMAND:
+				{
+					// Windows 標準のコマンドでないならターゲットウィンドウに転送して処理させます．
+					// これでサブウィンドウタイトルの右クリックメニューから名前の変更ができます．
+					if (wParam < 0xF000)
+						::PostMessage(content->getHWND(), message, wParam, lParam);
+					break;
 				}
 			}
 

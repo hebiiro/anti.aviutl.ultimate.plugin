@@ -53,6 +53,23 @@ namespace fgo::nest
 		}
 
 		//
+		// Shuttle の init() を呼び出して，システムメニューに項目を追加します．
+		//
+		void init(const _bstr_t& name, HWND hwnd) {
+			__super::init(name, hwnd);
+
+			// フローティングコンテナのアイコンを設定します。
+			HICON icon = (HICON)::GetClassLong(hive.aviutlWindow, GCL_HICON);
+			::SendMessage(*floatContainer, WM_SETICON, ICON_SMALL, (LPARAM)icon);
+			::SendMessage(*floatContainer, WM_SETICON, ICON_BIG, (LPARAM)icon);
+
+			// フローティングコンテナのシステムメニューにメニュー項目とセパレータを追加します．
+			HMENU menu = ::GetSystemMenu(*floatContainer, FALSE);
+			::InsertMenu(menu, 0, MF_BYPOSITION | MF_STRING, CommandID::RENAME_SUB_WINDOW, _T("名前を変更"));
+			::InsertMenu(menu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, nullptr);
+		}
+
+		//
 		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -67,6 +84,37 @@ namespace fgo::nest
 					// これにより、現存するすべてのサブウィンドウにアクセスできるようになります。
 					subWindowManager.add(hwnd);
 
+					break;
+				}
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_CHAR:
+			case WM_DEADCHAR:
+			case WM_SYSKEYDOWN:
+			case WM_SYSKEYUP:
+			case WM_SYSCHAR:
+			case WM_SYSDEADCHAR:
+				{
+					// Nest の MainWindow にフォーカスがある状態から
+					// フロート状態の SubWindow のタイトルをクリックしてフォーカスを移動すると，
+					// ショートカットキーが利かなくなっていた問題に対処．
+					// メッセージをAviUtlのメインウィンドウに転送します．
+					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
+				}
+			case WM_SYSCOMMAND:
+				{
+					// SubWindow を保持する Container クラスから送られてきます．
+					switch (wParam) {
+					case CommandID::RENAME_SUB_WINDOW:
+						{
+							auto container = getCurrentContainer();
+							if (!container) break;
+
+							// サブウィンドウの名前変更ダイアログを表示します．
+							shuttleManager.showRenameDialog(this, *container);
+							break;
+						}
+					}
 					break;
 				}
 			case WM_CLOSE:

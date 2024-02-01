@@ -141,8 +141,8 @@ namespace Tools
 			UINT_PTR id, DWORD_PTR refData)
 		{
 //			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam, id, refData);
-			TCHAR className[MAX_PATH] = {};
-			::GetClassName(hwnd, className, std::size(className));
+			//TCHAR className[MAX_PATH] = {};
+			//::GetClassName(hwnd, className, std::size(className));
 //			MY_TRACE_TSTR(className);
 
 			auto window = (Window*)refData;

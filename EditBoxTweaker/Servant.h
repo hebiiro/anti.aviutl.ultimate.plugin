@@ -110,12 +110,12 @@ namespace fgo::editbox_tweaker
 			if (wcslen(font.name) != 0)
 			{
 				// DPIに合わせてフォントのサイズを調整します。
-				int dpi = ::GetSystemDpiForProcess(::GetCurrentProcess());
-				int height = ::MulDiv(font.height, dpi, 96);
+				//int dpi = ::GetSystemDpiForProcess(::GetCurrentProcess());
+				//int height = ::MulDiv(font.height, dpi, 96);
 
 				// HFONTを作成します。
 				// 複数行エディットボックスのWM_SETFONTでこのハンドルが渡されます。
-				font.handle = ::CreateFontW(height, 0,
+				font.handle = ::CreateFontW(font.height, 0,
 					0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
 					0, 0, 0, font.pitch, font.name);
 			}
@@ -235,7 +235,7 @@ namespace fgo::editbox_tweaker
 				case WM_SETFONT:
 					MY_TRACE(_T("WM_SETFONT, 0x%08X, 0x%08X\n"), wparam, lparam);
 					wparam = reinterpret_cast<WPARAM>(servant.font.handle); // handle is not null here.
-				//[[fallthrough]];
+					[[fallthrough]];
 				case WM_DESTROY:
 					::RemoveWindowSubclass(hwnd, subclassproc, id);
 					break;
@@ -270,16 +270,16 @@ namespace fgo::editbox_tweaker
 		// この構造体は::DispatchMesageA()を::DispatchMesageW()に置き換えるために使用されます。
 		//
 		struct {
-			inline static decltype(&::DispatchMessageA) hook = ::DispatchMessageW;
-			inline static decltype(hook) orig = ::DispatchMessageA;
+			constexpr static auto& hook = ::DispatchMessageW;
+			inline static decltype(&hook) orig = ::DispatchMessageA;
 		} DispatchMessageA;
 
 		//
 		// この構造体は::PeekMesageA()を::PeekMesageW()に置き換えるために使用されます。
 		//
 		struct {
-			inline static decltype(&::PeekMessageA) hook = ::PeekMessageW;
-			inline static decltype(hook) orig = ::PeekMessageA;
+			constexpr static auto& hook = ::PeekMessageW;
+			inline static decltype(&hook) orig = ::PeekMessageA;
 		} PeekMessageA;
 	} servant;
 }

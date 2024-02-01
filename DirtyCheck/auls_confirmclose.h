@@ -89,15 +89,12 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ダーティーフラグをチェックします。
-		// ダーティーな場合はtrueを返します。
+		// ダーティーフラグを更新します．
 		//
-		bool check()
+		void update()
 		{
-			if (*g_undo_id_ptr == g_undo_id_prev) return false;
-			g_undo_id_prev = *g_undo_id_ptr;
-			g_dirty_flag = true;
-			return true;
+			if (!g_dirty_flag && *g_undo_id_ptr != g_undo_id_prev)
+				g_dirty_flag = true;
 		}
 
 		//
@@ -105,7 +102,7 @@ namespace fgo::dirty_check
 		//
 		void clear()
 		{
-			g_undo_id_prev = 0;
+			g_undo_id_prev = *g_undo_id_ptr;
 			g_dirty_flag = false;
 		}
 	} dirty_flag;
@@ -165,8 +162,8 @@ namespace fgo::dirty_check
 		switch (msg) {
 		case AviUtl::FilterPlugin::WindowMessage::Update:
 			if (!fp->exfunc->is_editing(editp)) break;
-			// プロジェクトが変更されたかもしれないのでダーティーフラグをチェックします。
-			dirty_flag.check();
+			// プロジェクトが変更されたかもしれないのでダーティーフラグを更新します．
+			dirty_flag.update();
 			break;
 		case AviUtl::FilterPlugin::WindowMessage::FileClose:
 			// プロジェクトが閉じられたのでダーティーフラグをクリアします。
@@ -180,13 +177,20 @@ namespace fgo::dirty_check
 	{
 		// プロジェクトが保存されたのでダーティーフラグをクリアします。
 		dirty_flag.clear();
+
+		// フラグをクリアしてもタイトルは変わらないので手動で変更．
+		char title[MAX_PATH];
+		::GetWindowTextA(fp->hwnd_parent, title, std::size(title));
+		if (title[0] == '*' && title[1] == ' ')
+			::SetWindowTextA(fp->hwnd_parent, title + 2);
 		return FALSE;
 	}
 
 	BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int frame, LPSTR title, int max_title)
 	{
 		// プロジェクトが変更されたかもしれないのでダーティーフラグをチェックします。
-		if (!dirty_flag.check()) return FALSE;
+		dirty_flag.update();
+		if (!dirty_flag.get()) return FALSE;
 		std::string str(title);
 		sprintf_s(title, max_title, "* %s", str.c_str());
 		return TRUE;
