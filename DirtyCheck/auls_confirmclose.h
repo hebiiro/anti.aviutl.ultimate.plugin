@@ -109,13 +109,10 @@ namespace fgo::dirty_check
 
 	inline struct AviUtlWindow
 	{
-		HWND hwnd = 0;
-		WNDPROC orig = 0;
-
 		//
 		// AviUtlウィンドウのウィンドウプロシージャをフックします。
 		//
-		static LRESULT CALLBACK hook(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+		static LRESULT CALLBACK hook(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp, uintptr_t id, auto)
 		{
 			if (dirty_flag.is_trigger_message(msg, wp)) {
 				int id = MessageBoxA(hwnd, "変更された編集データがあります。保存しますか？",
@@ -126,7 +123,9 @@ namespace fgo::dirty_check
 				}
 				else if (id == IDCANCEL) return 0;
 			}
-			return CallWindowProc(aviutl_window.orig, hwnd, msg, wp, lp);
+			else if (msg == WM_DESTROY)
+				::RemoveWindowSubclass(hwnd, hook, id);
+			return ::DefSubclassProc(hwnd, msg, wp, lp);
 		}
 
 		//
@@ -135,10 +134,10 @@ namespace fgo::dirty_check
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
 			// AviUtlウィンドウを取得します。
-			hwnd = GetWindow(fp->hwnd, GW_OWNER);
+			auto hwnd = fp->hwnd_parent;
 
 			// AviUtlウィンドウをサブクラス化します。
-			orig = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)hook);
+			::SetWindowSubclass(hwnd, hook, reinterpret_cast<uintptr_t>(&dirty_flag), {});
 
 			return TRUE;
 		}
