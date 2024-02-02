@@ -65,6 +65,7 @@ namespace fgo::nest
 					getPrivateProfileBool(element, L"useTheme", hive.useTheme);
 					getPrivateProfileBool(element, L"forceScroll", hive.forceScroll);
 					getPrivateProfileBool(element, L"showPlayer", hive.showPlayer);
+					getPrivateProfileBool(element, L"showshowPlayer", hive.showshowPlayer);
 				}
 
 				// 事前に<subWindow>を読み込みます。
@@ -113,8 +114,16 @@ namespace fgo::nest
 
 				// サブウィンドウを作成します。
 				auto subWindow = std::make_shared<SubWindow>();
-				if (subWindow->create(name, hive.mainWindow))
+				if (subWindow->create(name, hive.mainWindow)) {
 					subWindow->init(name, *subWindow);
+
+					// タイトル同期先を読み込みます．
+					if (S_OK == getPrivateProfileName(subWindowElement, L"title_source", name)) {
+						if (auto target = shuttleManager.get(name))
+							// 同期を開始します．
+							subWindow->SetTitleSource(target);
+					}
+				}
 			}
 
 			return S_OK;
@@ -267,6 +276,8 @@ namespace fgo::nest
 				auto shuttle = shuttleManager.get(name);
 				if (shuttle)
 				{
+					// show_caption は <floatShuttle> から読み出します．全ての Shuttle が列挙されているため都合がいいからです．
+					getPrivateProfileBool(floatShuttleElement, L"show_caption", shuttle->show_caption);
 					getPrivateProfileWindow(floatShuttleElement, L"placement", *shuttle->floatContainer);
 
 					// フローティングコンテナが表示状態なら

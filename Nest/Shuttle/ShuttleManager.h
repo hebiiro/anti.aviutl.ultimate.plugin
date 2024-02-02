@@ -84,6 +84,37 @@ namespace fgo::nest
 
 				::SetDlgItemText(*this, IDC_NEW_NAME, shuttle->name);
 
+				// サブウィンドウのタイトル同期先のコンボボックスを準備．
+				auto hcombo = ::GetDlgItem(*this, IDC_SHUTTLE_LIST);
+				// 未選択を表す項目を追加．
+				constexpr auto voidItem = _T("（なし）");
+				::SendMessage(hcombo, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(voidItem));
+
+				// 対象シャトルがサブウィンドウなら...
+				bool is_subwindow = ::StrCmpI(shuttle->getWindowId(), hive.SubWindowClassName) == 0; // which seems to be always true.
+				if (is_subwindow) {
+					// 現存のシャトルをコンボボックスに追加します．
+					for (auto& [name, wnd] : shuttleManager.shuttles) {
+						// 循環参照にならないようにサブウィンドウは対象から外します．
+						if (::StrCmpI(wnd->getWindowId(), hive.SubWindowClassName) == 0) continue;
+
+						::SendMessage(hcombo, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(static_cast<LPCTSTR>(name)));
+					}
+
+					// 現在の同期先を設定します．
+					auto source = GetSubWindowTitleSource(shuttle);
+					::SendMessage(hcombo, CB_SELECTSTRING, 0,
+						reinterpret_cast<LPARAM>(source ? static_cast<LPCTSTR>(source->name) : voidItem));
+				}
+				else {
+					// サブウィンドウでないなら「（なし）」を選択して無効化します．
+					::SendMessage(hcombo, CB_SETCURSEL, 0, 0);
+					::SetWindowLong(hcombo, GWL_STYLE, ::GetWindowLong(hcombo, GWL_STYLE) | WS_DISABLED);
+					auto label = ::GetWindow(hcombo, GW_HWNDPREV);
+					::SetWindowLong(label, GWL_STYLE, ::GetWindowLong(label, GWL_STYLE) | WS_DISABLED);
+				}
+
+
 				int retValue = __super::doModal2(parent);
 
 				if (IDOK != retValue)
@@ -99,8 +130,23 @@ namespace fgo::nest
 					shuttleManager.rename(shuttle, newName);
 				}
 
+				// シャトルがサブウィンドウなら...
+				if (is_subwindow) {
+					// タイトル同期先の指定をチェック．
+					::GetDlgItemText(*this, IDC_SHUTTLE_LIST, newName, std::size(newName));
+
+					// 同期先を更新します．
+					SetSubWindowTitleSource(shuttle,
+						_tcscmp(voidItem, newName) == 0 ? nullptr : shuttleManager.get(newName));
+				}
+
 				return retValue;
 			}
+			// 定義順の関係で ShuttleManager の一部関数の宣言だけ記述（この文脈では SubWindow は未定義）．
+			// SubWindow を与えてタイトルテキストの同期元を取得する関数です．
+			std::shared_ptr<Shuttle> GetSubWindowTitleSource(Shuttle* subwindow);
+			// SubWindow と Shuttle を与えてタイトルテキストの同期を設定する関数です．
+			void SetSubWindowTitleSource(Shuttle* subwindow, const std::shared_ptr<Shuttle>& source);
 
 			void onOK() override
 			{

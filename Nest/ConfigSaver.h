@@ -53,6 +53,7 @@ namespace fgo::nest
 					setPrivateProfileBool(element, L"useTheme", hive.useTheme);
 					setPrivateProfileBool(element, L"forceScroll", hive.forceScroll);
 					setPrivateProfileBool(element, L"showPlayer", hive.showPlayer);
+					setPrivateProfileBool(element, L"showshowPlayer", hive.showshowPlayer);
 				}
 
 				// <mainWindow>を作成します。
@@ -103,9 +104,13 @@ namespace fgo::nest
 				// <subWindow>を作成します。
 				MSXML2::IXMLDOMElementPtr subWindowElement = appendElement(element, L"subWindow");
 
-				TCHAR name[MAX_PATH] = {};
-				::GetWindowText(subWindow, name, std::size(name));
-				setPrivateProfileString(subWindowElement, L"name", name);
+				// name はウィンドウタイトルではなく Shuttle::name フィールドで保存．
+				auto* subwnd = dynamic_cast<SubWindow*>(Shuttle::getPointer(subWindow));
+				setPrivateProfileString(subWindowElement, L"name", subwnd->name);
+
+				// タイトル同期先の名前も保存．
+				if (auto title_src = subwnd->GetTitleSource())
+					setPrivateProfileString(subWindowElement, L"title_source", title_src->name);
 
 				auto root = SubWindow::getRootPane(subWindow);
 
@@ -159,17 +164,17 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("");
 
-			for (auto x : shuttleManager.shuttles)
+			for (auto& [name1, shuttle] : shuttleManager.shuttles)
 			{
-				auto shuttle = x.second;
-
 				// <floatShuttle>を作成します。
 				MSXML2::IXMLDOMElementPtr floatShuttleElement = appendElement(element, L"floatShuttle");
 
-				std::wstring name = getName(shuttle->name);
+				std::wstring name = getName(name1);
 				MY_TRACE_WSTR(name);
 
 				setPrivateProfileString(floatShuttleElement, L"name", name.c_str());
+				// show_caption は <floatShuttle> に保存しておきます．全ての Shuttle が列挙されているため都合がいいからです．
+				setPrivateProfileBool(floatShuttleElement, L"show_caption", shuttle->show_caption);
 				setPrivateProfileWindow(floatShuttleElement, L"placement", *shuttle->floatContainer);
 			}
 

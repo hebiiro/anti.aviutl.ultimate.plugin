@@ -26,6 +26,9 @@ namespace fgo::nest
 			static const UINT EXPORT_LAYOUT = 1002;
 			static const UINT CREATE_SUB_WINDOW = 1003;
 
+			static const UINT SHOW_CAPTION_BEGIN = 400; // タイトル表示状態切り替えのメニュー ID 範囲です．
+			static const UINT SHOW_CAPTION_END = 600;
+
 			static const UINT MAXIMIZE_PLAY = 30000;
 		};
 
@@ -37,7 +40,8 @@ namespace fgo::nest
 			virtual HRESULT saveConfig(LPCWSTR fileName, BOOL _export) = 0;
 		}; std::shared_ptr<Saver> saver;
 
-		HMENU subMenu[Category::MaxSize] = {};
+		HMENU subMenu[Category::MaxSize] = {},
+			hide_caption_menu[Category::MaxSize] = {}; // タイトル表示状態切り替えメニューのハンドルです．
 
 		//
 		// コンストラクタです。
@@ -175,6 +179,15 @@ namespace fgo::nest
 				::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)subMenu[i], Category::labels[i]);
 			}
 
+			// キャプション表示状態切り替えメニューの追加．
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
+			auto hide_caption_root = ::CreatePopupMenu();
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)hide_caption_root, _T("タイトルバーの表示"));
+			for (size_t i = 0; i < std::size(hide_caption_menu); i++) {
+				hide_caption_menu[i] = ::CreatePopupMenu();
+				::AppendMenu(hide_caption_root, MF_BYPOSITION | MF_POPUP, (UINT)hide_caption_menu[i], Category::labels[i]);
+			}
+
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::CREATE_SUB_WINDOW, _T("サブウィンドウを新規作成"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::IMPORT_LAYOUT, _T("レイアウトのインポート"));
@@ -193,35 +206,48 @@ namespace fgo::nest
 			// 一旦すべての項目を削除します。
 			for (auto& menu : subMenu)
 				while (::DeleteMenu(menu, 0, MF_BYPOSITION)){}
+			for (auto& menu : hide_caption_menu)
+				while (::DeleteMenu(menu, 0, MF_BYPOSITION)){}
 
 			// フローティング状態のシャトルをサブメニューに追加します。
-			UINT id = CommandID::SHUTTLE_BEGIN;
-			for (auto& pair : shuttleManager.shuttles)
+			// ドッキング状態のシャトルはキャプション表示の切り替えメニューに追加します．
+			UINT id = CommandID::SHUTTLE_BEGIN, id2 = CommandID::SHOW_CAPTION_BEGIN;
+			for (auto& [name, shuttle] : shuttleManager.shuttles)
 			{
-				auto& shuttle = pair.second;
-
-				// ドッキング状態のシャトルは除外します。
-				if (shuttle->isDocking()) continue;
-
 				// シャトルのカテゴリを取得します。
 				int category = getCategory(shuttle.get());
 				if (category == Category::None) continue;
 
-				// 追加先メニューを取得します。
-				HMENU menu = subMenu[category];
+				// ドッキング状態のシャトルは除外します。
+				if (!shuttle->isDocking()) {
+					// 追加先メニューを取得します。
+					HMENU menu = subMenu[category];
 
-				// メニューアイテムを追加します。
-				::AppendMenu(menu, MF_STRING, id, shuttle->name);
+					// メニューアイテムを追加します。
+					::AppendMenu(menu, MF_STRING, id, name);
 
-				// シャトルが表示されているなら
-				if (::IsWindowVisible(*shuttle))
-				{
-					// メニューアイテムにチェックを入れます。
-					::CheckMenuItem(menu, id, MF_CHECKED);
+					// シャトルが表示されているなら
+					if (::IsWindowVisible(*shuttle))
+					{
+						// メニューアイテムにチェックを入れます。
+						::CheckMenuItem(menu, id, MF_CHECKED);
+					}
+				}
+				else {
+					// ドッキング状態のシャトルのみ追加します．
+					// 追加先メニューを取得します。
+					HMENU menu = hide_caption_menu[category];
+
+					// メニューアイテムを追加します。
+					::AppendMenu(menu, MF_STRING, id2, name);
+
+					// キャプションが表示状態のときチェックを入れます．
+					if (shuttle->show_caption)
+						::CheckMenuItem(menu, id2, MF_CHECKED);
 				}
 
 				// IDをインクリメントします。
-				id++;
+				id++; id2++;
 			}
 		}
 
@@ -234,13 +260,25 @@ namespace fgo::nest
 
 			HMENU menu = ::GetMenu(*this);
 
-			LPCTSTR text = _T("再生時最大化 OFF");
-			if (hive.showPlayer) text = _T("再生時最大化 ON");
+			bool has_menuitem = ::GetMenuState(menu, MainWindow::CommandID::MAXIMIZE_PLAY, MF_BYCOMMAND) != -1;
+			if (hive.showshowPlayer) {
+				// 再生時最大化 ON/OFF メニューを表示する場合．
+				LPCTSTR text = _T("再生時最大化 OFF");
+				if (hive.showPlayer) text = _T("再生時最大化 ON");
 
-			MENUITEMINFO mii = { sizeof(mii) };
-			mii.fMask = MIIM_STRING;
-			mii.dwTypeData = (LPTSTR)text;
-			::SetMenuItemInfo(menu, CommandID::MAXIMIZE_PLAY, FALSE, &mii);
+				if (!has_menuitem)
+					::AppendMenu(menu, MF_STRING, MainWindow::CommandID::MAXIMIZE_PLAY, text);
+				else {
+					MENUITEMINFO mii = { sizeof(mii) };
+					mii.fMask = MIIM_STRING;
+					mii.dwTypeData = (LPTSTR)text;
+					::SetMenuItemInfo(menu, CommandID::MAXIMIZE_PLAY, FALSE, &mii);
+				}
+			}
+			// 表示しない場合．
+			else if (has_menuitem) // 追加されていた場合は削除．
+				::DeleteMenu(menu, MainWindow::CommandID::MAXIMIZE_PLAY, MF_BYCOMMAND);
+			else return; // 既にない場合は再描画の必要なし．
 
 			::DrawMenuBar(*this);
 		}
@@ -557,7 +595,9 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("WM_SYSCOMMAND, 0x%08X, 0x%08X", wParam, lParam);
 
-					if (wParam >= CommandID::SHUTTLE_BEGIN && wParam < CommandID::SHUTTLE_END)
+					// シャトルまたはキャプションの表示/非表示を切り替えるメニューコマンドの処理です．
+					if (wParam >= CommandID::SHUTTLE_BEGIN && wParam < CommandID::SHUTTLE_END ||
+						wParam >= CommandID::SHOW_CAPTION_BEGIN && wParam < CommandID::SHOW_CAPTION_END)
 					{
 						HMENU menu = ::GetSystemMenu(hwnd, FALSE);
 						UINT id = (UINT)wParam;
@@ -571,7 +611,17 @@ namespace fgo::nest
 						auto shuttle = shuttleManager.get(text);
 						if (!shuttle) break;
 
-						::SendMessage(*shuttle, WM_CLOSE, 0, 0);
+						if (wParam < CommandID::SHUTTLE_END) {
+							// シャトルの表示状態切り替え．
+							::SendMessage(*shuttle, WM_CLOSE, 0, 0);
+						}
+						else {
+							// キャプション表示状態を反転します．
+							shuttle->show_caption ^= true;
+
+							// レイアウトを再計算します。
+							calcAllLayout();
+						}
 
 						break;
 					}
@@ -727,6 +777,7 @@ namespace fgo::nest
 				setCheck(IDC_USE_THEME, hive.useTheme);
 				setCheck(IDC_FORCE_SCROLL, hive.forceScroll);
 				setCheck(IDC_SHOW_PLAYER, hive.showPlayer);
+				setCheck(IDC_SHOW_SHOW_PLAYER, hive.showshowPlayer); // 再生時最大化 ON/OFF メニューの表示状態を操作します．
 
 				return doModal2(parent);
 			}

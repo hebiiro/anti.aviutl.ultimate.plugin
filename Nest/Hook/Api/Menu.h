@@ -46,12 +46,6 @@ namespace fgo::nest::hook
 
 			hwnd = getMenuOwner(hwnd);
 
-			if (hwnd == hive.mainWindow)
-			{
-				if (::GetMenuState(menu, MainWindow::CommandID::MAXIMIZE_PLAY, MF_BYCOMMAND) == -1)
-					::AppendMenu(menu, MF_STRING, MainWindow::CommandID::MAXIMIZE_PLAY, _T(""));
-			}
-
 			return orig(hwnd, menu);
 		}
 		inline static decltype(&hook) orig = ::SetMenu;

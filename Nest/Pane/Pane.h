@@ -64,6 +64,8 @@ namespace fgo::nest
 		Tab tab;
 		std::shared_ptr<Pane> children[2];
 
+		int thisCaptionHeight = 0; // シャトルのタイトル表示状態に応じてキャッシュしておく高さ．
+
 		//
 		// コンストラクタです。タブを作成します。
 		// ownerはこのペインを保有するウィンドウ(DockSiteの派生クラス)です。
@@ -519,7 +521,7 @@ namespace fgo::nest
 						return RECT
 						{
 							position.left,
-							position.top + std::max<int>(captionHeight, tabHeight),
+							position.top + std::max<int>(thisCaptionHeight, tabHeight),
 							position.right,
 							position.bottom,
 						};
@@ -529,7 +531,7 @@ namespace fgo::nest
 						return RECT
 						{
 							position.left,
-							position.top + captionHeight + tabHeight,
+							position.top + thisCaptionHeight + tabHeight,
 							position.right,
 							position.bottom,
 						};
@@ -539,7 +541,7 @@ namespace fgo::nest
 						return RECT
 						{
 							position.left,
-							position.top + captionHeight,
+							position.top + thisCaptionHeight,
 							position.right,
 							position.bottom - tabHeight,
 						};
@@ -551,7 +553,7 @@ namespace fgo::nest
 			return RECT
 			{
 				position.left,
-				position.top + captionHeight,
+				position.top + thisCaptionHeight,
 				position.right,
 				position.bottom,
 			};
@@ -567,7 +569,7 @@ namespace fgo::nest
 				position.left,
 				position.top,
 				position.right,
-				position.top + captionHeight,
+				position.top + thisCaptionHeight,
 			};
 		}
 
@@ -580,8 +582,8 @@ namespace fgo::nest
 			{
 				position.left,
 				position.top,
-				position.left + captionHeight,
-				position.top + captionHeight,
+				position.left + thisCaptionHeight,
+				position.top + thisCaptionHeight,
 			};
 		}
 
@@ -620,6 +622,33 @@ namespace fgo::nest
 
 			int c = getTabCount();
 
+			// キャプションを表示するかどうかに応じて高さを再計算します．
+			thisCaptionHeight = 0;
+			if (limited && this != limited.get()) {
+				// 最大化ペインがあるときは，そのキャプション部分やタブに覆い被さらないように大きめにとります．
+				switch (tabMode) {
+				case TabMode::title:
+					thisCaptionHeight = std::max(captionHeight, tabHeight);
+					break;
+				case TabMode::top:
+					thisCaptionHeight = captionHeight + tabHeight;
+					break;
+				case TabMode::bottom:
+					thisCaptionHeight = captionHeight;
+					break;
+				}
+			}
+			else if (c > 0) {
+				// タブ表示の場合は1つでも表示するキャプションがある場合，通常通りの高さにします．
+				for (int i = 0; i < c; i++) {
+					if (auto shuttle = getShuttle(i);
+						!shuttle || shuttle->show_caption) {
+						thisCaptionHeight = captionHeight;
+						break;
+					}
+				}
+			}
+
 			// タブが2個以上あるなら
 			if (c >= 2 && (!limited || this == limited.get()))
 			{
@@ -627,10 +656,10 @@ namespace fgo::nest
 				{
 				case TabMode::title: // タブをタイトルに表示するなら
 					{
-						int x = position.left + captionHeight;
+						int x = position.left + thisCaptionHeight;
 						int y = position.top;
-						int w = getWidth(position) - captionHeight;
-						int h = std::max<int>(captionHeight, tabHeight);
+						int w = getWidth(position) - thisCaptionHeight;
+						int h = std::max(thisCaptionHeight, tabHeight);
 
 						modifyStyle(tab, TCS_BOTTOM, 0);
 
@@ -643,7 +672,7 @@ namespace fgo::nest
 				case TabMode::top: // タブを上に表示するなら
 					{
 						int x = position.left;
-						int y = position.top + captionHeight;
+						int y = position.top + thisCaptionHeight;
 						int w = getWidth(position);
 						int h = tabHeight;
 
@@ -942,6 +971,9 @@ namespace fgo::nest
 			Shuttle* shuttle = getCurrentShuttle();
 			if (shuttle)
 			{
+				// キャプションが非表示の場合は即時 return.
+				if (thisCaptionHeight <= 0) return;
+
 				// キャプションを描画します。
 
 				RECT rc = getCaptionRect();
@@ -975,10 +1007,10 @@ namespace fgo::nest
 							rcText.left = rcMenu.right;
 
 							::DrawThemeText(hive.theme, dc, WP_CAPTION, stateId,
-								L"M", -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
+								L"\ufe19", -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
 						}
 
-						if (rcText.left < rcText.right)
+						if (shuttle->show_caption && rcText.left < rcText.right)
 							::DrawThemeText(hive.theme, dc, WP_CAPTION, stateId,
 								text, ::lstrlenW(text), DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcText);
 					}
@@ -1010,10 +1042,10 @@ namespace fgo::nest
 						{
 							rcText.left = rcMenu.right;
 
-							::DrawTextW(dc, L"M", -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							::DrawTextW(dc, L"\ufe19", -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 						}
 
-						if (rcText.left < rcText.right)
+						if (shuttle->show_caption && rcText.left < rcText.right)
 							::DrawTextW(dc, text, ::lstrlenW(text), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 					}
 					::SetTextColor(dc, textColor);
@@ -1098,7 +1130,7 @@ namespace fgo::nest
 			refreshText(shuttle, newText);
 
 			// ペインのタイトル部分を再描画します。
-			invalidate();
+			if (shuttle->show_caption) invalidate();
 		}
 
 		//
@@ -1107,7 +1139,7 @@ namespace fgo::nest
 		void onChangeFocus(Shuttle* shuttle) override
 		{
 			// ペインのタイトル部分を再描画します。
-			invalidate();
+			if (thisCaptionHeight > 0) invalidate();
 		}
 	};
 }

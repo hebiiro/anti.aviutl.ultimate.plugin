@@ -70,6 +70,11 @@ namespace fgo::nest
 		}
 
 		//
+		// SubWindow かどうかを判別する必要がある場面が多いため，識別子を設定しておきます．
+		//
+		LPCTSTR getWindowId() override { return hive.SubWindowClassName; }
+
+		//
 		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -156,9 +161,75 @@ namespace fgo::nest
 
 					return 0;
 				}
+			case WM_DESTROY:
+				{
+					// タイトルテキストの同期を終了します．
+					ResetTitleSource();
+					break;
+				}
 			}
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
+
+		// タイトルテキスト同期の仲介オブジェクトです．
+		struct SyncTitle : Prelistener {
+			SubWindow* owner; // 同期先の SubWindow へのポインタです．
+			std::weak_ptr<Shuttle> source; // 同期元の Shuttle への weak pointer です．
+			SyncTitle(SubWindow* owner, const std::shared_ptr<Shuttle>& source)
+				: owner{ owner }, source{ source } {}
+
+			//
+			// ターゲットのテキストが変更されたとき、シャトルから通知されます。
+			//
+			void onChangeText(Shuttle* shuttle, LPCTSTR newText) override
+			{
+				// タイトルテキストを同期します．
+				::SetWindowText(*owner, newText);
+			}
+		};
+		std::shared_ptr<SyncTitle> title_sync_token = {};
+
+		// タイトルテキストの同期を仕込みます．
+		void SetTitleSource(const std::shared_ptr<Shuttle>& source)
+		{
+			if (!source) {
+				// 同期を解除してタイトルを戻します．
+				ResetTitleSource();
+				::SetWindowText(hwnd, name);
+				return;
+			}
+
+			// 循環参照を避けるために SubWindow からの同期を回避します．
+			if (::StrCmpI(source->getWindowId(), hive.SubWindowClassName) == 0) return;
+
+			// 同期の仲介オブジェクトを作成，同期先に仕込みます．
+			title_sync_token.reset(new SyncTitle{ this, source });
+			source->addTitleSyncToken(title_sync_token);
+
+			// 最初の同期をしておきます．
+			TCHAR title[MAX_PATH] = {};
+			::GetWindowText(source->hwnd, title, std::size(title));
+			::SetWindowText(hwnd, title);
+		}
+		// タイトルテキストの同期を解除します．
+		void ResetTitleSource() { title_sync_token.reset(); }
+		// タイトルテキストの同期元を取得します．
+		std::shared_ptr<Shuttle> GetTitleSource()
+		{
+			return !title_sync_token ? nullptr : title_sync_token->source.lock();
+		}
 	};
+
+	// 定義順の関係で ShuttleManager の一部関数の実装をここに記述．
+	// SubWindow を与えてタイトルテキストの同期元を取得する関数です．
+	inline std::shared_ptr<Shuttle> ShuttleManager::RenameDialog::GetSubWindowTitleSource(Shuttle* subwindow) {
+		// Shuttle* subwindow は必ず SubWindow クラスへのポインタが渡ってきます．
+		return dynamic_cast<SubWindow*>(subwindow)->GetTitleSource();
+	}
+	// SubWindow と Shuttle を与えてタイトルテキストの同期を設定する関数です．
+	inline void ShuttleManager::RenameDialog::SetSubWindowTitleSource(Shuttle* subwindow, const std::shared_ptr<Shuttle>& source) {
+		// Shuttle* subwindow は必ず SubWindow クラスへのポインタが渡ってきます．
+		dynamic_cast<SubWindow*>(subwindow)->SetTitleSource(source);
+	}
 }

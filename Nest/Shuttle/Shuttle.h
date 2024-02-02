@@ -11,9 +11,18 @@ namespace fgo::nest
 	struct Shuttle : Tools::Window, Container::Content, std::enable_shared_from_this<Shuttle>
 	{
 		//
+		// シャトルの名前変更通知を受け取るだけのリスナー．
+		//
+		struct Prelistener {
+			//
+			// ターゲットのテキストが変更されたときに呼ばれます。
+			//
+			virtual void onChangeText(Shuttle* shuttle, LPCTSTR newText) = 0;
+		};
+		//
 		// このクラスはシャトルのリスナーです。
 		//
-		struct Listener {
+		struct Listener : Prelistener {
 			//
 			// ドッキングサイトのウィンドウハンドルが必要なときに呼ばれます。
 			//
@@ -23,11 +32,6 @@ namespace fgo::nest
 			// ドッキングサイトからシャトルを切り離すときに呼ばれます。
 			//
 			virtual void releaseShuttle(Shuttle* shuttle) = 0;
-
-			//
-			// ターゲットのテキストが変更されたときに呼ばれます。
-			//
-			virtual void onChangeText(Shuttle* shuttle, LPCTSTR newText) = 0;
 
 			//
 			// ターゲットのフォーカスが切り替わったときに呼ばれます。
@@ -57,6 +61,9 @@ namespace fgo::nest
 		_bstr_t name = L""; // このシャトルの名前です。
 		std::shared_ptr<Container> dockContainer; // このシャトル専用のドッキングコンテナです。
 		std::shared_ptr<Container> floatContainer; // このシャトル専用のフローティングコンテナです。
+
+		std::vector<std::weak_ptr<Prelistener>> title_sync_tokens{}; // タイトルテキストの同期先リストです．
+		bool show_caption = true; // このシャトルのキャプションを表示にするかどうかのフラグです．
 
 		//
 		// HWNDに関連付けられているシャトルを返します。
@@ -387,6 +394,13 @@ namespace fgo::nest
 					if (listener)
 						listener->onChangeText(this, newText);
 
+					// タイトルテキストの同期先にも通知します．
+					for (size_t i = title_sync_tokens.size(); i > 0;) {
+						if (auto token = title_sync_tokens[--i].lock())
+							token->onChangeText(this, newText);
+						else title_sync_tokens.erase(title_sync_tokens.begin() + i);
+					}
+
 					break;
 				}
 			case WM_SETFOCUS:
@@ -547,6 +561,20 @@ namespace fgo::nest
 		void setListener(Listener* listener)
 		{
 			this->listener = listener;
+		}
+
+		//
+		// タイトルテキスト同期先のリストに追加します．
+		//
+		void addTitleSyncToken(const auto& token)
+		{
+			// ついでに肥大化しないように音信不通な同期先は間引きます．
+			for (size_t i = title_sync_tokens.size(); i > 0;) {
+				if (title_sync_tokens[--i].expired())
+					title_sync_tokens.erase(title_sync_tokens.begin() + i);
+			}
+			title_sync_tokens.emplace_back(token);
+			title_sync_tokens.shrink_to_fit();
 		}
 	};
 }

@@ -80,6 +80,7 @@ namespace fgo::nest
 		BOOL useTheme = FALSE;
 		BOOL forceScroll = FALSE;
 		BOOL showPlayer = FALSE;
+		BOOL showshowPlayer = TRUE;  // 再生時最大化 ON/OFF メニューの表示状態．
 
 		//
 		// 矩形を塗りつぶします。
