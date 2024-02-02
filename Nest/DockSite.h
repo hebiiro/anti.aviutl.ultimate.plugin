@@ -400,14 +400,26 @@ namespace fgo::nest
 
 			if (id)
 			{
+				// 原点を切り替えたときボーダーの位置が変わらないよう調整します．
+				constexpr auto flip_border = [](auto& pane, int origin) {
+					if (pane->origin == origin) return;
+					pane->origin = origin;
+					if (pane->splitMode == Pane::SplitMode::none) return;
+
+					pane->border = -pane->borderWidth - pane->border;
+					switch (pane->splitMode) {
+					case Pane::SplitMode::horz: pane->border += pane->position.bottom - pane->position.top; break;
+					case Pane::SplitMode::vert: pane->border += pane->position.right - pane->position.left; break;
+					}
+				};
 				switch (id)
 				{
 				case CommandID::SPLIT_MODE_NONE: pane->setSplitMode(Pane::SplitMode::none); break;
 				case CommandID::SPLIT_MODE_VERT: pane->setSplitMode(Pane::SplitMode::vert); break;
 				case CommandID::SPLIT_MODE_HORZ: pane->setSplitMode(Pane::SplitMode::horz); break;
 
-				case CommandID::ORIGIN_TOP_LEFT: pane->origin = Pane::Origin::topLeft; break;
-				case CommandID::ORIGIN_BOTTOM_RIGHT: pane->origin = Pane::Origin::bottomRight; break;
+				case CommandID::ORIGIN_TOP_LEFT: flip_border(pane, Pane::Origin::topLeft); break;
+				case CommandID::ORIGIN_BOTTOM_RIGHT: flip_border(pane, Pane::Origin::bottomRight); break;
 
 				case CommandID::MOVE_TO_LEFT: pane->moveTab(ht, ht - 1); break;
 				case CommandID::MOVE_TO_RIGHT: pane->moveTab(ht, ht + 1); break;
@@ -705,8 +717,13 @@ namespace fgo::nest
 						{
 							// クリックされたペインがシャトルを持っているなら
 							Shuttle* shuttle = pane->getCurrentShuttle();
-							if (shuttle)
+							if (shuttle) {
 								::SetFocus(*shuttle); // そのシャトルにフォーカスを当てます。
+								if (pane->hitTestCaption(point))
+									// キャプションをクリックしたときは，
+									// その親のサブウィンドウにフォーカスが移らないよう処理済み扱いにします．
+									return 0;
+							}
 						}
 					}
 
