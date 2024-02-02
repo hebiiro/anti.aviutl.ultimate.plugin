@@ -671,6 +671,11 @@ namespace fgo::nest
 						break;
 					}
 				}
+				if (limited)
+					// タブコントロールのサイズが変わらないと再描画が行われないらしい．
+					// 最大化モードで再描画を抑制中にレイアウトした後で移動が起こった場合，
+					// アーティファクトが残っていたので対処．
+					::InvalidateRect(tab, nullptr, FALSE);
 			}
 			// タブが1個以下なら
 			else

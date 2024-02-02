@@ -717,8 +717,13 @@ namespace fgo::nest
 						{
 							// クリックされたペインがシャトルを持っているなら
 							Shuttle* shuttle = pane->getCurrentShuttle();
-							if (shuttle)
+							if (shuttle) {
 								::SetFocus(*shuttle); // そのシャトルにフォーカスを当てます。
+								if (pane->hitTestCaption(point))
+									// キャプションをクリックしたときは，
+									// その親のサブウィンドウにフォーカスが移らないよう処理済み扱いにします．
+									return 0;
+							}
 						}
 					}
 
