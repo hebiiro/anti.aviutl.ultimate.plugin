@@ -1007,7 +1007,7 @@ namespace fgo::nest
 							rcText.left = rcMenu.right;
 
 							::DrawThemeText(hive.theme, dc, WP_CAPTION, stateId,
-								L"\ufe19", -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
+								L"M", -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
 						}
 
 						if (shuttle->show_caption && rcText.left < rcText.right)
@@ -1042,7 +1042,7 @@ namespace fgo::nest
 						{
 							rcText.left = rcMenu.right;
 
-							::DrawTextW(dc, L"\ufe19", -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							::DrawTextW(dc, L"M", -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 						}
 
 						if (shuttle->show_caption && rcText.left < rcText.right)
