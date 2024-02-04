@@ -89,15 +89,13 @@ namespace fgo::dirty_check
 		}
 
 		//
-		// ダーティーフラグをチェックします。
-		// ダーティーな場合はtrueを返します。
+		// ダーティーフラグを更新します。
 		//
-		bool check()
+		void update()
 		{
-			if (*g_undo_id_ptr == g_undo_id_prev) return false;
-			g_undo_id_prev = *g_undo_id_ptr;
-			g_dirty_flag = true;
-			return true;
+			// 現在のアンドゥIDと前回のアンドゥIDが異なる場合は
+			if (!g_dirty_flag && *g_undo_id_ptr != g_undo_id_prev)
+				g_dirty_flag = true; // ダーティーフラグをセットします。
 		}
 
 		//
@@ -105,45 +103,53 @@ namespace fgo::dirty_check
 		//
 		void clear()
 		{
-			g_undo_id_prev = 0;
+			g_undo_id_prev = *g_undo_id_ptr;
 			g_dirty_flag = false;
 		}
 	} dirty_flag;
 
-	inline struct AviUtlWindow
+	inline struct AviUtlWindow : Tools::Window
 	{
-		HWND hwnd = 0;
-		WNDPROC orig = 0;
+		//
+		// 初期化を行います。
+		//
+		BOOL init(AviUtl::FilterPlugin* fp)
+		{
+			// AviUtlウィンドウをサブクラス化します。
+			return subclass(fp->hwnd_parent);
+		}
 
 		//
 		// AviUtlウィンドウのウィンドウプロシージャをフックします。
 		//
-		static LRESULT CALLBACK hook(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-			if (dirty_flag.is_trigger_message(msg, wp)) {
-				int id = MessageBoxA(hwnd, "変更された編集データがあります。保存しますか？",
+			// 終了確認のトリガーかチェックします。
+			if (dirty_flag.is_trigger_message(message, wParam))
+			{
+				// メッセージボックスを表示します。
+				int id = ::MessageBoxA(hwnd, "変更された編集データがあります。保存しますか？",
 					FILTER_NAME, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
-				if (id == IDYES) {
-					SendMessage(hwnd, WM_COMMAND, 1024, 0); // 編集プロジェクトの上書き
-					if (dirty_flag.get()) return 0; // 保存がキャンセルされたら終了しない
+
+				// ユーザーが「はい」を選択した場合は
+				if (id == IDYES)
+				{
+					// 編集プロジェクトの上書き保存を試みます。
+					::SendMessage(hwnd, WM_COMMAND, 1024, 0);
+
+					// 保存がキャンセルされた場合は
+					if (dirty_flag.get())
+						return 0; // デフォルト処理をスキップします。
 				}
-				else if (id == IDCANCEL) return 0;
+				// ユーザーが「キャンセル」を選択した場合は
+				else if (id == IDCANCEL)
+				{
+					// デフォルト処理をスキップします。
+					return 0;
+				}
 			}
-			return CallWindowProc(aviutl_window.orig, hwnd, msg, wp, lp);
-		}
 
-		//
-		// 初期化処理を行います。
-		//
-		BOOL init(AviUtl::FilterPlugin* fp)
-		{
-			// AviUtlウィンドウを取得します。
-			hwnd = GetWindow(fp->hwnd, GW_OWNER);
-
-			// AviUtlウィンドウをサブクラス化します。
-			orig = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG)hook);
-
-			return TRUE;
+			return __super::onWndProc(hwnd, message, wParam, lParam);
 		}
 	} aviutl_window;
 
@@ -160,19 +166,28 @@ namespace fgo::dirty_check
 		return TRUE;
 	}
 
-	BOOL func_wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+	BOOL func_wndproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 	{
-		switch (msg) {
+		switch (message)
+		{
 		case AviUtl::FilterPlugin::WindowMessage::Update:
-			if (!fp->exfunc->is_editing(editp)) break;
-			// プロジェクトが変更されたかもしれないのでダーティーフラグをチェックします。
-			dirty_flag.check();
-			break;
+			{
+				if (!fp->exfunc->is_editing(editp)) break;
+
+				// プロジェクトが変更されたかもしれないのでダーティーフラグを更新します。
+				dirty_flag.update();
+
+				break;
+			}
 		case AviUtl::FilterPlugin::WindowMessage::FileClose:
-			// プロジェクトが閉じられたのでダーティーフラグをクリアします。
-			dirty_flag.clear();
-			break;
+			{
+				// プロジェクトが閉じられたのでダーティーフラグをクリアします。
+				dirty_flag.clear();
+
+				break;
+			}
 		}
+
 		return FALSE;
 	}
 
@@ -180,15 +195,28 @@ namespace fgo::dirty_check
 	{
 		// プロジェクトが保存されたのでダーティーフラグをクリアします。
 		dirty_flag.clear();
+
+		// フラグをクリアしてもタイトルは変わらないので手動で元に戻します。
+		char title[MAX_PATH] = {};
+		::GetWindowTextA(fp->hwnd_parent, title, std::size(title));
+		if (title[0] == '*' && title[1] == ' ')
+			::SetWindowTextA(fp->hwnd_parent, title + 2);
+
 		return FALSE;
 	}
 
 	BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int frame, LPSTR title, int max_title)
 	{
-		// プロジェクトが変更されたかもしれないのでダーティーフラグをチェックします。
-		if (!dirty_flag.check()) return FALSE;
+		// プロジェクトが変更されたかもしれないのでダーティーフラグを更新します。
+		dirty_flag.update();
+
+		// ダーティーフラグが立っていない場合は何もしません。
+		if (!dirty_flag.get()) return FALSE;
+
+		// タイトルにダーティーマークを付けます。
 		std::string str(title);
 		sprintf_s(title, max_title, "* %s", str.c_str());
+
 		return TRUE;
 	}
 }
