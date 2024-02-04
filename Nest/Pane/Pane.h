@@ -671,6 +671,13 @@ namespace fgo::nest
 						break;
 					}
 				}
+
+				if (limited)
+				{
+					// 最大化モードで再描画を抑制中のときは
+					// タブコントロールが再描画されないので、手動で再描画します。
+					::InvalidateRect(tab, 0, FALSE);
+				}
 			}
 			// タブが1個以下なら
 			else
@@ -687,7 +694,7 @@ namespace fgo::nest
 				{
 					Shuttle* shuttle = getShuttle(i);
 
-					shuttle->resize(&rcDock); // シャトルをリサイズする。
+					shuttle->resize(&rcDock); // シャトルをリサイズします。
 				}
 
 				return; // シャトルを持つペインはボーダーも子ペインも持たないので、ここで処理を終了します。
