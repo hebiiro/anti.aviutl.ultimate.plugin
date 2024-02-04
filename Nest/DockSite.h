@@ -406,8 +406,8 @@ namespace fgo::nest
 				case CommandID::SPLIT_MODE_VERT: pane->setSplitMode(Pane::SplitMode::vert); break;
 				case CommandID::SPLIT_MODE_HORZ: pane->setSplitMode(Pane::SplitMode::horz); break;
 
-				case CommandID::ORIGIN_TOP_LEFT: pane->origin = Pane::Origin::topLeft; break;
-				case CommandID::ORIGIN_BOTTOM_RIGHT: pane->origin = Pane::Origin::bottomRight; break;
+				case CommandID::ORIGIN_TOP_LEFT: pane->setOrigin(Pane::Origin::topLeft); break;
+				case CommandID::ORIGIN_BOTTOM_RIGHT: pane->setOrigin(Pane::Origin::bottomRight); break;
 
 				case CommandID::MOVE_TO_LEFT: pane->moveTab(ht, ht - 1); break;
 				case CommandID::MOVE_TO_RIGHT: pane->moveTab(ht, ht + 1); break;

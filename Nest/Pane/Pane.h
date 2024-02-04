@@ -452,6 +452,25 @@ namespace fgo::nest
 			removeAllShuttles();
 		}
 
+		//
+		// ペインの原点を変更します。
+		// そのとき、ボーダーの見た目の位置が変化しないように調整します。
+		//
+		void setOrigin(int newOrigin)
+		{
+			if (origin == newOrigin) return;
+			origin = newOrigin;
+			if (splitMode == Pane::SplitMode::none) return;
+
+			border = -borderWidth - border;
+
+			switch (splitMode)
+			{
+			case Pane::SplitMode::horz: border += position.bottom - position.top; break;
+			case Pane::SplitMode::vert: border += position.right - position.left; break;
+			}
+		}
+
 		inline int clamp(int x, int minValue, int maxValue)
 		{
 			if (x < minValue) return minValue;
