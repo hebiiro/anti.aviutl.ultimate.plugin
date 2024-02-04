@@ -116,15 +116,7 @@ inline BOOL setWindowRect(HWND hwnd, LPCRECT rc, UINT flags = 0)
 //
 inline BOOL isAncestor(HWND hwnd1, HWND hwnd2)
 {
-	while (hwnd1)
-	{
-		if (hwnd1 == hwnd2)
-			return TRUE;
-
-		hwnd1 = ::GetParent(hwnd1);
-	}
-
-	return FALSE;
+	return hwnd1 == hwnd2 || ::IsChild(hwnd2, hwnd1);
 }
 
 //--------------------------------------------------------------------
