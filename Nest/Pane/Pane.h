@@ -965,6 +965,7 @@ namespace fgo::nest
 
 				RECT rcMenu = getMenuRect();
 				BOOL hasMenu = !!::GetMenu(*shuttle);
+				BOOL hasFocus = ::GetFocus() == *shuttle;
 
 				// シャトルのウィンドウテキストを取得します。
 				WCHAR text[MAX_PATH] = {};
@@ -977,7 +978,7 @@ namespace fgo::nest
 				{
 					// ウィンドウの状態からstateIdを取得します。
 					int stateId = CS_ACTIVE;
-					if (::GetFocus() != *shuttle) stateId = CS_INACTIVE;
+					if (!hasFocus) stateId = CS_INACTIVE;
 					if (!::IsWindowEnabled(*shuttle)) stateId = CS_DISABLED;
 
 					// テーマAPIを使用してタイトルを描画します。
@@ -1007,7 +1008,7 @@ namespace fgo::nest
 					COLORREF captionColor = hive.activeCaptionColor;
 					COLORREF captionTextColor = hive.activeCaptionTextColor;
 
-					if (::GetFocus() != *shuttle)
+					if (!hasFocus)
 					{
 						captionColor = hive.inactiveCaptionColor;
 						captionTextColor = hive.inactiveCaptionTextColor;
