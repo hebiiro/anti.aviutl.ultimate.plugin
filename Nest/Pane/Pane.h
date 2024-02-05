@@ -620,14 +620,14 @@ namespace fgo::nest
 		//
 		void recalcLayout()
 		{
-			recalcLayout(&position, 0);
+			recalcLayout(&position);
 		}
 
 		//
 		// このペインおよび子孫ペインの位置情報を再計算します。
 		// rcはこのペインの新しい位置です。
 		//
-		virtual void recalcLayout(LPCRECT rc, const std::shared_ptr<Pane>& limited)
+		virtual void recalcLayout(LPCRECT rc)
 		{
 //			MY_TRACE_FUNC("");
 
@@ -640,7 +640,7 @@ namespace fgo::nest
 			int c = getTabCount();
 
 			// タブが2個以上あるなら
-			if (c >= 2 && (!limited || this == limited.get()))
+			if (c >= 2)
 			{
 				switch (tabMode)
 				{
@@ -690,13 +690,6 @@ namespace fgo::nest
 						break;
 					}
 				}
-
-				if (limited)
-				{
-					// 最大化モードで再描画を抑制中のときは
-					// タブコントロールが再描画されないので、手動で再描画します。
-					::InvalidateRect(tab, 0, FALSE);
-				}
 			}
 			// タブが1個以下なら
 			else
@@ -732,14 +725,14 @@ namespace fgo::nest
 					{
 						RECT rc = { position.left, position.top, absBorder, position.bottom };
 
-						children[0]->recalcLayout(&rc, limited);
+						children[0]->recalcLayout(&rc);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { absBorder + borderWidth, position.top, position.right, position.bottom };
 
-						children[1]->recalcLayout(&rc, limited);
+						children[1]->recalcLayout(&rc);
 					}
 
 					break;
@@ -752,14 +745,14 @@ namespace fgo::nest
 					{
 						RECT rc = { position.left, position.top, position.right, absBorder };
 
-						children[0]->recalcLayout(&rc, limited);
+						children[0]->recalcLayout(&rc);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { position.left, absBorder + borderWidth, position.right, position.bottom };
 
-						children[1]->recalcLayout(&rc, limited);
+						children[1]->recalcLayout(&rc);
 					}
 
 					break;

@@ -87,21 +87,19 @@ namespace fgo::nest
 		// このペインおよび子孫ペインの位置情報を再計算します。
 		// rcはこのペインの新しい位置です。
 		//
-		void recalcLayout(LPCRECT rc, const std::shared_ptr<Pane>& limited) override
+		void recalcLayout(LPCRECT rc) override
 		{
 			MY_TRACE_FUNC("");
 
 			if (maximizedPane)
 			{
-				::SendMessage(owner, WM_SETREDRAW, FALSE, 0);
-				__super::recalcLayout(rc, maximizedPane);
-				::SendMessage(owner, WM_SETREDRAW, TRUE, 0);
-
-				maximizedPane->recalcLayout(rc, maximizedPane);
+				// maximizedPaneがルートペインとなるようにレイアウトを再計算します。
+				maximizedPane->recalcLayout(rc);
 			}
 			else
 			{
-				__super::recalcLayout(rc, maximizedPane);
+				// thisがルートペインとなるようにレイアウトを再計算します。
+				__super::recalcLayout(rc);
 			}
 		}
 

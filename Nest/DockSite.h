@@ -116,7 +116,7 @@ namespace fgo::nest
 			if (root)
 			{
 				RECT rc; ::GetClientRect(hwnd, &rc);
-				root->recalcLayout(&rc, 0);
+				root->recalcLayout(&rc);
 				::InvalidateRect(hwnd, 0, FALSE);
 			}
 		}
