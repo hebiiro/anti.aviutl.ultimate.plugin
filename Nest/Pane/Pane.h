@@ -970,6 +970,8 @@ namespace fgo::nest
 				WCHAR text[MAX_PATH] = {};
 				::GetWindowTextW(*shuttle, text, std::size(text));
 
+				constexpr LPCWSTR menuIcon = L"\xFE19";
+
 				// テーマを使用するなら
 				if (hive.useTheme)
 				{
@@ -989,7 +991,7 @@ namespace fgo::nest
 							rcText.left = rcMenu.right;
 
 							::DrawThemeText(hive.theme, dc, WP_CAPTION, stateId,
-								L"M", -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
+								menuIcon, -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
 						}
 
 						if (rcText.left < rcText.right)
@@ -1024,7 +1026,7 @@ namespace fgo::nest
 						{
 							rcText.left = rcMenu.right;
 
-							::DrawTextW(dc, L"M", -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							::DrawTextW(dc, menuIcon, -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 						}
 
 						if (rcText.left < rcText.right)
