@@ -53,6 +53,24 @@ namespace fgo::nest
 		}
 
 		//
+		// ターゲットにアタッチします。
+		//
+		void init(const _bstr_t& name, HWND hwnd)
+		{
+			__super::init(name, hwnd);
+
+			// フローティングコンテナのアイコンを設定します。
+			HICON icon = (HICON)::GetClassLong(hive.aviutlWindow, GCL_HICON);
+			::SendMessage(*floatContainer, WM_SETICON, ICON_SMALL, (LPARAM)icon);
+			::SendMessage(*floatContainer, WM_SETICON, ICON_BIG, (LPARAM)icon);
+
+			// フローティングコンテナのシステムメニューに項目を追加します。
+			HMENU menu = ::GetSystemMenu(*floatContainer, FALSE);
+			::InsertMenu(menu, 0, MF_BYPOSITION | MF_STRING, CommandID::RENAME_SUB_WINDOW, _T("名前を変更"));
+			::InsertMenu(menu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
+		}
+
+		//
 		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -107,6 +125,21 @@ namespace fgo::nest
 					}
 
 					return 0;
+				}
+			case WM_SYSCOMMAND: // フローティングコンテナのシステムメニューコマンドをハンドルします。
+				{
+					switch (wParam)
+					{
+					case CommandID::RENAME_SUB_WINDOW:
+						{
+							// サブウィンドウの名前変更ダイアログを表示します。
+							shuttleManager.showRenameDialog(this, hwnd);
+
+							break;
+						}
+					}
+
+					break;
 				}
 			}
 

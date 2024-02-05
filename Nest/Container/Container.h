@@ -364,6 +364,17 @@ namespace fgo::nest
 					// メッセージをそのままターゲットウィンドウに転送します。
 					return ::SendMessage(content->getHWND(), message, wParam, lParam);
 				}
+			case WM_SYSCOMMAND:
+				{
+					// システムコマンド以外の場合は
+					if (wParam < 0xF000)
+					{
+						// メッセージをそのままターゲットウィンドウに転送します。
+						return ::SendMessage(content->getHWND(), message, wParam, lParam);
+					}
+
+					break;
+				}
 			}
 
 			switch (message)
