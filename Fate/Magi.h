@@ -28,6 +28,7 @@ namespace fgo
 			};
 		};
 
+		HINSTANCE instance = 0; // Ultimate.aufのインスタンスハンドルです。
 		AviUtl::FilterPlugin* fp = 0; // フィルタプラグインのポインタです。
 		AviUtlInternal auin; // AviUtlや拡張編集の機能にアクセスするためのオブジェクトです。
 
@@ -37,7 +38,7 @@ namespace fgo
 		std::wstring getConfigFileName(LPCWSTR fileName) const
 		{
 			WCHAR path[MAX_PATH] = {};
-			::GetModuleFileNameW(fp->dll_hinst, path, std::size(path));
+			::GetModuleFileNameW(instance, path, std::size(path));
 			::PathRemoveExtensionW(path);
 			::StringCchCatW(path, std::size(path), L"Config");
 			::PathAppendW(path, fileName);

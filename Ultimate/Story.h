@@ -136,7 +136,7 @@ namespace fgo
 				{
 					MY_TRACE_FUNC("DLL_PROCESS_ATTACH");
 
-					::DisableThreadLibraryCalls(instance);
+					::DisableThreadLibraryCalls(magi.instance = instance);
 
 					break;
 				}
