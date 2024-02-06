@@ -375,6 +375,20 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_CHAR:
+			case WM_DEADCHAR:
+			case WM_SYSKEYDOWN:
+			case WM_SYSKEYUP:
+			case WM_SYSCHAR:
+			case WM_SYSDEADCHAR:
+				{
+					// コンテナにフォーカスがあっても
+					// ショートカットキーが使用できるように
+					// メッセージをAviUtlウィンドウに転送します。
+					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
+				}
 			}
 
 			switch (message)

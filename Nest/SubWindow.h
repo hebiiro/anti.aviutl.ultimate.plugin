@@ -141,6 +141,32 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_SETFOCUS:
+				{
+					MY_TRACE_FUNC("WM_SETFOCUS, 0x%08X, 0x%08X", wParam, lParam);
+
+					break;
+				}
+			case WM_KILLFOCUS:
+				{
+					MY_TRACE_FUNC("WM_KILLFOCUS, 0x%08X, 0x%08X", wParam, lParam);
+
+					break;
+				}
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_CHAR:
+			case WM_DEADCHAR:
+			case WM_SYSKEYDOWN:
+			case WM_SYSKEYUP:
+			case WM_SYSCHAR:
+			case WM_SYSDEADCHAR:
+				{
+					// サブウィンドウにフォーカスがあっても
+					// ショートカットキーが使用できるように
+					// メッセージをAviUtlウィンドウに転送します。
+					return ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
+				}
 			}
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
