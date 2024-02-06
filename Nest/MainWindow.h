@@ -500,6 +500,18 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_SETFOCUS:
+				{
+					MY_TRACE_FUNC("WM_SETFOCUS, 0x%08X, 0x%08X", wParam, lParam);
+
+					break;
+				}
+			case WM_KILLFOCUS:
+				{
+					MY_TRACE_FUNC("WM_KILLFOCUS, 0x%08X, 0x%08X", wParam, lParam);
+
+					break;
+				}
 			case WM_MENUSELECT: // 「patch.aul」用の処理です。
 				{
 					MY_TRACE_FUNC("WM_MENUSELECT, 0x%08X, 0x%08X", wParam, lParam);

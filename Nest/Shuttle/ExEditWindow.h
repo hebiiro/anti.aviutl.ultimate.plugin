@@ -97,6 +97,18 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_SETFOCUS:
+				{
+					MY_TRACE_FUNC("WM_SETFOCUS, 0x%08X, 0x%08X", wParam, lParam);
+
+					break;
+				}
+			case WM_KILLFOCUS:
+				{
+					MY_TRACE_FUNC("WM_KILLFOCUS, 0x%08X, 0x%08X", wParam, lParam);
+
+					break;
+				}
 			}
 
 			return __super::onWndProc(hwnd, message, wParam, lParam);
