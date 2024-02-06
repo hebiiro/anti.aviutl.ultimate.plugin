@@ -539,14 +539,14 @@ namespace fgo::nest
 					if (psdtoolkit && ::IsWindowVisible(*psdtoolkit))
 					{
 						// PSDToolKitを非表示にしてマウスメッセージが飛ばないようにします。
-						::ShowWindow(*psdtoolkit, FALSE);
+						::ShowWindow(*psdtoolkit, SW_HIDE);
 
 						// AviUtlにWM_COMMANDを処理させます。
 						LRESULT lr = ::SendMessage(hive.aviutlWindow, message, wParam, lParam);
 
-						// 非表示コマンドをポストします。
+						// 表示コマンドをポストします。
 						// これにより、若干遅れてPSDToolKitが表示状態になります。
-						::ShowWindowAsync(*psdtoolkit, TRUE);
+						::ShowWindowAsync(*psdtoolkit, SW_SHOW);
 
 						return lr;
 					}
