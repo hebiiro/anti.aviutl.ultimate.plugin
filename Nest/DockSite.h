@@ -531,7 +531,14 @@ namespace fgo::nest
 							// タブアイテムが切り替わった場合はペインをリフレッシュします。
 							auto pane = Pane::getPane(header->hwndFrom);
 							if (pane)
+							{
 								pane->refresh(FALSE);
+
+								// ペインがシャトルを持っているなら
+								Shuttle* shuttle = pane->getCurrentShuttle();
+								if (shuttle)
+									::SetFocus(*shuttle); // そのシャトルにフォーカスを当てます。
+							}
 
 							break;
 						}
