@@ -131,6 +131,7 @@
     <ClInclude Include="Hook\Api\CreateWindow.h">
       <Filter>Hook\API</Filter>
     </ClInclude>
+    <ClInclude Include="Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

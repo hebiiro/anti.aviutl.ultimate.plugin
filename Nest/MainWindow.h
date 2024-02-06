@@ -26,7 +26,7 @@ namespace fgo::nest
 			static const UINT EXPORT_LAYOUT = 1002;
 			static const UINT CREATE_SUB_WINDOW = 1003;
 
-			static const UINT MAXIMIZE_PLAY = 30000;
+			static const UINT MAXIMUM_PLAY = 30000;
 		};
 
 		struct Loader {
@@ -235,12 +235,12 @@ namespace fgo::nest
 			HMENU menu = ::GetMenu(*this);
 
 			LPCTSTR text = _T("再生時最大化 OFF");
-			if (hive.showPlayer) text = _T("再生時最大化 ON");
+			if (hive.maximumPlay) text = _T("再生時最大化 ON");
 
 			MENUITEMINFO mii = { sizeof(mii) };
 			mii.fMask = MIIM_STRING;
 			mii.dwTypeData = (LPTSTR)text;
-			::SetMenuItemInfo(menu, CommandID::MAXIMIZE_PLAY, FALSE, &mii);
+			::SetMenuItemInfo(menu, CommandID::MAXIMUM_PLAY, FALSE, &mii);
 
 			::DrawMenuBar(*this);
 		}
@@ -534,11 +534,11 @@ namespace fgo::nest
 
 					switch (id)
 					{
-					case CommandID::MAXIMIZE_PLAY:
+					case CommandID::MAXIMUM_PLAY:
 						{
-							MY_TRACE(_T("CommandID::MAXIMIZE_PLAY\n"));
+							MY_TRACE(_T("CommandID::MAXIMUM_PLAY\n"));
 
-							hive.showPlayer = !hive.showPlayer;
+							hive.maximumPlay = !hive.maximumPlay;
 
 							updateMainMenu();
 
@@ -743,7 +743,7 @@ namespace fgo::nest
 				setUInt(IDC_MENU_BREAK, hive.menuBreak);
 				setCheck(IDC_USE_THEME, hive.useTheme);
 				setCheck(IDC_FORCE_SCROLL, hive.forceScroll);
-				setCheck(IDC_SHOW_PLAYER, hive.showPlayer);
+				setCheck(IDC_SHOW_PLAYER, hive.maximumPlay);
 
 				return doModal2(parent);
 			}

@@ -64,7 +64,7 @@ namespace fgo::nest
 					getPrivateProfileColor(element, L"inactiveCaptionTextColor", hive.inactiveCaptionTextColor);
 					getPrivateProfileBool(element, L"useTheme", hive.useTheme);
 					getPrivateProfileBool(element, L"forceScroll", hive.forceScroll);
-					getPrivateProfileBool(element, L"showPlayer", hive.showPlayer);
+					getPrivateProfileBool(element, L"maximumPlay", hive.maximumPlay);
 				}
 
 				// 事前に<subWindow>を読み込みます。

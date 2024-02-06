@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Hive.h"
+#include "Config.h"
 #include "MainWindow.h"
 #include "ConfigLoader.h"
 #include "ConfigSaver.h"
@@ -19,7 +20,7 @@ namespace fgo::nest
 		//
 		LPCWSTR get_servant_name() override
 		{
-			return L"Nest";
+			return Hive::Name;
 		}
 
 		//
@@ -27,7 +28,7 @@ namespace fgo::nest
 		//
 		LPCWSTR get_servant_display_name() override
 		{
-			return L"ネスト";
+			return Hive::DisplayName;
 		}
 
 		//
@@ -38,6 +39,9 @@ namespace fgo::nest
 			MY_TRACE_FUNC("0x%08X", instance);
 
 			hive.instance = instance;
+
+			// コンフィグ(ini)を読み込みます。
+			config.init();
 
 			// コンテナのウィンドウクラスを登録します。
 			Container::registerWndClass();
@@ -65,6 +69,8 @@ namespace fgo::nest
 			hook::get_message.exit();
 			hook::api.exit();
 
+			config.exit();
+
 			return TRUE;
 		}
 
@@ -89,8 +95,12 @@ namespace fgo::nest
 					get_servant_display_name(), MB_OK | MB_ICONWARNING);
 			}
 
-			if (!load()) return FALSE;
-			if (!init()) return FALSE;
+			// サブプロセス用のドッキングウィンドウを作成します。
+			mainWindow->createSubProcesses(hive.mainWindow);
+
+			// モジュール別フックを初期化します。
+			hook::module.init();
+
 			return TRUE;
 		}
 
@@ -99,8 +109,6 @@ namespace fgo::nest
 		//
 		BOOL on_exit() override
 		{
-			if (!save()) return FALSE;
-			if (!exit()) return FALSE;
 			return TRUE;
 		}
 
@@ -138,74 +146,5 @@ namespace fgo::nest
 				}
 			} shuttle;
 		} exports;
-
-		//
-		// コンフィグファイルのフルパスを返します。
-		//
-		inline static std::wstring getConfigFileName()
-		{
-			return magi.getConfigFileName(L"Nest.ini");
-		}
-
-		//
-		// コンフィグファイル名を取得し、設定を読み込みます。
-		//
-		BOOL load()
-		{
-			return load(getConfigFileName().c_str());
-		}
-
-		//
-		// コンフィグファイルから設定を読み込みます。
-		//
-		BOOL load(LPCWSTR path)
-		{
-			hive.psdtoolkit.load(path, L"PSDToolKit");
-			hive.bouyomisan.load(path, L"Bouyomisan");
-			hive.console.load(path, L"Console");
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグファイル名を取得し、設定を保存します。
-		//
-		BOOL save()
-		{
-			return save(getConfigFileName().c_str());
-		}
-
-		//
-		// コンフィグファイルに設定を保存します。
-		//
-		BOOL save(LPCWSTR path)
-		{
-			hive.psdtoolkit.save(path, L"PSDToolKit");
-			hive.bouyomisan.save(path, L"Bouyomisan");
-			hive.console.save(path, L"Console");
-
-			return TRUE;
-		}
-
-		//
-		// 初期化処理です。
-		//
-		BOOL init()
-		{
-			mainWindow->createSubProcesses(hive.mainWindow);
-
-			// モジュール別フックを初期化します。
-			hook::module.init();
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理です。
-		//
-		BOOL exit()
-		{
-			return TRUE;
-		}
 	} servant;
 }

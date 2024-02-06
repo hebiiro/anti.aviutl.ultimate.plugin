@@ -7,6 +7,9 @@ namespace fgo::nest
 	//
 	inline struct Hive
 	{
+		inline static const LPCWSTR Name = L"Nest";
+		inline static const LPCWSTR DisplayName = L"ネスト";
+
 		struct Label { LPCWSTR label; int value; };
 
 		struct WindowMessage
@@ -39,7 +42,7 @@ namespace fgo::nest
 				return TRUE;
 			}
 			BOOL save(LPCWSTR path, LPCWSTR appName) {
-				setPrivateProfileInt(path, appName, L"dock", dock);
+				setPrivateProfileBool(path, appName, L"dock", dock);
 				setPrivateProfileString(path, appName, L"run", run);
 				return TRUE;
 			}
@@ -79,7 +82,8 @@ namespace fgo::nest
 		COLORREF inactiveCaptionTextColor = RGB(0x00, 0x00, 0x00);
 		BOOL useTheme = FALSE;
 		BOOL forceScroll = FALSE;
-		BOOL showPlayer = FALSE;
+		BOOL maximumPlay = FALSE;
+		BOOL useMaximumPlay = FALSE;
 
 		//
 		// 矩形を塗りつぶします。

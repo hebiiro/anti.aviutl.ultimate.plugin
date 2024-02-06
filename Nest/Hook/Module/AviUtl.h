@@ -73,7 +73,7 @@ namespace fgo::nest::hook::aviutl
 			MY_TRACE_FUNC("");
 
 			// フラグが立っていない場合はデフォルト処理のみ行います。
-			if (!hive.showPlayer)
+			if (!hive.maximumPlay)
 				return doDefault(u1, u2, u3, u4, u5, u6);
 
 			// AviUtlウィンドウまたは再生ウィンドウを取得します。
@@ -175,7 +175,7 @@ namespace fgo::nest::hook::aviutl
 			MY_TRACE_FUNC("");
 
 			// フラグが立っていない場合はデフォルト処理のみ行います。
-			if (!hive.showPlayer)
+			if (!hive.maximumPlay)
 				return doDefault(u1, u2, u3, u4, u5);
 
 			// AviUtlウィンドウまたは再生ウィンドウを取得します。
@@ -255,28 +255,44 @@ namespace fgo::nest::hook::aviutl
 	{
 		MY_TRACE_FUNC("");
 
-		TCHAR fileName[MAX_PATH] = {};
-		::GetModuleFileName(0, fileName, std::size(fileName));
-		::PathRemoveFileSpec(fileName);
-		::PathAppend(fileName, _T("aviutl.ini"));
-		MY_TRACE_TSTR(fileName);
-
-		g_movieplaymain = ::GetPrivateProfileInt(_T("system"), _T("movieplaymain"), 0, fileName);
-
+		// AviUtlのモジュールハンドルを取得します。
 		auto aviutl = (uintptr_t)::GetModuleHandle(0);
 		MY_TRACE_HEX(aviutl);
 
-		DetourTransactionBegin();
-		DetourUpdateThread(::GetCurrentThread());
-
-		PlayMain::init(aviutl);
-		PlaySub::init(aviutl);
-
-		// aviutl.exe内の::AdjustWindowRectEx()をフックします。
+		// AviUtl内の::AdjustWindowRectEx()をフックします。
 		Tools::attach_import(AdjustWindowRectEx, (HMODULE)aviutl, "AdjustWindowRectEx");
 		MY_TRACE_HEX(AdjustWindowRectEx.orig);
 
-		return DetourTransactionCommit() == NO_ERROR;
+		// 最大化再生を使用する場合は
+		if (hive.useMaximumPlay)
+		{
+			// AviUtl内の再生関係の関数をフックします。
+
+			TCHAR fileName[MAX_PATH] = {};
+			::GetModuleFileName(0, fileName, std::size(fileName));
+			::PathRemoveFileSpec(fileName);
+			::PathAppend(fileName, _T("aviutl.ini"));
+			MY_TRACE_TSTR(fileName);
+
+			g_movieplaymain = ::GetPrivateProfileInt(_T("system"), _T("movieplaymain"), 0, fileName);
+
+			DetourTransactionBegin();
+			DetourUpdateThread(::GetCurrentThread());
+
+			PlayMain::init(aviutl);
+			PlaySub::init(aviutl);
+
+			if (DetourTransactionCommit() == NO_ERROR)
+			{
+				MY_TRACE(_T("APIフックに成功しました\n"));
+			}
+			else
+			{
+				MY_TRACE(_T("APIフックに失敗しました\n"));
+			}
+		}
+
+		return TRUE;
 	}
 
 	//

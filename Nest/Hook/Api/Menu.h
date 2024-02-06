@@ -48,8 +48,13 @@ namespace fgo::nest::hook
 
 			if (hwnd == hive.mainWindow)
 			{
-				if (::GetMenuState(menu, MainWindow::CommandID::MAXIMIZE_PLAY, MF_BYCOMMAND) == -1)
-					::AppendMenu(menu, MF_STRING, MainWindow::CommandID::MAXIMIZE_PLAY, _T(""));
+				// 最大化再生を使用する場合は
+				if (hive.useMaximumPlay)
+				{
+					// メニューアイテムを追加します。
+					if (::GetMenuState(menu, MainWindow::CommandID::MAXIMUM_PLAY, MF_BYCOMMAND) == -1)
+						::AppendMenu(menu, MF_STRING, MainWindow::CommandID::MAXIMUM_PLAY, _T(""));
+				}
 			}
 
 			return orig(hwnd, menu);

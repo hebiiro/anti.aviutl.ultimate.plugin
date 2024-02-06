@@ -52,7 +52,7 @@ namespace fgo::nest
 					setPrivateProfileColor(element, L"inactiveCaptionTextColor", hive.inactiveCaptionTextColor);
 					setPrivateProfileBool(element, L"useTheme", hive.useTheme);
 					setPrivateProfileBool(element, L"forceScroll", hive.forceScroll);
-					setPrivateProfileBool(element, L"showPlayer", hive.showPlayer);
+					setPrivateProfileBool(element, L"maximumPlay", hive.maximumPlay);
 				}
 
 				// <mainWindow>を作成します。
