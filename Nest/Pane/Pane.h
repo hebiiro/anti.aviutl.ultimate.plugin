@@ -306,16 +306,11 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("0x%08X, %d", shuttle, index);
 
-			// シャトルはすでにドッキング済みなので何もしません。
+			// シャトルはすでにこのペインとドッキング済みなので何もしません。
 			if (findTab(shuttle) != -1) return -1;
 
-			// シャトルが他のペインとドッキング中なら
-			auto listener = shuttle->getListener();
-			if (listener)
-			{
-				// 他のペインとのドッキングを解除させます。
-				listener->releaseShuttle(shuttle);
-			}
+			// シャトルが他のペインとドッキング中かもしれないので、ドッキングを解除させます。
+			shuttle->fireReleaseShuttle();
 
 			// 追加位置が無効の場合は末尾に追加します。
 			if (index == -1)
@@ -329,8 +324,8 @@ namespace fgo::nest
 			int result = addTab(shuttle, text, index);
 
 			// シャトルをドッキング状態にします。
-			shuttle->setListener(this);
-			shuttle->dockWindow(this->getDockSite());
+			shuttle->addListener(this);
+			shuttle->dockWindow(owner);
 
 			return result;
 		}
@@ -369,7 +364,7 @@ namespace fgo::nest
 			refresh(FALSE);
 
 			// シャトルをフローティング状態にします。
-			shuttle->setListener(0);
+			shuttle->removeListener(this);
 			shuttle->floatWindow();
 		}
 
@@ -387,7 +382,7 @@ namespace fgo::nest
 			{
 				Shuttle* shuttle = getShuttle(i);
 
-				shuttle->setListener(0);
+				shuttle->removeListener(this);
 				shuttle->floatWindow();
 			}
 
@@ -1082,14 +1077,6 @@ namespace fgo::nest
 					child->refresh(deep);
 				}
 			}
-		}
-
-		//
-		// ドッキングサイトのウィンドウハンドルが必要なときに呼ばれます。
-		//
-		HWND getDockSite() override
-		{
-			return owner;
 		}
 
 		//

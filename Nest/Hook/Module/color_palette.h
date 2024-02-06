@@ -15,7 +15,7 @@ namespace fgo::nest::hook
 		{
 			static HWND WINAPI hook(HINSTANCE instance, LPCSTR templateName, HWND parent, DLGPROC dlgProc, LPARAM initParam)
 			{
-				MY_TRACE(_T("color_palette::CreateDialogParamA()\n"));
+				MY_TRACE_FUNC("");
 
 				HWND hwnd = orig(instance, templateName, parent, dlgProc, initParam);
 
@@ -43,17 +43,17 @@ namespace fgo::nest::hook
 		{
 			static BOOL WINAPI hook(HWND hwnd, int cmdShow)
 			{
-				MY_TRACE(_T("color_palette::ShowWindow(0x%08X, %d)\n"), hwnd, cmdShow);
+				MY_TRACE_FUNC("0x%08X, %d", hwnd, cmdShow);
 
 				if (cmdShow)
 				{
 					auto shuttle = shuttleManager.get(L"マイパレット");
 					if (shuttle && *shuttle == hwnd)
 					{
-						MY_TRACE_HEX(shuttle->getListener());
+						MY_TRACE_INT(shuttle->isDocking());
 
 						// マイパレットがドッキング中なら
-						if (shuttle->getListener())
+						if (shuttle->isDocking())
 							return FALSE; // マイパレットを表示しません。
 					}
 				}

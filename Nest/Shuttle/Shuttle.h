@@ -15,11 +15,6 @@ namespace fgo::nest
 		//
 		struct Listener {
 			//
-			// ドッキングサイトのウィンドウハンドルが必要なときに呼ばれます。
-			//
-			virtual HWND getDockSite() = 0;
-
-			//
 			// ドッキングサイトからシャトルを切り離すときに呼ばれます。
 			//
 			virtual void releaseShuttle(Shuttle* shuttle) = 0;
@@ -53,7 +48,7 @@ namespace fgo::nest
 		inline const static LPCTSTR PropName = _T("Nest.Shuttle");
 
 		inline static StaticListener* staticListener = 0; // このクラスのスタティックリスナーです。
-		Listener* listener = 0; // このクラスのリスナーです。
+		std::set<Listener*> listeners; // このクラスのリスナーです。
 		_bstr_t name = L""; // このシャトルの名前です。
 		std::shared_ptr<Container> dockContainer; // このシャトル専用のドッキングコンテナです。
 		std::shared_ptr<Container> floatContainer; // このシャトル専用のフローティングコンテナです。
@@ -383,7 +378,7 @@ namespace fgo::nest
 					}
 
 					// リスナーにテキストの変更を通知します。
-					if (listener)
+					for (auto listener : listeners)
 						listener->onChangeText(this, newText);
 
 					break;
@@ -400,7 +395,7 @@ namespace fgo::nest
 					}
 
 					// リスナーにフォーカスの変更を通知します。
-					if (listener)
+					for (auto listener : listeners)
 						listener->onChangeFocus(this);
 
 					break;
@@ -525,19 +520,31 @@ namespace fgo::nest
 		}
 
 		//
-		// リスナーを返します。
+		// 指定されたリスナーを追加します。
 		//
-		Listener* getListener() const
+		void addListener(Listener* listener)
 		{
-			return listener;
+			listeners.emplace(listener);
 		}
 
 		//
-		// リスナーを指定されたリスナーに変更します。
+		// 指定されたリスナーを削除します。
 		//
-		void setListener(Listener* listener)
+		void removeListener(Listener* listener)
 		{
-			this->listener = listener;
+			listeners.erase(listener);
+		}
+
+		//
+		// シャトルのリリースをリスナーに通知します。
+		//
+		void fireReleaseShuttle()
+		{
+			auto listeners = this->listeners;
+			for (auto listener : listeners)
+			{
+				listener->releaseShuttle(this);
+			}
 		}
 	};
 }

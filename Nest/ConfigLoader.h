@@ -272,13 +272,8 @@ namespace fgo::nest
 					// フローティングコンテナが表示状態なら
 					if (::IsWindowVisible(*shuttle->floatContainer))
 					{
-						// ドッキング状態なら
-						Shuttle::Listener* pane = shuttle->getListener();
-						if (pane)
-						{
-							// ドッキングを解除します。
-							pane->releaseShuttle(shuttle.get());
-						}
+						// シャトルがドッキング中かもしれないので、ドッキングを解除します。
+						shuttle->fireReleaseShuttle();
 
 						// ターゲットウィンドウを表示状態にします。
 						shuttle->showTargetWindow();

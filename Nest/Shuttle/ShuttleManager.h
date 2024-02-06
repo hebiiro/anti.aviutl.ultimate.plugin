@@ -157,12 +157,8 @@ namespace fgo::nest
 		//
 		BOOL erase(const std::shared_ptr<Shuttle>& shuttle)
 		{
-			// リスナーが存在する場合は
-			if (shuttle->listener)
-			{
-				// リスナーにシャトルの削除を通知します。
-				shuttle->listener->releaseShuttle(shuttle.get());
-			}
+			// リスナーにシャトルの削除を通知します。
+			shuttle->fireReleaseShuttle();
 
 			// コレクションから削除します。
 			return !!shuttles.erase(shuttle->name);
