@@ -348,16 +348,15 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("%s, WM_SHOWWINDOW, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
-					// フィルタウィンドウかチェックします。
+					// ターゲットウィンドウがフィルタウィンドウの場合は
 					auto fp = getFilter(hwnd);
 					if (fp)
 					{
-						// wParamがTRUE、is_filter_window_disp()がFALSE、またはその逆の場合は
-						if (!!wParam == !fp->exfunc->is_filter_window_disp(fp))
-						{
-							// WM_CLOSEを送信してAviUtlにフィルタウィンドウの表示状態を切り替えさせます。
-							::SendMessage(*this, WM_CLOSE, 0, 0);
-						}
+						// ターゲットウィンドウの表示状態とAviUtl上での表示状態をシンクロさせます。
+						if (wParam)
+							fp->flag |= AviUtl::FilterPlugin::Flag::WindowActive;
+						else
+							fp->flag &= ~AviUtl::FilterPlugin::Flag::WindowActive;
 					}
 
 					auto container = getCurrentContainer();
