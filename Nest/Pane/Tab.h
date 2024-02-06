@@ -5,6 +5,20 @@ namespace fgo::nest
 	struct Tab : Tools::Window
 	{
 		//
+		// タブコントロールのフォントをセットします。
+		//
+		BOOL setFont()
+		{
+			AviUtl::SysInfo si = {};
+			magi.auin.get_sys_info(0, &si);
+			if (!si.hfont) return FALSE;
+
+			::SendMessage(*this, WM_SETFONT, (WPARAM)si.hfont, TRUE);
+
+			return TRUE;
+		}
+
+		//
 		// ウィンドウプロシージャです。
 		//
 		LRESULT onWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override

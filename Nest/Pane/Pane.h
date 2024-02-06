@@ -79,10 +79,7 @@ namespace fgo::nest
 				TCS_FOCUSNEVER,
 				0, 0, 0, 0,
 				owner, 0, hive.instance, 0);
-
-			AviUtl::SysInfo si = {};
-			magi.auin.get_sys_info(0, &si);
-			::SendMessage(tab, WM_SETFONT, (WPARAM)si.hfont, TRUE);
+			tab.setFont();
 
 			::SetProp(tab, PropName, this);
 		}

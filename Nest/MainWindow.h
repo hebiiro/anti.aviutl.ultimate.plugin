@@ -664,6 +664,11 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, Begin", hwnd, wParam, lParam);
 
+					// メインウィンドウが初期化された時点では
+					// まだAviUtlのフォントが作成されていなかったので
+					// ここでタブのフォントをセットします。
+					getRootPane(hwnd)->tab.setFont();
+
 					// システムメニューに独自の項目を追加する。
 					initSystemMenu();
 
