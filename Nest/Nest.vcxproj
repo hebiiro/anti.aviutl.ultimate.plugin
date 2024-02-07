@@ -202,7 +202,6 @@
     <ClInclude Include="SubProcess\Console.h" />
     <ClInclude Include="SubProcess\PSDToolKit.h" />
     <ClInclude Include="SubWindow.h" />
-    <ClInclude Include="SubWindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

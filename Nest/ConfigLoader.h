@@ -98,7 +98,11 @@ namespace fgo::nest
 			MY_TRACE_FUNC("");
 
 			// 一旦すべてのサブウィンドウを削除します。
-			subWindowManager.clear();
+			// サブウィンドウを削除する度にコレクションの個数が変わるので、まずコピーを作ります。
+			auto collection = SubWindow::collection;
+			for (auto subWindow : collection)
+				subWindow->destroy(); // サブウィンドウを削除します。
+			SubWindow::collection.clear(); // 念のためコレクションを空にします。
 
 			// <subWindow>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");

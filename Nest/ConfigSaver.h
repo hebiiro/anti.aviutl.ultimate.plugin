@@ -98,16 +98,14 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("");
 
-			for (auto subWindow : subWindowManager.collection)
+			for (auto subWindow : SubWindow::collection)
 			{
 				// <subWindow>を作成します。
 				MSXML2::IXMLDOMElementPtr subWindowElement = appendElement(element, L"subWindow");
 
-				TCHAR name[MAX_PATH] = {};
-				::GetWindowText(subWindow, name, std::size(name));
-				setPrivateProfileString(subWindowElement, L"name", name);
+				setPrivateProfileString(subWindowElement, L"name", subWindow->name);
 
-				auto root = SubWindow::getRootPane(subWindow);
+				auto root = SubWindow::getRootPane(*subWindow);
 
 				// <pane>を作成します。
 				savePane(subWindowElement, root);

@@ -287,8 +287,8 @@ namespace fgo::nest
 
 			calcLayout(*this);
 
-			for (auto subWindow : subWindowManager.collection)
-				calcLayout(subWindow);
+			for (auto subWindow : SubWindow::collection)
+				calcLayout(*subWindow);
 		}
 
 		//

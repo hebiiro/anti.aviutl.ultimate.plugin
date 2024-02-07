@@ -79,6 +79,8 @@ namespace fgo::nest
 		//
 		BOOL on_init() override
 		{
+			MY_TRACE_FUNC("");
+
 			if (::GetModuleHandleW(L"UniteWindow.aul"))
 			{
 				::MessageBoxW(magi.fp->hwnd,
@@ -109,6 +111,12 @@ namespace fgo::nest
 		//
 		BOOL on_exit() override
 		{
+			MY_TRACE_FUNC("");
+
+			// シャトルマネージャのデストラクタではタイミングが遅すぎるので、
+			// ここでシャトルをすべて削除します。
+			shuttleManager.shuttles.clear();
+
 			return TRUE;
 		}
 

@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "Shuttle/Shuttle.h"
 #include "DockSite.h"
-#include "SubWindowManager.h"
 
 namespace fgo::nest
 {
@@ -12,6 +11,33 @@ namespace fgo::nest
 	//
 	struct SubWindow : DockSite<Shuttle>
 	{
+		//
+		// このクラスのインスタンスのコレクションです。
+		//
+		inline static std::set<SubWindow*> collection;
+
+		//
+		// コンストラクタです。
+		//
+		SubWindow()
+		{
+			MY_TRACE_FUNC("");
+
+			// インスタンスをコレクションに追加します。
+			collection.emplace(this);
+		}
+
+		//
+		// デストラクタです。
+		//
+		~SubWindow() override
+		{
+			MY_TRACE_FUNC("");
+
+			// インスタンスをコレクションから削除します。
+			collection.erase(this);
+		}
+
 		//
 		// 使用可能なシャトル名を返します。
 		//
@@ -81,10 +107,6 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("0x%08X, WM_CREATE, 0x%08X, 0x%08X", hwnd,  wParam, lParam);
 
-					// このサブウィンドウをマネージャーに追加します。
-					// これにより、現存するすべてのサブウィンドウにアクセスできるようになります。
-					subWindowManager.add(hwnd);
-
 					break;
 				}
 			case WM_CLOSE:
@@ -99,9 +121,9 @@ namespace fgo::nest
 						if (IDYES != ::MessageBox(hwnd, _T("サブウィンドウを削除しますか？"), hive.DisplayName, MB_YESNO))
 							return 0;
 
-						// このサブウィンドウをマネージャーから削除します。
-						// これにより、このウィンドウは破壊されます。
-						subWindowManager.erase(hwnd);
+						// ウィンドウを破壊します。
+						// インスタンスもここで削除されます。
+						destroy();
 					}
 					else
 					{
