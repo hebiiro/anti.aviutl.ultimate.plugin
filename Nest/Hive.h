@@ -9,6 +9,8 @@ namespace fgo::nest
 	{
 		inline static const LPCWSTR Name = L"Nest";
 		inline static const LPCWSTR DisplayName = L"ネスト";
+		inline static const LPCTSTR SubWindowClassName = _T("Nest.SubWindow");
+		inline static const LPCTSTR SubProcessClassName = _T("Nest.SubProcess");
 
 		struct Label { LPCWSTR label; int value; };
 
@@ -59,10 +61,6 @@ namespace fgo::nest
 		struct Console : SubProcess {
 			inline static const LPCTSTR Name = _T("コンソール");
 		} console;
-
-		inline static const LPCTSTR AppName = _T("ネスト");
-		inline static const LPCTSTR SubWindowClassName = _T("Nest.SubWindow");
-		inline static const LPCTSTR SubProcessClassName = _T("Nest.SubProcess");
 
 		HINSTANCE instance = 0; // このDLLのインスタンスハンドルです。
 		HTHEME theme = 0;

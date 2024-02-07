@@ -423,7 +423,7 @@ namespace fgo::nest
 		BOOL createSubWindow(HWND parent)
 		{
 			TCHAR name[MAX_PATH] = {};
-			SubWindow::getEmptyName(name, std::size(name));
+			SubWindow::getAvailableName(name, std::size(name));
 			MY_TRACE_TSTR(name);
 
 			auto subWindow = std::make_shared<SubWindow>();

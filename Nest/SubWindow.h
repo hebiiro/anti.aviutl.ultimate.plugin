@@ -13,11 +13,11 @@ namespace fgo::nest
 	struct SubWindow : DockSite<Shuttle>
 	{
 		//
-		// 使用されていないシャトル名を返します。
+		// 使用可能なシャトル名を返します。
 		//
-		static void getEmptyName(LPTSTR name, int cch)
+		static void getAvailableName(LPTSTR name, size_t cch)
 		{
-			for (int i = 0; TRUE; i++)
+			for (size_t i = 0; TRUE; i++)
 			{
 				::StringCchPrintf(name, cch, _T("サブ%d"), i + 1);
 				MY_TRACE_TSTR(name);
@@ -96,7 +96,7 @@ namespace fgo::nest
 						// Shiftキーが押されている場合はサブウィンドウを削除します。
 
 						// このサブウィンドウを削除していいのかどうかをユーザーに問い合わせます。
-						if (IDYES != ::MessageBox(hwnd, _T("サブウィンドウを削除しますか？"), hive.AppName, MB_YESNO))
+						if (IDYES != ::MessageBox(hwnd, _T("サブウィンドウを削除しますか？"), hive.DisplayName, MB_YESNO))
 							return 0;
 
 						// このサブウィンドウをマネージャーから削除します。

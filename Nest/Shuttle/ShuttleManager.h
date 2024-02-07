@@ -113,7 +113,7 @@ namespace fgo::nest
 				{
 					// メッセージボックスを表示して拒否します。
 
-					::MessageBox(*this, _T("名前が重複しています"), hive.AppName, MB_OK | MB_ICONWARNING);
+					::MessageBox(*this, _T("名前が重複しています"), hive.DisplayName, MB_OK | MB_ICONWARNING);
 
 					return;
 				}
@@ -141,7 +141,7 @@ namespace fgo::nest
 
 				TCHAR text[MAX_PATH] = {};
 				::StringCchPrintf(text, std::size(text), _T("ウィンドウ名が重複しています\nウィンドウ名 : %ws"), (LPCWSTR)name);
-				::MessageBox(hive.mainWindow, text, hive.AppName, MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
+				::MessageBox(hive.mainWindow, text, hive.DisplayName, MB_OK | MB_ICONWARNING | MB_SYSTEMMODAL);
 
 				return FALSE;
 			}
