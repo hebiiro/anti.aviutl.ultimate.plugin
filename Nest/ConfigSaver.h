@@ -8,18 +8,6 @@ namespace fgo::nest
 	//
 	struct ConfigSaver : MainWindow::Saver
 	{
-		std::wstring getName(LPCWSTR x)
-		{
-			std::wstring name(x);
-			std::wstring t = L"* "; // 検索文字列
-			auto pos = name.find(t); // 検索文字列が見つかった位置
-			auto len = t.length(); // 検索文字列の長さ
-			if (pos != std::string::npos)
-				name.replace(pos, len, L"");
-
-			return name;
-		}
-
 		//
 		// 指定されたファイルに設定を保存します。
 		//
@@ -138,7 +126,7 @@ namespace fgo::nest
 				// <dockShuttle>を作成します。
 				MSXML2::IXMLDOMElementPtr dockShuttleElement = appendElement(paneElement, L"dockShuttle");
 
-				std::wstring name = getName(shuttle->name);
+				std::wstring name = Shuttle::stripName((LPCWSTR)shuttle->name);
 
 				setPrivateProfileString(dockShuttleElement, L"name", name.c_str());
 			}
@@ -164,7 +152,7 @@ namespace fgo::nest
 				// <floatShuttle>を作成します。
 				MSXML2::IXMLDOMElementPtr floatShuttleElement = appendElement(element, L"floatShuttle");
 
-				std::wstring name = getName(shuttle->name);
+				std::wstring name = Shuttle::stripName((LPCWSTR)shuttle->name);
 				MY_TRACE_WSTR(name);
 
 				setPrivateProfileString(floatShuttleElement, L"name", name.c_str());

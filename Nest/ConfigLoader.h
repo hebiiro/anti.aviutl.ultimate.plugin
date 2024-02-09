@@ -16,12 +16,7 @@ namespace fgo::nest
 			HRESULT hr = getPrivateProfileString(element->getAttribute(name), outValue);
 			if (hr != S_OK) return hr;
 
-			if (wcscmp(outValue, L"AviUtl") == 0 ||
-				wcscmp(outValue, L"拡張編集") == 0 ||
-				wcscmp(outValue, L"設定ダイアログ") == 0)
-			{
-				outValue = L"* " + outValue;
-			}
+			outValue = Shuttle::decorateName((LPCWSTR)outValue).c_str();
 
 			return hr;
 		}

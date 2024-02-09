@@ -96,6 +96,35 @@ namespace fgo::nest
 		}
 
 		//
+		// 指定されたシャトル名を装飾して返します。
+		//
+		static std::wstring decorateName(const std::wstring& name)
+		{
+			if (name == L"AviUtl" ||
+				name == L"拡張編集" ||
+				name == L"設定ダイアログ")
+			{
+				return L"* " + name;
+			}
+
+			return name;
+		}
+
+		//
+		// 指定されたシャトル名の装飾を解除して返します。
+		//
+		static std::wstring stripName(const std::wstring& name)
+		{
+			std::wstring t = L"* ";
+
+			if (name.starts_with(t))
+				return name.substr(t.length());
+
+			return name;
+		}
+
+
+		//
 		// コンストラクタです。
 		//
 		Shuttle()
@@ -181,9 +210,11 @@ namespace fgo::nest
 					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 			}
 
-			// ターゲットのウィンドウタイトルを取得します。
+			// ターゲットのウィンドウ名を取得します。
 			TCHAR text[MAX_PATH] = {};
 			::GetWindowText(*this, text, std::size(text));
+
+			// フローティングコンテナのウィンドウ名を変更します。
 			::SetWindowText(*floatContainer, text);
 
 			// ターゲットのメニューをフローティングコンテナに移し替えます。
@@ -263,6 +294,14 @@ namespace fgo::nest
 			DWORD style = getStyle(*this);
 			style &= ~(WS_POPUP | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 			return style;
+		}
+
+		//
+		// シャトルの名前が変更されたときに呼ばれます。
+		//
+		virtual void onRename()
+		{
+			::SetWindowText(*this, name);
 		}
 
 		//

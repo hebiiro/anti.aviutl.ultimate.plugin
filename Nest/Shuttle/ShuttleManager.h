@@ -37,6 +37,7 @@ namespace fgo::nest
 		// シャトルの名前を変更します。
 		BOOL rename(Shuttle* shuttle, const _bstr_t& newName)
 		{
+			// newNameが既存の名前の場合はFALSEを返します。
 			if (shuttles.find(newName) != shuttles.end())
 				return FALSE;
 
@@ -52,8 +53,9 @@ namespace fgo::nest
 			// 以前の名前をマップから削除します。
 			shuttles.erase(oldName);
 
-			// ウィンドウ名を新しい名前に更新します。
-			::SetWindowText(*shuttle, newName);
+			// シャトルに名前の変更を通知します。
+			// 通常は新しい名前をウィンドウ名に設定します。
+			shuttle->onRename();
 
 			return TRUE;
 		}
