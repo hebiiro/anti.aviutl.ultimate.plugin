@@ -5,19 +5,20 @@ namespace Tools
 	//
 	// このクラスは WinAPI のウィンドウを管理します。
 	//
-	struct Window
+	template<class T>
+	struct WindowT
 	{
 		//
 		// コンストラクタです。
 		//
-		Window() : hwnd(0)
+		WindowT() : hwnd(0)
 		{
 		}
 
 		//
 		// デストラクタです。
 		//
-		virtual ~Window()
+		virtual ~WindowT()
 		{
 			unsubclass();
 		}
@@ -108,25 +109,25 @@ namespace Tools
 		}
 
 		//
-		// HWND に関連付けられた Window* を返します。
-		// HWND から Window* を取得する必要がある場合に使用してください。
+		// HWND に関連付けられた WindowT* を返します。
+		// HWND から WindowT* を取得する必要がある場合に使用してください。
 		//
-		inline static Window* fromHandle(HWND hwnd)
+		inline static WindowT* fromHandle(HWND hwnd)
 		{
 			DWORD_PTR refData = 0;
 			::GetWindowSubclass(hwnd, subclassProc, getSubclassId(), &refData);
-			return (Window*)refData;
+			return (WindowT*)refData;
 		}
 
 		//
-		// HWND に関連付けられた Window* を返します。
+		// HWND に関連付けられた WindowT* を返します。
 		// T 型は getWindowId() が id と同じ値を返すように実装してください。
 		// それにより、id で T 型かどうか確認できるようになります。
 		//
 		template<class T>
 		static T* fromHandle(HWND hwnd, LPCTSTR id)
 		{
-			Window* window = fromHandle(hwnd);
+			WindowT* window = fromHandle(hwnd);
 			if (!window) return 0;
 			if (_tcscmp(id, window->getWindowId()) != 0) return 0;
 			return static_cast<T*>(window);
@@ -142,25 +143,25 @@ namespace Tools
 		{
 //			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam, id, refData);
 
-			auto window = (Window*)refData;
+			auto window = (WindowT*)refData;
 			return window->onWndProc(hwnd, message, wParam, lParam);
 		}
 
 	public:
 
 		//
-		// この構造体は HWND と Window* を関連付けます。
+		// この構造体は HWND と WindowT* を関連付けます。
 		// HWND を生成するタイミングで使用してください。
 		//
 		thread_local inline static struct Associator
 		{
-			Window* target; // HWND を生成中の Window オブジェクトです。
+			WindowT* target; // HWND を生成中の WindowT オブジェクトです。
 			HHOOK hook; // CBT フックのハンドルです。
 
 			//
 			// ウィンドウハンドルが生成される関数の直前にこの関数を呼んでください。
 			//
-			void start(Window* window)
+			void start(WindowT* window)
 			{
 				target = window;
 				if (hook) ::UnhookWindowsHookEx(hook);
@@ -178,7 +179,7 @@ namespace Tools
 			}
 
 			//
-			// HWND と Window* を双方向に関連付けます。サブクラス化も行います。
+			// HWND と WindowT* を双方向に関連付けます。サブクラス化も行います。
 			// 内部的に使用されます。
 			//
 			BOOL subclass(HWND hwnd)
@@ -194,7 +195,7 @@ namespace Tools
 			//
 			inline static LRESULT CALLBACK hookProc(int code, WPARAM wParam, LPARAM lParam)
 			{
-//				MY_TRACE(_T("hookProc(%d, 0x%08X, 0x%08X)\n"), code, wParam, lParam);
+//				MY_TRACE_FUNC("%d, 0x%08X, 0x%08X", code, wParam, lParam);
 
 				if (code == HCBT_CREATEWND)
 				{
@@ -222,5 +223,14 @@ namespace Tools
 		// ウィンドウハンドルです。
 		//
 		HWND hwnd;
+	};
+
+	//
+	// このクラスはWindowTの実体です。
+	// WindowT<Window>::SubclassIdPlacementへのポインタがサブクラスIDになります。
+	// 重複してサブクラス化する場合は struct Hoge : WindowT<Hoge> のように別のクラスとして実体化してください。
+	//
+	struct Window : WindowT<Window>
+	{
 	};
 }
