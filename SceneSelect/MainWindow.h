@@ -14,14 +14,12 @@ namespace fgo::scene_select
 			inline static constexpr UINT Config = 2023;
 		};
 
-		struct Label { LPCWSTR label; int value; };
-
 		struct LayoutMode {
 			inline static constexpr int Horz = 0;
 			inline static constexpr int Vert = 1;
-			inline static constexpr Label label[] = {
-				{ L"Horz", Horz },
-				{ L"Vert", Vert },
+			inline static constexpr Tools::Label label[] = {
+				{ Horz, L"Horz" },
+				{ Vert, L"Vert" },
 			};
 		};
 

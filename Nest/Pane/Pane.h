@@ -9,41 +9,63 @@ namespace fgo::nest
 	{
 		struct SplitMode
 		{
-			static const int none = 0;
-			static const int vert = 1;
-			static const int horz = 2;
+			static const int None = 0;
+			static const int Vert = 1;
+			static const int Horz = 2;
 
-			inline static const Hive::Label label[] = 
-			{
-				{ L"none", none },
-				{ L"vert", vert },
-				{ L"horz", horz },
+			inline static const Tools::Label label[] = {
+				{ None, L"None" },
+				{ Vert, L"Vert" },
+				{ Horz, L"Horz" },
+
+				// 以下は古いバージョン用のラベルです。
+				{ None, L"none" },
+				{ Vert, L"vert" },
+				{ Horz, L"horz" },
 			};
 		};
 
 		struct Origin
 		{
-			static const int topLeft = 0;
-			static const int bottomRight = 1;
+			static const int TopLeft = 0;
+			static const int BottomRight = 1;
 
-			inline static const Hive::Label label[] = 
-			{
-				{ L"topLeft", topLeft },
-				{ L"bottomRight", bottomRight },
+			inline static const Tools::Label label[] = {
+				{ TopLeft, L"TopLeft" },
+				{ BottomRight, L"BottomRight" },
+
+				// 以下は古いバージョン用のラベルです。
+				{ TopLeft, L"topLeft" },
+				{ BottomRight, L"bottomRight" },
+			};
+		};
+
+		struct CaptionMode
+		{
+			static const int Hide = 0;
+			static const int Show = 1;
+
+			inline static const Tools::Label label[] = {
+				{ Hide, L"Hide" },
+				{ Show, L"Show" },
 			};
 		};
 
 		struct TabMode
 		{
-			static const int title = 0;
-			static const int top = 1;
-			static const int bottom = 2;
+			static const int Caption = 0;
+			static const int Top = 1;
+			static const int Bottom = 2;
 
-			inline static const Hive::Label label[] =
-			{
-				{ L"title", title },
-				{ L"top", top },
-				{ L"bottom", bottom },
+			inline static const Tools::Label label[] = {
+				{ Caption, L"Caption" },
+				{ Top, L"Top" },
+				{ Bottom, L"Bottom" },
+
+				// 以下は古いバージョン用のラベルです。
+				{ Caption, L"title" },
+				{ Top, L"top" },
+				{ Bottom, L"bottom" },
 			};
 		};
 
@@ -51,13 +73,14 @@ namespace fgo::nest
 		inline static int borderWidth = 8;
 		inline static int captionHeight = 24;
 		inline static int tabHeight = 24;
-		inline static int tabMode = TabMode::bottom;
+		inline static int tabMode = TabMode::Bottom;
 
 		HWND owner = 0;
 		RECT position = {};
-		int splitMode = SplitMode::none;
-		int origin = Origin::bottomRight;
+		int splitMode = SplitMode::None;
+		int origin = Origin::BottomRight;
 		BOOL isBorderLocked = FALSE;
+		int captionMode = CaptionMode::Show;
 		int border = 0; // ボーダーの位置です。
 		int dragOffset = 0; // ドラッグ処理に使用します。
 
@@ -415,13 +438,13 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::none:
+			case SplitMode::None:
 				{
 					resetPane();
 
 					break;
 				}
-			case SplitMode::vert:
+			case SplitMode::Vert:
 				{
 					border = getWidth(position) / 2;
 
@@ -430,7 +453,7 @@ namespace fgo::nest
 
 					break;
 				}
-			case SplitMode::horz:
+			case SplitMode::Horz:
 				{
 					border = getHeight(position) / 2;
 
@@ -452,14 +475,14 @@ namespace fgo::nest
 		{
 			if (origin == newOrigin) return;
 			origin = newOrigin;
-			if (splitMode == Pane::SplitMode::none) return;
+			if (splitMode == Pane::SplitMode::None) return;
 
 			border = -borderWidth - border;
 
 			switch (splitMode)
 			{
-			case Pane::SplitMode::horz: border += position.bottom - position.top; break;
-			case Pane::SplitMode::vert: border += position.right - position.left; break;
+			case Pane::SplitMode::Horz: border += position.bottom - position.top; break;
+			case Pane::SplitMode::Vert: border += position.right - position.left; break;
 			}
 		}
 
@@ -474,8 +497,8 @@ namespace fgo::nest
 		{
 			switch (origin)
 			{
-			case Origin::topLeft: return position.left + x;
-			case Origin::bottomRight: return position.right - x - borderWidth;
+			case Origin::TopLeft: return position.left + x;
+			case Origin::BottomRight: return position.right - x - borderWidth;
 			}
 
 			return 0;
@@ -485,8 +508,8 @@ namespace fgo::nest
 		{
 			switch (origin)
 			{
-			case Origin::topLeft: return position.top + y;
-			case Origin::bottomRight: return position.bottom - y - borderWidth;
+			case Origin::TopLeft: return position.top + y;
+			case Origin::BottomRight: return position.bottom - y - borderWidth;
 			}
 
 			return 0;
@@ -496,8 +519,8 @@ namespace fgo::nest
 		{
 			switch (origin)
 			{
-			case Origin::topLeft: return x - position.left;
-			case Origin::bottomRight: return position.right - x + borderWidth;
+			case Origin::TopLeft: return x - position.left;
+			case Origin::BottomRight: return position.right - x + borderWidth;
 			}
 
 			return 0;
@@ -507,8 +530,8 @@ namespace fgo::nest
 		{
 			switch (origin)
 			{
-			case Origin::topLeft: return y - position.top;
-			case Origin::bottomRight: return position.bottom - y + borderWidth;
+			case Origin::TopLeft: return y - position.top;
+			case Origin::BottomRight: return position.bottom - y + borderWidth;
 			}
 
 			return 0;
@@ -525,7 +548,7 @@ namespace fgo::nest
 				// タブを考慮に入れてドッキング領域を返します。
 				switch (tabMode)
 				{
-				case TabMode::title: // タブをタイトルに配置する場合
+				case TabMode::Caption: // タブをキャプションに配置する場合
 					{
 						return RECT
 						{
@@ -535,7 +558,7 @@ namespace fgo::nest
 							position.bottom,
 						};
 					}
-				case TabMode::top: // タブを上に配置する場合
+				case TabMode::Top: // タブを上に配置する場合
 					{
 						return RECT
 						{
@@ -545,7 +568,7 @@ namespace fgo::nest
 							position.bottom,
 						};
 					}
-				case TabMode::bottom: // タブを下に配置する場合
+				case TabMode::Bottom: // タブを下に配置する場合
 					{
 						return RECT
 						{
@@ -602,8 +625,8 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::vert: border = clamp(border, 0, getWidth(position) - borderWidth); break;
-			case SplitMode::horz: border = clamp(border, 0, getHeight(position) - borderWidth); break;
+			case SplitMode::Vert: border = clamp(border, 0, getWidth(position) - borderWidth); break;
+			case SplitMode::Horz: border = clamp(border, 0, getHeight(position) - borderWidth); break;
 			}
 		}
 
@@ -636,7 +659,7 @@ namespace fgo::nest
 			{
 				switch (tabMode)
 				{
-				case TabMode::title: // タブをタイトルに表示するなら
+				case TabMode::Caption: // タブをタイトルに表示するなら
 					{
 						int x = position.left + captionHeight;
 						int y = position.top;
@@ -651,7 +674,7 @@ namespace fgo::nest
 
 						break;
 					}
-				case TabMode::top: // タブを上に表示するなら
+				case TabMode::Top: // タブを上に表示するなら
 					{
 						int x = position.left;
 						int y = position.top + captionHeight;
@@ -666,7 +689,7 @@ namespace fgo::nest
 
 						break;
 					}
-				case TabMode::bottom: // タブを下に表示するなら
+				case TabMode::Bottom: // タブを下に表示するなら
 					{
 						int x = position.left;
 						int y = position.bottom - tabHeight;
@@ -709,7 +732,7 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::vert:
+			case SplitMode::Vert:
 				{
 					int absBorder = absoluteX(border);
 
@@ -729,7 +752,7 @@ namespace fgo::nest
 
 					break;
 				}
-			case SplitMode::horz:
+			case SplitMode::Horz:
 				{
 					int absBorder = absoluteY(border);
 
@@ -771,8 +794,8 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::vert:
-			case SplitMode::horz:
+			case SplitMode::Vert:
+			case SplitMode::Horz:
 				{
 					// 子ペインに再帰的に処理させます。
 					for (auto& child : children)
@@ -805,7 +828,7 @@ namespace fgo::nest
 			{
 				switch (splitMode)
 				{
-				case SplitMode::vert:
+				case SplitMode::Vert:
 					{
 						int absBorder = absoluteX(border);
 
@@ -815,7 +838,7 @@ namespace fgo::nest
 
 						break;
 					}
-				case SplitMode::horz:
+				case SplitMode::Horz:
 					{
 						int absBorder = absoluteY(border);
 
@@ -848,8 +871,8 @@ namespace fgo::nest
 		{
 			switch (splitMode)
 			{
-			case SplitMode::vert: return border - relativeX(point.x);
-			case SplitMode::horz: return border - relativeY(point.y);
+			case SplitMode::Vert: return border - relativeX(point.x);
+			case SplitMode::Horz: return border - relativeY(point.y);
 			}
 
 			return 0;
@@ -859,8 +882,8 @@ namespace fgo::nest
 		{
 			switch (splitMode)
 			{
-			case SplitMode::vert: border = relativeX(point.x) + dragOffset; break;
-			case SplitMode::horz: border = relativeY(point.y) + dragOffset; break;
+			case SplitMode::Vert: border = relativeX(point.x) + dragOffset; break;
+			case SplitMode::Horz: border = relativeY(point.y) + dragOffset; break;
 			}
 		}
 
@@ -872,7 +895,7 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::vert:
+			case SplitMode::Vert:
 				{
 					int absBorder = absoluteX(border);
 
@@ -883,7 +906,7 @@ namespace fgo::nest
 
 					return TRUE;
 				}
-			case SplitMode::horz:
+			case SplitMode::Horz:
 				{
 					int absBorder = absoluteY(border);
 
@@ -907,8 +930,8 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::vert:
-			case SplitMode::horz:
+			case SplitMode::Vert:
+			case SplitMode::Horz:
 				{
 					RECT rc;
 					if (getBorderRect(&rc))
@@ -1036,8 +1059,8 @@ namespace fgo::nest
 
 			switch (splitMode)
 			{
-			case SplitMode::vert:
-			case SplitMode::horz:
+			case SplitMode::Vert:
+			case SplitMode::Horz:
 				{
 					for (auto& child : children)
 					{

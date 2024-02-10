@@ -437,21 +437,19 @@ inline HRESULT WINAPI getPrivateProfileTime(LPCWSTR fileName, LPCWSTR appName, L
 	return S_OK;
 }
 
-template<class T, class A>
-inline HRESULT WINAPI getPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, T& outValue, const A& array)
+template<class T, class Labels>
+inline HRESULT WINAPI getPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, T& outValue, const Labels& labels)
 {
-	_bstr_t value = L"";
-	HRESULT hr = getPrivateProfileBSTR(fileName, appName, keyName, value);
+	_bstr_t text = L"";
+	HRESULT hr = getPrivateProfileBSTR(fileName, appName, keyName, text);
 	if (hr != S_OK) return hr;
-	if (!(BSTR)value) return S_FALSE;
+	if (!(BSTR)text) return S_FALSE;
 
-	size_t c = std::size(array);
-	for (size_t i = 0; i < c; i++)
+	for (auto label : labels)
 	{
-		if (::lstrcmpW(array[i].label, value) == 0)
+		if (wcscmp(label.text, text) == 0)
 		{
-			MY_TRACE_WSTR(array[i].label);
-			outValue = array[i].value;
+			outValue = label.value;
 			return S_OK;
 		}
 	}
@@ -565,14 +563,13 @@ inline HRESULT WINAPI setPrivateProfileColor(LPCWSTR fileName, LPCWSTR appName, 
 	return setPrivateProfileBSTR(fileName, appName, keyName, text);
 }
 #endif
-template<class T, class A>
-inline HRESULT WINAPI setPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value, const A& array)
+template<class T, class Labels>
+inline HRESULT WINAPI setPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, LPCWSTR keyName, const T& value, const Labels& labels)
 {
-	size_t c = std::size(array);
-	for (size_t i = 0; i < c; i++)
+	for (auto label : labels)
 	{
-		if (array[i].value == value)
-			return setPrivateProfileBSTR(fileName, appName, keyName, array[i].label);
+		if (label.value == value)
+			return setPrivateProfileBSTR(fileName, appName, keyName, label.text);
 	}
 
 	return S_FALSE;

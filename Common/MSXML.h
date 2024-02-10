@@ -603,24 +603,19 @@ inline HRESULT WINAPI getPrivateProfileFileName(
 	}
 }
 
-template<class T, class A>
+template<class T, class Labels>
 inline HRESULT WINAPI getPrivateProfileLabel(
-	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, T& outValue, const A& array)
+	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, T& outValue, const Labels& labels)
 {
-	_bstr_t value;
+	_bstr_t text;
+	HRESULT hr = getPrivateProfileBSTR(element, name, text);
+	if (hr != S_OK) return hr;
 
-	HRESULT hr = getPrivateProfileBSTR(element, name, value);
-
-	if (hr != S_OK)
-		return hr;
-
-	size_t c = std::size(array);
-	for (size_t i = 0; i < c; i++)
+	for (auto label : labels)
 	{
-		if (::lstrcmpW(array[i].label, value) == 0)
+		if (wcscmp(label.text, text) == 0)
 		{
-//			MY_TRACE_WSTR(array[i].label);
-			outValue = array[i].value;
+			outValue = label.value;
 			return S_OK;
 		}
 	}
@@ -765,15 +760,14 @@ inline HRESULT WINAPI setPrivateProfileColor(
 	return element->setAttribute(name, text);
 }
 #endif
-template<class T, class A>
+template<class T, class Labels>
 inline HRESULT WINAPI setPrivateProfileLabel(
-	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, const T& value, const A& array)
+	const MSXML2::IXMLDOMElementPtr& element, LPCWSTR name, const T& value, const Labels& labels)
 {
-	size_t c = std::size(array);
-	for (size_t i = 0; i < c; i++)
+	for (auto label : labels)
 	{
-		if (array[i].value == value)
-			return element->setAttribute(name, array[i].label);
+		if (label.value == value)
+			return element->setAttribute(name, label.text);
 	}
 
 	return S_FALSE;

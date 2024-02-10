@@ -7,8 +7,6 @@ namespace fgo::dark
 	//
 	inline struct Hive
 	{
-		struct Label { LPCWSTR label; int value; };
-
 		struct WindowMessage
 		{
 			static const UINT WM_POST_INIT = WM_APP + 1;

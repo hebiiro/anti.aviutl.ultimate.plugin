@@ -385,15 +385,15 @@ namespace fgo::nest
 
 			switch (pane->splitMode)
 			{
-			case Pane::SplitMode::none: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_NONE, MF_CHECKED); break;
-			case Pane::SplitMode::vert: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_VERT, MF_CHECKED); break;
-			case Pane::SplitMode::horz: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_HORZ, MF_CHECKED); break;
+			case Pane::SplitMode::None: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_NONE, MF_CHECKED); break;
+			case Pane::SplitMode::Vert: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_VERT, MF_CHECKED); break;
+			case Pane::SplitMode::Horz: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_HORZ, MF_CHECKED); break;
 			}
 
 			switch (pane->origin)
 			{
-			case Pane::Origin::topLeft: ::CheckMenuItem(menu, CommandID::ORIGIN_TOP_LEFT, MF_CHECKED); break;
-			case Pane::Origin::bottomRight: ::CheckMenuItem(menu, CommandID::ORIGIN_BOTTOM_RIGHT, MF_CHECKED); break;
+			case Pane::Origin::TopLeft: ::CheckMenuItem(menu, CommandID::ORIGIN_TOP_LEFT, MF_CHECKED); break;
+			case Pane::Origin::BottomRight: ::CheckMenuItem(menu, CommandID::ORIGIN_BOTTOM_RIGHT, MF_CHECKED); break;
 			}
 
 			int id = ::TrackPopupMenu(menu, TPM_NONOTIFY | TPM_RETURNCMD, cursorPos.x, cursorPos.y, 0, dockSite, 0);
@@ -402,12 +402,12 @@ namespace fgo::nest
 			{
 				switch (id)
 				{
-				case CommandID::SPLIT_MODE_NONE: pane->setSplitMode(Pane::SplitMode::none); break;
-				case CommandID::SPLIT_MODE_VERT: pane->setSplitMode(Pane::SplitMode::vert); break;
-				case CommandID::SPLIT_MODE_HORZ: pane->setSplitMode(Pane::SplitMode::horz); break;
+				case CommandID::SPLIT_MODE_NONE: pane->setSplitMode(Pane::SplitMode::None); break;
+				case CommandID::SPLIT_MODE_VERT: pane->setSplitMode(Pane::SplitMode::Vert); break;
+				case CommandID::SPLIT_MODE_HORZ: pane->setSplitMode(Pane::SplitMode::Horz); break;
 
-				case CommandID::ORIGIN_TOP_LEFT: pane->setOrigin(Pane::Origin::topLeft); break;
-				case CommandID::ORIGIN_BOTTOM_RIGHT: pane->setOrigin(Pane::Origin::bottomRight); break;
+				case CommandID::ORIGIN_TOP_LEFT: pane->setOrigin(Pane::Origin::TopLeft); break;
+				case CommandID::ORIGIN_BOTTOM_RIGHT: pane->setOrigin(Pane::Origin::BottomRight); break;
 
 				case CommandID::MOVE_TO_LEFT: pane->moveTab(ht, ht - 1); break;
 				case CommandID::MOVE_TO_RIGHT: pane->moveTab(ht, ht + 1); break;
@@ -656,13 +656,13 @@ namespace fgo::nest
 
 					switch (borderPane->splitMode)
 					{
-					case Pane::SplitMode::vert:
+					case Pane::SplitMode::Vert:
 						{
 							::SetCursor(::LoadCursor(0, IDC_SIZEWE));
 
 							return TRUE;
 						}
-					case Pane::SplitMode::horz:
+					case Pane::SplitMode::Horz:
 						{
 							::SetCursor(::LoadCursor(0, IDC_SIZENS));
 

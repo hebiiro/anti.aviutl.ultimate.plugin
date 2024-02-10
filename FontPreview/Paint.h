@@ -16,7 +16,7 @@ namespace fgo::font_preview
 			inline static const int System = 1;
 			inline static const int Theme = 2;
 			inline static const int Custom = 3;
-			inline static const Hive::Label label[] = {
+			inline static const Tools::Label label[] = {
 				{ Auto, L"Auto" },
 				{ System, L"System" },
 				{ Theme, L"Theme" },

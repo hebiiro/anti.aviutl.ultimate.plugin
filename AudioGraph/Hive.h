@@ -7,8 +7,6 @@ namespace fgo::audio_graph
 	//
 	inline struct Hive
 	{
-		struct Label { int value; LPCWSTR label; };
-
 		inline static const LPCWSTR Name = L"AudioGraph";
 		inline static const LPCWSTR DisplayName = L"音声グラフ";
 
@@ -29,7 +27,7 @@ namespace fgo::audio_graph
 			inline static const int Off = 0;
 			inline static const int On = 1;
 			inline static const int OnWithoutPlaying = 2;
-			inline static const Label label[] = {
+			inline static const Tools::Label label[] = {
 				{ Off, L"Off" },
 				{ On, L"On" },
 				{ OnWithoutPlaying, L"OnWithoutPlaying" },

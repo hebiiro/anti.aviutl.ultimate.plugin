@@ -7,8 +7,6 @@ namespace fgo::zoom_select
 	//
 	inline struct Hive
 	{
-		struct Label { int value; LPCWSTR label; };
-
 		inline static const LPCWSTR Name = L"ZoomSelect";
 		inline static const LPCWSTR DisplayName = L"ズーム選択";
 

@@ -8,36 +8,36 @@ namespace fgo::dark::skin
 		struct ShadowMode {
 			static const int Off = 0;
 			static const int On = 1;
-			inline static const Hive::Label label[] = {
-				{ L"Off", Off },
-				{ L"On", On },
+			inline static const Tools::Label label[] = {
+				{ Off, L"Off" },
+				{ On, L"On" },
 			};
 		};
 
 		struct RoundMode {
 			static const int Off = 0;
 			static const int On = 1;
-			inline static const Hive::Label label[] = {
-				{ L"Off", Off },
-				{ L"On", On },
+			inline static const Tools::Label label[] = {
+				{ Off, L"Off" },
+				{ On, L"On" },
 			};
 		};
 
 		struct StaticEdgeMode {
 			static const int Off = 0;
 			static const int On = 1;
-			inline static const Hive::Label label[] = {
-				{ L"Off", Off },
-				{ L"On", On },
+			inline static const Tools::Label label[] = {
+				{ Off, L"Off" },
+				{ On, L"On" },
 			};
 		};
 
 		struct OmitFileDialog {
 			static const int Off = 0;
 			static const int On = 1;
-			inline static const Hive::Label label[] = {
-				{ L"Off", Off },
-				{ L"On", On },
+			inline static const Tools::Label label[] = {
+				{ Off, L"Off" },
+				{ On, L"On" },
 			};
 		};
 

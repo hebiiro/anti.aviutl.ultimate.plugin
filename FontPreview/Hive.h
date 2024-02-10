@@ -7,8 +7,6 @@ namespace fgo::font_preview
 	//
 	inline struct Hive
 	{
-		struct Label { int value; LPCWSTR label; };
-
 		inline static const LPCWSTR Name = L"FontPreview";
 		inline static const LPCWSTR DisplayName = L"フォントプレビュー";
 

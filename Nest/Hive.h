@@ -12,8 +12,6 @@ namespace fgo::nest
 		inline static const LPCTSTR SubWindowClassName = _T("Nest.SubWindow");
 		inline static const LPCTSTR SubProcessClassName = _T("Nest.SubProcess");
 
-		struct Label { LPCWSTR label; int value; };
-
 		struct WindowMessage
 		{
 			static const UINT WM_POST_INIT = WM_APP + 1;

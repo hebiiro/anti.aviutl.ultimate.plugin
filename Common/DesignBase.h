@@ -133,8 +133,6 @@ namespace Tools
 
 	struct DesignBase
 	{
-		struct Label { int value; LPCWSTR label; };
-
 		struct AlignX {
 			inline static const int left = 0;
 			inline static const int right = 1;

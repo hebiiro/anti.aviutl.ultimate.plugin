@@ -7,8 +7,6 @@ namespace fgo::font_select
 	//
 	inline struct Hive
 	{
-		struct Label { int value; LPCWSTR label; };
-
 		inline static const LPCWSTR Name = L"FontSelect";
 		inline static const LPCWSTR DisplayName = L"フォント選択";
 
