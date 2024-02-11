@@ -61,6 +61,7 @@ using namespace Gdiplus;
 #include "Common/Dialog.h"
 #include "Common/Dialog2.h"
 #include "Common/Label.h"
+#include "Common/ShortcutKey.h"
 #include "Common/Profile.h"
 #include "Common/MSXML.h"
 #include "Common/FileUpdateChecker.h"

@@ -157,6 +157,9 @@
     <ClInclude Include="..\Common\Label.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\ShortcutKey.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
