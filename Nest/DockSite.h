@@ -316,9 +316,7 @@ namespace fgo::nest
 				shuttle = pane->getShuttle(pane->getCurrentIndex());
 
 			// ターゲットがペインホルダーならそのウィンドウハンドルを取得します。
-			HWND subWindow = 0;
-			if (shuttle && getRootPane(*shuttle))
-				subWindow = *shuttle;
+			BOOL isSubWindow = shuttle && getRootPane(*shuttle);
 
 			// メニューを作成します。
 			HMENU menu = ::CreatePopupMenu();
@@ -366,7 +364,7 @@ namespace fgo::nest
 			if (pane->isBorderLocked)
 				::CheckMenuItem(menu, CommandID::IsBorderLocked, MF_CHECKED);
 			::AppendMenu(menu, MF_STRING, CommandID::RenameSubWindow, _T("名前を変更"));
-			if (!subWindow) // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
+			if (!isSubWindow) // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
 				::EnableMenuItem(menu, CommandID::RenameSubWindow, MF_GRAYED | MF_DISABLED);
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::Undock, _T("ドッキングを解除"));

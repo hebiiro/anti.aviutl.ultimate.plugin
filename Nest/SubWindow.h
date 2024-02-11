@@ -66,7 +66,7 @@ namespace fgo::nest
 		//
 		static BOOL isSubWindow(HWND hwnd)
 		{
-			return !!::GetProp(hwnd, hive.SubWindowClassName);
+			return !!getRootPane(hwnd);
 		}
 
 		//
@@ -261,9 +261,6 @@ namespace fgo::nest
 			case WM_CREATE:
 				{
 					MY_TRACE_FUNC("0x%08X, WM_CREATE, 0x%08X, 0x%08X", hwnd,  wParam, lParam);
-
-					// hwndがサブウィンドウかを確認できるようにプロパティを設定します。
-					::SetProp(hwnd, hive.SubWindowClassName, this);
 
 					break;
 				}
