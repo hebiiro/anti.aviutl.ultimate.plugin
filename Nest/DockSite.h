@@ -13,19 +13,29 @@ namespace fgo::nest
 	template<class T>
 	struct DockSite : T
 	{
-		struct CommandID
-		{
-			static const UINT SPLIT_MODE_NONE = 1000;
-			static const UINT SPLIT_MODE_VERT = 1001;
-			static const UINT SPLIT_MODE_HORZ = 1002;
-			static const UINT ORIGIN_TOP_LEFT = 1010;
-			static const UINT ORIGIN_BOTTOM_RIGHT = 1011;
-			static const UINT MOVE_TO_LEFT = 1012;
-			static const UINT MOVE_TO_RIGHT = 1013;
-			static const UINT IS_BORDER_LOCKED = 1014;
-			static const UINT RENAME_SUB_WINDOW = 1015;
-			static const UINT UNDOCK = 1016;
-			static const UINT SHUTTLE = 2000;
+		struct CommandID {
+			struct SplitMode {
+				static const UINT None = 1000;
+				static const UINT Vert = 1001;
+				static const UINT Horz = 1002;
+			};
+			struct Origin {
+				static const UINT TopLeft = 1010;
+				static const UINT BottomRight = 1011;
+			};
+			struct CaptionMode {
+				static const UINT Hide = 1020;
+				static const UINT Show = 1021;
+			};
+			static const UINT IsBorderLocked = 1100;
+			static const UINT RenameSubWindow = 1101;
+			static const UINT MoveToLeft = 1102;
+			static const UINT MoveToRight = 1103;
+			static const UINT Undock = 1104;
+			struct Shuttle {
+				static const UINT Begin = 2000;
+				static const UINT End = 3000;
+			};
 		};
 
 		inline static const LPCTSTR PropName = _T("RootPane");
@@ -323,33 +333,49 @@ namespace fgo::nest
 			}
 
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
-			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_NONE, _T("分割なし"));
-			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_VERT, _T("垂直線で分割"));
-			::AppendMenu(menu, MF_STRING, CommandID::SPLIT_MODE_HORZ, _T("水平線で分割"));
+			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::None, _T("分割なし"));
+			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::Vert, _T("垂直線で分割"));
+			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::Horz, _T("水平線で分割"));
+			switch (pane->splitMode) {
+			case Pane::SplitMode::None: ::CheckMenuItem(menu, CommandID::SplitMode::None, MF_CHECKED); break;
+			case Pane::SplitMode::Vert: ::CheckMenuItem(menu, CommandID::SplitMode::Vert, MF_CHECKED); break;
+			case Pane::SplitMode::Horz: ::CheckMenuItem(menu, CommandID::SplitMode::Horz, MF_CHECKED); break;
+			}
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
-			::AppendMenu(menu, MF_STRING, CommandID::ORIGIN_TOP_LEFT, _T("左上を原点にする"));
-			::AppendMenu(menu, MF_STRING, CommandID::ORIGIN_BOTTOM_RIGHT, _T("右下を原点にする"));
+			::AppendMenu(menu, MF_STRING, CommandID::Origin::TopLeft, _T("左上を原点にする"));
+			::AppendMenu(menu, MF_STRING, CommandID::Origin::BottomRight, _T("右下を原点にする"));
+			switch (pane->origin) {
+			case Pane::Origin::TopLeft: ::CheckMenuItem(menu, CommandID::Origin::TopLeft, MF_CHECKED); break;
+			case Pane::Origin::BottomRight: ::CheckMenuItem(menu, CommandID::Origin::BottomRight, MF_CHECKED); break;
+			}
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
-			::AppendMenu(menu, MF_STRING, CommandID::MOVE_TO_LEFT, _T("左に移動する"));
+			::AppendMenu(menu, MF_STRING, CommandID::CaptionMode::Show, _T("キャプションを表示する"));
+			::AppendMenu(menu, MF_STRING, CommandID::CaptionMode::Hide, _T("キャプションを表示しない"));
+			switch (pane->captionMode) {
+			case Pane::CaptionMode::Hide: ::CheckMenuItem(menu, CommandID::CaptionMode::Hide, MF_CHECKED); break;
+			case Pane::CaptionMode::Show: ::CheckMenuItem(menu, CommandID::CaptionMode::Show, MF_CHECKED); break;
+			}
+			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu, MF_STRING, CommandID::MoveToLeft, _T("左に移動する"));
 			if (ht == -1 || ht <= 0)
-				::EnableMenuItem(menu, CommandID::MOVE_TO_LEFT, MF_GRAYED | MF_DISABLED);
-			::AppendMenu(menu, MF_STRING, CommandID::MOVE_TO_RIGHT, _T("右に移動する"));
+				::EnableMenuItem(menu, CommandID::MoveToLeft, MF_GRAYED | MF_DISABLED);
+			::AppendMenu(menu, MF_STRING, CommandID::MoveToRight, _T("右に移動する"));
 			if (ht == -1 || ht >= c - 1)
-				::EnableMenuItem(menu, CommandID::MOVE_TO_RIGHT, MF_GRAYED | MF_DISABLED);
-			::AppendMenu(menu, MF_STRING, CommandID::IS_BORDER_LOCKED, _T("ボーダーをロック"));
+				::EnableMenuItem(menu, CommandID::MoveToRight, MF_GRAYED | MF_DISABLED);
+			::AppendMenu(menu, MF_STRING, CommandID::IsBorderLocked, _T("ボーダーをロックする"));
 			if (pane->isBorderLocked)
-				::CheckMenuItem(menu, CommandID::IS_BORDER_LOCKED, MF_CHECKED);
-			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
-			::AppendMenu(menu, MF_STRING, CommandID::UNDOCK, _T("ドッキングを解除"));
-			if (c == 0) // ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
-				::EnableMenuItem(menu, CommandID::UNDOCK, MF_DISABLED | MF_GRAYED);
-			::AppendMenu(menu, MF_STRING, CommandID::RENAME_SUB_WINDOW, _T("名前を変更"));
+				::CheckMenuItem(menu, CommandID::IsBorderLocked, MF_CHECKED);
+			::AppendMenu(menu, MF_STRING, CommandID::RenameSubWindow, _T("名前を変更"));
 			if (!subWindow) // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
-				::EnableMenuItem(menu, CommandID::RENAME_SUB_WINDOW, MF_GRAYED | MF_DISABLED);
+				::EnableMenuItem(menu, CommandID::RenameSubWindow, MF_GRAYED | MF_DISABLED);
+			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu, MF_STRING, CommandID::Undock, _T("ドッキングを解除"));
+			if (c == 0) // ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
+				::EnableMenuItem(menu, CommandID::Undock, MF_DISABLED | MF_GRAYED);
 
 			{
 				// シャトルをメニューに追加します。
-				UINT id = CommandID::SHUTTLE;
+				UINT id = CommandID::Shuttle::Begin;
 				for (auto& pair : shuttleManager.shuttles)
 				{
 					auto& shuttle = pair.second;
@@ -383,40 +409,30 @@ namespace fgo::nest
 				}
 			}
 
-			switch (pane->splitMode)
-			{
-			case Pane::SplitMode::None: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_NONE, MF_CHECKED); break;
-			case Pane::SplitMode::Vert: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_VERT, MF_CHECKED); break;
-			case Pane::SplitMode::Horz: ::CheckMenuItem(menu, CommandID::SPLIT_MODE_HORZ, MF_CHECKED); break;
-			}
-
-			switch (pane->origin)
-			{
-			case Pane::Origin::TopLeft: ::CheckMenuItem(menu, CommandID::ORIGIN_TOP_LEFT, MF_CHECKED); break;
-			case Pane::Origin::BottomRight: ::CheckMenuItem(menu, CommandID::ORIGIN_BOTTOM_RIGHT, MF_CHECKED); break;
-			}
-
 			int id = ::TrackPopupMenu(menu, TPM_NONOTIFY | TPM_RETURNCMD, cursorPos.x, cursorPos.y, 0, dockSite, 0);
 
 			if (id)
 			{
 				switch (id)
 				{
-				case CommandID::SPLIT_MODE_NONE: pane->setSplitMode(Pane::SplitMode::None); break;
-				case CommandID::SPLIT_MODE_VERT: pane->setSplitMode(Pane::SplitMode::Vert); break;
-				case CommandID::SPLIT_MODE_HORZ: pane->setSplitMode(Pane::SplitMode::Horz); break;
+				case CommandID::SplitMode::None: pane->setSplitMode(Pane::SplitMode::None); break;
+				case CommandID::SplitMode::Vert: pane->setSplitMode(Pane::SplitMode::Vert); break;
+				case CommandID::SplitMode::Horz: pane->setSplitMode(Pane::SplitMode::Horz); break;
 
-				case CommandID::ORIGIN_TOP_LEFT: pane->setOrigin(Pane::Origin::TopLeft); break;
-				case CommandID::ORIGIN_BOTTOM_RIGHT: pane->setOrigin(Pane::Origin::BottomRight); break;
+				case CommandID::Origin::TopLeft: pane->setOrigin(Pane::Origin::TopLeft); break;
+				case CommandID::Origin::BottomRight: pane->setOrigin(Pane::Origin::BottomRight); break;
 
-				case CommandID::MOVE_TO_LEFT: pane->moveTab(ht, ht - 1); break;
-				case CommandID::MOVE_TO_RIGHT: pane->moveTab(ht, ht + 1); break;
+				case CommandID::CaptionMode::Hide: pane->setCaptionMode(Pane::CaptionMode::Hide); break;
+				case CommandID::CaptionMode::Show: pane->setCaptionMode(Pane::CaptionMode::Show); break;
 
-				case CommandID::IS_BORDER_LOCKED: pane->isBorderLocked = !pane->isBorderLocked; break;
+				case CommandID::MoveToLeft: pane->moveTab(ht, ht - 1); break;
+				case CommandID::MoveToRight: pane->moveTab(ht, ht + 1); break;
 
-				case CommandID::RENAME_SUB_WINDOW: shuttleManager.showRenameDialog(shuttle, dockSite); break;
+				case CommandID::IsBorderLocked: pane->isBorderLocked = !pane->isBorderLocked; break;
 
-				case CommandID::UNDOCK:
+				case CommandID::RenameSubWindow: shuttleManager.showRenameDialog(shuttle, dockSite); break;
+
+				case CommandID::Undock:
 					{
 						// ドッキングを解除します。
 
@@ -440,7 +456,7 @@ namespace fgo::nest
 					}
 				}
 
-				if (id >= CommandID::SHUTTLE)
+				if (id >= CommandID::Shuttle::Begin && id <= CommandID::Shuttle::End)
 				{
 					// ユーザーが指定したシャトルをクリックされたペインにドッキングさせます。
 

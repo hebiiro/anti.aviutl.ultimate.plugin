@@ -79,8 +79,8 @@ namespace fgo::nest
 		RECT position = {};
 		int splitMode = SplitMode::None;
 		int origin = Origin::BottomRight;
-		BOOL isBorderLocked = FALSE;
 		int captionMode = CaptionMode::Show;
+		BOOL isBorderLocked = FALSE;
 		int border = 0; // ボーダーの位置です。
 		int dragOffset = 0; // ドラッグ処理に使用します。
 
@@ -484,6 +484,15 @@ namespace fgo::nest
 			case Pane::SplitMode::Horz: border += position.bottom - position.top; break;
 			case Pane::SplitMode::Vert: border += position.right - position.left; break;
 			}
+		}
+
+		//
+		// キャプションモードを変更します。
+		//
+		void setCaptionMode(int newCaptionMode)
+		{
+			if (captionMode == newCaptionMode) return;
+			captionMode = newCaptionMode;
 		}
 
 		inline int clamp(int x, int minValue, int maxValue)

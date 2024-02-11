@@ -110,7 +110,7 @@ namespace fgo::nest
 
 			// フローティングコンテナのシステムメニューに項目を追加します。
 			HMENU menu = ::GetSystemMenu(*floatContainer, FALSE);
-			::InsertMenu(menu, 0, MF_BYPOSITION | MF_STRING, CommandID::RENAME_SUB_WINDOW, _T("名前を変更"));
+			::InsertMenu(menu, 0, MF_BYPOSITION | MF_STRING, CommandID::RenameSubWindow, _T("名前を変更"));
 			::InsertMenu(menu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
 
 			// ウィンドウ名の更新を促します。
@@ -310,7 +310,7 @@ namespace fgo::nest
 				{
 					switch (wParam)
 					{
-					case CommandID::RENAME_SUB_WINDOW:
+					case CommandID::RenameSubWindow:
 						{
 							// サブウィンドウの名前変更ダイアログを表示します。
 							shuttleManager.showRenameDialog(this, hwnd);
