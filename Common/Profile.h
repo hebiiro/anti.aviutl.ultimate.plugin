@@ -457,6 +457,24 @@ inline HRESULT WINAPI getPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, 
 	return S_FALSE;
 }
 
+template<class ShortcutKey>
+inline HRESULT WINAPI getPrivateProfileShortcutKey(LPCWSTR fileName, LPCWSTR appName, ShortcutKey& outValue)
+{
+	_bstr_t text = L"";
+	HRESULT hr = getPrivateProfileBSTR(fileName, appName, L"vk", text);
+	if (hr != S_OK) return hr;
+	if (!(BSTR)text) return S_FALSE;
+	outValue.vk = outValue.str2vk(text);
+
+	text = L"";
+	hr = getPrivateProfileBSTR(fileName, appName, L"modifier", text);
+	if (hr != S_OK) return hr;
+	if (!(BSTR)text) return S_FALSE;
+	outValue.modifier = outValue.str2mod(text);
+
+	return S_OK;
+}
+
 inline HRESULT getPrivateProfileWindow(LPCWSTR fileName, LPCWSTR name, HWND hwnd, DWORD cmdShow = -1)
 {
 	WINDOWPLACEMENT wp = { sizeof(wp) };
@@ -573,6 +591,15 @@ inline HRESULT WINAPI setPrivateProfileLabel(LPCWSTR fileName, LPCWSTR appName, 
 	}
 
 	return S_FALSE;
+}
+
+template<class ShortcutKey>
+inline HRESULT WINAPI setPrivateProfileShortcutKey(LPCWSTR fileName, LPCWSTR appName, const ShortcutKey& value)
+{
+	setPrivateProfileBSTR(fileName, appName, L"vk", value.vk2str(value.vk).c_str());
+	setPrivateProfileBSTR(fileName, appName, L"modifier", value.mod2str(value.modifier).c_str());
+
+	return S_OK;
 }
 
 inline HRESULT setPrivateProfileWindow(LPCWSTR fileName, LPCWSTR name, HWND hwnd, DWORD cmdShow = -1)
