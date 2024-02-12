@@ -321,7 +321,7 @@ namespace fgo::nest
 			else if (inCaption)
 				shuttle = pane->getShuttle(pane->getCurrentIndex());
 
-			// ターゲットがペインホルダーならそのウィンドウハンドルを取得します。
+			// ターゲットがサブウィンドウか判定します。
 			BOOL isSubWindow = shuttle && getRootPane(*shuttle);
 
 			// メニューを作成します。
@@ -338,8 +338,8 @@ namespace fgo::nest
 
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::None, _T("分割なし"));
-			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::Vert, _T("垂直線で分割"));
-			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::Horz, _T("水平線で分割"));
+			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::Vert, _T("左右に分割"));
+			::AppendMenu(menu, MF_STRING, CommandID::SplitMode::Horz, _T("上下に分割"));
 			switch (pane->splitMode) {
 			case Pane::SplitMode::None: ::CheckMenuItem(menu, CommandID::SplitMode::None, MF_CHECKED); break;
 			case Pane::SplitMode::Vert: ::CheckMenuItem(menu, CommandID::SplitMode::Vert, MF_CHECKED); break;
@@ -352,6 +352,7 @@ namespace fgo::nest
 			case Pane::Origin::TopLeft: ::CheckMenuItem(menu, CommandID::Origin::TopLeft, MF_CHECKED); break;
 			case Pane::Origin::BottomRight: ::CheckMenuItem(menu, CommandID::Origin::BottomRight, MF_CHECKED); break;
 			}
+#if 0
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::CaptionMode::Show, _T("キャプションを表示する"));
 			::AppendMenu(menu, MF_STRING, CommandID::CaptionMode::Hide, _T("キャプションを表示しない"));
@@ -359,6 +360,7 @@ namespace fgo::nest
 			case Pane::CaptionMode::Hide: ::CheckMenuItem(menu, CommandID::CaptionMode::Hide, MF_CHECKED); break;
 			case Pane::CaptionMode::Show: ::CheckMenuItem(menu, CommandID::CaptionMode::Show, MF_CHECKED); break;
 			}
+#endif
 			::AppendMenu(menu, MF_SEPARATOR, -1, 0);
 			::AppendMenu(menu, MF_STRING, CommandID::MoveToLeft, _T("左に移動する"));
 			if (ht == -1 || ht <= 0)
