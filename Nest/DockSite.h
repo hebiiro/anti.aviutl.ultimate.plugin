@@ -619,7 +619,7 @@ namespace fgo::nest
 					{
 						// 背景を塗りつぶします。
 
-						hive.fillBackground(dc, &rc);
+						painter.fillBackground(dc, &rc);
 					}
 
 					{
@@ -638,7 +638,7 @@ namespace fgo::nest
 							hotBorderPane->getBorderRect(&rcHotBorder))
 						{
 							// ホットボーダーを描画します。
-							hive.fillBackground(dc, &rcHotBorder, hive.hotBorderColor, WP_BORDER, CS_ACTIVE);
+							painter.fillBackground(dc, &rcHotBorder, hive.hotBorderColor, WP_BORDER, CS_ACTIVE);
 						}
 					}
 

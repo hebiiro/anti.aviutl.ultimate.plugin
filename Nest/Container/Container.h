@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Hive.h"
+#include "Painter.h"
 
 namespace fgo::nest
 {
@@ -335,7 +336,7 @@ namespace fgo::nest
 
 					PAINTSTRUCT ps = {};
 					HDC dc = ::BeginPaint(hwnd, &ps);
-					hive.fillBackground(dc, &ps.rcPaint);
+					painter.fillBackground(dc, &ps.rcPaint);
 					::EndPaint(hwnd, &ps);
 					return 0;
 				}

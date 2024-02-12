@@ -66,7 +66,7 @@ namespace fgo::nest
 		//
 		static BOOL isSubWindow(HWND hwnd)
 		{
-			return !!getRootPane(hwnd);
+			return isDockSite(hwnd);
 		}
 
 		//

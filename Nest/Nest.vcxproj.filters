@@ -131,6 +131,7 @@
       <Filter>Hook\API</Filter>
     </ClInclude>
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Painter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

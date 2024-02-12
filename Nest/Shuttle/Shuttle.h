@@ -373,7 +373,7 @@ namespace fgo::nest
 					HRGN rgn = ::CreateRectRgnIndirect(&rcClip);
 					::ExtSelectClipRgn(dc, rgn, RGN_DIFF);
 					::DeleteObject(rgn);
-					hive.fillBackground(dc, &rc);
+					painter.fillBackground(dc, &rc);
 					::ExtSelectClipRgn(dc, 0, RGN_COPY);
 					::ReleaseDC(hwnd, dc);
 					return 0;

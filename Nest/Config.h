@@ -43,9 +43,9 @@ namespace fgo::nest
 		{
 			getPrivateProfileBool(path, L"Config", L"useMaximumPlay", hive.useMaximumPlay);
 			getPrivateProfileShortcutKey(path, L"ShortcutKey.showCaption", hive.shortcutKey.showCaption);
-			hive.psdtoolkit.load(path, L"PSDToolKit");
-			hive.bouyomisan.load(path, L"Bouyomisan");
-			hive.console.load(path, L"Console");
+			getPrivateProfileSubProcess(path, L"PSDToolKit", hive.psdtoolkit);
+			getPrivateProfileSubProcess(path, L"Bouyomisan", hive.bouyomisan);
+			getPrivateProfileSubProcess(path, L"Console", hive.console);
 
 			return TRUE;
 		}
@@ -57,11 +57,42 @@ namespace fgo::nest
 		{
 			setPrivateProfileBool(path, L"Config", L"useMaximumPlay", hive.useMaximumPlay);
 			setPrivateProfileShortcutKey(path, L"ShortcutKey.showCaption", hive.shortcutKey.showCaption);
-			hive.psdtoolkit.save(path, L"PSDToolKit");
-			hive.bouyomisan.save(path, L"Bouyomisan");
-			hive.console.save(path, L"Console");
+			setPrivateProfileSubProcess(path, L"PSDToolKit", hive.psdtoolkit);
+			setPrivateProfileSubProcess(path, L"Bouyomisan", hive.bouyomisan);
+			setPrivateProfileSubProcess(path, L"Console", hive.console);
 
 			return TRUE;
 		}
+
+		//
+		// 指定されたファイルからサブプロセスの設定を読み込みます。
+		//
+		BOOL getPrivateProfileSubProcess(LPCWSTR path, LPCWSTR appName, Hive::SubProcess& subProcess)
+		{
+			getPrivateProfileBool(path, appName, L"dock", subProcess.dock);
+			getPrivateProfileString(path, appName, L"run", subProcess.run);
+
+			if (_tcslen(subProcess.run))
+			{
+				TCHAR directory[MAX_PATH] = {};
+				::StringCchCopy(directory, std::size(directory), subProcess.run);
+				::PathRemoveFileSpec(directory);
+				::ShellExecute(hive.mainWindow, 0, subProcess.run, 0, directory, SW_SHOW);
+			}
+
+			return TRUE;
+		}
+
+		//
+		// 指定されたファイルにサブプロセスの設定を保存します。
+		//
+		BOOL setPrivateProfileSubProcess(LPCWSTR path, LPCWSTR appName, const Hive::SubProcess& subProcess)
+		{
+			setPrivateProfileBool(path, appName, L"dock", subProcess.dock);
+			setPrivateProfileString(path, appName, L"run", subProcess.run);
+
+			return TRUE;
+		}
+
 	} config;
 }
