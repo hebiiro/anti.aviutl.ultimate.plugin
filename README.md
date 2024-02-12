@@ -17,6 +17,7 @@
 
 ## 更新履歴
 
+* r19 - 2024/02/12 [Nest]キャプションの表示状態を切り替えられるようにしました
 * r18 - 2024/01/29 [FontPreview][FontSelect]フォント名をプレビューにする機能を追加しました
 * r17 - 2024/01/19 AudioGraphを追加しました
 * r16 - 2024/01/05 ZoomSelectを追加しました
@@ -39,7 +40,7 @@
 ## 動作確認
 
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版48 https://scrapbox.io/nazosauna/patch.aul
+* (共存確認) patch.aul r43 謎さうなフォーク版49 https://scrapbox.io/nazosauna/patch.aul
 
 ## クレジット
 
