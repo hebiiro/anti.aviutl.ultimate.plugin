@@ -1,7 +1,11 @@
 ﻿#pragma once
 #include "StringPrint.h"
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && !defined(MY_TRACE_ENABLED)
+#define MY_TRACE_ENABLED
+#endif
+
+#ifdef MY_TRACE_ENABLED
 #define MY_TRACE(format, ...)		Tools::Tracer::output_format(_T(__FILE__), __LINE__, format, __VA_ARGS__)
 #define MY_TRACE_EX(format, ...)		Tools::Tracer::output_format_with_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), _T(format), __VA_ARGS__)
 #define MY_TRACE_BINARY(buf, c)		Tools::Tracer::output_binary(_T(__FILE__), __LINE__, buf, c)
@@ -24,7 +28,7 @@
 #define MY_TRACE_POINT(xxx)	MY_TRACE(_T(#xxx) _T(" = %d, %d\n"), (xxx).x, (xxx).y)
 #define MY_TRACE_SIZE(xxx)	MY_TRACE(_T(#xxx) _T(" = %d, %d\n"), (xxx).cx, (xxx).cy)
 
-#ifdef _DEBUG
+#ifdef MY_TRACE_ENABLED
 
 #define MY_TRACE_RECT2(xxx) \
 do \

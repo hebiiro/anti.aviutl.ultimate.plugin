@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 namespace Tools::Trace::File {
-#ifdef _DEBUG
+#ifdef MY_TRACE_ENABLED
 	inline HANDLE file = 0;
 
 	inline void init(HINSTANCE instance, LPCTSTR name, BOOL addBom = TRUE)
