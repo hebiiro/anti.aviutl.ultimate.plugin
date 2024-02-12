@@ -45,14 +45,14 @@ namespace fgo::nest::hook
 			// ウィンドウがフック対象かチェックします。
 			if (!isHookTarget(hwnd, className, windowName)) return FALSE;
 
-			// ここで確保したメモリはMainWindowのWM_INIT_SHUTTLEで開放します。
+			// ここで確保したメモリはMainWindowのInitShuttleで開放します。
 			auto orig = new Hive::OrigWindow();
 
 			// ウィンドウ名を取得します。
 			::StringCchCopy(orig->windowName, std::size(orig->windowName), windowName);
 
-			// MainWindowにWM_INIT_SHUTTLEを送信します。
-			::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_INIT_SHUTTLE, (WPARAM)hwnd, (LPARAM)orig);
+			// MainWindowにInitShuttleを送信します。
+			::SendMessage(hive.mainWindow, Hive::WindowMessage::InitShuttle, (WPARAM)hwnd, (LPARAM)orig);
 
 			return TRUE;
 		}

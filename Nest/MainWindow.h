@@ -17,16 +17,17 @@ namespace fgo::nest
 	//
 	struct MainWindow : DockSite<Tools::Window>
 	{
-		struct CommandID
-		{
-			static const UINT SHUTTLE_BEGIN = 100;
-			static const UINT SHUTTLE_END = 300;
-			static const UINT SHOW_CONFIG_DIALOG = 1000;
-			static const UINT IMPORT_LAYOUT = 1001;
-			static const UINT EXPORT_LAYOUT = 1002;
-			static const UINT CREATE_SUB_WINDOW = 1003;
+		struct CommandID {
+			struct Shuttle {
+				inline static const UINT Begin = 100;
+				inline static const UINT End = 300;
+			};
+			inline static const UINT ShowConfigDialog = 1000;
+			inline static const UINT ImportLayout = 1001;
+			inline static const UINT ExportLayout = 1002;
+			inline static const UINT CreateSubWindow = 1003;
 
-			static const UINT MAXIMUM_PLAY = 30000;
+			inline static const UINT MaximumPlay = 30000;
 		};
 
 		struct Loader {
@@ -136,7 +137,7 @@ namespace fgo::nest
 
 				// 最初のレイアウト計算を行う準備が整ったので、
 				// メインウィンドウにメッセージをポストして通知します。
-				::PostMessage(hive.mainWindow, Hive::WindowMessage::WM_POST_INIT, 0, 0);
+				::PostMessage(hive.mainWindow, Hive::WindowMessage::PostInit, 0, 0);
 
 				return TRUE;
 			}
@@ -176,10 +177,10 @@ namespace fgo::nest
 			}
 
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::CREATE_SUB_WINDOW, _T("サブウィンドウを新規作成"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::IMPORT_LAYOUT, _T("レイアウトのインポート"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::EXPORT_LAYOUT, _T("レイアウトのエクスポート"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::SHOW_CONFIG_DIALOG, _T("ネストの設定"));
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::CreateSubWindow, _T("サブウィンドウを新規作成"));
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::ImportLayout, _T("レイアウトのインポート"));
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::ExportLayout, _T("レイアウトのエクスポート"));
+			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, CommandID::ShowConfigDialog, _T("ネストの設定"));
 			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
 		}
 
@@ -195,7 +196,7 @@ namespace fgo::nest
 				while (::DeleteMenu(menu, 0, MF_BYPOSITION)){}
 
 			// フローティング状態のシャトルをサブメニューに追加します。
-			UINT id = CommandID::SHUTTLE_BEGIN;
+			UINT id = CommandID::Shuttle::Begin;
 			for (auto& pair : shuttleManager.shuttles)
 			{
 				auto& shuttle = pair.second;
@@ -240,7 +241,7 @@ namespace fgo::nest
 			MENUITEMINFO mii = { sizeof(mii) };
 			mii.fMask = MIIM_STRING;
 			mii.dwTypeData = (LPTSTR)text;
-			::SetMenuItemInfo(menu, CommandID::MAXIMUM_PLAY, FALSE, &mii);
+			::SetMenuItemInfo(menu, CommandID::MaximumPlay, FALSE, &mii);
 
 			::DrawMenuBar(*this);
 		}
@@ -534,9 +535,9 @@ namespace fgo::nest
 
 					switch (id)
 					{
-					case CommandID::MAXIMUM_PLAY:
+					case CommandID::MaximumPlay:
 						{
-							MY_TRACE(_T("CommandID::MAXIMUM_PLAY\n"));
+							MY_TRACE(_T("CommandID::MaximumPlay\n"));
 
 							hive.maximumPlay = !hive.maximumPlay;
 
@@ -569,7 +570,7 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("WM_SYSCOMMAND, 0x%08X, 0x%08X", wParam, lParam);
 
-					if (wParam >= CommandID::SHUTTLE_BEGIN && wParam < CommandID::SHUTTLE_END)
+					if (wParam >= CommandID::Shuttle::Begin && wParam < CommandID::Shuttle::End)
 					{
 						HMENU menu = ::GetSystemMenu(hwnd, FALSE);
 						UINT id = (UINT)wParam;
@@ -590,7 +591,7 @@ namespace fgo::nest
 
 					switch (wParam)
 					{
-					case CommandID::SHOW_CONFIG_DIALOG:
+					case CommandID::ShowConfigDialog:
 						{
 							// コンフィグダイアログを開きます。
 							if (IDOK == showConfigDialog(hwnd))
@@ -605,21 +606,21 @@ namespace fgo::nest
 
 							break;
 						}
-					case CommandID::IMPORT_LAYOUT:
+					case CommandID::ImportLayout:
 						{
 							// レイアウトファイルをインポートします。
 							importLayout(hwnd);
 
 							break;
 						}
-					case CommandID::EXPORT_LAYOUT:
+					case CommandID::ExportLayout:
 						{
 							// レイアウトファイルをエクスポートします。
 							exportLayout(hwnd);
 
 							break;
 						}
-					case CommandID::CREATE_SUB_WINDOW:
+					case CommandID::CreateSubWindow:
 						{
 							// サブウィンドウを新規作成します。
 							createSubWindow(hwnd);
@@ -660,9 +661,9 @@ namespace fgo::nest
 
 					break;
 				}
-			case Hive::WindowMessage::WM_POST_INIT: // AviUtlの初期化処理が終わったあとに通知されます。
+			case Hive::WindowMessage::PostInit: // AviUtlの初期化処理が終わったあとに通知されます。
 				{
-					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, Begin", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("0x%08X, PostInit, 0x%08X, 0x%08X, Begin", hwnd, wParam, lParam);
 
 					// メインウィンドウが初期化された時点では
 					// まだAviUtlのフォントが作成されていなかったので
@@ -675,28 +676,28 @@ namespace fgo::nest
 					// 設定をファイルから読み込みます。
 					loadConfig();
 
-					MY_TRACE_FUNC("0x%08X, WM_POST_INIT, 0x%08X, 0x%08X, End", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("0x%08X, PostInit, 0x%08X, 0x%08X, End", hwnd, wParam, lParam);
 
 					// メインウィンドウのタイトルを更新します。
 					refreshTitle();
 
 					break;
 				}
-			case Hive::WindowMessage::WM_LOAD_CONFIG: // 設定を読み込む必要があるときに通知されます。
+			case Hive::WindowMessage::LoadConfig: // 設定を読み込む必要があるときに通知されます。
 				{
 					// 設定をファイルから読み込みます。
 					loadConfig();
 
 					break;
 				}
-			case Hive::WindowMessage::WM_SAVE_CONFIG: // 設定を保存する必要があるときに通知されます。
+			case Hive::WindowMessage::SaveConfig: // 設定を保存する必要があるときに通知されます。
 				{
 					// 設定をファイルに保存します。
 					saveConfig();
 
 					break;
 				}
-			case Hive::WindowMessage::WM_INIT_SHUTTLE: // シャトルを初期化するために通知されます。
+			case Hive::WindowMessage::InitShuttle: // シャトルを初期化するために通知されます。
 				{
 					auto hwnd = (HWND)wParam;
 					auto orig = (Hive::OrigWindow*)lParam;
@@ -709,7 +710,7 @@ namespace fgo::nest
 
 					break;
 				}
-			case Hive::WindowMessage::WM_REFRESH_TITLE: // タイトルを更新するために通知されます。
+			case Hive::WindowMessage::RefreshTitle: // タイトルを更新するために通知されます。
 				{
 					refreshTitle();
 

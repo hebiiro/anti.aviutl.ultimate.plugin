@@ -9,25 +9,26 @@ namespace fgo::nest
 	{
 		inline static const LPCWSTR Name = L"Nest";
 		inline static const LPCWSTR DisplayName = L"ネスト";
-		inline static const LPCTSTR SubWindowClassName = _T("Nest.SubWindow");
-		inline static const LPCTSTR SubProcessClassName = _T("Nest.SubProcess");
 
-		struct WindowMessage
-		{
-			static const UINT WM_POST_INIT = WM_APP + 1;
-			static const UINT WM_LOAD_CONFIG = WM_APP + 2;
-			static const UINT WM_SAVE_CONFIG = WM_APP + 3;
-			static const UINT WM_INIT_SHUTTLE = WM_APP + 4;
-			static const UINT WM_REFRESH_TITLE = WM_APP + 5;
+		struct WindowMessage {
+			inline static const UINT PostInit = WM_APP + 1;
+			inline static const UINT LoadConfig = WM_APP + 2;
+			inline static const UINT SaveConfig = WM_APP + 3;
+			inline static const UINT InitShuttle = WM_APP + 4;
+			inline static const UINT RefreshTitle = WM_APP + 5;
 		};
 
-		struct OrigWindow
-		{
+		struct OrigWindow {
 			DWORD exStyle = 0;
 			TCHAR windowName[MAX_PATH] = {};
 		};
 
+		struct SubWindow {
+			inline static const LPCTSTR ClassName = _T("Nest.SubWindow");
+		};
+
 		struct SubProcess {
+			inline static const LPCTSTR ClassName = _T("Nest.SubProcess");
 			BOOL dock = FALSE;
 			TCHAR run[MAX_PATH] = {};
 			BOOL load(LPCWSTR path, LPCWSTR appName) {

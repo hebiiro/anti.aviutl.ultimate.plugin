@@ -52,8 +52,8 @@ namespace fgo::nest::hook
 				if (hive.useMaximumPlay)
 				{
 					// メニューアイテムを追加します。
-					if (::GetMenuState(menu, MainWindow::CommandID::MAXIMUM_PLAY, MF_BYCOMMAND) == -1)
-						::AppendMenu(menu, MF_STRING, MainWindow::CommandID::MAXIMUM_PLAY, _T(""));
+					if (::GetMenuState(menu, MainWindow::CommandID::MaximumPlay, MF_BYCOMMAND) == -1)
+						::AppendMenu(menu, MF_STRING, MainWindow::CommandID::MaximumPlay, _T(""));
 				}
 			}
 

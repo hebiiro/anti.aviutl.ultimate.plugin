@@ -62,7 +62,7 @@ namespace fgo::nest
 					MY_TRACE_FUNC("WM_CLOSE, 0x%08X, 0x%08X", wParam, lParam);
 
 					// AviUtlが終了しようとしているので設定を保存します。
-					::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_SAVE_CONFIG, 0, 0);
+					::SendMessage(hive.mainWindow, Hive::WindowMessage::SaveConfig, 0, 0);
 
 					break;
 				}
@@ -73,7 +73,7 @@ namespace fgo::nest
 					LRESULT lr = __super::onWndProc(hwnd, message, wParam, lParam);
 
 					// メインウィンドウのウィンドウテキストを更新します。
-					::SendMessage(hive.mainWindow, Hive::WindowMessage::WM_REFRESH_TITLE, 0, 0);
+					::SendMessage(hive.mainWindow, Hive::WindowMessage::RefreshTitle, 0, 0);
 
 					return lr;
 				}

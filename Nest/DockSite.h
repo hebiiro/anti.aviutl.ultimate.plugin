@@ -262,8 +262,8 @@ namespace fgo::nest
 			{
 				TCHAR className[MAX_PATH] = {};
 				::GetClassName(*shuttle, className, std::size(className));
-				if (::StrCmpI(className, hive.SubWindowClassName) == 0) return Category::SubWindow;
-				if (::StrCmpI(className, hive.SubProcessClassName) == 0) return Category::SubProcess;
+				if (::StrCmpI(className, Hive::SubWindow::ClassName) == 0) return Category::SubWindow;
+				if (::StrCmpI(className, Hive::SubProcess::ClassName) == 0) return Category::SubProcess;
 			}
 
 			{

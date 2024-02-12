@@ -35,12 +35,12 @@ namespace fgo::nest
 			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
-			wc.lpszClassName = hive.SubProcessClassName;
+			wc.lpszClassName = Hive::SubProcess::ClassName;
 			::RegisterClass(&wc);
 
 			return __super::create(
 				WS_EX_NOPARENTNOTIFY,
-				hive.SubProcessClassName,
+				Hive::SubProcess::ClassName,
 				name,
 				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
