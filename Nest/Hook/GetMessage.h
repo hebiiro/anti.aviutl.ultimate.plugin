@@ -31,16 +31,17 @@ namespace fgo::nest::hook
 		}
 
 		//
-		// 指定されたウィンドウを内包するペインを返します。
+		// 指定されたウィンドウを保有するドッキングサイトを返します。
 		//
-		static Pane* getPane(HWND hwnd)
+		static HWND getDockSite(HWND hwnd)
 		{
 			while (hwnd)
 			{
 				MY_TRACE_HWND(hwnd);
 
-				auto pane = Pane::getPane(hwnd);
-				if (pane) return pane;
+				if (SubWindow::isDockSite(hwnd))
+					return hwnd;
+
 				hwnd = ::GetParent(hwnd);
 			}
 
@@ -58,24 +59,53 @@ namespace fgo::nest::hook
 
 				switch (msg->message)
 				{
-				case WM_KEYUP:
-				case WM_SYSKEYUP:
+				case WM_KEYDOWN:
+				case WM_SYSKEYDOWN:
 					{
+						WORD vkCode = LOWORD(msg->wParam);
+						WORD repeatCount = LOWORD(msg->lParam);
+
 						MY_TRACE(_T("ショートカットキーを発動するかどうかチェックします\n"));
 
 						// ショートカットキーshowCaptionが活性化されている場合は
 						if (hive.shortcutKey.showCaption.isActive(msg->wParam))
 						{
-							// ウィンドウからペインを取得します。
-							auto pane = getPane(msg->hwnd);
+							// カーソル位置を取得します。
+							POINT point; ::GetCursorPos(&point);
+
+							// カーソル位置にあるウィンドウを取得します。
+							HWND hwnd = ::WindowFromPoint(point);
+							if (!hwnd) break;
+
+							// ウィンドウからドッキングサイトを取得します。
+							HWND dockSite = getDockSite(hwnd);
+							if (!dockSite) break;
+
+							// ドッキングサイトからルートペインを取得します。
+							auto root = SubWindow::getRootPane(dockSite);
+							if (!root) break;
+
+							// カーソル位置をクライアント座標に変換します。
+							::MapWindowPoints(0, dockSite, &point, 1);
+
+							// カーソル位置にあるペインを取得します。
+							auto pane = root->hitTestPane(point);
 
 							// ペインが取得できた場合は
 							if (pane)
 							{
-								// ペインのキャプションを表示します。
-								pane->setCaptionMode(Pane::CaptionMode::Show);
+								// ペインのキャプションの表示状態を切り替えます。
+								if (pane->captionMode == Pane::CaptionMode::Show)
+									pane->setCaptionMode(Pane::CaptionMode::Hide);
+								else
+									pane->setCaptionMode(Pane::CaptionMode::Show);
+
+								// ペインのレイアウトを更新します。
 								pane->recalcLayout();
 							}
+
+							// ウィンドウにメッセージが送られないようにします。
+							msg->hwnd = 0;
 						}
 
 						break;
