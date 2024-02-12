@@ -211,7 +211,7 @@ namespace Tools
 		// サブクラスID用の変数です。
 		// 内部的に使用されます。
 		//
-		inline static const UINT SubclassIdPlacement = 0;
+		inline static UINT SubclassIdPlacement = 0;
 
 		//
 		// サブクラスIDを返します。
