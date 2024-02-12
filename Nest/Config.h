@@ -42,6 +42,7 @@ namespace fgo::nest
 		BOOL load(LPCWSTR path)
 		{
 			getPrivateProfileBool(path, L"Config", L"useMaximumPlay", hive.useMaximumPlay);
+			getPrivateProfileShortcutKey(path, L"ShortcutKey.showCaption", hive.shortcutKey.showCaption);
 			hive.psdtoolkit.load(path, L"PSDToolKit");
 			hive.bouyomisan.load(path, L"Bouyomisan");
 			hive.console.load(path, L"Console");
@@ -55,6 +56,7 @@ namespace fgo::nest
 		BOOL save(LPCWSTR path)
 		{
 			setPrivateProfileBool(path, L"Config", L"useMaximumPlay", hive.useMaximumPlay);
+			setPrivateProfileShortcutKey(path, L"ShortcutKey.showCaption", hive.shortcutKey.showCaption);
 			hive.psdtoolkit.save(path, L"PSDToolKit");
 			hive.bouyomisan.save(path, L"Bouyomisan");
 			hive.console.save(path, L"Console");

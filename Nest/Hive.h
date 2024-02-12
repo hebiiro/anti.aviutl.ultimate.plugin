@@ -60,6 +60,10 @@ namespace fgo::nest
 			inline static const LPCTSTR Name = _T("コンソール");
 		} console;
 
+		struct ShortcutKey {
+			Tools::ShortcutKey showCaption = { L"Z", L"SHIFT WIN" };
+		} shortcutKey;
+
 		HINSTANCE instance = 0; // このDLLのインスタンスハンドルです。
 		HTHEME theme = 0;
 		HWND mainWindow = 0;

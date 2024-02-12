@@ -104,7 +104,7 @@ namespace fgo::nest
 				owner, 0, hive.instance, 0);
 			tab.setFont();
 
-			::SetProp(tab, PropName, this);
+			setPane(tab, this);
 		}
 
 		//
@@ -323,6 +323,26 @@ namespace fgo::nest
 		}
 
 		//
+		// 指定されたシャトルをこのペインにドッキングします。
+		//
+		void dockShuttle(Shuttle* shuttle)
+		{
+			setPane(*shuttle, this);
+			shuttle->addListener(this);
+			shuttle->dockWindow(owner);
+		}
+
+		//
+		// 指定されたシャトルをこのペインから切り離します。
+		//
+		void floatShuttle(Shuttle* shuttle)
+		{
+			setPane(*shuttle, 0);
+			shuttle->removeListener(this);
+			shuttle->floatWindow();
+		}
+
+		//
 		// 指定されたタブインデックスの位置に指定されたシャトルを追加します。
 		//
 		int addShuttle(Shuttle* shuttle, int index = -1)
@@ -347,8 +367,7 @@ namespace fgo::nest
 			int result = addTab(shuttle, text, index);
 
 			// シャトルをドッキング状態にします。
-			shuttle->addListener(this);
-			shuttle->dockWindow(owner);
+			dockShuttle(shuttle);
 
 			return result;
 		}
@@ -387,8 +406,7 @@ namespace fgo::nest
 			refresh(FALSE);
 
 			// シャトルをフローティング状態にします。
-			shuttle->removeListener(this);
-			shuttle->floatWindow();
+			floatShuttle(shuttle);
 		}
 
 		//
@@ -405,8 +423,7 @@ namespace fgo::nest
 			{
 				Shuttle* shuttle = getShuttle(i);
 
-				shuttle->removeListener(this);
-				shuttle->floatWindow();
+				floatShuttle(shuttle);
 			}
 
 			// すべてのタブを削除します。
@@ -495,7 +512,16 @@ namespace fgo::nest
 			captionMode = newCaptionMode;
 		}
 
-		inline int clamp(int x, int minValue, int maxValue)
+		//
+		// このペインのキャプションの高さを返します。
+		//
+		int getCaptionHeight()
+		{
+			if (captionMode == CaptionMode::Hide) return 0;
+			return captionHeight;
+		}
+
+		inline static int clamp(int x, int minValue, int maxValue)
 		{
 			if (x < minValue) return minValue;
 			if (x > maxValue) return maxValue;
@@ -551,6 +577,9 @@ namespace fgo::nest
 		//
 		RECT getDockRect()
 		{
+			// キャプションの高さを取得します。
+			int captionHeight = getCaptionHeight();
+
 			// タブの数が 2 個以上なら
 			if (getTabCount() >= 2)
 			{
@@ -661,6 +690,9 @@ namespace fgo::nest
 			// このペインの位置を更新します。
 			position = *rc;
 
+			// キャプションの高さを取得します。
+			int captionHeight = getCaptionHeight();
+
 			int c = getTabCount();
 
 			// タブが2個以上あるなら
@@ -668,12 +700,13 @@ namespace fgo::nest
 			{
 				switch (tabMode)
 				{
-				case TabMode::Caption: // タブをタイトルに表示するなら
+				case TabMode::Caption: // タブをキャプションに表示するなら
 					{
-						int x = position.left + captionHeight;
+						int cy = std::max<int>(captionHeight, tabHeight);
+						int x = position.left + cy; // 左側にあるメニューアイコンの分だけ少しずらします。
 						int y = position.top;
-						int w = getWidth(position) - captionHeight;
-						int h = std::max<int>(captionHeight, tabHeight);
+						int w = getWidth(position) - cy;
+						int h = cy;
 
 						modifyStyle(tab, TCS_BOTTOM, 0);
 

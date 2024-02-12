@@ -114,6 +114,7 @@ namespace fgo::nest
 
 			setPrivateProfileLabel(paneElement, L"splitMode", pane->splitMode, Pane::SplitMode::label);
 			setPrivateProfileLabel(paneElement, L"origin", pane->origin, Pane::Origin::label);
+			setPrivateProfileLabel(paneElement, L"captionMode", pane->captionMode, Pane::CaptionMode::label);
 			setPrivateProfileInt(paneElement, L"border", pane->border);
 			setPrivateProfileInt(paneElement, L"isBorderLocked", pane->isBorderLocked);
 			setPrivateProfileInt(paneElement, L"current", current);

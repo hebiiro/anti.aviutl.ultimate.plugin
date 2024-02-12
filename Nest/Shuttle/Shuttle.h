@@ -439,6 +439,14 @@ namespace fgo::nest
 
 					break;
 				}
+			case WM_LBUTTONDOWN:
+			case WM_RBUTTONDOWN:
+				{
+					// ターゲットウィンドウがクリックされたらフォーカスが当たるようにします。
+					::SetFocus(hwnd);
+
+					break;
+				}
 			case WM_GETMINMAXINFO:
 				{
 					// 設定ダイアログは縦に長くなるので、

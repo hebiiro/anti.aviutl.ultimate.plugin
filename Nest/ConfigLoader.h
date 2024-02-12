@@ -203,6 +203,7 @@ namespace fgo::nest
 
 			getPrivateProfileLabel(paneElement, L"splitMode", pane->splitMode, Pane::SplitMode::label);
 			getPrivateProfileLabel(paneElement, L"origin", pane->origin, Pane::Origin::label);
+			getPrivateProfileLabel(paneElement, L"captionMode", pane->captionMode, Pane::CaptionMode::label);
 			getPrivateProfileInt(paneElement, L"isBorderLocked", pane->isBorderLocked);
 			getPrivateProfileInt(paneElement, L"border", pane->border);
 			getPrivateProfileInt(paneElement, L"current", current);

@@ -83,6 +83,14 @@ namespace fgo::nest
 		}
 
 		//
+		// 指定されたウィンドウがドッキングサイトの場合はTRUEを返します。
+		//
+		static BOOL isDockSite(HWND hwnd)
+		{
+			return !!::GetProp(hwnd, PropName);
+		}
+
+		//
 		// 最初のペインを返します。
 		// ルートペインではなく、最大化されたペインの場合もあります。
 		//
@@ -100,14 +108,12 @@ namespace fgo::nest
 		//
 		BOOL canDocking(HWND hwnd)
 		{
-			auto root = getRootPane(hwnd);
-			if (root)
+			if (isDockSite(hwnd))
 			{
-				// hwndはペインホルダーなので、入れ子構造をチェックします。
-
+				// hwndはドッキングサイトなので、入れ子構造をチェックします。
 				if (isAncestor(*this, hwnd))
 				{
-					// hwndはこのホルダーの祖先なのでドッキングできません。
+					// hwndはこのドッキングサイトの祖先なのでドッキングできません。
 					return FALSE;
 				}
 			}
