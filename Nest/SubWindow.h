@@ -405,7 +405,7 @@ namespace fgo::nest
 		//
 		// このクラスは他のシャトルのメッセージを傍受します。
 		//
-		struct Interseptor : Tools::WindowT<Interseptor>
+		struct Interseptor : Tools::WindowInterseptor
 		{
 			//
 			// メッセージを受信するサブウィンドウです。

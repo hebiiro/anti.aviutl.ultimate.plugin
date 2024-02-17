@@ -160,6 +160,9 @@
     <ClInclude Include="..\Common\ShortcutKey.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\WindowInterseptor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

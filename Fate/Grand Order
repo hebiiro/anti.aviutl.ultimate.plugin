@@ -58,6 +58,7 @@ using namespace Gdiplus;
 #include "Common/Gdi.h"
 #include "Common/Window.h"
 #include "Common/Window2.h"
+#include "Common/WindowInterseptor.h"
 #include "Common/Dialog.h"
 #include "Common/Dialog2.h"
 #include "Common/Label.h"
