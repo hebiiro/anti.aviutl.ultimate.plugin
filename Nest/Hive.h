@@ -68,6 +68,8 @@ namespace fgo::nest
 		BOOL useTheme = FALSE;
 		BOOL forceScroll = FALSE;
 		BOOL maximumPlay = FALSE;
+		BOOL showTabForce = FALSE;
+
 		BOOL useMaximumPlay = FALSE;
 	} hive;
 }

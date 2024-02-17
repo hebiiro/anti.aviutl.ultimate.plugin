@@ -167,7 +167,7 @@ namespace fgo::nest::hook
 			// 「拡張ツールバー」用の処理です。
 			if (index == GWL_HWNDPARENT)
 			{
-				Shuttle* shuttle = Shuttle::getPointer(hwnd);
+				auto shuttle = Shuttle::getPointer(hwnd);
 				if (shuttle)
 				{
 					MY_TRACE(_T("シャトルが取得できるウィンドウはHWNDPARENTを変更できないようにします\n"));

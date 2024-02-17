@@ -12,7 +12,7 @@ namespace fgo::nest::hook
 		if (hwnd == hive.aviutlWindow)
 			return hive.mainWindow;
 
-		Shuttle* shuttle = Shuttle::getPointer(hwnd);
+		auto shuttle = Shuttle::getPointer(hwnd);
 		if (shuttle && shuttle->floatContainer)
 			return *shuttle->floatContainer;
 

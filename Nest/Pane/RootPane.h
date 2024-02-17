@@ -84,37 +84,26 @@ namespace fgo::nest
 		}
 
 		//
-		// このペインおよび子孫ペインの位置情報を再計算します。
-		// rcはこのペインの新しい位置です。
+		// ペインを更新します。
 		//
-		void recalcLayout(LPCRECT rc) override
+		void update(LPCRECT rc, DWORD flags) override
 		{
 			MY_TRACE_FUNC("");
 
 			if (maximizedPane)
 			{
-				// maximizedPaneがルートペインとなるようにレイアウトを再計算します。
-				maximizedPane->recalcLayout(rc);
+				// ShowTabフラグなしで子ペインを更新します。
+				// これにより、すべての子孫ペインのタブが非表示になります。
+				updateChildren(UpdateFlag::Deep);
+
+				// maximizedPaneがルートペインとなるようにレイアウトを更新します。
+				maximizedPane->update(rc, flags);
 			}
 			else
 			{
-				// thisがルートペインとなるようにレイアウトを再計算します。
-				__super::recalcLayout(rc);
+				// thisがルートペインとなるようにレイアウトを更新します。
+				__super::update(rc, flags);
 			}
-		}
-
-		//
-		// このペインの表示状態を最新の状態に更新します。
-		// deepがTRUEなら子孫ペインも再帰的に更新します。
-		//
-		 void refresh(BOOL deep) override
-		{
-			MY_TRACE_FUNC("");
-
-			if (maximizedPane)
-				maximizedPane->refresh(deep);
-			else
-				__super::refresh(deep);
 		}
 	};
 }

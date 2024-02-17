@@ -113,8 +113,13 @@ namespace fgo::nest
 		{
 			MY_TRACE_FUNC("");
 
-			// シャトルマネージャのデストラクタではタイミングが遅すぎるので、
-			// ここでシャトルをすべて削除します。
+			// 無駄な描画を減らすためにメインウィンドウを非表示にします。
+			::ShowWindow(*mainWindow, SW_HIDE);
+
+			// すべてのサブウィンドウを削除します。
+			SubWindow::clear();
+
+			// すべてのシャトルを削除します。
 			shuttleManager.shuttles.clear();
 
 			return TRUE;

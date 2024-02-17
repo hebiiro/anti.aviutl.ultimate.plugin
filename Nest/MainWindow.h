@@ -280,16 +280,16 @@ namespace fgo::nest
 		}
 
 		//
-		// すべてのドックサイトのレイアウトを再計算します。
+		// すべてのドッキングサイトのレイアウトを更新します。
 		//
-		void calcAllLayout()
+		void updateAllLayouts()
 		{
 			MY_TRACE_FUNC("");
 
-			calcLayout(*this);
+			updateLayout(*this);
 
-			for (auto subWindow : SubWindow::collection)
-				calcLayout(*subWindow);
+			for (auto& subWindow : SubWindow::collection)
+				updateLayout(*subWindow);
 		}
 
 		//
@@ -316,8 +316,8 @@ namespace fgo::nest
 			// メインメニューを更新します。
 			updateMainMenu();
 
-			// レイアウトを再計算します。
-			calcAllLayout();
+			// レイアウトを更新します。
+			updateAllLayouts();
 
 			// メインウィンドウが非表示なら表示します。
 			if (!::IsWindowVisible(hwnd))
@@ -580,10 +580,11 @@ namespace fgo::nest
 						::GetMenuString(menu, id, text, std::size(text), MF_BYCOMMAND);
 						MY_TRACE_TSTR(text);
 
-						// テキストからシャトルを取得します。ドッキングできるかチェックもします。
+						// テキストからシャトルを取得します。
 						auto shuttle = shuttleManager.get(text);
 						if (!shuttle) break;
 
+						// シャトルの表示状態を切り替えます。
 						::SendMessage(*shuttle, WM_CLOSE, 0, 0);
 
 						break;
@@ -596,8 +597,8 @@ namespace fgo::nest
 							// コンフィグダイアログを開きます。
 							if (IDOK == showConfigDialog(hwnd))
 							{
-								// レイアウトを再計算します。
-								calcAllLayout();
+								// レイアウトを更新します。
+								updateAllLayouts();
 
 								// 設定が変更された可能性があるので、
 								// メインウィンドウのメニューを更新します。
@@ -745,6 +746,7 @@ namespace fgo::nest
 				setCheck(IDC_USE_THEME, hive.useTheme);
 				setCheck(IDC_FORCE_SCROLL, hive.forceScroll);
 				setCheck(IDC_SHOW_PLAYER, hive.maximumPlay);
+				setCheck(IDC_SHOW_TAB_FORCE, hive.showTabForce);
 
 				return doModal2(parent);
 			}

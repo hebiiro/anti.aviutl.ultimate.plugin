@@ -37,6 +37,7 @@
 #define IDC_NEW_NAME                    1030
 #define IDC_TAB_HEIGHT                  1031
 #define IDC_SHOW_PLAYER                 1032
+#define IDC_SHOW_TAB_FORCE              1033
 
 // Next default values for new objects
 // 

@@ -41,6 +41,7 @@ namespace fgo::nest
 					setPrivateProfileBool(element, L"useTheme", hive.useTheme);
 					setPrivateProfileBool(element, L"forceScroll", hive.forceScroll);
 					setPrivateProfileBool(element, L"maximumPlay", hive.maximumPlay);
+					setPrivateProfileBool(element, L"showTabForce", hive.showTabForce);
 				}
 
 				// <mainWindow>を作成します。

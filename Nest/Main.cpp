@@ -9,7 +9,7 @@ namespace fgo::nest
 	//
 	fgo::Servant* WINAPI get_servant()
 	{
-		Tools::Tracer::logger = 0; // デバッグトレースを有効にする場合はこの行をコメントアウトしてください。
+//		Tools::Tracer::logger = 0; // デバッグトレースを有効にする場合はこの行をコメントアウトしてください。
 
 		return &servant;
 	}

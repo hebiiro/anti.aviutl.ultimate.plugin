@@ -91,12 +91,12 @@ namespace fgo::nest
 		}
 
 		//
-		// 最初のペインを返します。
+		// トップレベルのペインを返します。
 		// ルートペインではなく、最大化されたペインの場合もあります。
 		//
-		static std::shared_ptr<Pane> getFirstPane(HWND hwnd)
+		static std::shared_ptr<Pane> getTopLevelPane(HWND dockSite)
 		{
-			auto root = getRootPane(hwnd);
+			auto root = getRootPane(dockSite);
 			if (!root) return 0; // 取得できなかった場合は0を返します。
 			auto maximizedPane = root->getMaximizedPane();
 			if (maximizedPane) return maximizedPane; // 最大化されたペインがあれば、それを返します。
@@ -104,16 +104,17 @@ namespace fgo::nest
 		}
 
 		//
-		// 指定されたウィンドウがこのウィンドウにドッキング可能な場合はTRUEを返します。
+		// 指定されたウィンドウがドッキングサイトにドッキング可能な場合はTRUEを返します。
 		//
-		BOOL canDocking(HWND hwnd)
+		static BOOL canDocking(HWND dockSite, HWND hwnd)
 		{
+			// hwndがドッキングサイトの場合は
 			if (isDockSite(hwnd))
 			{
-				// hwndはドッキングサイトなので、入れ子構造をチェックします。
-				if (isAncestor(*this, hwnd))
+				// hwndが祖先かどうかチェックします。
+				if (isAncestor(dockSite, hwnd))
 				{
-					// hwndはこのドッキングサイトの祖先なのでドッキングできません。
+					// hwndはdockSiteの祖先なのでドッキングできません。
 					return FALSE;
 				}
 			}
@@ -122,25 +123,24 @@ namespace fgo::nest
 		}
 
 		//
-		// ペインのレイアウトを再帰的に再計算します。
+		// すべてのペインのレイアウトを更新します。
 		//
-		void calcLayout(HWND hwnd)
+		static void updateLayout(HWND dockSite)
 		{
-//			MY_TRACE_FUNC("0x%08X", hwnd);
+//			MY_TRACE_FUNC("0x%08X", dockSite);
 
-			auto root = getRootPane(hwnd);
+			auto root = getRootPane(dockSite);
 			if (root)
 			{
-				RECT rc; ::GetClientRect(hwnd, &rc);
-				root->recalcLayout(&rc);
-				::InvalidateRect(hwnd, 0, FALSE);
+				RECT rc; ::GetClientRect(dockSite, &rc);
+				root->update(&rc, Pane::UpdateFlag::Default);
 			}
 		}
 
 		//
 		// メニューのコピーを作成します。
 		//
-		void copyMenu(HMENU dstMenu, HMENU srcMenu)
+		static void copyMenu(HMENU dstMenu, HMENU srcMenu)
 		{
 			int c = ::GetMenuItemCount(srcMenu);
 
@@ -167,21 +167,28 @@ namespace fgo::nest
 		//
 		// ターゲットのメニューを表示します。
 		//
-		BOOL showTargetMenu(HWND dockSite, POINT point)
+		static BOOL showTargetMenu(HWND dockSite, POINT point)
 		{
 			MY_TRACE_FUNC("%d, %d", point.x, point.y);
 
-			// 最初のペインを取得します。
-			auto first = getFirstPane(dockSite);
-			if (!first) return FALSE;
+			// ルートペインを取得します。
+			auto root = getTopLevelPane(dockSite);
+			if (!root) return FALSE;
 
 			// 指定された座標からペインを取得します。
-			auto pane = first->hitTestPane(point);
+			auto pane = root->hitTestPane(point);
 			if (!pane) return FALSE;
 
 			// カレントシャトルを取得します。
-			Shuttle* shuttle = pane->getCurrentShuttle();
+			auto shuttle = pane->getCurrentShuttle();
 			if (!shuttle) return FALSE;
+
+			// ターゲットを取得します。
+			HWND hwnd = *shuttle;
+
+			// ターゲットのメニューを取得します。
+			HMENU srcMenu = ::GetMenu(hwnd);
+			if (!srcMenu) return FALSE;
 
 			// 指定された座標がメニュー矩形の中にあるかチェックします。
 			RECT rcMenu = pane->getMenuRect();
@@ -191,13 +198,6 @@ namespace fgo::nest
 			point.x = rcMenu.left;
 			point.y = rcMenu.bottom;
 			::ClientToScreen(dockSite, &point);
-
-			// ターゲットを取得します。
-			HWND hwnd = *shuttle;
-
-			// ターゲットのメニューを取得します。
-			HMENU srcMenu = ::GetMenu(hwnd);
-			if (!srcMenu) return FALSE;
 
 			// ポップアップメニューを作成します。
 			HMENU dstMenu = ::CreatePopupMenu();
@@ -292,7 +292,7 @@ namespace fgo::nest
 		//
 		// ペイン操作用のメニューを表示します。
 		//
-		void showPaneMenu(HWND dockSite)
+		static void showPaneMenu(HWND dockSite)
 		{
 			// ルートペインを取得します。
 			auto root = getRootPane(dockSite);
@@ -404,7 +404,7 @@ namespace fgo::nest
 					}
 
 					// ドッキング不可能なら
-					if (!canDocking(*shuttle))
+					if (!canDocking(dockSite, *shuttle))
 					{
 						// メニューアイテムを無効にします。
 						::EnableMenuItem(menu, id, MF_DISABLED | MF_GRAYED);
@@ -453,7 +453,7 @@ namespace fgo::nest
 						if (index != -1)
 						{
 							// ドッキングしているシャトルを取得します。
-							Shuttle* shuttle = pane->getShuttle(index);
+							auto shuttle = pane->getShuttle(index);
 							if (shuttle) // ドッキングしているシャトルが存在する場合は
 								pane->releaseShuttle(shuttle); // ドッキングを解除します。
 						}
@@ -471,31 +471,36 @@ namespace fgo::nest
 					::GetMenuString(menu, id, text, std::size(text), MF_BYCOMMAND);
 					MY_TRACE_TSTR(text);
 
-					// テキストからシャトルを取得します。ドッキングできるかチェックもします。
+					// テキストからシャトルを取得します。ドッキングできるかもチェックします。
 					auto shuttle = shuttleManager.get(text);
-					if (shuttle && canDocking(*shuttle))
+					if (shuttle && canDocking(dockSite, *shuttle))
 					{
-						// ペインにシャトルを追加します。
-						// これにより、シャトルがペインにドッキングされます。
+						// シャトルをペインにドッキングさせます。
 						int index = pane->addShuttle(shuttle.get(), ht);
 						if (index != -1) // ドッキングに成功した場合は-1以外になります。
 						{
-							// ドッキングしたシャトルをカレントにしてペインをリフレッシュします。
+							// ドッキングしたシャトルをカレントにしてペインを更新します。
 							pane->setCurrentIndex(index);
-							pane->refresh(FALSE);
 						}
 					}
 				}
 
-				// ペインの状態が変更されたのでレイアウトを再計算します。
-				pane->recalcLayout();
-
-				// ペインのレイアウトが更新されたので再描画します。
-				::InvalidateRect(dockSite, 0, FALSE);
+				// ペインの状態が変更されたのでレイアウトを更新します。
+				pane->update();
 			}
 
 			// メニューを削除します。
 			::DestroyMenu(menu); // 再帰的にサブメニューも削除されます。
+		}
+
+		//
+		// ルートペインをリセットします。
+		//
+		void resetPane()
+		{
+			auto pane = getRootPane(*this);
+			if (!pane) return;
+			pane->resetPane();
 		}
 
 		//
@@ -507,7 +512,7 @@ namespace fgo::nest
 			{
 			case WM_NOTIFY: // ペインのタブから通知されます。
 				{
-					NMHDR* header = (NMHDR*)lParam;
+					auto header = (NMHDR*)lParam;
 
 					MY_TRACE_FUNC("WM_NOTIFY, %d", header->code);
 
@@ -521,10 +526,10 @@ namespace fgo::nest
 							// ルートペインを取得します。
 							auto root = getRootPane(hwnd);
 
-							// 最大化されたペインが存在するなら
+							// 最大化されたペインが存在する場合は
 							if (root->getMaximizedPane().get() == pane)
 							{
-								// 最大化されたペインをリセットします。
+								// 最大化を解除します。
 								root->setMaximizedPane(0);
 							}
 							else
@@ -533,11 +538,8 @@ namespace fgo::nest
 								root->setMaximizedPane(pane->shared_from_this());
 							}
 
-							// レイアウトを再計算します。
-							calcLayout(hwnd);
-
-							// ペインをリフレッシュします。
-							root->refresh(TRUE);
+							// レイアウトを更新します。
+							updateLayout(hwnd);
 
 							break;
 						}
@@ -554,12 +556,8 @@ namespace fgo::nest
 							auto pane = Pane::getPane(header->hwndFrom);
 							if (pane)
 							{
-								pane->refresh(FALSE);
-
-								// ペインがシャトルを持っているなら
-								Shuttle* shuttle = pane->getCurrentShuttle();
-								if (shuttle)
-									::SetFocus(*shuttle); // そのシャトルにフォーカスを当てます。
+								// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
+								pane->update();
 							}
 
 							break;
@@ -588,7 +586,7 @@ namespace fgo::nest
 				}
 			case WM_SIZE:
 				{
-					calcLayout(hwnd);
+					updateLayout(hwnd);
 
 					break;
 				}
@@ -600,7 +598,7 @@ namespace fgo::nest
 					{
 						auto root = getRootPane(hwnd);
 
-						root->refresh(TRUE);
+						static_cast<Pane*>(root.get())->update();
 					}
 
 					break;
@@ -614,9 +612,9 @@ namespace fgo::nest
 					if (!dc.isValid())
 						return 0;
 
-					// 最初のペインを取得します。
-					auto first = getFirstPane(hwnd);
-					if (!first) return 0;
+					// ルートペインを取得します。
+					auto root = getTopLevelPane(hwnd);
+					if (!root) return 0;
 
 					{
 						// 背景を塗りつぶします。
@@ -628,7 +626,7 @@ namespace fgo::nest
 						// ボーダーを再帰的に描画します。
 
 						HBRUSH brush = ::CreateSolidBrush(hive.borderColor);
-						first->drawBorder(dc, brush);
+						root->drawBorder(dc, brush);
 						::DeleteObject(brush);
 					}
 
@@ -652,7 +650,7 @@ namespace fgo::nest
 						HFONT font = ::CreateFontIndirectW(&lf);
 						HFONT oldFont = (HFONT)::SelectObject(dc, font);
 
-						first->drawCaption(dc);
+						root->drawCaption(dc);
 
 						::SelectObject(dc, oldFont);
 						::DeleteObject(font);
@@ -667,8 +665,8 @@ namespace fgo::nest
 					if (hwnd != (HWND)wParam) break;
 
 					// ルートペインを取得します。
-					auto root = getRootPane(hwnd);
-					if (!root || root->getMaximizedPane()) break;
+					auto root = getTopLevelPane(hwnd);
+					if (!root) break;
 
 					POINT point; ::GetCursorPos(&point);
 					::ScreenToClient(hwnd, &point);
@@ -705,12 +703,12 @@ namespace fgo::nest
 					if (showTargetMenu(hwnd, point))
 						break; // メニューの表示が行われた場合はここで処理を終わります。
 
-					// 最初のペインを取得します。
-					auto first = getFirstPane(hwnd);
-					if (!first) break;
+					// ルートペインを取得します。
+					auto root = getTopLevelPane(hwnd);
+					if (!root) break;
 
 					// マウス座標にあるボーダーを取得します。
-					hotBorderPane = first->hitTestBorder(point);
+					hotBorderPane = root->hitTestBorder(point);
 
 					// ボーダーが有効かチェックします。
 					if (hotBorderPane)
@@ -729,11 +727,11 @@ namespace fgo::nest
 
 					{
 						// マウス座標にあるペインを取得できたら
-						auto pane = first->hitTestPane(point);
+						auto pane = root->hitTestPane(point);
 						if (pane)
 						{
 							// クリックされたペインがシャトルを持っているなら
-							Shuttle* shuttle = pane->getCurrentShuttle();
+							auto shuttle = pane->getCurrentShuttle();
 							if (shuttle)
 								::SetFocus(*shuttle); // そのシャトルにフォーカスを当てます。
 						}
@@ -759,11 +757,8 @@ namespace fgo::nest
 							// ボーダーを動かします。
 							hotBorderPane->dragBorder(point);
 
-							// レイアウトを再計算します。
-							hotBorderPane->recalcLayout();
-
-							// 再描画します。
-							hotBorderPane->invalidate();
+							// レイアウトを更新します。
+							hotBorderPane->update();
 						}
 					}
 
@@ -779,7 +774,7 @@ namespace fgo::nest
 					// 最大化されたペインが存在するなら
 					if (root->getMaximizedPane())
 					{
-						// 最大化されたペインをリセットします。
+						// 最大化を解除します。
 						root->setMaximizedPane(0);
 					}
 					else
@@ -796,11 +791,8 @@ namespace fgo::nest
 						root->setMaximizedPane(pane);
 					}
 
-					// レイアウトを再計算します。
-					calcLayout(hwnd);
-
-					// ペインをリフレッシュします。
-					root->refresh(TRUE);
+					// レイアウトを更新します。
+					updateLayout(hwnd);
 
 					break;
 				}
@@ -832,21 +824,18 @@ namespace fgo::nest
 							// ボーダーを動かします。
 							hotBorderPane->dragBorder(point);
 
-							// レイアウトを再計算します。
-							hotBorderPane->recalcLayout();
-
-							// 再描画します。
-							hotBorderPane->invalidate();
+							// レイアウトを更新します。
+							hotBorderPane->update();
 						}
 					}
 					else
 					{
-						// 最初のペインを取得します。
-						auto first = getFirstPane(hwnd);
-						if (!first) break;
+						// ルートペインを取得します。
+						auto root = getTopLevelPane(hwnd);
+						if (!root) break;
 
 						// マウス座標にあるボーダーを取得します。
-						auto pane = first->hitTestBorder(point);
+						auto pane = root->hitTestBorder(point);
 
 						// 現在のホットボーダーと違うなら
 						if (hotBorderPane != pane)
@@ -895,7 +884,7 @@ namespace fgo::nest
 					HWND child = ::ChildWindowFromPointEx(hwnd, point,
 						CWP_SKIPDISABLED | CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT);
 
-					Pane* pane = Pane::getPane(child);
+					auto pane = Pane::getPane(child);
 					if (pane) // childがタブならペインを取得できます。
 					{
 						int c = pane->getTabCount();
@@ -914,7 +903,7 @@ namespace fgo::nest
 						current = std::min<int>(current, c - 1);
 
 						pane->setCurrentIndex(current);
-						pane->refresh(FALSE);
+						pane->update();
 
 						return 0;
 					}

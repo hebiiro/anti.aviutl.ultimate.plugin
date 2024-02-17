@@ -101,7 +101,7 @@ namespace fgo::nest::hook
 									pane->setCaptionMode(Pane::CaptionMode::Show);
 
 								// ペインのレイアウトを更新します。
-								pane->recalcLayout();
+								pane->update();
 							}
 
 							// ウィンドウにメッセージが送られないようにします。

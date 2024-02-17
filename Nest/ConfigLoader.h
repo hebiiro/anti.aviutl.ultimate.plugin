@@ -60,6 +60,7 @@ namespace fgo::nest
 					getPrivateProfileBool(element, L"useTheme", hive.useTheme);
 					getPrivateProfileBool(element, L"forceScroll", hive.forceScroll);
 					getPrivateProfileBool(element, L"maximumPlay", hive.maximumPlay);
+					getPrivateProfileBool(element, L"showTabForce", hive.showTabForce);
 				}
 
 				// 事前に<subWindow>を読み込みます。
@@ -93,11 +94,7 @@ namespace fgo::nest
 			MY_TRACE_FUNC("");
 
 			// 一旦すべてのサブウィンドウを削除します。
-			// サブウィンドウを削除する度にコレクションの個数が変わるので、まずコピーを作ります。
-			auto collection = SubWindow::collection;
-			for (auto subWindow : collection)
-				subWindow->destroy(); // サブウィンドウを削除します。
-			SubWindow::collection.clear(); // 念のためコレクションを空にします。
+			SubWindow::clear();
 
 			// <subWindow>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = element->selectNodes(L"colony|subWindow");
@@ -232,7 +229,6 @@ namespace fgo::nest
 			}
 
 			pane->setCurrentIndex(current);
-			pane->refreshCurrent();
 
 			// <pane>を読み込みます。
 			MSXML2::IXMLDOMNodeListPtr nodeList = paneElement->selectNodes(L"pane");

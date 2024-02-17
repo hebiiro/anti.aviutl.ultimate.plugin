@@ -47,6 +47,26 @@ namespace fgo::nest
 		}
 
 		//
+		// すべてのサブウィンドウを削除します。
+		//
+		static void clear()
+		{
+			// サブウィンドウを削除する度にコレクションの個数が変わってしまうので、まずコピーを作ります。
+			auto copy = collection;
+			for (auto subWindow : copy)
+			{
+				// 無駄な描画を減らすためにウィンドウを非表示にします。
+				::ShowWindow(*subWindow, SW_HIDE);
+
+				// サブウィンドウを削除します。
+				subWindow->destroy();
+			}
+
+			// 念のためコレクションを空にします。
+			collection.clear();
+		}
+
+		//
 		// 使用可能なシャトル名を返します。
 		//
 		static void getAvailableName(LPTSTR name, size_t cch)

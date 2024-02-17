@@ -7,8 +7,7 @@ namespace fgo::nest
 {
 	struct Pane : Shuttle::Listener, std::enable_shared_from_this<Pane>
 	{
-		struct SplitMode
-		{
+		struct SplitMode {
 			static const int None = 0;
 			static const int Vert = 1;
 			static const int Horz = 2;
@@ -25,8 +24,7 @@ namespace fgo::nest
 			};
 		};
 
-		struct Origin
-		{
+		struct Origin {
 			static const int TopLeft = 0;
 			static const int BottomRight = 1;
 
@@ -40,8 +38,7 @@ namespace fgo::nest
 			};
 		};
 
-		struct CaptionMode
-		{
+		struct CaptionMode {
 			static const int Hide = 0;
 			static const int Show = 1;
 
@@ -51,8 +48,7 @@ namespace fgo::nest
 			};
 		};
 
-		struct TabMode
-		{
+		struct TabMode {
 			static const int Caption = 0;
 			static const int Top = 1;
 			static const int Bottom = 2;
@@ -67,6 +63,16 @@ namespace fgo::nest
 				{ Top, L"top" },
 				{ Bottom, L"bottom" },
 			};
+		};
+
+		struct UpdateFlag {
+			static constexpr DWORD Deep					= 0x00000001;
+			static constexpr DWORD Invalidate			= 0x00000002;
+			static constexpr DWORD SetFocus				= 0x00000004;
+			static constexpr DWORD Normalize				= 0x00000008;
+			static constexpr DWORD ShowCurrentShuttle	= 0x00000010;
+			static constexpr DWORD ShowTab				= 0x00000020;
+			static constexpr DWORD Default = Deep | Invalidate | SetFocus | Normalize | ShowCurrentShuttle | ShowTab;
 		};
 
 		inline static const LPCTSTR PropName = _T("Nest.Pane");
@@ -256,53 +262,9 @@ namespace fgo::nest
 		}
 
 		//
-		// カレントのシャトルだけが表示されるようにします。
-		//
-		void refreshCurrent()
-		{
-			MY_TRACE_FUNC("");
-
-			int current = getCurrentIndex();
-			int c = getTabCount();
-			for (int i = 0; i < c; i++)
-			{
-				Shuttle* shuttle = getShuttle(i);
-
-				if (i == current)
-				{
-					// 空の設定ダイアログかどうかチェックします。
-					if (*shuttle == hive.settingDialog &&
-						magi.auin.GetCurrentObjectIndex() == -1)
-					{
-						MY_TRACE(_T("空の設定ダイアログなので表示できません\n"));
-					}
-					else
-					{
-						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
-
-						::SetWindowPos(*shuttle->dockContainer, HWND_TOP,
-							0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-						::ShowWindow(*shuttle, SW_SHOW);
-					}
-				}
-				else
-				{
-					MY_TRACE(_T("「%ws」を非表示にします\n"), (BSTR)shuttle->name);
-
-					::ShowWindow(*shuttle->dockContainer, SW_HIDE);
-					::ShowWindow(*shuttle, SW_HIDE);
-				}
-
-				MY_TRACE_INT(::IsWindowVisible(*shuttle));
-				MY_TRACE_INT(::IsWindowVisible(*shuttle->dockContainer));
-				MY_TRACE_INT(::IsWindowVisible(::GetParent(*shuttle->dockContainer)));
-			}
-		}
-
-		//
 		// 指定されたシャトルを持つタブを指定されたタブ名に変更します。
 		//
-		void refreshText(Shuttle* shuttle, LPCTSTR text)
+		void setTabText(Shuttle* shuttle, LPCTSTR text)
 		{
 			int index = findTab(shuttle);
 			if (index == -1) return;
@@ -311,6 +273,18 @@ namespace fgo::nest
 			item.mask = TCIF_TEXT;
 			item.pszText = (LPTSTR)text;
 			::SendMessage(tab, TCM_SETITEM, index, (LPARAM)&item);
+		}
+
+		//
+		// このペインがタブを持つ(表示する)場合はTRUEを返します。
+		//
+		BOOL hasTab()
+		{
+			int c = getTabCount();
+			if (hive.showTabForce)
+				return c >= 1;
+			else
+				return c >= 2;
 		}
 
 		//
@@ -403,7 +377,8 @@ namespace fgo::nest
 				setCurrentIndex(getTabCount() - 1);
 			}
 
-			refresh(FALSE);
+			// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
+			update();
 
 			// シャトルをフローティング状態にします。
 			floatShuttle(shuttle);
@@ -421,7 +396,7 @@ namespace fgo::nest
 			int c = getTabCount();
 			for (int i = 0; i < c; i++)
 			{
-				Shuttle* shuttle = getShuttle(i);
+				auto shuttle = getShuttle(i);
 
 				floatShuttle(shuttle);
 			}
@@ -580,8 +555,8 @@ namespace fgo::nest
 			// キャプションの高さを取得します。
 			int captionHeight = getCaptionHeight();
 
-			// タブの数が 2 個以上なら
-			if (getTabCount() >= 2)
+			// このペインがタブを表示する場合は
+			if (hasTab())
 			{
 				// タブを考慮に入れてドッキング領域を返します。
 				switch (tabMode)
@@ -650,9 +625,9 @@ namespace fgo::nest
 		{
 			return RECT
 			{
-				position.left,
+				position.right - captionHeight,
 				position.top,
-				position.left + captionHeight,
+				position.right,
 				position.top + captionHeight,
 			};
 		}
@@ -669,18 +644,18 @@ namespace fgo::nest
 		}
 
 		//
-		// このペインおよび子孫ペインの位置情報を再計算します。
+		// このペインおよび子孫ペインの位置情報を更新します。
 		//
-		void recalcLayout()
+		void update(DWORD flags = UpdateFlag::Default)
 		{
-			recalcLayout(&position);
+			update(&position, flags);
 		}
 
 		//
-		// このペインおよび子孫ペインの位置情報を再計算します。
+		// このペインおよび子孫ペインの位置情報を更新します。
 		// rcはこのペインの新しい位置です。
 		//
-		virtual void recalcLayout(LPCRECT rc)
+		virtual void update(LPCRECT rc, DWORD flags)
 		{
 //			MY_TRACE_FUNC("");
 
@@ -690,88 +665,194 @@ namespace fgo::nest
 			// このペインの位置を更新します。
 			position = *rc;
 
-			// キャプションの高さを取得します。
-			int captionHeight = getCaptionHeight();
-
-			int c = getTabCount();
-
-			// タブが2個以上あるなら
-			if (c >= 2)
+			if (flags & UpdateFlag::Invalidate)
 			{
-				switch (tabMode)
-				{
-				case TabMode::Caption: // タブをキャプションに表示するなら
-					{
-						int cy = std::max<int>(captionHeight, tabHeight);
-						int x = position.left + cy; // 左側にあるメニューアイコンの分だけ少しずらします。
-						int y = position.top;
-						int w = getWidth(position) - cy;
-						int h = cy;
-
-						modifyStyle(tab, TCS_BOTTOM, 0);
-
-						// タブコントロールを表示します。
-						::SetWindowPos(tab, HWND_TOP,
-							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
-
-						break;
-					}
-				case TabMode::Top: // タブを上に表示するなら
-					{
-						int x = position.left;
-						int y = position.top + captionHeight;
-						int w = getWidth(position);
-						int h = tabHeight;
-
-						modifyStyle(tab, TCS_BOTTOM, 0);
-
-						// タブコントロールを表示します。
-						::SetWindowPos(tab, HWND_TOP,
-							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
-
-						break;
-					}
-				case TabMode::Bottom: // タブを下に表示するなら
-					{
-						int x = position.left;
-						int y = position.bottom - tabHeight;
-						int w = getWidth(position);
-						int h = tabHeight;
-
-						modifyStyle(tab, 0, TCS_BOTTOM);
-
-						// タブコントロールを表示します。
-						::SetWindowPos(tab, HWND_TOP,
-							x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
-
-						break;
-					}
-				}
+				// ペイン矩形が変更されたので、
+				// オーナーにペイン矩形の再描画処理を発注しておきます。
+				invalidate();
 			}
-			// タブが1個以下なら
+
+			// タブの数が最小数以上の場合は
+			if (hasTab() && flags & UpdateFlag::ShowTab)
+			{
+				updateTabLayout();
+			}
+			// タブの数が最小数未満の場合は
 			else
 			{
 				// タブコントロールを非表示にします。
 				::ShowWindow(tab, SW_HIDE);
 			}
 
-			if (c) // シャトルを持っている場合は
+			// シャトルを持っている場合は
+			int c = getTabCount();
+			if (c)
 			{
-				RECT rcDock = getDockRect();
-
-				for (int i = 0; i < c; i++)
+				if (flags & UpdateFlag::ShowCurrentShuttle)
 				{
-					Shuttle* shuttle = getShuttle(i);
-
-					shuttle->resize(&rcDock); // シャトルをリサイズします。
+					// カレントシャトルのみを表示し、フォーカスを与えます。
+					showCurrentShuttle(flags);
 				}
 
 				return; // シャトルを持つペインはボーダーも子ペインも持たないので、ここで処理を終了します。
 			}
 
-			// ボーダーが飛び出ないように調整します。
-			normalize();
+			if (flags & UpdateFlag::Normalize)
+			{
+				// ボーダーが飛び出ないように調整します。
+				normalize();
+			}
 
+			if (flags & UpdateFlag::Deep)
+			{
+				// 子ペインを再帰的に更新します。
+				// すでに親ペインの再描画が発行されている場合は
+				// Invalidateフラグは冗長になるので除外します。
+				updateChildren(flags & ~UpdateFlag::Invalidate);
+			}
+		}
+
+		//
+		// タブのウィンドウ位置を更新します。
+		// update()から呼び出されます。
+		//
+		void updateTabLayout()
+		{
+			// キャプションの高さを取得します。
+			int captionHeight = getCaptionHeight();
+
+			switch (tabMode)
+			{
+			case TabMode::Caption: // タブをキャプションに表示するなら
+				{
+					int cx = 0;
+					int cy = std::max<int>(captionHeight, tabHeight);
+
+					// 現在表示しているシャトルを取得します。
+					auto shuttle = getCurrentShuttle();
+					if (shuttle)
+					{
+						// シャトルがメニューを持っている場合は
+						if (::GetMenu(*shuttle))
+						{
+							// メニューアイコンのスペースを確保します。
+							cx = cy;
+						}
+					}
+
+					int x = position.left;
+					int y = position.top;
+					int w = getWidth(position) - cx; // 右側にあるメニューアイコンの分だけ少し狭めます。
+					int h = cy;
+
+					modifyStyle(tab, TCS_BOTTOM, 0);
+
+					// タブコントロールを表示します。
+					::SetWindowPos(tab, HWND_TOP,
+						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+					break;
+				}
+			case TabMode::Top: // タブを上に表示するなら
+				{
+					int x = position.left;
+					int y = position.top + captionHeight;
+					int w = getWidth(position);
+					int h = tabHeight;
+
+					modifyStyle(tab, TCS_BOTTOM, 0);
+
+					// タブコントロールを表示します。
+					::SetWindowPos(tab, HWND_TOP,
+						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+					break;
+				}
+			case TabMode::Bottom: // タブを下に表示するなら
+				{
+					int x = position.left;
+					int y = position.bottom - tabHeight;
+					int w = getWidth(position);
+					int h = tabHeight;
+
+					modifyStyle(tab, 0, TCS_BOTTOM);
+
+					// タブコントロールを表示します。
+					::SetWindowPos(tab, HWND_TOP,
+						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+					break;
+				}
+			}
+		}
+
+		//
+		// タブのウィンドウ位置を更新します。
+		// update()から呼び出されます。
+		//
+		void showCurrentShuttle(DWORD flags)
+		{
+			// タブの数を取得します。
+			int c = getTabCount();
+
+			// カレントシャトルのインデックスを取得します。
+			int currentIndex = getCurrentIndex();
+
+			// ドッキング領域の矩形を取得します。
+			RECT rcDock = getDockRect();
+
+			// このペインにドッキングしているすべてのシャトルを順々に処理します。
+			for (int i = 0; i < c; i++)
+			{
+				// インデックスからシャトルを取得します。
+				auto shuttle = getShuttle(i);
+
+				// シャトルをリサイズします。
+				shuttle->resize(&rcDock);
+
+				if (i == currentIndex)
+				{
+					// 空の設定ダイアログかどうかチェックします。
+					if (*shuttle == hive.settingDialog &&
+						magi.auin.GetCurrentObjectIndex() == -1)
+					{
+						MY_TRACE(_T("空の設定ダイアログなので表示できません\n"));
+					}
+					else
+					{
+						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
+
+						::SetWindowPos(*shuttle->dockContainer, HWND_TOP,
+							0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+						::ShowWindow(*shuttle, SW_SHOW);
+					}
+
+					if (flags & UpdateFlag::SetFocus)
+					{
+						if (::IsWindowVisible(*shuttle))
+							::SetFocus(*shuttle);
+					}
+				}
+				else
+				{
+					MY_TRACE(_T("「%ws」を非表示にします\n"), (BSTR)shuttle->name);
+
+					::ShowWindow(*shuttle->dockContainer, SW_HIDE);
+					::ShowWindow(*shuttle, SW_HIDE);
+				}
+
+				MY_TRACE_INT(::IsWindowVisible(*shuttle));
+				MY_TRACE_INT(::IsWindowVisible(*shuttle->dockContainer));
+				MY_TRACE_INT(::IsWindowVisible(::GetParent(*shuttle->dockContainer)));
+			}
+		}
+
+		//
+		// 子ペインを更新します。
+		// update()から呼び出されます。
+		//
+		void updateChildren(DWORD flags)
+		{
 			switch (splitMode)
 			{
 			case SplitMode::Vert:
@@ -782,14 +863,14 @@ namespace fgo::nest
 					{
 						RECT rc = { position.left, position.top, absBorder, position.bottom };
 
-						children[0]->recalcLayout(&rc);
+						children[0]->update(&rc, flags);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { absBorder + borderWidth, position.top, position.right, position.bottom };
 
-						children[1]->recalcLayout(&rc);
+						children[1]->update(&rc, flags);
 					}
 
 					break;
@@ -802,14 +883,14 @@ namespace fgo::nest
 					{
 						RECT rc = { position.left, position.top, position.right, absBorder };
 
-						children[0]->recalcLayout(&rc);
+						children[0]->update(&rc, flags);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { position.left, absBorder + borderWidth, position.right, position.bottom };
 
-						children[1]->recalcLayout(&rc);
+						children[1]->update(&rc, flags);
 					}
 
 					break;
@@ -1010,7 +1091,7 @@ namespace fgo::nest
 		void drawCaption(HDC dc)
 		{
 			// カレントシャトルが存在するなら
-			Shuttle* shuttle = getCurrentShuttle();
+			auto shuttle = getCurrentShuttle();
 			if (shuttle)
 			{
 				// キャプションを描画します。
@@ -1046,7 +1127,7 @@ namespace fgo::nest
 
 						if (hasMenu)
 						{
-							rcText.left = rcMenu.right;
+							rcText.right = rcMenu.left;
 
 							::DrawThemeText(hive.theme, dc, WP_CAPTION, stateId,
 								menuIcon, -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rcMenu);
@@ -1082,7 +1163,7 @@ namespace fgo::nest
 
 						if (hasMenu)
 						{
-							rcText.left = rcMenu.right;
+							rcText.right = rcMenu.left;
 
 							::DrawTextW(dc, menuIcon, -1, &rcMenu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 						}
@@ -1125,34 +1206,15 @@ namespace fgo::nest
 		}
 
 		//
-		// このペインの表示状態を最新の状態に更新します。
-		// deepがTRUEなら子孫ペインも再帰的に更新します。
-		//
-		virtual void refresh(BOOL deep)
-		{
-			refreshCurrent();
-			invalidate();
-
-			if (deep)
-			{
-				for (auto& child : children)
-				{
-					if (!child) continue;
-
-					child->refresh(deep);
-				}
-			}
-		}
-
-		//
 		// ドッキングサイトからシャトルを切り離すときに呼ばれます。
 		//
 		void releaseShuttle(Shuttle* shuttle) override
 		{
 			// このペインからシャトルを切り離します。
 			removeShuttle(shuttle);
-			recalcLayout();
-			invalidate();
+
+			// レイアウトを更新します。
+			update();
 		}
 
 		//
@@ -1160,8 +1222,8 @@ namespace fgo::nest
 		//
 		void onChangeText(Shuttle* shuttle, LPCTSTR newText) override
 		{
-			// タブのテキストを更新します。
-			refreshText(shuttle, newText);
+			// タブのテキストを変更します。
+			setTabText(shuttle, newText);
 
 			// ペインのタイトル部分を再描画します。
 			invalidate();
