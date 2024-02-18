@@ -70,32 +70,6 @@ namespace fgo::nest
 		}
 
 		//
-		// HWNDに対応するフィルタを返します。
-		//
-		static AviUtl::FilterPlugin* getFilter(HWND hwnd)
-		{
-			// magi.fpがまだ設定されていない場合は失敗します。
-			if (!magi.fp) return 0;
-
-			// AviUtl::SysInfoを取得します。
-			AviUtl::SysInfo si = {};
-			magi.fp->exfunc->get_sys_info(0, &si);
-
-			// 全てのフィルタを列挙します。
-			for (int i = 0; i < si.filter_n; i++)
-			{
-				// フィルタを取得します。
-				auto fp = magi.fp->exfunc->get_filterp(i);
-				if (!fp) continue; // フィルタが0の場合はスキップします。
-
-				// フィルタとhwndが一致する場合はそのフィルタを返します。
-				if (fp->hwnd == hwnd) return fp;
-			}
-
-			return 0;
-		}
-
-		//
 		// 指定されたシャトル名を装飾して返します。
 		//
 		static std::wstring decorateName(const std::wstring& name)
@@ -382,23 +356,18 @@ namespace fgo::nest
 				{
 					MY_TRACE_FUNC("%s, WM_SHOWWINDOW, 0x%08X, 0x%08X", (LPCTSTR)name, wParam, lParam);
 
-					// ターゲットウィンドウがフィルタウィンドウの場合は
-					auto fp = getFilter(hwnd);
-					if (fp)
-					{
-						// ターゲットウィンドウの表示状態とAviUtl上での表示状態をシンクロさせます。
-						if (wParam)
-							fp->flag |= AviUtl::FilterPlugin::Flag::WindowActive;
-						else
-							fp->flag &= ~AviUtl::FilterPlugin::Flag::WindowActive;
-					}
-
 					auto container = getCurrentContainer();
 					if (container)
 					{
 						// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
 						// ここで::ShowWindowAsync()を使用すると一部ウィンドウ(拡張編集)の表示がおかしくなります。
-						::ShowWindow(*container, wParam ? SW_SHOW : SW_HIDE);
+						// コンテナにWM_SHOWWINDOWを送信したくないので、::SetWindowPos()を使用しています。
+						UINT flags = SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOCOPYBITS;
+						if (wParam)
+							flags |= SWP_SHOWWINDOW;
+						else
+							flags |= SWP_HIDEWINDOW;
+						::SetWindowPos(*container, 0, 0, 0, 0, 0, flags);
 					}
 
 					break;

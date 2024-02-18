@@ -810,6 +810,12 @@ namespace fgo::nest
 				// シャトルをリサイズします。
 				shuttle->resize(&rcDock);
 
+				MY_TRACE(_T("「%ws」の表示状態を変更します\n"), (BSTR)shuttle->name);
+
+				MY_TRACE_INT(::IsWindowVisible(*shuttle));
+				MY_TRACE_INT(::IsWindowVisible(*shuttle->dockContainer));
+				MY_TRACE_INT(::IsWindowVisible(::GetParent(*shuttle->dockContainer)));
+
 				if (i == currentIndex)
 				{
 					// 空の設定ダイアログかどうかチェックします。
@@ -817,14 +823,18 @@ namespace fgo::nest
 						magi.auin.GetCurrentObjectIndex() == -1)
 					{
 						MY_TRACE(_T("空の設定ダイアログなので表示できません\n"));
+
+						::ShowWindow(*shuttle->dockContainer, SW_HIDE);
 					}
 					else
 					{
 						MY_TRACE(_T("「%ws」を表示します\n"), (BSTR)shuttle->name);
 
-						::SetWindowPos(*shuttle->dockContainer, HWND_TOP,
-							0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-						::ShowWindow(*shuttle, SW_SHOW);
+						// SWP_SHOWWINDOWを使用してウィンドウを表示した場合は
+						// WM_SHOWWINDOWが送信されないので使用できません。
+						::SetWindowPos(*shuttle->dockContainer,
+							HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+						::ShowWindow(*shuttle->dockContainer, SW_SHOW);
 					}
 
 					if (flags & UpdateFlag::SetFocus)
@@ -838,7 +848,6 @@ namespace fgo::nest
 					MY_TRACE(_T("「%ws」を非表示にします\n"), (BSTR)shuttle->name);
 
 					::ShowWindow(*shuttle->dockContainer, SW_HIDE);
-					::ShowWindow(*shuttle, SW_HIDE);
 				}
 
 				MY_TRACE_INT(::IsWindowVisible(*shuttle));

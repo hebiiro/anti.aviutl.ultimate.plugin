@@ -75,6 +75,35 @@ namespace fgo::nest
 			destroy();
 		}
 
+		//
+		// HWNDに対応するフィルタを返します。
+		//
+		static AviUtl::FilterPlugin* getFilter(HWND hwnd)
+		{
+			// magi.fpがまだ設定されていない場合は失敗します。
+			if (!magi.fp) return 0;
+
+			// AviUtl::SysInfoを取得します。
+			AviUtl::SysInfo si = {};
+			magi.fp->exfunc->get_sys_info(0, &si);
+
+			// 全てのフィルタを列挙します。
+			for (int i = 0; i < si.filter_n; i++)
+			{
+				// フィルタを取得します。
+				auto fp = magi.fp->exfunc->get_filterp(i);
+				if (!fp) continue; // フィルタが0の場合はスキップします。
+
+				// フィルタとhwndが一致する場合はそのフィルタを返します。
+				if (fp->hwnd == hwnd) return fp;
+			}
+
+			return 0;
+		}
+
+		//
+		// コンテナのウィンドウクラスを登録します。
+		//
 		static BOOL registerWndClass()
 		{
 			WNDCLASS wc = {};
@@ -364,6 +393,45 @@ namespace fgo::nest
 				{
 					// メッセージをそのままターゲットウィンドウに転送します。
 					return ::SendMessage(content->getHWND(), message, wParam, lParam);
+				}
+			case WM_SHOWWINDOW:
+				{
+					MY_TRACE_FUNC("WM_SHOWWINDOW, 0x%08X, 0x%08X", wParam, lParam);
+
+					// ターゲットウィンドウを取得します。
+					HWND target = content->getHWND();
+
+					// ターゲットウィンドウがフィルタウィンドウの場合は
+					auto fp = getFilter(content->getHWND());
+					if (fp)
+					{
+						UINT check = 0;
+
+						// ターゲットウィンドウの表示状態とAviUtl上での表示状態を同じにします。
+						if (wParam)
+						{
+							fp->flag |= AviUtl::FilterPlugin::Flag::WindowActive;
+							check |= MF_CHECKED;
+						}
+						else
+						{
+							fp->flag &= ~AviUtl::FilterPlugin::Flag::WindowActive;
+							check |= MF_UNCHECKED;
+						}
+
+						::CheckMenuItem(fp->hmenu, fp->menu_index + 0x2AF9, check | MF_BYCOMMAND);
+					}
+
+					// コンテナの表示状態に合わせて、ターゲットウィンドウの表示状態も変更します。
+					::ShowWindow(target, wParam ? SW_SHOW : SW_HIDE);
+
+					if (fp)
+					{
+						// フィルタウィンドウに通知メッセージを送信します。
+						::SendMessage(target, AviUtl::FilterPlugin::WindowMessage::ChangeWindow, 0, 0);
+					}
+
+					break;
 				}
 			case WM_SYSCOMMAND:
 				{

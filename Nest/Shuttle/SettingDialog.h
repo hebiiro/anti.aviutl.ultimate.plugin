@@ -76,14 +76,20 @@ namespace fgo::nest
 			case WM_PAINT:
 				{
 					// 「拡張編集」用の処理です。
-					// カレントオブジェクトが存在しない場合に WM_PAINT を処理させてしまうとエラーになります。
+					// カレントオブジェクトが存在しない場合にWM_PAINTを処理させてしまうとエラーになります。
 					// よって、カレントオブジェクトをチェックし、存在しない場合は処理しないようにします。
 
 					int objectIndex = magi.auin.GetCurrentObjectIndex();
 //					MY_TRACE_INT(objectIndex);
 
 					if (objectIndex < 0)
+					{
+						PaintDC dc(hwnd);
+						HBRUSH brush = (HBRUSH)::SendMessage(hwnd,
+							WM_CTLCOLORDLG, (WPARAM)(HDC)dc, (LPARAM)hwnd);
+						::FillRect(dc, &dc.m_ps.rcPaint, brush);
 						return 0;
+					}
 
 					break;
 				}
