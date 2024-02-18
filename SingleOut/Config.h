@@ -45,6 +45,10 @@ namespace fgo::single_out
 			MY_TRACE_FUNC("%ws", path);
 
 			getPrivateProfileInt(path, L"Config", L"quality", hive.quality);
+			getPrivateProfileLabel(path, L"Config", L"mode", hive.mode, Hive::Mode::label);
+			getPrivateProfileBSTR(path, L"Config", L"fileName", hive.fileName);
+			getPrivateProfileInt(path, L"Config", L"index", hive.index);
+			getPrivateProfileInt(path, L"Config", L"zero", hive.zero);
 			getPrivateProfileWindow(path, L"MainWindow", mainWindow);
 
 			mainWindow.mainDialog.updateControls();
@@ -60,6 +64,10 @@ namespace fgo::single_out
 			MY_TRACE_FUNC("%ws", path);
 
 			setPrivateProfileInt(path, L"Config", L"quality", hive.quality);
+			setPrivateProfileLabel(path, L"Config", L"mode", hive.mode, Hive::Mode::label);
+			setPrivateProfileBSTR(path, L"Config", L"fileName", hive.fileName);
+			setPrivateProfileInt(path, L"Config", L"index", hive.index);
+			setPrivateProfileInt(path, L"Config", L"zero", hive.zero);
 			setPrivateProfileWindow(path, L"MainWindow", mainWindow);
 
 			return TRUE;

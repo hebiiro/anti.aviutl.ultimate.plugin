@@ -95,9 +95,9 @@ namespace fgo::single_out
 		//
 		// 画像をエクスポートします。
 		//
-		BOOL onExportImage(BOOL hasAlpha, BOOL itemOnly)
+		BOOL onExportImage(LPCWSTR fileName, BOOL hasAlpha, BOOL itemOnly)
 		{
-			MY_TRACE_FUNC("%d, %d", hasAlpha, itemOnly);
+			MY_TRACE_FUNC("%ws, %d, %d", fileName, hasAlpha, itemOnly);
 
 			auto fp = magi.fp;
 			auto editp = magi.auin.GetEditp();
@@ -107,12 +107,8 @@ namespace fgo::single_out
 			auto exedit = magi.auin.GetFilter(fp, "拡張編集");
 			if (!exedit) return FALSE;
 
-			char fileName[MAX_PATH] = {};
-			if (!fp->exfunc->dlg_get_save_name(fileName, "PNG / BMP / JPG / GIF / TIFF File\0*.png;*.bmp;*.jpg;*.gif;*.tiff\0All File (*.*)\0*.*\0", 0))
-				return FALSE;
-
-			LPCSTR extension = ::PathFindExtensionA(fileName);
-			MY_TRACE_STR(extension);
+			LPCWSTR extension = ::PathFindExtension(fileName);
+			MY_TRACE_WSTR(extension);
 
 			ULONG quality = hive.quality;
 			EncoderParameters encoderParameters = {};
@@ -124,11 +120,11 @@ namespace fgo::single_out
 
 			CLSID encoder = {};
 			int result = -1;
-			if (::lstrcmpiA(extension, ".bmp") == 0) result = GetEncoderClsid(L"image/bmp", &encoder);
-			else if (::lstrcmpiA(extension, ".jpg") == 0) result = GetEncoderClsid(L"image/jpeg", &encoder);
-			else if (::lstrcmpiA(extension, ".gif") == 0) result = GetEncoderClsid(L"image/gif", &encoder);
-			else if (::lstrcmpiA(extension, ".tif") == 0) result = GetEncoderClsid(L"image/tiff", &encoder);
-			else if (::lstrcmpiA(extension, ".png") == 0) result = GetEncoderClsid(L"image/png", &encoder);
+			if (::lstrcmpiW(extension, L".bmp") == 0) result = GetEncoderClsid(L"image/bmp", &encoder);
+			else if (::lstrcmpiW(extension, L".jpg") == 0) result = GetEncoderClsid(L"image/jpeg", &encoder);
+			else if (::lstrcmpiW(extension, L".gif") == 0) result = GetEncoderClsid(L"image/gif", &encoder);
+			else if (::lstrcmpiW(extension, L".tif") == 0) result = GetEncoderClsid(L"image/tiff", &encoder);
+			else if (::lstrcmpiW(extension, L".png") == 0) result = GetEncoderClsid(L"image/png", &encoder);
 
 			if (result == -1)
 			{
@@ -266,10 +262,10 @@ namespace fgo::single_out
 			Bitmap bitmap(width, height, width * 4, PixelFormat32bppARGB, (BYTE*)output.get());
 
 			Status status;
-			if (::lstrcmpiA(extension, ".jpg") == 0)
-				status = bitmap.Save((_bstr_t)fileName, &encoder, &encoderParameters);
+			if (::lstrcmpiW(extension, L".jpg") == 0)
+				status = bitmap.Save(fileName, &encoder, &encoderParameters);
 			else
-				status = bitmap.Save((_bstr_t)fileName, &encoder);
+				status = bitmap.Save(fileName, &encoder);
 			MY_TRACE_COM_ERROR(status);
 
 			if (status != S_OK)
