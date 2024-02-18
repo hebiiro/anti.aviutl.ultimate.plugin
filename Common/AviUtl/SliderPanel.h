@@ -64,7 +64,7 @@ namespace Tools::AviUtl
 		//
 		// コントロールを移動します。
 		//
-		BOOL move(HDWP dwp, int x, int y, int w, int h)
+		BOOL move(HDWP dwp, int x, int y, int w, int h) const
 		{
 			::DeferWindowPos(dwp, label, 0, x, y, h * labelSize, h, SWP_NOZORDER | SWP_NOACTIVATE);
 			::DeferWindowPos(dwp, slider, 0, x + h * labelSize, y, w - h * (labelSize + editboxSize), h, SWP_NOZORDER | SWP_NOACTIVATE);
@@ -76,7 +76,7 @@ namespace Tools::AviUtl
 		//
 		// ユーザーがスライダーを操作したときに呼ばれます。
 		//
-		T onChangePos()
+		T onChangePos() const
 		{
 			// スライダーの位置から値を取得します。
 			T value = getValue(TRUE);
@@ -95,7 +95,7 @@ namespace Tools::AviUtl
 		//
 		// ユーザーがエディットボックスを操作したときに呼ばれます。
 		//
-		T onChangeText()
+		T onChangeText() const
 		{
 			// エディットボックスのテキストから値を取得します。
 			T value = getValue(FALSE);
@@ -170,8 +170,11 @@ namespace Tools::AviUtl
 			// 値を位置に変換します。
 			int pos = value2pos(value);
 
-			// スライダーの位置を更新して、ダイアログに通知します。
-			::SendMessage(slider, TBM_SETPOSNOTIFY, 0, pos); // ここでonChangePos()が呼ばれることを想定しています。
+			// スライダーの位置を更新します。
+			::SendMessage(slider, TBM_SETPOS, 0, pos);
+
+			// エディットボックスのテキストを更新します。
+			onChangePos();
 		}
 	};
 
