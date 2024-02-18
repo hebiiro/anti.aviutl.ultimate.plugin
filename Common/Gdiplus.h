@@ -380,7 +380,7 @@ inline void drawRoundRect(Graphics& g, Pen* pen, Brush* brush, const Rect& _rect
 }
 
 } // namespace Gdiplus
-
+#ifdef _MFC_VER
 class CMyRect : public CRect
 {
 public:
@@ -415,3 +415,4 @@ public:
 		this->bottom = (int)(rc.Y + rc.Height);
 	}
 };
+#endif
