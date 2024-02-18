@@ -59,6 +59,7 @@ using namespace Gdiplus;
 #include "Common/Tracer2.h"
 #include "Common/WinUtility.h"
 #include "Common/Gdi.h"
+#include "Common/Gdiplus.h"
 #include "Common/Window.h"
 #include "Common/Window2.h"
 #include "Common/WindowInterseptor.h"
