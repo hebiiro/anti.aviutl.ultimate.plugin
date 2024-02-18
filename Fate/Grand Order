@@ -30,6 +30,8 @@
 #pragma comment(lib, "comctl32.lib")
 #include <commdlg.h>
 #pragma comment(lib, "comdlg32.lib")
+#include <imagehlp.h>
+#pragma comment(lib, "imagehlp.lib")
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 #include <vsstyle.h>
