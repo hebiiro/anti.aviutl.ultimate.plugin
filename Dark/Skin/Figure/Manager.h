@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Skin/Figure/Node.h"
+#include "Skin/Figure/GdiNode.h"
+#include "Skin/Figure/GdiTextNode.h"
+#include "Skin/Figure/GdiIconNode.h"
 
 namespace fgo::dark::skin::figure
 {
@@ -59,10 +62,19 @@ namespace fgo::dark::skin::figure
 				loadNode<DrawDoubleSunkenEdge>(element, L"DrawDoubleSunkenEdge");
 				loadNode<DrawDoubleBumpEdge>(element, L"DrawDoubleBumpEdge");
 				loadNode<DrawDoubleEtchedEdge>(element, L"DrawDoubleEtchedEdge");
+/*
+				loadNode<RoundLeft>(element, L"RoundLeft");
+				loadNode<RoundRight>(element, L"RoundRight");
+				loadNode<RoundTop>(element, L"RoundTop");
+				loadNode<RoundBottom>(element, L"RoundBottom");
+				loadNode<RoundHorz>(element, L"RoundHorz");
+				loadNode<RoundVert>(element, L"RoundVert");
+				loadNode<RoundAll>(element, L"RoundAll");
+*/
 				loadTextNode<DrawText>(element, L"DrawText");
-				loadTextNode<TextNode>(element, L"DrawShadowText");
+				loadTextNode<DrawShadowText>(element, L"DrawShadowText");
 				loadIconNode<DrawIcon>(element, L"DrawIcon");
-				loadIconNode<IconNode>(element, L"DrawShadowIcon");
+				loadIconNode<DrawShadowIcon>(element, L"DrawShadowIcon");
 			}
 
 			return S_OK;

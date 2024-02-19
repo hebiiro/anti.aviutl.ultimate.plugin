@@ -241,6 +241,15 @@
       <Filter>Renderer\Gdi\Element</Filter>
     </ClInclude>
     <ClInclude Include="dark.h" />
+    <ClInclude Include="Skin\Figure\GdiNode.h">
+      <Filter>Skin\Figure</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\Figure\GdiTextNode.h">
+      <Filter>Skin\Figure</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\Figure\GdiIconNode.h">
+      <Filter>Skin\Figure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

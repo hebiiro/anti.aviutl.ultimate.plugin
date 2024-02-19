@@ -15,6 +15,26 @@ namespace fgo::dark::skin::theme
 	//
 	inline struct Manager
 	{
+		struct TempRect : RECT
+		{
+			TempRect(LPCRECT rc)
+			{
+				if (rc)
+				{
+					left = rc->left;
+					top = rc->top;
+					right = rc->right;
+					bottom = rc->bottom;
+				}
+				else
+				{
+					left = top = right = bottom = 0;
+				}
+			}
+
+			operator LPRECT() { return this; }
+		};
+
 		HTHEME themes[THEME_MAXSIZE] = {};
 		std::map<HTHEME, std::shared_ptr<VSClass>> collection;
 
@@ -124,7 +144,7 @@ namespace fgo::dark::skin::theme
 
 			BOOL retValue = FALSE;
 			for (auto node : state->nodes)
-				node->draw(dc, rc), retValue = TRUE;
+				node->draw(dc, TempRect(rc)), retValue = TRUE;
 			return retValue;
 		}
 
@@ -135,29 +155,29 @@ namespace fgo::dark::skin::theme
 
 			BOOL retValue = FALSE;
 			for (auto iconNode : state->iconNodes)
-				iconNode->draw(dc, rc), retValue = TRUE;
+				iconNode->draw(dc, TempRect(rc)), retValue = TRUE;
 			return retValue;
 		}
 
-		BOOL drawText(HDC dc, HTHEME theme, int partId, int stateId, LPRECT rc, LPCWSTR text, int c, UINT format)
+		BOOL drawText(HDC dc, HTHEME theme, int partId, int stateId, LPCRECT rc, LPCWSTR text, int c, UINT format)
 		{
 			auto state = getState(theme, partId, stateId);
 			if (!state) return FALSE;
 
 			BOOL retValue = FALSE;
 			for (auto textNode : state->textNodes)
-				textNode->drawText(dc, rc, text, c, format), retValue = TRUE;
+				textNode->drawText(dc, TempRect(rc), text, c, format), retValue = TRUE;
 			return retValue;
 		}
 
-		BOOL textOut(HDC dc, HTHEME theme, int partId, int stateId, int x, int y, UINT options, LPRECT rc, LPCWSTR text, UINT c, CONST INT* dx)
+		BOOL textOut(HDC dc, HTHEME theme, int partId, int stateId, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx)
 		{
 			auto state = getState(theme, partId, stateId);
 			if (!state) return FALSE;
 
 			BOOL retValue = FALSE;
 			for (auto textNode : state->textNodes)
-				textNode->textOut(dc, x, y, options, rc, text, c, dx), retValue = TRUE;
+				textNode->textOut(dc, x, y, options, TempRect(rc), text, c, dx), retValue = TRUE;
 			return retValue;
 		}
 
@@ -176,15 +196,12 @@ namespace fgo::dark::skin::theme
 		{
 			Hive::ExtTextOutLocker locker; // このスコープ内での::ExtTextOutW()のフックをブロックします。
 
-			RECT rc2 = *rc;
-			return drawText(dc, theme, partId, stateId, &rc2, text, c, textFlags);
+			return drawText(dc, theme, partId, stateId, rc, text, c, textFlags);
 		}
 
 		BOOL onExtTextOut(HTHEME theme, HDC dc, int partId, int stateId, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx)
 		{
-			RECT rc2 = {};
-			if (rc) rc2 = *rc;
-			return textOut(dc, theme, partId, stateId, x, y, options, &rc2, text, c, dx);
+			return textOut(dc, theme, partId, stateId, x, y, options, rc, text, c, dx);
 		}
 
 		//
