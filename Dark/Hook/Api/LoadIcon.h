@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "Hive.h"
-#include "ActCtx.h"
 #include "Skin.h"
 
 namespace fgo::dark::hook

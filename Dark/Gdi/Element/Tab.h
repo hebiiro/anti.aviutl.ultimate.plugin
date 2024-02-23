@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "DoubleBuffer.h"
 #include "Skin.h"
 #include "Gdi/Renderer.h"
 
@@ -6,6 +7,40 @@ namespace fgo::dark::gdi
 {
 	inline struct TabRenderer : Renderer
 	{
+		LRESULT onSubclassProc(Reflector* reflector, State* currentState) override
+		{
+			HWND hwnd = currentState->hwnd;
+			UINT message = currentState->message;
+			WPARAM wParam = currentState->wParam;
+			LPARAM lParam = currentState->lParam;
+
+//			MY_TRACE_FUNC("0x%08X, 0x%08X, 0x%08X, 0x%08X", hwnd, message, wParam, lParam);
+
+			switch (message)
+			{
+			case WM_NCCREATE:
+				{
+					MY_TRACE_FUNC("WM_NCCREATE, 0x%08X, 0x%08X, 0x%08X", hwnd, wParam, lParam);
+
+					// ダブルバッファリングを有効にします。
+					double_buffer.create(hwnd);
+
+					break;
+				}
+			case WM_NCDESTROY:
+				{
+					MY_TRACE_FUNC("WM_NCDESTROY, 0x%08X, 0x%08X, 0x%08X", hwnd, wParam, lParam);
+
+					// ダブルバッファリングを無効にします。
+					double_buffer.destroy(hwnd);
+
+					break;
+				}
+			}
+
+			return __super::onSubclassProc(reflector, currentState);
+		}
+
 		int onFillRect(State* currentState, HDC dc, LPCRECT rc, HBRUSH brush) override
 		{
 //			MY_TRACE_FUNC("0x%08X, (%ws), 0x%08X", dc, hive.safe_string(rc), brush);

@@ -3,6 +3,7 @@
 #include "Api/GetModuleHandle.h"
 #include "Api/LoadIcon.h"
 #include "Api/GetOpenFileName.h"
+#include "Api/BeginPaint.h"
 #include "Api/CallWindowProc.h"
 #include "Api/Gdi.h"
 #include "Api/Theme.h"
@@ -69,6 +70,9 @@ namespace fgo::dark::hook
 //			Tools::attach(LoadImageW);
 			Tools::attach(DrawIconEx);
 			Tools::attach(LoadMenuA);
+
+			Tools::attach(BeginPaint);
+			Tools::attach(EndPaint);
 
 			// 2B = 7671339B - 76713370
 			uintptr_t address1 = ::CallWindowProcW((WNDPROC)getRetAddr, 0, 0, 0, 0) - 0x2B;
