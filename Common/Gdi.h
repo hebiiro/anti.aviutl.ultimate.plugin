@@ -148,7 +148,7 @@ public:
 	HBITMAP m_bitmap;
 	HBITMAP m_oldBitmap;
 
-	DoubleBufferDC(HDC dc, LPCRECT rc)
+	DoubleBufferDC(HDC dc, LPCRECT rc, BOOL copy = FALSE)
 	{
 		m_dstDC = dc;
 		m_rc = *rc;
@@ -159,6 +159,9 @@ public:
 		m_dc = ::CreateCompatibleDC(dc);
 		m_bitmap = ::CreateCompatibleBitmap(dc, w, h);
 		m_oldBitmap = (HBITMAP)::SelectObject(m_dc, m_bitmap);
+
+		if (copy)
+			::BitBlt(m_dc, 0, 0, w, h, m_dstDC, m_rc.left, m_rc.top, SRCCOPY);
 	}
 
 	~DoubleBufferDC()
@@ -166,7 +169,7 @@ public:
 		int w = m_rc.right - m_rc.left;
 		int h = m_rc.bottom - m_rc.top;
 
-		::BitBlt(m_dstDC, 0, 0, w, h, m_dc, 0, 0, SRCCOPY);
+		::BitBlt(m_dstDC, m_rc.left, m_rc.top, w, h, m_dc, 0, 0, SRCCOPY);
 
 		::SelectObject(m_dc, m_oldBitmap);
 		::DeleteObject(m_bitmap);
