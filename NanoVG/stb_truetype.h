@@ -1,4 +1,4 @@
-// stb_truetype.h - v1.24 - public domain
+﻿// stb_truetype.h - v1.24 - public domain
 // authored from 2009-2020 by Sean Barrett / RAD Game Tools
 //
 // =======================================================================

@@ -1,36 +1,36 @@
-#pragma once
+﻿#pragma once
 
 namespace fgo::audio_graph
 {
 	//
-	// ���̃N���X�͎󂯎���������M�����特�ʂ��Z�o���A�ێ����܂��B
+	// このクラスは受け取った音声信号から音量を算出し、保持します。
 	//
 	struct Present
 	{
 		//
-		// ���ʂ̎Z�o�Ɏg�p���鉹���M���ł��B
+		// 音量の算出に使用する音声信号です。
 		//
 		std::unique_ptr<short[]> audiop;
 
 		//
-		// �����M���̐��ł��B
+		// 音声信号の数です。
 		//
 		int32_t audio_n;
 
 		//
-		// �����M���̃`�����l�����ł��B
+		// 音声信号のチャンネル数です。
 		//
 		int32_t audio_ch;
 
 		//
-		// �Z�o���ꂽ���ʂł��B
+		// 算出された音量です。
 		//
 		Share::AudioGraph::Volume volume;
 
 		//
-		// �R���X�g���N�^�ł��B
-		// fp��fpip����K�v�ȃf�[�^���擾���āA���̃I�u�W�F�N�g�ŕێ����܂��B
-		// ���C���X���b�h������Ă΂�܂��B
+		// コンストラクタです。
+		// fpとfpipから必要なデータを取得して、このオブジェクトで保持します。
+		// メインスレッド側から呼ばれます。
 		//
 		Present(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, DWORD time)
 			: audiop(new short[fpip->audio_n * fpip->audio_ch])
@@ -42,8 +42,8 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// ���ʃ��x���ƃs�[�N���Z�o���܂��B
-		// �T�u�X���b�h������Ă΂�܂��B
+		// 音量レベルとピークを算出します。
+		// サブスレッド側から呼ばれます。
 		//
 		void calc()
 		{
@@ -52,7 +52,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// �w�肳�ꂽ�`�����l���̉��ʃ��x���ƃs�[�N���Z�o���܂��B
+		// 指定されたチャンネルの音量レベルとピークを算出します。
 		//
 		void calc(int ch)
 		{
@@ -74,7 +74,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// �󂯎���������M����-1.0�`1.0�ɐ��K�����ĕԂ��܂��B
+		// 受け取った音声信号を-1.0～1.0に正規化して返します。
 		//
 		inline static float normalize(short pcm)
 		{

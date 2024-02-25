@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Hive.h"
 
 namespace fgo::audio_graph
@@ -6,12 +6,12 @@ namespace fgo::audio_graph
 	inline struct Gui
 	{
 		//
-		// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚ÌƒvƒƒZƒXî•ñ‚Å‚·B
+		// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã®ãƒ—ãƒ­ã‚»ã‚¹æƒ…å ±ã§ã™ã€‚
 		//
 		PROCESS_INFORMATION pi = {};
 
 		//
-		// ‰Šú‰»ˆ—‚ðŽÀs‚µ‚Ü‚·B
+		// åˆæœŸåŒ–å‡¦ç†ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
 		//
 		BOOL init()
 		{
@@ -45,23 +45,23 @@ namespace fgo::audio_graph
 				return FALSE;
 			}
 
-			// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚ÌƒƒbƒZ[ƒWƒ‹[ƒv‚ªŠJŽn‚³‚ê‚é‚Ü‚Å‘Ò‹@‚µ‚Ü‚·B
+			// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—ãŒé–‹å§‹ã•ã‚Œã‚‹ã¾ã§å¾…æ©Ÿã—ã¾ã™ã€‚
 			::WaitForInputIdle(pi.hProcess, INFINITE);
 
 			return TRUE;
 		}
 
 		//
-		// ŒãŽn––ˆ—‚ðŽÀs‚µ‚Ü‚·B
+		// å¾Œå§‹æœ«å‡¦ç†ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
 		//
 		BOOL exit()
 		{
 			MY_TRACE_FUNC("");
 #if 1
-			// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚ðI—¹‚³‚¹‚Ü‚·B
+			// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã‚’çµ‚äº†ã•ã›ã¾ã™ã€‚
 			::PostThreadMessage(pi.dwThreadId, WM_QUIT, 0, 0);
 #else
-			// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚ð‹­§“I‚ÉI—¹‚³‚¹‚Ü‚·B
+			// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã‚’å¼·åˆ¶çš„ã«çµ‚äº†ã•ã›ã¾ã™ã€‚
 			::TerminateProcess(pi.hProcess, 0);
 #endif
 			return TRUE;

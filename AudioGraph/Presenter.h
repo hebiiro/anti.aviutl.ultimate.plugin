@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Present.h"
 
 namespace fgo::audio_graph
@@ -14,10 +14,10 @@ namespace fgo::audio_graph
 		DWORD m_startTime = 0;
 		int m_startFrame = 0;
 
-		// ˆÈ‰º‚ÍƒƒCƒ“ƒXƒŒƒbƒh‘¤‚Ìˆ—‚Å‚·B
+		// ä»¥ä¸‹ã¯ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰å´ã®å‡¦ç†ã§ã™ã€‚
 
 		//
-		// ‰Šú‰»ˆ—‚ğÀs‚µ‚Ü‚·B
+		// åˆæœŸåŒ–å‡¦ç†ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
 		//
 		BOOL init()
 		{
@@ -27,7 +27,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// Œãn––ˆ—‚ğÀs‚µ‚Ü‚·B
+		// å¾Œå§‹æœ«å‡¦ç†ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
 		//
 		BOOL exit()
 		{
@@ -43,7 +43,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// ƒTƒuƒXƒŒƒbƒh‚ğŠJn‚µ‚Ü‚·B
+		// ã‚µãƒ–ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’é–‹å§‹ã—ã¾ã™ã€‚
 		//
 		BOOL start()
 		{
@@ -56,7 +56,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// ƒTƒuƒXƒŒƒbƒh‚ÉƒvƒŒƒ[ƒ“ƒg‚ğ‘—‚è‚Ü‚·B
+		// ã‚µãƒ–ã‚¹ãƒ¬ãƒƒãƒ‰ã«ãƒ—ãƒ¬ã‚¼ãƒ³ãƒˆã‚’é€ã‚Šã¾ã™ã€‚
 		//
 		BOOL send(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const Servant::ProcState& proc_state)
 		{
@@ -72,7 +72,7 @@ namespace fgo::audio_graph
 
 			if (isSameFrame(fp, fpip))
 			{
-				MY_TRACE(_T("Ä¶’†‚Å‚Í‚ ‚è‚Ü‚¹‚ñ\n"));
+				MY_TRACE(_T("å†ç”Ÿä¸­ã§ã¯ã‚ã‚Šã¾ã›ã‚“\n"));
 
 				m_isPlaying = FALSE;
 			}
@@ -80,14 +80,14 @@ namespace fgo::audio_graph
 			{
 				if (!proc_state.is_playing)
 				{
-					// Ä¶’†‚È‚Ì‚ÉƒtƒŒ[ƒ€‚ªŠš‚İ‡‚í‚È‚¢‚Æ‚«‚Í
-					// ‘¼‚Ìƒvƒ‰ƒOƒCƒ“‚©‚çŒÄ‚Î‚ê‚Ä‚¢‚é‰Â”\«‚ª‚ ‚é‚Ì‚Å‰½‚à‚µ‚È‚¢B
+					// å†ç”Ÿä¸­ãªã®ã«ãƒ•ãƒ¬ãƒ¼ãƒ ãŒå™›ã¿åˆã‚ãªã„ã¨ãã¯
+					// ä»–ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‹ã‚‰å‘¼ã°ã‚Œã¦ã„ã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§ä½•ã‚‚ã—ãªã„ã€‚
 					return FALSE;
 				}
 
 				if (!m_isPlaying || m_startFrame >= fpip->frame)
 				{
-					MY_TRACE(_T("Ä¶‚ªŠJn‚³‚ê‚Ü‚µ‚½\n"));
+					MY_TRACE(_T("å†ç”ŸãŒé–‹å§‹ã•ã‚Œã¾ã—ãŸ\n"));
 
 					m_isPlaying = TRUE;
 					m_startTime = ::timeGetTime();
@@ -97,7 +97,7 @@ namespace fgo::audio_graph
 				}
 				else
 				{
-					MY_TRACE(_T("Ä¶’†‚Å‚·\n"));
+					MY_TRACE(_T("å†ç”Ÿä¸­ã§ã™\n"));
 
 					MY_TRACE_INT(fpip->frame);
 					MY_TRACE_INT(m_startFrame);
@@ -110,12 +110,12 @@ namespace fgo::audio_graph
 				}
 			}
 
-			// ‚±‚±‚ÅŠm•Û‚µ‚½ƒƒ‚ƒŠ‚ÍƒTƒuƒXƒŒƒbƒh‚ÅŠJ•ú‚³‚ê‚Ü‚·B
+			// ã“ã“ã§ç¢ºä¿ã—ãŸãƒ¡ãƒ¢ãƒªã¯ã‚µãƒ–ã‚¹ãƒ¬ãƒƒãƒ‰ã§é–‹æ”¾ã•ã‚Œã¾ã™ã€‚
 			return ::PostThreadMessage(tid, WM_SEND, (WPARAM)new Present(fp, fpip, time), 0);
 		}
 
 		//
-		// fpip->frame‚ª•ÏX‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍTRUE‚ğ•Ô‚µ‚Ü‚·B
+		// fpip->frameãŒå¤‰æ›´ã•ã‚Œã¦ã„ãªã„å ´åˆã¯TRUEã‚’è¿”ã—ã¾ã™ã€‚
 		//
 		static BOOL isSameFrame(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
 		{
@@ -123,7 +123,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// ƒtƒŒ[ƒ€”Ô†‚ğƒ~ƒŠ•b‚É•ÏŠ·‚µ‚Ä•Ô‚µ‚Ü‚·B
+		// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·ã‚’ãƒŸãƒªç§’ã«å¤‰æ›ã—ã¦è¿”ã—ã¾ã™ã€‚
 		//
 		static int frame2ms(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, int frame)
 		{
@@ -136,10 +136,10 @@ namespace fgo::audio_graph
 				return 0;
 		}
 
-		// ˆÈ‰º‚ÍƒTƒuƒXƒŒƒbƒh‘¤‚Ìˆ—‚Å‚·B
+		// ä»¥ä¸‹ã¯ã‚µãƒ–ã‚¹ãƒ¬ãƒƒãƒ‰å´ã®å‡¦ç†ã§ã™ã€‚
 
 		//
-		// ƒXƒŒƒbƒhŠÖ”‚©‚çŒÄ‚Î‚ê‚Ü‚·B
+		// ã‚¹ãƒ¬ãƒƒãƒ‰é–¢æ•°ã‹ã‚‰å‘¼ã°ã‚Œã¾ã™ã€‚
 		//
 		DWORD onThreadProc()
 		{
@@ -151,7 +151,7 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// ƒXƒŒƒbƒhŠÖ”‚Å‚·B
+		// ã‚¹ãƒ¬ãƒƒãƒ‰é–¢æ•°ã§ã™ã€‚
 		//
 		static DWORD CALLBACK threadProc(LPVOID param)
 		{
@@ -163,10 +163,10 @@ namespace fgo::audio_graph
 		}
 
 		//
-		// ‚±‚ÌƒNƒ‰ƒX‚ÍƒTƒuƒXƒŒƒbƒh‚Å‚·B
-		// ‚Ü‚¸AƒƒCƒ“ƒXƒŒƒbƒh‚©‚çƒvƒŒƒ[ƒ“ƒg‚ğó‚¯æ‚è‚Ü‚·B
-		// Ÿ‚É‚»‚ÌƒvƒŒƒ[ƒ“ƒg‚Ì’†g(‰¹—Ê)‚ğ‹¤—Lƒƒ‚ƒŠ‚É‘‚«‚İ‚Ü‚·B
-		// ÅŒã‚ÉƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚ÉƒƒbƒZ[ƒW‚ğ‘—M‚µAÄ•`‰æ‚ğ‘£‚µ‚Ü‚·B
+		// ã“ã®ã‚¯ãƒ©ã‚¹ã¯ã‚µãƒ–ã‚¹ãƒ¬ãƒƒãƒ‰ã§ã™ã€‚
+		// ã¾ãšã€ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰ã‹ã‚‰ãƒ—ãƒ¬ã‚¼ãƒ³ãƒˆã‚’å—ã‘å–ã‚Šã¾ã™ã€‚
+		// æ¬¡ã«ãã®ãƒ—ãƒ¬ã‚¼ãƒ³ãƒˆã®ä¸­èº«(éŸ³é‡)ã‚’å…±æœ‰ãƒ¡ãƒ¢ãƒªã«æ›¸ãè¾¼ã¿ã¾ã™ã€‚
+		// æœ€å¾Œã«ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ä¿¡ã—ã€å†æç”»ã‚’ä¿ƒã—ã¾ã™ã€‚
 		//
 		struct SubThread
 		{
@@ -174,7 +174,7 @@ namespace fgo::audio_graph
 			SimpleFileMapping fileMapping;
 
 			//
-			// ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚·B
+			// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã™ã€‚
 			//
 			SubThread()
 				: mutex(0, FALSE, FormatText(Share::AudioGraph::MutexFormat, hive.hostWindow))
@@ -184,7 +184,7 @@ namespace fgo::audio_graph
 			}
 
 			//
-			// ƒfƒXƒgƒ‰ƒNƒ^‚Å‚·B
+			// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã™ã€‚
 			//
 			~SubThread()
 			{
@@ -192,7 +192,7 @@ namespace fgo::audio_graph
 			}
 
 			//
-			// ƒƒbƒZ[ƒWƒ‹[ƒv‚Å‚·B
+			// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—ã§ã™ã€‚
 			//
 			DWORD messageLoop()
 			{
@@ -205,14 +205,14 @@ namespace fgo::audio_graph
 						{
 						case WM_SEND:
 							{
-								// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚É‰¹—Ê‚ğ‘—M‚µ‚Ü‚·B
+								// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã«éŸ³é‡ã‚’é€ä¿¡ã—ã¾ã™ã€‚
 								onSend((Present*)msg.wParam);
 
 								break;
 							}
 						case WM_QUIT:
 							{
-								// ƒXƒŒƒbƒh‚ğI—¹‚µ‚Ü‚·B
+								// ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’çµ‚äº†ã—ã¾ã™ã€‚
 								return 0;
 							}
 						}
@@ -226,17 +226,17 @@ namespace fgo::audio_graph
 			}
 
 			//
-			// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚É‰¹—Ê‚ğ‘—M‚µ‚Ü‚·B
+			// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã«éŸ³é‡ã‚’é€ä¿¡ã—ã¾ã™ã€‚
 			//
 			void onSend(Present* present)
 			{
 //				MY_TRACE_FUNC("");
 
-				// ‰¹—Ê‚ğZo‚µ‚Ü‚·B
+				// éŸ³é‡ã‚’ç®—å‡ºã—ã¾ã™ã€‚
 				present->calc();
 
 				{
-					// Zo‚³‚ê‚½‰¹—Ê‚ğ‹¤—Lƒƒ‚ƒŠ‚É‘‚«‚İ‚Ü‚·B
+					// ç®—å‡ºã•ã‚ŒãŸéŸ³é‡ã‚’å…±æœ‰ãƒ¡ãƒ¢ãƒªã«æ›¸ãè¾¼ã¿ã¾ã™ã€‚
 
 //					Synchronizer sync(mutex);
 					auto shared = (Share::AudioGraph::Volume*)fileMapping.getBuffer();
@@ -244,10 +244,10 @@ namespace fgo::audio_graph
 					*shared = present->volume;
 				}
 
-				// g—pÏ‚İ‚Ìƒƒ‚ƒŠ‚ğŠJ•ú‚µ‚Ü‚·B
+				// ä½¿ç”¨æ¸ˆã¿ã®ãƒ¡ãƒ¢ãƒªã‚’é–‹æ”¾ã—ã¾ã™ã€‚
 				delete present;
 
-				// ƒNƒ‰ƒCƒAƒ“ƒgƒvƒƒZƒX‚ÉÄ•`‰æ‚ğ‘£‚µ‚Ü‚·B
+				// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ—ãƒ­ã‚»ã‚¹ã«å†æç”»ã‚’ä¿ƒã—ã¾ã™ã€‚
 				::SendMessage(hive.clientWindow, Share::AudioGraph::Message::Redraw, 0, 0);
 			}
 		};
