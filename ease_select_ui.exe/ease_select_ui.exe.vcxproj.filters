@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{2dff757e-ecd5-45d0-9a9f-8c417f3140ed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ease_window.hpp" />
+    <ClInclude Include="easing_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="config_checker.hpp" />
+    <ClInclude Include="host_checker.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ease_select_ui.exe.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <c_none Include="main.def">
+      <Filter>framework</Filter>
+    </c_none>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\ease_select_ui.exe.ico">
+      <Filter>resource</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

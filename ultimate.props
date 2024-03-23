@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <my_source>$(UserProfile)\source</my_source>
+    <my_packages>$(my_source)\packages</my_packages>
+    <aviutl_exedit_sdk>$(my_packages)\aviutl_exedit_sdk</aviutl_exedit_sdk>
+    <detours>$(my_packages)\detours.4.0.1</detours>
+    <boost>$(my_packages)\boost.1.84.0</boost>
+    <glad>$(my_packages)\glad.2.0.4</glad>
+    <nanovg>$(my_packages)\nanovg.rgb2hsv</nanovg>
+    <python>$(my_packages)\Python\Python312-32</python>
+    <pybind11>$(python)\lib\site-packages\pybind11</pybind11>
+    <my_pack_dir>$(my_source)\pack\ultimate</my_pack_dir>
+    <my_runtime_dir>$(my_pack_dir)\runtime</my_runtime_dir>
+    <my_host_dir>$(my_pack_dir)\aviutl</my_host_dir>
+    <my_plugin_dir>$(my_host_dir)\plugins</my_plugin_dir>
+    <my_core_dir>$(my_host_dir)\ultimate</my_core_dir>
+    <my_module_dir>$(my_core_dir)\module</my_module_dir>
+    <my_config_dir>$(my_core_dir)\config</my_config_dir>
+    <my_assets_dir>$(my_core_dir)\assets</my_assets_dir>
+    <my_debug_dir>$(my_source)\test</my_debug_dir>
+    <my_debug_host_dir>$(my_debug_dir)\aviutl</my_debug_host_dir>
+    <my_debug_host_exe>$(my_debug_host_dir)\aviutl.exe</my_debug_host_exe>
+    <my_debug_core_dir>$(my_debug_host_dir)\ultimate</my_debug_core_dir>
+    <my_debug_module_dir>$(my_debug_core_dir)\module</my_debug_module_dir>
+    <my_debug_config_dir>$(my_debug_core_dir)\config</my_debug_config_dir>
+    <my_debug_assets_dir>$(my_debug_core_dir)\assets</my_debug_assets_dir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(SolutionDir)_bin\</OutDir>
+    <IntDir>$(SolutionDir)_obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(my_packages);$(aviutl_exedit_sdk);$(detours);$(boost)\include;$(glad);$(nanovg)\include;$(python)\include;$(pybind11)\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>md "$(my_module_dir)" &gt; NUL 2&gt;&amp;1
+md "$(my_debug_module_dir)" &gt; NUL 2&gt;&amp;1
+copy /Y "$(TargetPath)" "$(my_module_dir)\$(TargetName)"
+copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
+</Command>
+    </PostBuildEvent>
+    <Link />
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir);$(aviutl_exedit_sdk);$(detours);$(boost)\lib\x86;$(glad);$(nanovg)\lib;$(python)\libs</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>main.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="my_source">
+      <Value>$(my_source)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_packages">
+      <Value>$(my_packages)</Value>
+    </BuildMacro>
+    <BuildMacro Include="aviutl_exedit_sdk">
+      <Value>$(aviutl_exedit_sdk)</Value>
+    </BuildMacro>
+    <BuildMacro Include="detours">
+      <Value>$(detours)</Value>
+    </BuildMacro>
+    <BuildMacro Include="boost">
+      <Value>$(boost)</Value>
+    </BuildMacro>
+    <BuildMacro Include="glad">
+      <Value>$(glad)</Value>
+    </BuildMacro>
+    <BuildMacro Include="nanovg">
+      <Value>$(nanovg)</Value>
+    </BuildMacro>
+    <BuildMacro Include="python">
+      <Value>$(python)</Value>
+    </BuildMacro>
+    <BuildMacro Include="pybind11">
+      <Value>$(pybind11)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_pack_dir">
+      <Value>$(my_pack_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_runtime_dir">
+      <Value>$(my_runtime_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_host_dir">
+      <Value>$(my_host_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_plugin_dir">
+      <Value>$(my_plugin_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_core_dir">
+      <Value>$(my_core_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_module_dir">
+      <Value>$(my_module_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_config_dir">
+      <Value>$(my_config_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_assets_dir">
+      <Value>$(my_assets_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_dir">
+      <Value>$(my_debug_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_host_dir">
+      <Value>$(my_debug_host_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_host_exe">
+      <Value>$(my_debug_host_exe)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_core_dir">
+      <Value>$(my_debug_core_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_module_dir">
+      <Value>$(my_debug_module_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_config_dir">
+      <Value>$(my_debug_config_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_assets_dir">
+      <Value>$(my_debug_assets_dir)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

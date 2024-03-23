@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{4d329be3-7c03-4d30-a949-eb28142ea02e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook">
+      <UniqueIdentifier>{1b8b2a5e-a3b2-4293-a08d-79fbec3a77bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element">
+      <UniqueIdentifier>{d679978c-f832-4fa3-94cc-b99c8ccb3df9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element\sub_process">
+      <UniqueIdentifier>{3fe2baf1-6484-4093-9ec7-3f61c74c81af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element\pane">
+      <UniqueIdentifier>{77e76dec-1209-4850-bcb3-5954324b9c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element\pane\shuttle">
+      <UniqueIdentifier>{f850f9e7-bfc4-4bf9-b9f0-9ffa0d635da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element\pane\shuttle\container">
+      <UniqueIdentifier>{bbe09295-4f3f-484a-80d3-7ee20fcfbb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\program">
+      <UniqueIdentifier>{82fe53e3-4b3e-4559-a799-42a3fe02985e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="Shuttle\aviutl_window.hpp">
+      <Filter>element\pane\shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\exedit_window.hpp">
+      <Filter>element\pane\shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\setting_dialog.hpp">
+      <Filter>element\pane\shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Pane\pane.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\shuttle.hpp">
+      <Filter>element\pane\shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Shuttle\shuttle_manager.hpp">
+      <Filter>element\pane\shuttle</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\container.hpp">
+      <Filter>element\pane\shuttle\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\scroll_container.hpp">
+      <Filter>element\pane\shuttle\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Container\spread_container.hpp">
+      <Filter>element\pane\shuttle\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Pane\tab.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="main_window.hpp" />
+    <ClInclude Include="sub_window.hpp" />
+    <ClInclude Include="dock_site.hpp" />
+    <ClInclude Include="preference_loader.hpp" />
+    <ClInclude Include="preference_saver.hpp" />
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="Pane\root_pane.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="painter.hpp" />
+    <ClInclude Include="sub_process\bouyomisan.hpp">
+      <Filter>element\sub_process</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_process\console.hpp">
+      <Filter>element\sub_process</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_process\psdtoolkit.hpp">
+      <Filter>element\sub_process</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_process\sub_process.hpp">
+      <Filter>element\sub_process</Filter>
+    </ClInclude>
+    <ClInclude Include="preference_io.hpp" />
+    <ClInclude Include="hook\window.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\get_message.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\hook.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\menu.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\aviutl.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\color_palette.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\exedit.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\extoolbar.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\vsthost.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\z_ram_preview.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="app.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Nest.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

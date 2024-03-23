@@ -1,0 +1,118 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 190, 208
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_SYSMENU
+EXSTYLE WS_EX_NOPARENTNOTIFY | WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "テキストを分解する",IDC_SPLIT_TEXT,0,0,144,12
+    LTEXT           "移動モード : ",IDC_SHIFT_MODE_STAT,0,18,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_SHIFT_MODE,72,18,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "移動オフセット : ",IDC_SHIFT_OFFSET_STAT,0,36,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_SHIFT_OFFSET,72,36,72,12,ES_RIGHT | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    LTEXT           "移動範囲 : ",IDC_SHIFT_RANGE_STAT,0,54,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_SHIFT_RANGE,72,54,72,12,ES_RIGHT | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    LTEXT           "分割単位 : ",IDC_EACH_MODE_STAT,0,72,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_EACH_MODE,72,72,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "行端揃え : ",IDC_FIT_MODE_STAT,0,90,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_FIT_MODE,72,90,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "行端揃えの幅 : ",IDC_FIT_WIDTH_STAT,0,108,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_FIT_WIDTH,72,108,72,12,ES_RIGHT | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "元のアイテムを削除する",IDC_ERASE_ORIG_ITEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,0,126,144,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_MAIN_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 183
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 201
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_MAIN_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
