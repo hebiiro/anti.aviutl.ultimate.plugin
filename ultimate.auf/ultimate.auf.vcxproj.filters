@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{db5d2c85-033b-45b6-9f76-034ee2280a9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="my">
+      <UniqueIdentifier>{d3227a9b-82f1-4783-9608-f7a623b869d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="my\aviutl">
+      <UniqueIdentifier>{b4b482a7-bd5c-40ba-9452-d2d785c56b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="my\tools">
+      <UniqueIdentifier>{5ad155e0-d626-482e-a34b-e703d9ae0f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{28e1c815-30ae-44a9-b97b-da6f38d3f851}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="addin_loader.hpp" />
+    <ClInclude Include="plugin.hpp" />
+    <ClInclude Include="initializer.hpp" />
+    <ClInclude Include="plugin_window.hpp" />
+    <ClInclude Include="..\core\addin_manager.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\magi.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\addin.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\module.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="..\my\DesignBase.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\dialog.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\dialog2.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\FileUpdateChecker.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\gdi.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\Gdiplus.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\Label.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\MFC.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\MSXML.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\Profile.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\ShortcutKey.h">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\tools.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\trace.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\trace_to_file.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\window.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\window2.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\Window_interseptor.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\win_utils.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\aviutl_internal.hpp">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\exedit_internal.hpp">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\plugin_window.hpp">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\plugin_window_extension.hpp">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\SliderPanel.h">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\Tools.h">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\aviutl\window_holder_extension.hpp">
+      <Filter>my\aviutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\my\detours.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="..\my\json.hpp">
+      <Filter>my</Filter>
+    </ClInclude>
+    <ClInclude Include="..\core\std_config_io.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+    <None Include="..\core\include.hpp">
+      <Filter>core</Filter>
+    </None>
+  </ItemGroup>
+</Project>

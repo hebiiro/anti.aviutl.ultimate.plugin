@@ -1,0 +1,6 @@
+﻿EXPORTS
+	GetFilterTableList
+	core_init
+	core_exit
+	core_get_magi
+	core_get_addin_manager
