@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8e583504-3780-4129-bcc2-ba590dbd0d0e}</ProjectGuid>
-    <RootNamespace>ultimate_auf</RootNamespace>
+    <ProjectGuid>{4864168d-b254-4632-83f9-93ca7b290000}</ProjectGuid>
+    <RootNamespace>editbox_tweaker_aua</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>ultimate.auf</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -91,11 +90,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EDITBOXTWEAKER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -104,13 +102,6 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -118,11 +109,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITBOXTWEAKER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -133,23 +123,15 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;EDITBOXTWEAKER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -158,13 +140,6 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -172,11 +147,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;EDITBOXTWEAKER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -187,54 +161,13 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\core\addin.hpp" />
-    <ClInclude Include="..\common\core\addin_manager.hpp" />
-    <ClInclude Include="..\common\core\include.hpp" />
-    <ClInclude Include="..\common\core\magi.hpp" />
-    <ClInclude Include="..\common\core\module.hpp" />
-    <ClInclude Include="..\common\core\std_config_io.hpp" />
-    <ClInclude Include="..\common\my\aviutl\aviutl_internal.hpp" />
-    <ClInclude Include="..\common\my\aviutl\exedit_internal.hpp" />
-    <ClInclude Include="..\common\my\aviutl\plugin_window.hpp" />
-    <ClInclude Include="..\common\my\aviutl\plugin_window_extension.hpp" />
-    <ClInclude Include="..\common\my\aviutl\SliderPanel.h" />
-    <ClInclude Include="..\common\my\aviutl\window_holder_extension.hpp" />
-    <ClInclude Include="..\common\my\DesignBase.h" />
-    <ClInclude Include="..\common\my\detours.hpp" />
-    <ClInclude Include="..\common\my\dialog.hpp" />
-    <ClInclude Include="..\common\my\dialog2.hpp" />
-    <ClInclude Include="..\common\my\FileUpdateChecker.h" />
-    <ClInclude Include="..\common\my\gdi.hpp" />
-    <ClInclude Include="..\common\my\Gdiplus.h" />
-    <ClInclude Include="..\common\my\json.hpp" />
-    <ClInclude Include="..\common\my\Label.h" />
-    <ClInclude Include="..\common\my\MFC.h" />
-    <ClInclude Include="..\common\my\MSXML.h" />
-    <ClInclude Include="..\common\my\Profile.h" />
-    <ClInclude Include="..\common\my\ShortcutKey.h" />
-    <ClInclude Include="..\common\my\tools.hpp" />
-    <ClInclude Include="..\common\my\trace.hpp" />
-    <ClInclude Include="..\common\my\trace_to_file.hpp" />
-    <ClInclude Include="..\common\my\window.hpp" />
-    <ClInclude Include="..\common\my\window2.hpp" />
-    <ClInclude Include="..\common\my\window_interseptor.hpp" />
-    <ClInclude Include="..\common\my\win_utils.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="hive.hpp" />
-    <ClInclude Include="initializer.hpp" />
-    <ClInclude Include="addin_loader.hpp" />
+    <ClInclude Include="hook.hpp" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="plugin_window.hpp" />
-    <ClInclude Include="plugin.hpp" />
+    <ClInclude Include="addin.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -247,11 +180,6 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ultimate.aul\ultimate.aul.vcxproj">
-      <Project>{fedf86e4-e3f5-43ac-9210-402db95b4d86}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
