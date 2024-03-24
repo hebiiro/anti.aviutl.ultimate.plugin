@@ -17,34 +17,29 @@ namespace apn
 			// アドインを登録します。
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"dark", L"ダークモード化", std::initializer_list<std::wstring>({ L"DarkenWindow.aul" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"nest", L"ワークスペース化", std::initializer_list<std::wstring>({ L"SplitWindow.aul" })));
-#if 0
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"filer", L"ファイラ", std::initializer_list<std::wstring>({ L"ObjectExplorer.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"レベルメーター", std::initializer_list<std::wstring>({ L"LevelMeter.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", std::initializer_list<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
 
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_copy", L"フィルタコピー", std::initializer_list<std::wstring>({ L"CopyFilter.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_drag", L"フィルタドラッグ", std::initializer_list<std::wstring>({ L"DragFilter.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"color_code", L"カラーコード追加", std::initializer_list<std::wstring>({ L"AddColorCode.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"last_frame", L"最終フレーム自動設定", std::initializer_list<std::wstring>({ L"AdjustLastFrame.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"encode_guard", L"エンコードガード", std::initializer_list<std::wstring>({ L"ConfigChecker.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"", L"", std::initializer_list<std::wstring>({ L".auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"", L"", std::initializer_list<std::wstring>({ L".auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"", L"", std::initializer_list<std::wstring>({ L".auf" })));
-
-| [[SingleOut]] | 画像のエクスポート | 現在のフレームまたは選択アイテムを画像としてエクスポートします。 |
-| [[TextSplit]] | テキスト分解 | テキストオブジェクトを文字毎に別々のオブジェクトに分解します。 |
-| [[ItemAlign]] | アイテム整列 | タイムラインのアイテムを整列します。 |
-| [[SceneSelect]] | シーン選択 | シーンをボタンで選択できるようにします。 |
-| [[EasingSelect]] | イージング選択 | イージングをGUIで選択できるようにします。 |
-| [[FontPreview]] | フォントプレビュー | フォントのプレビューを確認しながら選択できるようにします。 |
-| [[FontSelect]] | フォント選択 | カスタムメニューからフォントを選択できるようにします。 |
-|---|---|---|
-| [[Namecage]] | アイテム名常時表示 | アイテム名がタイムラインから出ないようにします。 |
-| [[EditBoxTweaker]] | エディットボックス微調整 | エディットボックスの挙動を微調整します。 |
-| [[ExEditTweaker]] | 拡張編集微調整 | 拡張編集の挙動を微調整します。 |
-| [[DialogPosition]] | ダイアログ位置調整 | ダイアログがモニター外に表示されないように調整します。 |
-| [[DialogSize]] | ダイアログサイズ調整 | DPIに合わせてダイアログのサイズを調整します。 |
-#endif
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"image_export", L"画像エクスポート", std::initializer_list<std::wstring>({ L"SaveImage.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"text_split", L"テキスト分解", std::initializer_list<std::wstring>({ L"SplitText.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"item_align", L"アイテム整列", std::initializer_list<std::wstring>({ L"BuildStairs.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"font_preview", L"フォントプレビュー", std::initializer_list<std::wstring>({ L"SelectFavoriteFont.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"font_select", L"フォント選択", std::initializer_list<std::wstring>({ L"SelectFavoriteFont.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"scene_select", L"シーン選択", std::initializer_list<std::wstring>({ L"SelectScene.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"ease_select", L"イージング選択", std::initializer_list<std::wstring>({ L"SelectEasing.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"zoom_select", L"ズーム選択", std::initializer_list<std::wstring>({ L"SetZoom.auf" })));
+
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"namecage", L"アイテム名常時表示", std::initializer_list<std::wstring>({ L"item_wave.aua", L"NoScrollText.auf", L"ShowWaveform.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"editbox_tweaker", L"エディットボックス微調整", std::initializer_list<std::wstring>({ L"OptimizeEditBox.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"exedit_tweaker", L"拡張編集微調整", std::initializer_list<std::wstring>({ L"ExEditTweaker.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dialog_position", L"ダイアログ位置調整", std::initializer_list<std::wstring>({ L"AdjustDialogPosition.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dialog_size", L"ダイアログサイズ調整", std::initializer_list<std::wstring>({ L"BigDialog.aul" })));
 
 			return __super::init(hive.instance);
 		}
