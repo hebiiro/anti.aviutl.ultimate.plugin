@@ -20,7 +20,7 @@ namespace apn
 			std::wstring name = L"";
 			int height = 0;
 			int pitch = 0;
-			HFONT handle = 0;
+			std::shared_ptr<std::remove_pointer<HFONT>::type> handle;
 		} font;
 
 		int message_box(const std::wstring& text) {

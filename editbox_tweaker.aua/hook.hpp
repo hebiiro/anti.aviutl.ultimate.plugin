@@ -10,9 +10,9 @@ namespace apn::editbox_tweaker
 		//
 		// 初期化処理です。
 		// 拡張編集の関数をフックします。
-		// 拡張編集のコンスト値を書き換えます。
+		// 拡張編集の定数を書き換えます。
 		//
-		bool init()
+		BOOL init()
 		{
 			MY_TRACE_FUNC("");
 
@@ -49,14 +49,11 @@ namespace apn::editbox_tweaker
 		//
 		// 後始末処理です。
 		//
-		bool exit()
+		BOOL exit()
 		{
 			MY_TRACE_FUNC("");
 
-//			if (hive.font.handle)
-//				::DeleteObject(hive.font.handle), hive.font.handle = 0;
-
-			return true;
+			return TRUE;
 		}
 
 		//
@@ -109,7 +106,7 @@ namespace apn::editbox_tweaker
 					{
 						MY_TRACE("WM_SETFONT, {:#010x}, {:#010x}\n", wParam, lParam);
 
-						wParam = reinterpret_cast<WPARAM>(hive.font.handle);
+						wParam = reinterpret_cast<WPARAM>(hive.font.handle.get());
 
 						[[fallthrough]]; // breakせずにこのまま処理を続けます。
 					}

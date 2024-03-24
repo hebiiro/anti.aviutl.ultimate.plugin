@@ -12,7 +12,19 @@ namespace apn::editbox_tweaker
 		//
 		BOOL init()
 		{
-			return __super::init(hive.instance);
+			if (!__super::init(hive.instance)) return FALSE;
+
+			if (!hive.font.name.empty())
+			{
+				// HFONTを作成します。
+				// 複数行エディットボックスのWM_SETFONTでこのハンドルが渡されます。
+				hive.font.handle = decltype(hive.font.handle)(
+					::CreateFontW(hive.font.height, 0,
+						0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
+						0, 0, 0, hive.font.pitch, hive.font.name.c_str()), &::DeleteObject);
+			}
+
+			return TRUE;
 		}
 
 		//
@@ -37,15 +49,6 @@ namespace apn::editbox_tweaker
 			get_string(root.get_child("font.name"), hive.font.name);
 			get_int(root.get_child("font.height"), hive.font.height);
 			get_int(root.get_child("font.pitch"), hive.font.pitch);
-
-			if (!hive.font.name.empty())
-			{
-				// HFONTを作成します。
-				// 複数行エディットボックスのWM_SETFONTでこのハンドルが渡されます。
-				hive.font.handle = ::CreateFontW(hive.font.height, 0,
-					0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
-					0, 0, 0, hive.font.pitch, hive.font.name.c_str());
-			}
 
 			return TRUE;
 		}
