@@ -1,0 +1,46 @@
+﻿#pragma once
+
+namespace apn::exedit_tweaker
+{
+	//
+	// このクラスは拡張編集を微調整します。
+	//
+	inline struct ExEditTweaker : Addin
+	{
+		//
+		// この仮想関数は、このアドインの識別名が必要なときに呼ばれます。
+		//
+		virtual LPCWSTR get_addin_name() override
+		{
+			return hive.c_name;
+		}
+
+		//
+		// この仮想関数は、このアドインの表示名が必要なときに呼ばれます。
+		//
+		virtual LPCWSTR get_addin_display_name() override
+		{
+			return hive.c_display_name;
+		}
+
+		//
+		// この仮想関数は、初期化のタイミングで呼ばれます。
+		//
+		virtual BOOL on_init() override
+		{
+			if (!config_io.init()) return FALSE;
+			if (!hook_manager.init()) return FALSE;
+			return TRUE;
+		}
+
+		//
+		// この仮想関数は、後始末のタイミングで呼ばれます。
+		//
+		virtual BOOL on_exit() override
+		{
+			config_io.exit();
+			hook_manager.exit();
+			return TRUE;
+		}
+	} addin;
+}

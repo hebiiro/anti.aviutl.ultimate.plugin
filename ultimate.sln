@@ -23,6 +23,56 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ultimate.auf", "ultimate.au
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ultimate.aul", "ultimate.aul\ultimate.aul.vcxproj", "{FEDF86E4-E3F5-43AC-9210-402DB95B4D86}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exedit_tweaker.aua", "exedit_tweaker.aua\exedit_tweaker.aua.vcxproj", "{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editbox_tweaker.aua", "editbox_tweaker.aua\editbox_tweaker.aua.vcxproj", "{4864168D-B254-4632-83F9-93CA7B290000}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{BE989537-3C2C-4203-B191-68FAB3DCA4BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{9759D4C9-AC69-47A6-B960-F56698BF33A0}"
+	ProjectSection(SolutionItems) = preProject
+		common\core\addin.hpp = common\core\addin.hpp
+		common\core\addin_manager.hpp = common\core\addin_manager.hpp
+		common\core\include.hpp = common\core\include.hpp
+		common\core\magi.hpp = common\core\magi.hpp
+		common\core\module.hpp = common\core\module.hpp
+		common\core\std_config_io.hpp = common\core\std_config_io.hpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "my", "my", "{00F74984-FDAF-436E-AD13-CF1C80ADEFD5}"
+	ProjectSection(SolutionItems) = preProject
+		common\my\DesignBase.h = common\my\DesignBase.h
+		common\my\detours.hpp = common\my\detours.hpp
+		common\my\dialog.hpp = common\my\dialog.hpp
+		common\my\dialog2.hpp = common\my\dialog2.hpp
+		common\my\FileUpdateChecker.h = common\my\FileUpdateChecker.h
+		common\my\gdi.hpp = common\my\gdi.hpp
+		common\my\Gdiplus.h = common\my\Gdiplus.h
+		common\my\json.hpp = common\my\json.hpp
+		common\my\Label.h = common\my\Label.h
+		common\my\MFC.h = common\my\MFC.h
+		common\my\MSXML.h = common\my\MSXML.h
+		common\my\Profile.h = common\my\Profile.h
+		common\my\ShortcutKey.h = common\my\ShortcutKey.h
+		common\my\tools.hpp = common\my\tools.hpp
+		common\my\trace.hpp = common\my\trace.hpp
+		common\my\trace_to_file.hpp = common\my\trace_to_file.hpp
+		common\my\window.hpp = common\my\window.hpp
+		common\my\window2.hpp = common\my\window2.hpp
+		common\my\window_interseptor.hpp = common\my\window_interseptor.hpp
+		common\my\win_utils.hpp = common\my\win_utils.hpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aviutl", "aviutl", "{A4CD8F73-BC82-4B97-8E94-92FF409C5D96}"
+	ProjectSection(SolutionItems) = preProject
+		common\my\aviutl\aviutl_internal.hpp = common\my\aviutl\aviutl_internal.hpp
+		common\my\aviutl\exedit_internal.hpp = common\my\aviutl\exedit_internal.hpp
+		common\my\aviutl\plugin_window.hpp = common\my\aviutl\plugin_window.hpp
+		common\my\aviutl\plugin_window_extension.hpp = common\my\aviutl\plugin_window_extension.hpp
+		common\my\aviutl\SliderPanel.h = common\my\aviutl\SliderPanel.h
+		common\my\aviutl\window_holder_extension.hpp = common\my\aviutl\window_holder_extension.hpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -55,12 +105,32 @@ Global
 		{FEDF86E4-E3F5-43AC-9210-402DB95B4D86}.Release|x64.Build.0 = Release|x64
 		{FEDF86E4-E3F5-43AC-9210-402DB95B4D86}.Release|x86.ActiveCfg = Release|Win32
 		{FEDF86E4-E3F5-43AC-9210-402DB95B4D86}.Release|x86.Build.0 = Release|Win32
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Debug|x64.ActiveCfg = Debug|x64
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Debug|x64.Build.0 = Debug|x64
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Debug|x86.ActiveCfg = Debug|Win32
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Debug|x86.Build.0 = Debug|Win32
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Release|x64.ActiveCfg = Release|x64
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Release|x64.Build.0 = Release|x64
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Release|x86.ActiveCfg = Release|Win32
+		{D899AA9C-DFE3-4563-AAC1-A31A0760DC7C}.Release|x86.Build.0 = Release|Win32
+		{4864168D-B254-4632-83F9-93CA7B290000}.Debug|x64.ActiveCfg = Debug|x64
+		{4864168D-B254-4632-83F9-93CA7B290000}.Debug|x64.Build.0 = Debug|x64
+		{4864168D-B254-4632-83F9-93CA7B290000}.Debug|x86.ActiveCfg = Debug|Win32
+		{4864168D-B254-4632-83F9-93CA7B290000}.Debug|x86.Build.0 = Debug|Win32
+		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x64.ActiveCfg = Release|x64
+		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x64.Build.0 = Release|x64
+		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x86.ActiveCfg = Release|Win32
+		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0BBEBC9E-687F-444A-9B8A-2FF6B83C740B} = {3BA88203-63EF-4334-AF22-39C789AA8406}
+		{0BBEBC9E-687F-444A-9B8A-2FF6B83C740B} = {BE989537-3C2C-4203-B191-68FAB3DCA4BA}
+		{BE989537-3C2C-4203-B191-68FAB3DCA4BA} = {3BA88203-63EF-4334-AF22-39C789AA8406}
+		{9759D4C9-AC69-47A6-B960-F56698BF33A0} = {BE989537-3C2C-4203-B191-68FAB3DCA4BA}
+		{00F74984-FDAF-436E-AD13-CF1C80ADEFD5} = {BE989537-3C2C-4203-B191-68FAB3DCA4BA}
+		{A4CD8F73-BC82-4B97-8E94-92FF409C5D96} = {00F74984-FDAF-436E-AD13-CF1C80ADEFD5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {483B1548-7CEB-4168-9525-A4CC4E5C6250}
