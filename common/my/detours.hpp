@@ -24,7 +24,7 @@ namespace my::hook
 	template <typename T, typename A>
 	void attach_call(T& hooker, A address)
 	{
-		hooker.orig_proc = set_call(address, hooker.hook_proc);
+		hooker.orig_proc = tools::set_call(address, hooker.hook_proc);
 	}
 
 	template <typename T, typename A>
