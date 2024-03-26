@@ -2,6 +2,8 @@
 
 namespace apn::editbox_tweaker
 {
+	using namespace my::json;
+
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
@@ -40,15 +42,13 @@ namespace apn::editbox_tweaker
 		//
 		virtual BOOL on_load(ptree& root) override
 		{
-			using namespace my::json;
-
-			get_bool(root.get_child("unicode_input"), hive.unicode_input);
-			get_bool(root.get_child("ctrl_a"), hive.ctrl_a);
-			get_bool(root.get_child("zoomable"), hive.zoomable);
-			get_int(root.get_child("delta"), hive.delta);
-			get_string(root.get_child("font.name"), hive.font.name);
-			get_int(root.get_child("font.height"), hive.font.height);
-			get_int(root.get_child("font.pitch"), hive.font.pitch);
+			get_bool(root, "unicode_input", hive.unicode_input);
+			get_bool(root, "ctrl_a", hive.ctrl_a);
+			get_bool(root, "zoomable", hive.zoomable);
+			get_int(root, "delta", hive.delta);
+			get_string(root, "font.name", hive.font.name);
+			get_int(root, "font.height", hive.font.height);
+			get_int(root, "font.pitch", hive.font.pitch);
 
 			return TRUE;
 		}
@@ -58,26 +58,17 @@ namespace apn::editbox_tweaker
 		//
 		virtual BOOL on_save(std::ofstream& ofs) override
 		{
-			using namespace my::json;
+			ptree root;
 
-			size_t indent = 0;
+			set_bool(root, "unicode_input", hive.unicode_input);
+			set_bool(root, "ctrl_a", hive.ctrl_a);
+			set_bool(root, "zoomable", hive.zoomable);
+			set_int(root, "delta", hive.delta);
+			set_string(root, "font.name", hive.font.name);
+			set_int(root, "font.height", hive.font.height);
+			set_int(root, "font.pitch", hive.font.pitch);
 
-			ofs << with_eol(indent++, R"({)"s);
-			{
-				ofs << with_eol(indent, std::format(R"("unicode_input": {},)", from_bool(hive.unicode_input)));
-				ofs << with_eol(indent, std::format(R"("ctrl_a": {},)", from_bool(hive.ctrl_a)));
-				ofs << with_eol(indent, std::format(R"("zoomable": {},)", from_bool(hive.zoomable)));
-				ofs << with_eol(indent, std::format(R"("delta": {},)", hive.delta));
-
-				ofs << with_eol(indent++, R"("font": {)"s);
-				{
-					ofs << with_eol(indent, std::format(R"("name": {},)", from_string(hive.font.name)));
-					ofs << with_eol(indent, std::format(R"("height": {},)", hive.font.height));
-					ofs << with_eol(indent, std::format(R"("pitch": {})", hive.font.pitch));
-				}
-				ofs << with_eol(--indent, R"(})"s);
-			}
-			ofs << with_eol(--indent, R"(})"s);
+			write_json(ofs, root);
 
 			return TRUE;
 		}

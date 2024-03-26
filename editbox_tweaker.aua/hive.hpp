@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn
+namespace apn::editbox_tweaker
 {
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。

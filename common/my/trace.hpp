@@ -15,7 +15,7 @@
 #define MY_TRACE_STR(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
 #define MY_TRACE_INT(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
 #define MY_TRACE_INT64(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
-#define MY_TRACE_HEX(xxx)			MY_TRACE(#xxx _T(" = {:#010x}\n"), xxx)
+#define MY_TRACE_HEX(xxx)			MY_TRACE(#xxx _T(" = {:#010x}\n"), (DWORD)(xxx))
 #define MY_TRACE_REAL(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
 #define MY_TRACE_RECT(xxx)			MY_TRACE(#xxx _T(" = {}, {}, {}, {}\n"), (xxx).left, (xxx).top, (xxx).right, (xxx).bottom)
 #define MY_TRACE_POINT(xxx)			MY_TRACE(#xxx _T(" = {}, {}\n"), (xxx).x, (xxx).y)

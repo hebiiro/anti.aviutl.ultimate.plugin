@@ -33,9 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{9759D4C9-A
 	ProjectSection(SolutionItems) = preProject
 		common\core\addin.hpp = common\core\addin.hpp
 		common\core\addin_manager.hpp = common\core\addin_manager.hpp
+		common\core\filter_holder.hpp = common\core\filter_holder.hpp
+		common\core\gdi_bitmap.hpp = common\core\gdi_bitmap.hpp
 		common\core\include.hpp = common\core\include.hpp
+		common\core\layered_window_info.hpp = common\core\layered_window_info.hpp
 		common\core\magi.hpp = common\core\magi.hpp
 		common\core\module.hpp = common\core\module.hpp
+		common\core\object_holder.hpp = common\core\object_holder.hpp
 		common\core\std_config_io.hpp = common\core\std_config_io.hpp
 	EndProjectSection
 EndProject
@@ -45,8 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "my", "my", "{00F74984-FDAF-
 		common\my\detours.hpp = common\my\detours.hpp
 		common\my\dialog.hpp = common\my\dialog.hpp
 		common\my\dialog2.hpp = common\my\dialog2.hpp
-		common\my\FileUpdateChecker.h = common\my\FileUpdateChecker.h
 		common\my\gdi.hpp = common\my\gdi.hpp
+		common\my\file_update_checker.hpp = common\my\file_update_checker.hpp
 		common\my\Gdiplus.h = common\my\Gdiplus.h
 		common\my\json.hpp = common\my\json.hpp
 		common\my\Label.h = common\my\Label.h
@@ -72,6 +76,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aviutl", "aviutl", "{A4CD8F
 		common\my\aviutl\SliderPanel.h = common\my\aviutl\SliderPanel.h
 		common\my\aviutl\window_holder_extension.hpp = common\my\aviutl\window_holder_extension.hpp
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filter_copy.aua", "filter_copy.aua\filter_copy.aua.vcxproj", "{2B224387-D48D-4033-AC5A-799292E625B4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filter_drag.aua", "filter_drag.aua\filter_drag.aua.vcxproj", "{FA6CC467-C0C6-4E99-A543-1CB40C83671D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +129,22 @@ Global
 		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x64.Build.0 = Release|x64
 		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x86.ActiveCfg = Release|Win32
 		{4864168D-B254-4632-83F9-93CA7B290000}.Release|x86.Build.0 = Release|Win32
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Debug|x64.ActiveCfg = Debug|x64
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Debug|x64.Build.0 = Debug|x64
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Debug|x86.ActiveCfg = Debug|Win32
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Debug|x86.Build.0 = Debug|Win32
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Release|x64.ActiveCfg = Release|x64
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Release|x64.Build.0 = Release|x64
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Release|x86.ActiveCfg = Release|Win32
+		{2B224387-D48D-4033-AC5A-799292E625B4}.Release|x86.Build.0 = Release|Win32
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Debug|x64.ActiveCfg = Debug|x64
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Debug|x64.Build.0 = Debug|x64
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Debug|x86.ActiveCfg = Debug|Win32
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Debug|x86.Build.0 = Debug|Win32
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Release|x64.ActiveCfg = Release|x64
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Release|x64.Build.0 = Release|x64
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Release|x86.ActiveCfg = Release|Win32
+		{FA6CC467-C0C6-4E99-A543-1CB40C83671D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

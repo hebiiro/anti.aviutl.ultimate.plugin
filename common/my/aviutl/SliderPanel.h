@@ -11,15 +11,15 @@ namespace my::AviUtl
 		static constexpr int SliderMin = 0;
 		static constexpr int SliderMax = 1000000;
 
-		struct Label : Tools::Window
+		struct Label : my::Window
 		{
 		};
 
-		struct Slider : Tools::Window
+		struct Slider : my::Window
 		{
 		};
 
-		struct EditBox : Tools::Window
+		struct EditBox : my::Window
 		{
 		};
 

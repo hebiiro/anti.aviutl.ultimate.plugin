@@ -12,7 +12,7 @@ namespace my::AviUtl
 		//
 		template<typename T>
 		static BOOL create(T& window, HINSTANCE instance, HWND parent, LPCTSTR name,
-			DWORD exStyle = WS_EX_NOPARENTNOTIFY,
+			DWORD ex_style = WS_EX_NOPARENTNOTIFY,
 			DWORD style = WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 			int x = CW_USEDEFAULT,
 			int y = CW_USEDEFAULT,
@@ -32,7 +32,7 @@ namespace my::AviUtl
 			::RegisterClass(&wc);
 
 			return window.create(
-				exStyle,
+				ex_style,
 				class_name,
 				name,
 				style,

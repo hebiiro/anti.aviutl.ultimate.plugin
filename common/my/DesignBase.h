@@ -345,7 +345,7 @@ namespace my
 		nvgStroke(vg);
 	}
 
-	inline void drawText(NVGcontext* vg, LPCSTR text, float x, float y, const DesignBase::Text& design, int fontId)
+	inline void draw_text(NVGcontext* vg, LPCSTR text, float x, float y, const DesignBase::Text& design, int fontId)
 	{
 //		const float offset = DesignBase::offset; // テキストはオフセットを与えると逆にぼやける。
 		const float offset = 0;

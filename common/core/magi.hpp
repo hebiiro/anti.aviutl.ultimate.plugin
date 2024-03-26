@@ -14,17 +14,17 @@ namespace apn
 				static const UINT c_end						= 2000;
 			};
 			struct SettingDialog {
-				static const UINT ID_CREATE_CLONE			= 12020;
-				static const UINT ID_CREATE_SAME_ABOVE		= 12021;
-				static const UINT ID_CREATE_SAME_BELOW		= 12022;
+				static const UINT c_create_clone			= 12020;
+				static const UINT c_create_same_above		= 12021;
+				static const UINT c_create_same_below		= 12022;
 
-				static const UINT ID_CUT_FILTER				= 12023;
-				static const UINT ID_CUT_FILTER_ABOVE		= 12024;
-				static const UINT ID_CUT_FILTER_BELOW		= 12025;
-				static const UINT ID_COPY_FILTER			= 12026;
-				static const UINT ID_COPY_FILTER_ABOVE		= 12027;
-				static const UINT ID_COPY_FILTER_BELOW		= 12028;
-				static const UINT ID_PASTE_FILTER			= 12029;
+				static const UINT c_cut_filter				= 12023;
+				static const UINT c_cut_filter_above		= 12024;
+				static const UINT c_cut_filter_below		= 12025;
+				static const UINT c_copy_filter				= 12026;
+				static const UINT c_copy_filter_above		= 12027;
+				static const UINT c_copy_filter_below		= 12028;
+				static const UINT c_paste_filter			= 12029;
 			};
 		};
 

@@ -100,12 +100,7 @@ using namespace Gdiplus;
 #include "common/core/addin.hpp"
 #include "common/core/addin_manager.hpp"
 #include "common/core/std_config_io.hpp"
-/*
-#include "Tools/edit_predicates.h"
-#include "Tools/Tools.h"
-#include "Tools/Hook.h"
-#include "Tools/ObjectHolder.h"
-#include "Tools/FilterHolder.h"
-#include "Tools/LayeredWindowInfo.h"
-#include "Tools/GdiBitmap.h"
-*/
+#include "common/core/object_holder.hpp"
+#include "common/core/filter_holder.hpp"
+#include "common/core/layered_window_info.hpp"
+#include "common/core/gdi_bitmap.hpp"

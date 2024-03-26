@@ -124,12 +124,12 @@ namespace apn::editbox_tweaker
 			//
 			// 拡張編集内の複数行エディットボックスを作成する関数(::CreateWindowExW())と置き換えられます。
 			//
-			inline static HWND WINAPI hook_proc(DWORD exStyle, LPCWSTR className, LPCWSTR windowName, DWORD style,
+			inline static HWND WINAPI hook_proc(DWORD ex_style, LPCWSTR class_name, LPCWSTR window_name, DWORD style,
 				int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 			{
-				MY_TRACE_FUNC("%ws, {}, {}", className, w, h);
+				MY_TRACE_FUNC("%ws, {}, {}", class_name, w, h);
 
-				HWND hwnd = orig_proc(exStyle, className, windowName,
+				HWND hwnd = orig_proc(ex_style, class_name, window_name,
 					style, x, y, w, h + hive.delta, parent, menu, instance, param);
 
 				if (hive.zoomable)

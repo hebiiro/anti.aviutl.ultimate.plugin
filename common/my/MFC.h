@@ -20,7 +20,7 @@ public:
 		::EndBufferedPaint(m_pb, TRUE);
 	}
 
-	BOOL isValid() const
+	BOOL is_valid() const
 	{
 		return !!m_pb;
 	}
@@ -77,7 +77,7 @@ public:
 			SelectObject(m_oldBitmap);
 	}
 
-	BOOL isValid()
+	BOOL is_valid()
 	{
 		return !!m_bitmap.GetSafeHandle();
 	}
@@ -150,11 +150,11 @@ public:
 
 	~CDIBDC()
 	{
-		if (isValid())
+		if (is_valid())
 			SelectObject(m_oldBitmap);
 	}
 
-	BOOL isValid()
+	BOOL is_valid()
 	{
 		return !!m_bitmap.GetSafeHandle();
 	}

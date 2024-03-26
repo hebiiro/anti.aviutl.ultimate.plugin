@@ -62,26 +62,31 @@ namespace apn
 			MY_TRACE_FUNC("");
 
 			// ファイル内のアドイン情報を読み込みます。
-			for (auto& addin : root.get_child("addins"))
+			if (auto addins = root.get_child_optional("addins"))
 			{
-				// アドインの名前を取得します。
-				auto name = my::cp_to_wide(addin.second.get<std::string>("name", ""), CP_UTF8);
-				MY_TRACE_STR(name);
+				for (const auto& pair : addins.value())
+				{
+					const auto& node = pair.second;
 
-				// アドインの名前から登録されているアドインを取得します。
-				auto it = std::find_if(hive.addins.begin(), hive.addins.end(),
-					[&name](const auto& addin) { return addin->name == name; });
-				if (it == hive.addins.end()) continue;
+					// アドインの名前を取得します。
+					auto name = my::cp_to_wide(node.get<std::string>("name", ""), CP_UTF8);
+					MY_TRACE_STR(name);
 
-				// アドインの状態を取得し、登録されているアドインに格納します。
-				auto active = addin.second.get<bool>("active", false);
-				MY_TRACE_INT(active);
-				(*it)->active = active;
+					// アドインの名前から登録されているアドインを取得します。
+					auto it = std::find_if(hive.addins.begin(), hive.addins.end(),
+						[&name](const auto& addin) { return addin->name == name; });
+					if (it == hive.addins.end()) continue;
 
-				// アドインの引数を取得し、登録されているアドインに格納します。
-				auto args = my::cp_to_wide(addin.second.get<std::string>("args", ""), CP_UTF8);
-				MY_TRACE_STR(args);
-				(*it)->args = args;
+					// アドインの状態を取得し、登録されているアドインに格納します。
+					auto active = node.get<bool>("active", false);
+					MY_TRACE_INT(active);
+					(*it)->active = active;
+
+					// アドインの引数を取得し、登録されているアドインに格納します。
+					auto args = my::cp_to_wide(node.get<std::string>("args", ""), CP_UTF8);
+					MY_TRACE_STR(args);
+					(*it)->args = args;
+				}
 			}
 
 			return TRUE;

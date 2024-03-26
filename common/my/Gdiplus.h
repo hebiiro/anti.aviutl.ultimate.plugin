@@ -263,10 +263,10 @@ inline SizeF calcTextSize(Graphics& g, LPCWSTR text, Gdiplus::Font* font)
 
 inline void drawRoundRect(Graphics& g, Pen* pen, Brush* brush, const RectF& _rect, REAL diameter)
 {
-	REAL penWidth = get_width(pen);
+	REAL pen_width = get_width(pen);
 
 	RectF rect(_rect);
-	rect.Inflate(-penWidth / 2.0f, -penWidth / 2.0f);
+	rect.Inflate(-pen_width / 2.0f, -pen_width / 2.0f);
 
 	REAL left = rect.X;
 	REAL right = rect.X + rect.Width;
@@ -288,10 +288,10 @@ inline void drawRoundRect(Graphics& g, Pen* pen, Brush* brush, const RectF& _rec
 
 inline void drawRoundRect(Graphics& g, Pen* pen, Brush* brush, const RectF& _rect)
 {
-	REAL penWidth = get_width(pen);
+	REAL pen_width = get_width(pen);
 
 	RectF rect(_rect);
-	rect.Inflate(-penWidth / 2.0f, -penWidth / 2.0f);
+	rect.Inflate(-pen_width / 2.0f, -pen_width / 2.0f);
 
 	REAL left = rect.X;
 	REAL right = rect.X + rect.Width;

@@ -92,7 +92,7 @@ namespace my
 				void (CDECL* hide_controls)() = 0;
 				BOOL (CDECL* show_controls)(int32_t object_index) = 0;
 				void (CDECL* erase_filter)(int32_t object_index, int32_t filter_index) = 0;
-				void (CDECL* swap_filter)(int32_t object_index, int32_t filter_index, int32_t relativeIndex) = 0;
+				void (CDECL* swap_filter)(int32_t object_index, int32_t filter_index, int32_t relative_index) = 0;
 				void (CDECL* unknown1)(int32_t object_index, int32_t filter_index) = 0;
 				LPCSTR (CDECL* get_alias_file_name)(int32_t alias_id) = 0;
 				int32_t (CDECL* add_alias)(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index) = 0;
@@ -315,7 +315,7 @@ namespace my
 		void draw_item(HDC dc, int32_t object_index) { address.function.draw_item(dc, object_index); }
 		void redraw_setting_dialog(int32_t object_index) { address.function.redraw_setting_dialog(object_index); }
 		void erase_filter(int32_t object_index, int32_t filter_index) { address.function.erase_filter(object_index, filter_index); }
-		void swap_filter(int32_t object_index, int32_t filter_index, int32_t relativeIndex) { address.function.swap_filter(object_index, filter_index, relativeIndex); }
+		void swap_filter(int32_t object_index, int32_t filter_index, int32_t relative_index) { address.function.swap_filter(object_index, filter_index, relative_index); }
 		void unknown1(int32_t object_index, int32_t filter_index) { address.function.unknown1(object_index, filter_index); }
 		LPCSTR get_alias_file_name(int32_t alias_id) { return address.function.get_alias_file_name(alias_id); }
 		int32_t add_alias(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index) { return address.function.add_alias(file_name, flag1, flag2, object_index); }
@@ -402,7 +402,7 @@ namespace my
 		// 戻り値
 		// BOOLです。
 		//
-		static BOOL Is_moveable(ExEdit::Object* object, int32_t filter_index)
+		static BOOL is_moveable(ExEdit::Object* object, int32_t filter_index)
 		{
 			int32_t id = object->filter_param[filter_index].id;
 			switch (id)
@@ -449,7 +449,7 @@ namespace my
 				if (object->filter_param[i].id < 0)
 					return i;
 
-				if (i != 0 && !Is_moveable(object, i))
+				if (i != 0 && !is_moveable(object, i))
 					return i;
 			}
 
