@@ -7,6 +7,10 @@ namespace apn
 	//
 	inline struct PluginWindow : my::Window
 	{
+		inline static constexpr struct Message {
+			inline static constexpr uint32_t c_update_config_file = WM_APP + 2024;
+		} c_message;
+
 		//
 		// アドインの一覧を表示するためのリストボックスです。
 		//
@@ -34,7 +38,7 @@ namespace apn
 				WS_HSCROLL | WS_VSCROLL |
 				LBS_HASSTRINGS | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_MULTICOLUMN | LBS_SORT,
 				rc.left, rc.top, my::get_width(rc), my::get_height(rc),
-				*this, 0, 0, 0))
+				*this, nullptr, nullptr, nullptr))
 			{
 				hive.message_box(_T("アドイン一覧リストボックスの作成に失敗しました"));
 
@@ -45,7 +49,7 @@ namespace apn
 				// コントロールのフォントを設定します。
 
 				AviUtl::SysInfo si = {};
-				fp->exfunc->get_sys_info(0, &si);
+				fp->exfunc->get_sys_info(nullptr, &si);
 				MY_TRACE_HEX(si.hfont);
 
 				::SendMessageW(listbox, WM_SETFONT, (WPARAM)si.hfont, TRUE);
@@ -92,6 +96,65 @@ namespace apn
 				}
 			}
 
+			{
+				// コンフィグファイルを監視するサブスレッドを作成します。
+				DWORD tid = 0;
+				::CreateThread(nullptr, 0,
+					[](LPVOID param) -> DWORD
+					{
+						auto folder_name = std::filesystem::path(magi.get_config_file_name(L""));
+						MY_TRACE_STR(folder_name);
+						std::vector<BYTE> buffer(1024);
+						DWORD returned = 0;
+						my::handle::unique_ptr<> file(::CreateFile(
+							folder_name.c_str(),
+							FILE_LIST_DIRECTORY,
+							FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+							nullptr,
+							OPEN_EXISTING,
+							FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+							nullptr));
+						MY_TRACE_HEX(file.get());
+						while (::ReadDirectoryChangesW(
+							file.get(),
+							buffer.data(), buffer.size(),
+							TRUE,
+//							FILE_NOTIFY_CHANGE_FILE_NAME |
+//							FILE_NOTIFY_CHANGE_DIR_NAME |
+//							FILE_NOTIFY_CHANGE_SIZE |
+							FILE_NOTIFY_CHANGE_LAST_WRITE,
+							&returned,
+							nullptr,
+							nullptr))
+						{
+							MY_TRACE("コンフィグファイルの変更を検出しました\n");
+
+							if (::IsWindow(plugin_window))
+							{
+								auto fni = (FILE_NOTIFY_INFORMATION*)buffer.data();
+								auto length = fni->FileNameLength / sizeof(WCHAR);
+								auto file_name = new WCHAR[length + 1];
+								memcpy(file_name, fni->FileName, fni->FileNameLength);
+								file_name[length] = L'\0';
+
+								// 同じ通知が2回発生する場合があるので、
+								// ファイルサイズをチェックして回避します。
+								my::handle::unique_ptr<> file(::CreateFileW((folder_name / file_name).c_str(),
+									GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0));
+								auto file_size = ::GetFileSize(file.get(), nullptr);
+								if (file_size)
+									::PostMessage(plugin_window, c_message.c_update_config_file, 0, (LPARAM)file_name);
+								else
+									delete[] file_name;
+							}
+						}
+
+						return 0;
+					},
+					nullptr, 0, &tid);
+				MY_TRACE_INT(tid);
+			}
+
 			return TRUE;
 		}
 
@@ -135,9 +198,18 @@ namespace apn
 					auto rc = my::get_client_rect(*this);
 
 					// リストボックスをリサイズします。
-					::SetWindowPos(listbox, 0,
-						rc.left, rc.top,
-						my::get_width(rc), my::get_height(rc), SWP_NOZORDER);
+					::SetWindowPos(listbox, nullptr,
+						rc.left, rc.top, my::get_width(rc), my::get_height(rc), SWP_NOZORDER);
+
+					break;
+				}
+			case c_message.c_update_config_file:
+				{
+					MY_TRACE_FUNC("c_message.c_update_config_file, {:#010x}, {:#010x}", wParam, lParam);
+
+					auto file_name = (LPCWSTR)lParam;
+					addin_manager.fire_update_config_file(file_name);
+					delete[] file_name;
 
 					break;
 				}

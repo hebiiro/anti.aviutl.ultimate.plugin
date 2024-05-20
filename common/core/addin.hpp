@@ -154,6 +154,11 @@ namespace apn
 		}
 
 		//
+		// コンフィグフォルダ内のファイルが更新されときに呼び出されます。
+		//
+		virtual BOOL on_update_config_file(LPCWSTR file_name) { return TRUE; }
+
+		//
 		// 指定された名前に関連付けられた何らかのアドレスを要求されたときに呼び出されます。
 		//
 		virtual my::addr_t on_get_address(LPCWSTR name)

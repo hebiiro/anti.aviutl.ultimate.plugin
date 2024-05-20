@@ -24,6 +24,11 @@ namespace apn
 		} addins;
 
 		//
+		// TRUEの場合はアドインにコンフィグファイルの通知を送信しません。
+		//
+		BOOL update_config_file_locked = FALSE;
+
+		//
 		// 指定されたアドインをコレクションに追加します。
 		//
 		BOOL add_addin(HINSTANCE instance, Addin* addin)
@@ -142,6 +147,8 @@ namespace apn
 		//
 		BOOL fire_window_exit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
+			update_config_file_locked = TRUE;
+
 			BOOL result = FALSE;
 			for (const auto& pair : addins.map)
 				result |= pair.second.addin->on_window_exit(hwnd, message, wParam, lParam, editp, fp);
@@ -286,6 +293,20 @@ namespace apn
 			BOOL result = FALSE;
 			for (const auto& pair : addins.map)
 				result |= pair.second.addin->on_modify_title(fp, editp, frame, title, max_title);
+			return result;
+		}
+
+		//
+		// アドインにコンフィグフォルダ内のファイルの変更を通知します。
+		// 内部的に使用されます。
+		//
+		BOOL fire_update_config_file(LPCWSTR file_name)
+		{
+			if (update_config_file_locked) return FALSE;
+
+			BOOL result = FALSE;
+			for (const auto& pair : addins.map)
+				result |= pair.second.addin->on_update_config_file(file_name);
 			return result;
 		}
 
