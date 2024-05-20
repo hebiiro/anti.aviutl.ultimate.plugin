@@ -8,25 +8,6 @@ namespace apn::font_preview
 	inline struct SettingDialog : my::Window
 	{
 		//
-		// コンボボックス内の指定されたアイテムのテキストを返します。
-		//
-		static std::wstring get_text_from_combobox(HWND combobox, int index)
-		{
-			if (index == -1)
-				index = (int)::SendMessageW(combobox, CB_GETCURSEL, 0, 0);
-
-			// テキストの長さを取得します。
-			auto text_length = (int)::SendMessageW(combobox, CB_GETLBTEXTLEN, index, 0);
-			if (text_length <= 0) return L"";
-
-			// テキストを取得します。
-			std::wstring text(text_length, L'\0');
-			::SendMessageW(combobox, CB_GETLBTEXT, index, (LPARAM)text.data());
-
-			return text;
-		}
-
-		//
 		// 初期化処理を行います。
 		//
 		BOOL init()
@@ -173,7 +154,7 @@ namespace apn::font_preview
 
 			auto dc = dis->hDC;
 			auto rc = dis->rcItem;
-			auto font_name = get_text_from_combobox(dis->hwndItem, dis->itemID);
+			auto font_name = my::get_text_from_combobox(dis->hwndItem, dis->itemID);
 
 			MY_TRACE("{}, {}, {:#010x}, {:#010x}\n",
 				font_name, dis->itemID, dis->itemAction, dis->itemState);

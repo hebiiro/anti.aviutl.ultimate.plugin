@@ -139,13 +139,16 @@ namespace apn::color_code
 									auto offset = 0;
 									if (text[0] == _T('#')) offset = 1;
 
+									// テキストを数値部分だけにします。
+									text = text.substr(offset);
+
 									// テキストを数値に変換します。
-									auto color = _tcstoul(&text[offset], 0, 16);
+									auto color = std::stoul(text, 0, 16);
 									MY_TRACE_HEX(color);
 
 									int r, g, b;
 
-									if (_tcslen(&text[offset]) > 3)
+									if (text.length() > 3)
 									{
 										// rrggbbの形式からRGBを取得します。
 										r = (color >> 16) & 0xff;

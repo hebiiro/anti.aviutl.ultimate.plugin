@@ -1039,7 +1039,7 @@ namespace apn::workspace
 			return FALSE;
 		}
 
-		void draw_border(HDC dc, HBRUSH brush)
+		void draw_border(HDC dc)
 		{
 			// シャトルを持っている場合は
 			if (get_tab_count())
@@ -1050,23 +1050,18 @@ namespace apn::workspace
 			case SplitMode::c_vert:
 			case SplitMode::c_horz:
 				{
-					RECT rc;
+					auto rc = RECT {};
 					if (get_border_rect(&rc))
 					{
-						// テーマを使用するなら
-						if (hive.use_theme)
+						if (is_border_locked)
 						{
-							auto part_id = WP_BORDER;
-							auto state_id = CS_INACTIVE;
-
-							// テーマAPIを使用してボーダーを描画します。
-							::DrawThemeBackground(hive.theme.get(), dc, part_id, state_id, &rc, 0);
+							// 無効状態のボーダーを描画します。
+							painter.fill_background(dc, &rc, hive.border_color, WP_SEPARATOR, CS_DISABLED);
 						}
-						// テーマを使用しないなら
 						else
 						{
-							// ブラシで塗り潰します。
-							::FillRect(dc, &rc, brush);
+							// 通常状態のボーダーを描画します。
+							painter.fill_background(dc, &rc, hive.border_color, WP_SEPARATOR, CS_INACTIVE);
 						}
 					}
 
@@ -1074,7 +1069,7 @@ namespace apn::workspace
 					{
 						if (!child) continue;
 
-						child->draw_border(dc, brush);
+						child->draw_border(dc);
 					}
 
 					break;

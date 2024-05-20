@@ -96,10 +96,12 @@ namespace my
 
 		static INT_PTR CALLBACK dlg_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			Dialog* dialog = static_cast<Dialog*>(from_handle(hwnd));
+			auto dialog = static_cast<Dialog*>(from_handle(hwnd));
 			if (!dialog) return FALSE;
 			return dialog->on_dlg_proc(hwnd, message, wParam, lParam);
 		}
+
+		// init
 
 		void init_combobox(UINT id, LPCTSTR text)
 		{
@@ -114,41 +116,12 @@ namespace my
 			init_combobox(id, std::forward<Tail>(tail)...);
 		}
 
-		BOOL set_text(UINT id, const tstring& text)
-		{
-			return ::SetDlgItemText(*this, id, text.c_str());
-		}
-
-		BOOL set_int(UINT id, int value)
-		{
-			return ::SetDlgItemInt(*this, id, value, TRUE);
-		}
-
-		BOOL set_uint(UINT id, UINT value)
-		{
-			return ::SetDlgItemInt(*this, id, value, FALSE);
-		}
-
-		BOOL set_float(UINT id, float value)
-		{
-			return set_text(id, std::format(_T("{}"), value).c_str());
-		}
-
-		void set_check(UINT id, BOOL value)
-		{
-			::SendDlgItemMessage(*this, id, BM_SETCHECK, value ? BST_CHECKED : BST_UNCHECKED, 0);
-		}
-
-		int set_combobox(UINT id, int value)
-		{
-			return (int)::SendDlgItemMessage(*this, id, CB_SETCURSEL, value, 0);
-		}
+		// get
 
 		tstring get_text(UINT id, size_t buffer_length = MAX_PATH)
 		{
-			tstring str;
-			str.resize(buffer_length);
-			size_t size = ::GetDlgItemText(*this, id, &str[0], str.length());
+			tstring str(buffer_length, _T('\0'));
+			auto size = ::GetDlgItemText(*this, id, str.data(), str.length());
 			str.resize(size);
 			return str;
 		}
@@ -173,10 +146,17 @@ namespace my
 			return ::SendDlgItemMessage(*this, id, BM_GETCHECK, 0, 0) == BST_CHECKED;
 		}
 
-		int get_combobox(UINT id)
+		int get_combobox_index(UINT id)
 		{
 			return (int)::SendDlgItemMessage(*this, id, CB_GETCURSEL, 0, 0);
 		}
+
+		tstring get_combobox_string(UINT id)
+		{
+			return my::get_text_from_combobox(::GetDlgItem(*this, id));
+		}
+
+		// get(参照渡し方式)
 
 		void get_text(UINT id, tstring& value, size_t buffer_length = MAX_PATH)
 		{
@@ -208,9 +188,54 @@ namespace my
 		}
 
 		template <typename T>
-		void get_combobox(UINT id, T& value)
+		void get_combobox_index(UINT id, T& value)
 		{
-			value = (T)get_combobox(id);
+			value = (T)get_combobox_index(id);
+		}
+
+		template <typename T>
+		void get_combobox_string(UINT id, T& value)
+		{
+			value = get_combobox_string(id);
+		}
+
+		// set
+
+		BOOL set_text(UINT id, const tstring& text)
+		{
+			return ::SetDlgItemText(*this, id, text.c_str());
+		}
+
+		BOOL set_int(UINT id, int value)
+		{
+			return ::SetDlgItemInt(*this, id, value, TRUE);
+		}
+
+		BOOL set_uint(UINT id, UINT value)
+		{
+			return ::SetDlgItemInt(*this, id, value, FALSE);
+		}
+
+		BOOL set_float(UINT id, float value)
+		{
+			return set_text(id, std::format(_T("{}"), value).c_str());
+		}
+
+		void set_check(UINT id, BOOL value)
+		{
+			::SendDlgItemMessage(*this, id, BM_SETCHECK, value ? BST_CHECKED : BST_UNCHECKED, 0);
+		}
+
+		int set_combobox_index(UINT id, int value)
+		{
+			return (int)::SendDlgItemMessage(*this, id, CB_SETCURSEL, value, 0);
+		}
+
+		void set_combobox_string(UINT id, const tstring& value)
+		{
+			auto index = (int)::SendDlgItemMessage(*this, id, CB_FINDSTRING, -1, (LPARAM)value.c_str());
+
+			::SendDlgItemMessage(*this, id, CB_SETCURSEL, index, 0);
 		}
 
 		//

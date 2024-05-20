@@ -17,7 +17,7 @@ namespace apn::image_export
 			MY_TRACE_FUNC("");
 
 			quality.set_value(hive.quality);
-			set_combobox(IDC_MODE, hive.mode);
+			set_combobox_index(IDC_MODE, hive.mode);
 			set_text(IDC_FILE_NAME, hive.file_name);
 			set_int(IDC_INDEX, hive.index);
 			set_int(IDC_NUMBER_WIDTH, hive.number_width);
@@ -31,7 +31,7 @@ namespace apn::image_export
 			MY_TRACE_FUNC("");
 
 			quality.get_value(hive.quality);
-			get_combobox(IDC_MODE, hive.mode);
+			get_combobox_index(IDC_MODE, hive.mode);
 			get_text(IDC_FILE_NAME, hive.file_name);
 			get_int(IDC_INDEX, hive.index);
 			get_int(IDC_NUMBER_WIDTH, hive.number_width);

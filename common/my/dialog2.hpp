@@ -56,15 +56,15 @@ namespace my
 		struct ComboBox : Prop {
 			UINT id; T& value;
 			ComboBox(Dialog* dialog, UINT id, T& value) : id(id), value(value) {
-				dialog->set_combobox(id, value);
+				dialog->set_combobox_index(id, value);
 			}
 			template <typename... Tail>
 			ComboBox(Dialog* dialog, UINT id, T& value, Tail&&... tail) : id(id), value(value) {
 				dialog->init_combobox(id, std::forward<Tail>(tail)...);
-				dialog->set_combobox(id, value);
+				dialog->set_combobox_index(id, value);
 			}
 			void apply(Dialog* dialog) override {
-				value = dialog->get_combobox(id);
+				value = dialog->get_combobox_index(id);
 			}
 		};
 
@@ -91,12 +91,12 @@ namespace my
 		};
 
 		template <typename T>
-		void set_combobox(UINT id, T& value) {
+		void set_combobox_index(UINT id, T& value) {
 			props.emplace_back(std::make_shared<ComboBox<T>>(this, id, value));
 		};
 
 		template <typename T, typename... Tail>
-		void set_combobox(UINT id, T& value, LPCTSTR text, Tail&&... tail) {
+		void set_combobox_index(UINT id, T& value, LPCTSTR text, Tail&&... tail) {
 			props.emplace_back(std::make_shared<ComboBox<T>>(this, id, value, text, std::forward<Tail>(tail)...));
 		};
 

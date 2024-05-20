@@ -251,7 +251,7 @@ namespace apn::workspace
 			if (shuttle->name == L"拡張色調補正") return c_category.c_primary;
 			if (shuttle->name == L"縁塗りつぶし") return c_category.c_primary;
 			if (shuttle->name == L"自動24fps") return c_category.c_primary;
-			if (shuttle->name == L"色調補正") return c_category.c_primary;
+			if (shuttle->name == L"色調補正フィルタ") return c_category.c_primary;
 			if (shuttle->name == L"音声の位置調整") return c_category.c_primary;
 			if (shuttle->name == L"音量の最大化") return c_category.c_primary;
 			if (shuttle->name == L"音量の調整") return c_category.c_primary;
@@ -626,9 +626,7 @@ namespace apn::workspace
 					{
 						// ボーダーを再帰的に描画します。
 
-						my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(hive.border_color));
-
-						root->draw_border(dc, brush.get());
+						root->draw_border(dc);
 					}
 
 					{
@@ -639,7 +637,7 @@ namespace apn::workspace
 							hot_border_pane->get_border_rect(&rc_hot_border))
 						{
 							// ホットボーダーを描画します。
-							painter.fill_background(dc, &rc_hot_border, hive.hot_border_color, WP_BORDER, CS_ACTIVE);
+							painter.fill_background(dc, &rc_hot_border, hive.hot_border_color, WP_SEPARATOR, CS_ACTIVE);
 						}
 					}
 

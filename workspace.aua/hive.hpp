@@ -59,7 +59,7 @@ namespace apn::workspace
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -74,13 +74,13 @@ namespace apn::workspace
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		my::theme::unique_ptr<> theme;
-		HWND aviutl_window = 0;
-		HWND exedit_window = 0;
-		HWND setting_dialog = 0;
-		HWND script_param_dialog = 0;
+		HWND aviutl_window = nullptr;
+		HWND exedit_window = nullptr;
+		HWND setting_dialog = nullptr;
+		HWND script_param_dialog = nullptr;
 
 		COLORREF fill_color = RGB(0x99, 0x99, 0x99);
 		COLORREF border_color = RGB(0xcc, 0xcc, 0xcc);
@@ -99,7 +99,7 @@ namespace apn::workspace
 		//
 		// メッセージボックスを表示します。
 		//
-		int message_box(const std::wstring& text, HWND hwnd = 0, int type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

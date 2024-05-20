@@ -51,7 +51,12 @@ namespace my
 
 		static constexpr const char_type* find(const char_type* s, size_t n, const char_type& a)
 		{
-			return std::find_if(s, s + n, [a](char_type c){ return std::tolower(c) == a; });
+			// https://x.com/sigma_axis/status/1784444143969947864
+			// >> 見つからなかった場合の戻り値が std::find_if() の場合は 第2引数，std::char_traits<>::find() の場合はnullptrです．
+			auto ret = std::find_if(s, s + n, [a](char_type c) { return std::tolower(c) == a; });
+			return ret == s + n ? nullptr : ret;
+
+//			return std::find_if(s, s + n, [a](char_type c) { return std::tolower(c) == a; });
 		}
 
 		static constexpr char_type* move(char_type* s1, const char_type* s2, size_t n)
@@ -158,6 +163,25 @@ namespace my
 		return result;
 	}
 
+	//
+	// s内にxが含まれているかを判定します。
+	//
+	inline auto contains(const tstring& s, const tstring& x)
+	{
+		return s.find(x) != s.npos;
+	}
+
+	//
+	// s内にxが含まれているかを判定します。
+	//
+	inline auto contains_i(const case_insensitive_tstring& s, const case_insensitive_tstring& x)
+	{
+		return s.find(x) != s.npos;
+	}
+
+	//
+	// テンポラリフォルダ名を返します。
+	//
 	inline auto get_temp_path()
 	{
 		const auto buffer_length = ::GetTempPath(0, 0);
@@ -167,6 +191,9 @@ namespace my
 		return buffer;
 	}
 
+	//
+	// カレントディレクトリ名を返します。
+	//
 	inline auto get_current_directory()
 	{
 		const auto buffer_length = ::GetCurrentDirectory(0, 0);
@@ -176,6 +203,9 @@ namespace my
 		return buffer;
 	}
 
+	//
+	// モジュールファイルのパスを返します。
+	//
 	inline std::filesystem::path get_module_file_name(HINSTANCE instance, size_t buffer_length = MAX_PATH)
 	{
 		auto buffer = std::make_unique<TCHAR[]>(buffer_length);
@@ -183,6 +213,9 @@ namespace my
 		return buffer.get();
 	}
 
+	//
+	// クラス名を返します。
+	//
 	inline auto get_class_name(HWND hwnd, size_t buffer_length = MAX_PATH)
 	{
 		case_insensitive_tstring buffer;
@@ -192,6 +225,9 @@ namespace my
 		return buffer;
 	}
 
+	//
+	// ウィンドウテキストを返します。
+	//
 	inline auto get_window_text(HWND hwnd)
 	{
 		const auto buffer_length = ::GetWindowTextLength(hwnd) + 1;
@@ -201,6 +237,9 @@ namespace my
 		return buffer;
 	}
 
+	//
+	// ダイアログコントロールのテキストを返します。
+	//
 	inline auto get_dlg_item_text(HWND hwnd, UINT id, size_t buffer_length = MAX_PATH)
 	{
 		tstring buffer;
@@ -210,6 +249,9 @@ namespace my
 		return buffer;
 	}
 
+	//
+	// メニューアイテムのテキストを返します。
+	//
 	inline auto get_menu_item_text(HMENU menu, UINT item_id, UINT flags)
 	{
 		const auto buffer_length = ::GetMenuString(menu, item_id, 0, 0, flags) + 1;
@@ -217,5 +259,23 @@ namespace my
 		::GetMenuString(menu, item_id, buffer.data(), buffer.length(), flags);
 		buffer.resize(buffer_length - 1);
 		return buffer;
+	}
+
+	//
+	// コンボボックス内の指定されたアイテムのテキストを返します。
+	//
+	inline tstring get_text_from_combobox(HWND combobox, int index = -1)
+	{
+		if (index == -1)
+			index = (int)::SendMessage(combobox, CB_GETCURSEL, 0, 0);
+
+		// 指定されたアイテムのテキストの長さを取得します。
+		auto text_length = (int)::SendMessage(combobox, CB_GETLBTEXTLEN, index, 0);
+		if (text_length <= 0) return tstring();
+
+		// 指定されたアイテムのテキストを取得します。
+		tstring text(text_length, _T('\0'));
+		::SendMessage(combobox, CB_GETLBTEXT, index, (LPARAM)text.data());
+		return text;
 	}
 }

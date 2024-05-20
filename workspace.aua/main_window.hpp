@@ -654,7 +654,7 @@ namespace apn::workspace
 				set_uint(IDC_BORDER_WIDTH, Pane::border_width);
 				set_uint(IDC_CAPTION_HEIGHT, Pane::caption_height);
 				set_uint(IDC_TAB_HEIGHT, Pane::tab_height);
-				set_combobox(IDC_TAB_MODE, Pane::tab_mode, _T("タイトル"), _T("上"), _T("下"));
+				set_combobox_index(IDC_TAB_MODE, Pane::tab_mode, _T("タイトル"), _T("上"), _T("下"));
 				set_check(IDC_USE_THEME, hive.use_theme);
 				set_check(IDC_FORCE_SCROLL, hive.scroll_force);
 				set_check(IDC_SHOW_PLAYER, hive.maximum_play);

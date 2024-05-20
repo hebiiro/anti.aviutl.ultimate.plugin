@@ -45,7 +45,7 @@ namespace apn::font_preview
 			set_int(IDC_WINDOW_SIZE_W, hive.window_size.cx);
 			set_int(IDC_WINDOW_SIZE_H, hive.window_size.cy);
 			set_text(IDC_SAMPLE, hive.sample);
-			set_combobox(IDC_PAINT_MODE, paint.mode);
+			set_combobox_index(IDC_PAINT_MODE, paint.mode);
 			set_check(IDC_SINGLE_LINE, hive.single_line);
 			set_uint(IDC_NORMAL_FILL, paint.palette[paint.c_style.c_normal].color.background);
 			set_uint(IDC_NORMAL_TEXT, paint.palette[paint.c_style.c_normal].color.sample);
@@ -69,7 +69,7 @@ namespace apn::font_preview
 			hive.window_size.cy = get_int(IDC_WINDOW_SIZE_H);
 			hive.sample = get_text(IDC_SAMPLE);
 			hive.single_line = get_check(IDC_SINGLE_LINE);
-			paint.mode = get_combobox(IDC_PAINT_MODE);
+			paint.mode = get_combobox_index(IDC_PAINT_MODE);
 			paint.palette[paint.c_style.c_normal].color.background = get_uint(IDC_NORMAL_FILL);
 			paint.palette[paint.c_style.c_normal].color.sample = get_uint(IDC_NORMAL_TEXT);
 			paint.palette[paint.c_style.c_select].color.background = get_uint(IDC_SELECT_FILL);

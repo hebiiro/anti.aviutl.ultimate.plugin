@@ -14,11 +14,11 @@ namespace apn::text_split
 		{
 			MY_TRACE_FUNC("");
 
-			set_combobox(IDC_SHIFT_MODE, hive.shift_mode);
+			set_combobox_index(IDC_SHIFT_MODE, hive.shift_mode);
 			set_int(IDC_SHIFT_OFFSET, hive.shift_offset);
 			set_int(IDC_SHIFT_RANGE, hive.shift_range);
-			set_combobox(IDC_EACH_MODE, hive.each_mode);
-			set_combobox(IDC_FIT_MODE, hive.fit_mode);
+			set_combobox_index(IDC_EACH_MODE, hive.each_mode);
+			set_combobox_index(IDC_FIT_MODE, hive.fit_mode);
 			set_int(IDC_FIT_WIDTH, hive.fit_width);
 			set_check(IDC_ERASE_ORIG_ITEM, hive.erase_orig_item);
 		}
@@ -30,11 +30,11 @@ namespace apn::text_split
 		{
 			MY_TRACE_FUNC("");
 
-			get_combobox(IDC_SHIFT_MODE, hive.shift_mode);
+			get_combobox_index(IDC_SHIFT_MODE, hive.shift_mode);
 			get_int(IDC_SHIFT_OFFSET, hive.shift_offset);
 			get_int(IDC_SHIFT_RANGE, hive.shift_range);
-			get_combobox(IDC_EACH_MODE, hive.each_mode);
-			get_combobox(IDC_FIT_MODE, hive.fit_mode);
+			get_combobox_index(IDC_EACH_MODE, hive.each_mode);
+			get_combobox_index(IDC_FIT_MODE, hive.fit_mode);
 			get_int(IDC_FIT_WIDTH, hive.fit_width);
 			get_check(IDC_ERASE_ORIG_ITEM, hive.erase_orig_item);
 		}
