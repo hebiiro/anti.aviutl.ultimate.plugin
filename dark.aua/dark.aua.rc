@@ -1,0 +1,254 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+AVIUTL_ICON             ICON                    "res/AVIUTL_ICON.ico"
+
+AVIUTL_ICON_BACK        ICON                    "res/AVIUTL_ICON_BACK.ico"
+
+AVIUTL_ICON_BACK2       ICON                    "res/AVIUTL_ICON_BACK2.ico"
+
+AVIUTL_ICON_DEL         ICON                    "res/AVIUTL_ICON_DEL.ico"
+
+AVIUTL_ICON_DEL2        ICON                    "res/AVIUTL_ICON_DEL2.ico"
+
+AVIUTL_ICON_DRAG        ICON                    "res/AVIUTL_ICON_DRAG.ico"
+
+AVIUTL_ICON_FORWARD     ICON                    "res/AVIUTL_ICON_FORWARD.ico"
+
+AVIUTL_ICON_FORWARD2    ICON                    "res/AVIUTL_ICON_FORWARD2.ico"
+
+AVIUTL_ICON_IN          ICON                    "res/AVIUTL_ICON_IN.ico"
+
+AVIUTL_ICON_I_AUTO      ICON                    "res/AVIUTL_ICON_I_AUTO.ico"
+
+AVIUTL_ICON_I_EVEN      ICON                    "res/AVIUTL_ICON_I_EVEN.ico"
+
+AVIUTL_ICON_I_MIX       ICON                    "res/AVIUTL_ICON_I_MIX.ico"
+
+AVIUTL_ICON_I_NORM      ICON                    "res/AVIUTL_ICON_I_NORM.ico"
+
+AVIUTL_ICON_I_ODD       ICON                    "res/AVIUTL_ICON_I_ODD.ico"
+
+AVIUTL_ICON_I_REV       ICON                    "res/AVIUTL_ICON_I_REV.ico"
+
+AVIUTL_ICON_LEFT        ICON                    "res/AVIUTL_ICON_LEFT.ico"
+
+AVIUTL_ICON_MARK        ICON                    "res/AVIUTL_ICON_MARK.ico"
+
+AVIUTL_ICON_OUT         ICON                    "res/AVIUTL_ICON_OUT.ico"
+
+AVIUTL_ICON_PAUSE       ICON                    "res/AVIUTL_ICON_PAUSE.ico"
+
+AVIUTL_ICON_PLAY        ICON                    "res/AVIUTL_ICON_PLAY.ico"
+
+AVIUTL_ICON_RIGHT       ICON                    "res/AVIUTL_ICON_RIGHT.ico"
+
+AVIUTL_ICON_STOP        ICON                    "res/AVIUTL_ICON_STOP.ico"
+
+AVIUTL_ICON_VOL         ICON                    "res/AVIUTL_ICON_VOL.ico"
+
+AVIUTL_ICON_Z_1         ICON                    "res/AVIUTL_ICON_Z_1.ico"
+
+AVIUTL_ICON_Z_2         ICON                    "res/AVIUTL_ICON_Z_2.ico"
+
+AVIUTL_ICON_Z_3         ICON                    "res/AVIUTL_ICON_Z_3.ico"
+
+AVIUTL_ICON_Z_4         ICON                    "res/AVIUTL_ICON_Z_4.ico"
+
+EXEDIT_ICON_AL          ICON                    "res\\EXEDIT_ICON_AL.ico"
+
+EXEDIT_ICON_AR          ICON                    "res\\EXEDIT_ICON_AR.ico"
+
+EXEDIT_ICON_CA0         ICON                    "res\\EXEDIT_ICON_CA0.ico"
+
+EXEDIT_ICON_CA1         ICON                    "res\\EXEDIT_ICON_CA1.ico"
+
+EXEDIT_ICON_CH          ICON                    "res\\EXEDIT_ICON_CH.ico"
+
+EXEDIT_ICON_CL          ICON                    "res\\EXEDIT_ICON_CL.ico"
+
+EXEDIT_ICON_CL0         ICON                    "res\\EXEDIT_ICON_CL0.ico"
+
+EXEDIT_ICON_CL1         ICON                    "res\\EXEDIT_ICON_CL1.ico"
+
+EXEDIT_ICON_LL          ICON                    "res\\EXEDIT_ICON_LL.ico"
+
+EXEDIT_ICON_MA          ICON                    "res\\EXEDIT_ICON_MA.ico"
+
+EXEDIT_ICON_MN          ICON                    "res\\EXEDIT_ICON_MN.ico"
+
+EXEDIT_ICON_OP          ICON                    "res\\EXEDIT_ICON_OP.ico"
+
+EXEDIT_ICON_PL          ICON                    "res\\EXEDIT_ICON_PL.ico"
+
+EXEDIT_ICON_RR          ICON                    "res\\EXEDIT_ICON_RR.ico"
+
+EXEDIT_ICON_SP          ICON                    "res\\EXEDIT_ICON_SP.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+GET_LAYER_NAME DIALOGEX 0, 0, 125, 38
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "レイヤー名"
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    EDITTEXT        171,4,4,116,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "OK",1,4,20,40,14,BS_CENTER
+    PUSHBUTTON      "キャンセル",2,48,20,40,14,BS_CENTER
+    PUSHBUTTON      "色分け",IDC_CHOOSE_COLOR,92,20,28,14
+END
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 526, 256
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_SYSMENU
+EXSTYLE WS_EX_NOPARENTNOTIFY | WS_EX_CONTROLPARENT
+FONT 9, "MS Shell Dlg", 400, 0, 0x80
+BEGIN
+    LTEXT           "スキン ",IDC_SKIN_STAT,0,0,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_SKIN,72,0,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "スキーム ",IDC_SCHEME_STAT,144,0,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_SCHEME,216,0,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "丸み ",IDC_ELLIPSE_STAT,0,18,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_ELLIPSE,72,18,72,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_ELLIPSE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,138,12,10,25
+    LTEXT           "縁の幅 ",IDC_BORDER_WIDTH_STAT,144,18,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    EDITTEXT        IDC_BORDER_WIDTH,216,18,72,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_BORDER_WIDTH_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,12,10,25
+    LTEXT           "影 ",IDC_SHADOW_MODE_STAT,0,36,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_SHADOW_MODE,72,36,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "角 ",IDC_CORNER_MODE_STAT,144,36,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_CORNER_MODE,216,36,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "ボタン ",IDC_STATIC_EDGE_MODE_STAT,0,54,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_STATIC_EDGE_MODE,72,54,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "ダイアログ ",IDC_FILE_DIALOG_MODE_STAT,144,54,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_FILE_DIALOG_MODE,216,54,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "DPI ",IDC_DPI_SCALING_MODE_STAT,0,72,72,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    COMBOBOX        IDC_DPI_SCALING_MODE,72,72,72,139,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "レイヤーを色分け",IDC_USE_LAYER_COLOR,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,144,72,72,12
+    CONTROL         "複数行の色分け",IDC_USE_LAYER_COLOR_MULTI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,216,72,72,12
+    LTEXT           "メインの背景色 ",IDC_MAIN_BACKGROUND_STAT,0,186,72,12,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_RIGHT
+    CONTROL         "メイン背景ダーク",IDC_MAIN_BACKGROUND_DARK,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,72,186,72,12
+    CONTROL         "メイン背景ライト",IDC_MAIN_BACKGROUND_LIGHT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,144,186,72,12
+    PUSHBUTTON      "入れ替える",IDC_MAIN_BACKGROUND_SWAP,216,186,72,12,NOT WS_VISIBLE
+    LTEXT           "メインの文字色 ",IDC_MAIN_TEXT_STAT,0,204,72,12,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_RIGHT
+    CONTROL         "メイン文字ダーク",IDC_MAIN_TEXT_DARK,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,72,204,72,12
+    CONTROL         "メイン文字ライト",IDC_MAIN_TEXT_LIGHT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,144,204,72,12
+    PUSHBUTTON      "入れ替える",IDC_MAIN_TEXT_SWAP,216,204,72,12,NOT WS_VISIBLE
+    LTEXT           "サブの背景色 ",IDC_SUB_BACKGROUND_STAT,0,222,72,12,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_RIGHT
+    CONTROL         "サブ背景ダーク",IDC_SUB_BACKGROUND_DARK,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,72,222,72,12
+    CONTROL         "サブ背景ライト",IDC_SUB_BACKGROUND_LIGHT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,144,222,72,12
+    PUSHBUTTON      "入れ替える",IDC_SUB_BACKGROUND_SWAP,216,222,72,12,NOT WS_VISIBLE
+    LTEXT           "サブの文字色 ",IDC_SUB_TEXT_STAT,0,240,72,12,SS_CENTERIMAGE | NOT WS_VISIBLE,WS_EX_RIGHT
+    CONTROL         "サブ文字ダーク",IDC_SUB_TEXT_DARK,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,72,240,72,12
+    CONTROL         "サブ文字ライト",IDC_SUB_TEXT_LIGHT,"Button",BS_OWNERDRAW | NOT WS_VISIBLE | WS_TABSTOP,144,240,72,12
+    PUSHBUTTON      "入れ替える",IDC_SUB_TEXT_SWAP,216,240,72,12,NOT WS_VISIBLE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+GET_LAYER_NAME AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MAIN_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    "GET_LAYER_NAME", DIALOG
+    BEGIN
+    END
+
+    IDD_MAIN_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 519
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 249
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

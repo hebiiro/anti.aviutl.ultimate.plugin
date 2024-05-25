@@ -15,6 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{0BBEBC9E-687F-444A-9B8A-2FF6B83C740B}"
 	ProjectSection(SolutionItems) = preProject
 		common\share\AudioGraph.h = common\share\AudioGraph.h
+		common\share\dark.hpp = common\share\dark.hpp
 		common\share\dark_api.hpp = common\share\dark_api.hpp
 		common\share\ease_select.hpp = common\share\ease_select.hpp
 		common\share\filer.hpp = common\share\filer.hpp
@@ -22,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{0BBEBC9E
 		common\share\item_wave.hpp = common\share\item_wave.hpp
 		common\share\workspace.hpp = common\share\workspace.hpp
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "install.exe", "install.exe\install.exe.vcxproj", "{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ultimate.auf", "ultimate.auf\ultimate.auf.vcxproj", "{8E583504-3780-4129-BCC2-BA590DBD0D0E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -130,6 +129,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scene_select.aua", "scene_s
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "workspace.aua", "workspace.aua\workspace.aua.vcxproj", "{55AF099C-72AF-490D-A7AC-99DB7EAE5675}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dark.aua", "dark.aua\dark.aua.vcxproj", "{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dark.pyd", "dark.pyd\dark.pyd.vcxproj", "{170AA2E5-3245-4015-8B3A-F1DEBB982645}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -138,14 +141,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Debug|x64.ActiveCfg = Debug|x64
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Debug|x64.Build.0 = Debug|x64
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Debug|x86.ActiveCfg = Debug|Win32
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Debug|x86.Build.0 = Debug|Win32
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Release|x64.ActiveCfg = Release|x64
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Release|x64.Build.0 = Release|x64
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Release|x86.ActiveCfg = Release|Win32
-		{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}.Release|x86.Build.0 = Release|Win32
 		{8E583504-3780-4129-BCC2-BA590DBD0D0E}.Debug|x64.ActiveCfg = Debug|x64
 		{8E583504-3780-4129-BCC2-BA590DBD0D0E}.Debug|x64.Build.0 = Debug|x64
 		{8E583504-3780-4129-BCC2-BA590DBD0D0E}.Debug|x86.ActiveCfg = Debug|Win32
@@ -346,6 +341,22 @@ Global
 		{55AF099C-72AF-490D-A7AC-99DB7EAE5675}.Release|x64.Build.0 = Release|x64
 		{55AF099C-72AF-490D-A7AC-99DB7EAE5675}.Release|x86.ActiveCfg = Release|Win32
 		{55AF099C-72AF-490D-A7AC-99DB7EAE5675}.Release|x86.Build.0 = Release|Win32
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Debug|x64.ActiveCfg = Debug|x64
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Debug|x64.Build.0 = Debug|x64
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Debug|x86.ActiveCfg = Debug|Win32
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Debug|x86.Build.0 = Debug|Win32
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x64.ActiveCfg = Release|x64
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x64.Build.0 = Release|x64
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x86.ActiveCfg = Release|Win32
+		{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}.Release|x86.Build.0 = Release|Win32
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Debug|x64.ActiveCfg = Debug|x64
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Debug|x64.Build.0 = Debug|x64
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Debug|x86.ActiveCfg = Debug|Win32
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Debug|x86.Build.0 = Debug|Win32
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x64.ActiveCfg = Release|x64
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x64.Build.0 = Release|x64
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x86.ActiveCfg = Release|Win32
+		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

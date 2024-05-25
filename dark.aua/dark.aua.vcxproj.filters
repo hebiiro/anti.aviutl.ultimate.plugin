@@ -1,0 +1,394 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{48c155b5-3b4c-4b27-a96f-8cf708938a03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook">
+      <UniqueIdentifier>{df4cbf40-e4af-47cc-8a17-bbc44196abc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="skin">
+      <UniqueIdentifier>{999b8541-4b70-49d3-a35e-7c4db2e0e1f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{cdca75b2-2c63-4bf3-9381-e7ed7ed8ecc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\gdi">
+      <UniqueIdentifier>{dbba7203-f245-4415-8b00-cffef571688e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\gdi\element">
+      <UniqueIdentifier>{5c4f8367-9952-40f8-9d94-db743ee7749d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\theme">
+      <UniqueIdentifier>{36d7fb11-4a65-41f7-bf7c-1e63b8238a12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\theme\element">
+      <UniqueIdentifier>{bd27928e-f696-4e72-8f8a-12ee95e9c88f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="skin\theme">
+      <UniqueIdentifier>{7a0ce9fa-b477-4380-88ef-8f1a1f805842}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\program">
+      <UniqueIdentifier>{a826918f-e840-4dd6-aeb6-c7dc83918608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource\icon">
+      <UniqueIdentifier>{29d0b98b-fd4c-4b46-a31d-fc50debb219a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="act_ctx.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="Theme\manager.hpp">
+      <Filter>renderer\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\manager.hpp">
+      <Filter>renderer\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\renderer.hpp">
+      <Filter>renderer\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\renderer.hpp">
+      <Filter>renderer\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\menu.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\client.hpp">
+      <Filter>renderer\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="painter.hpp" />
+    <ClInclude Include="Gdi\client.hpp">
+      <Filter>renderer\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\dialog.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\button.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\editbox.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\static.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\renderer_nc.hpp">
+      <Filter>renderer\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\static.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\button.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\scrollbar.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\editbox.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\combobox.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\listbox.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\combobox.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\listbox.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\aviutl_button.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\aviutl.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\tooltip.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\trackbar.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\spin.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\listview.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\treeview.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\tab.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\toolbar.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\spin.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\trackbar.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\tooltip.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\command_module.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\common_items_dialog.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\header.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\listview.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\preview_pane.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\tab.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\toolbar.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\treeview.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Theme\Element\window.hpp">
+      <Filter>renderer\theme\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\dwm.hpp">
+      <Filter>skin</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\stuff.hpp">
+      <Filter>skin</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\Theme\manager.hpp">
+      <Filter>skin\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\Theme\part.hpp">
+      <Filter>skin\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\Theme\state.hpp">
+      <Filter>skin\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\Theme\vsclass.hpp">
+      <Filter>skin\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="Skin\icon.hpp">
+      <Filter>skin</Filter>
+    </ClInclude>
+    <ClInclude Include="Gdi\Element\setting_dialog.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="python.hpp" />
+    <ClInclude Include="hook.hpp" />
+    <ClInclude Include="hook\double_buffer.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\window.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\draw.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\comdlg.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\icon.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\theme.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\exedit.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\program\loudness.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
+    <ClInclude Include="double_buffer.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="exports.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="skin\manager.hpp">
+      <Filter>skin</Filter>
+    </ClInclude>
+    <ClInclude Include="skin\config.hpp">
+      <Filter>skin</Filter>
+    </ClInclude>
+    <ClInclude Include="assets_io.hpp" />
+    <ClInclude Include="gdi\element\comboboxex.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="gdi\element\header.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <c_none Include="main.def">
+      <Filter>framework</Filter>
+    </c_none>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="dark.aua.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\AVIUTL_ICON_Z_4.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_BACK.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_BACK2.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_DEL.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_DEL2.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_DRAG.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_FORWARD.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_FORWARD2.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_AUTO.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_EVEN.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_MIX.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_NORM.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_ODD.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_REV.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_IN.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_LEFT.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_MARK.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_OUT.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_PAUSE.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_PLAY.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_RIGHT.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_STOP.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_VOL.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_1.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_2.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_3.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_SP.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_AL.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_AR.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CA0.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CA1.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CH.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CL.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CL0.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CL1.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_LL.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_MA.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_MN.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_OP.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_PL.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_RR.ico">
+      <Filter>resource\icon</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

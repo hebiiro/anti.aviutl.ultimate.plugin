@@ -1,0 +1,7 @@
+﻿EXPORTS
+	core_get_addin
+	dark_init
+	dark_exit
+	dark_get_current_id
+	dark_get_stuff
+	dark_set_stuff

@@ -1,28 +1,112 @@
 ﻿#pragma once
 
+inline constexpr auto VSCLASS_DIALOG = VSCLASS_WINDOW;
+inline constexpr auto VSCLASS_CTLCOLOR = VSCLASS_WINDOW;
+inline constexpr auto VSCLASS_EXEDIT = VSCLASS_WINDOW;
+
+enum MY_STATIC_PARTS {
+	STAT_ETCHED_EDGE = 2,
+};
+
+enum MY_TRACKBAR_TRACK_STATES {
+	TRS_BACKGROUND = 0,
+	TRS_DISABLED = 2,
+	TRS_SELECTED = 3,
+};
+
+enum CUSTOM_PARTS {
+	WP_WINDOW_FACE = 51,
+	WP_WINDOW_EDGE = 52,
+	WP_CLIENT_EDGE = 53,
+	WP_STATIC_EDGE = 54,
+	WP_LIGHT_RAISED_EDGE = 56,
+	WP_LIGHT_SUNKEN_EDGE = 57,
+	WP_RAISED_EDGE = 58,
+	WP_SUNKEN_EDGE = 59,
+	WP_BUMP_EDGE = 60,
+	WP_ETCHED_EDGE = 61,
+	WP_SEPARATOR = 62,
+	WP_EXEDIT = 63,
+};
+
+enum EXEDIT_STATES {
+	EES_SELECTION_FILL = 1,
+	EES_SELECTION_EDGE = 2,
+	EES_SELECTION_BACKGROUND = 3,
+	EES_SCALE_PRIMARY = 11,
+	EES_SCALE_SECONDARY = 12,
+	EES_SCENE_BUTTON_EDGE = 21,
+	EES_SCENE_BUTTON = 22,
+	EES_EVEN_LAYER_BUTTON_EDGE = 30,
+	EES_ODD_LAYER_BUTTON_EDGE = 31,
+	EES_EVEN_LAYER_BUTTON_ACTIVE = 32,
+	EES_ODD_LAYER_BUTTON_ACTIVE = 33,
+	EES_EVEN_LAYER_BUTTON_INACTIVE = 34,
+	EES_ODD_LAYER_BUTTON_INACTIVE = 35,
+	EES_EVEN_LAYER_BACKGROUND_ACTIVE = 36,
+	EES_ODD_LAYER_BACKGROUND_ACTIVE = 37,
+	EES_EVEN_LAYER_BACKGROUND_INACTIVE = 38,
+	EES_ODD_LAYER_BACKGROUND_INACTIVE = 39,
+	EES_LAYER_LINE_LEFT = 51,
+	EES_LAYER_LINE_TOP = 52,
+	EES_LAYER_LINE_RIGHT = 53,
+	EES_LAYER_LINE_BOTTOM = 54,
+	EES_LAYER_LINE_SEPARATOR = 55,
+	EES_GROUP_BACKGROUND_ACTIVE_1 = 61,
+	EES_GROUP_BACKGROUND_ACTIVE_2 = 62,
+	EES_GROUP_BACKGROUND_ACTIVE_3 = 63,
+	EES_GROUP_BACKGROUND_INACTIVE_1 = 64,
+	EES_GROUP_BACKGROUND_INACTIVE_2 = 65,
+	EES_GROUP_BACKGROUND_INACTIVE_3 = 66,
+};
+
 namespace Dark
 {
 	struct Stuff
 	{
-		COLORREF fill_color = CLR_NONE;
-		COLORREF edge_color = CLR_NONE;
-		int edge_width = 0;
-		int edge_round = 0;
-		COLORREF text_color = CLR_NONE;
-		COLORREF text_shadow_color = CLR_NONE;
-		COLORREF text_background_color = CLR_NONE;
-/*
-		struct Type
-		{
-			inline static constexpr int c_fill_color = 0;
-			inline static constexpr int c_edge_color = 1;
-			inline static constexpr int c_edge_width = 2;
-			inline static constexpr int c_edge_round = 3;
-			inline static constexpr int c_text_color = 4;
-			inline static constexpr int c_text_shadow_color = 5;
-			inline static constexpr int c_text_background_color = 6;
-		};
-*/
+		struct Fill {
+			inline static constexpr struct Mode {
+				inline static constexpr int c_normal = 0;
+				inline static constexpr int c_left = 1;
+				inline static constexpr int c_top = 2;
+				inline static constexpr int c_right = 3;
+				inline static constexpr int c_bottom = 4;
+				inline static constexpr int c_top_left = 5;
+				inline static constexpr int c_top_right = 6;
+				inline static constexpr int c_bottom_left = 7;
+				inline static constexpr int c_bottom_right = 8;
+				inline static constexpr int c_center = 9;
+			} c_mode;
+
+			COLORREF color = CLR_NONE;
+			COLORREF sub_color = CLR_NONE;
+			int mode = c_mode.c_normal;
+
+			inline bool is_enabled() const { return color != CLR_NONE; }
+		} fill;
+		struct Border {
+			COLORREF color = CLR_NONE;
+			REAL width = 0;
+
+			inline bool is_enabled() const { return color != CLR_NONE && width != 0; }
+		} border;
+		struct Text {
+			COLORREF color = CLR_NONE;
+			COLORREF shadow_color = CLR_NONE;
+			COLORREF background_color = CLR_NONE;
+
+			inline bool is_enabled() const { return color != CLR_NONE; }
+		} text;
+		struct Accent {
+			COLORREF color = CLR_NONE;
+			COLORREF sub_color = CLR_NONE;
+
+			inline bool is_enabled() const { return color != CLR_NONE; }
+		} accent;
+		struct Etc {
+			REAL ellipse = 0;
+			int alpha = 255;
+		} etc;
 	};
 
 	//
@@ -142,6 +226,20 @@ namespace Dark
 			if (!this->dark) return FALSE;
 
 			return __super::init();
+		}
+
+		//
+		// ダークモードプラグインをアンロードします。
+		// 外部プロセスから最後に1回だけ呼び出してください。
+		//
+		BOOL exit()
+		{
+			if (!dark) return FALSE;
+
+			BOOL (WINAPI* dark_exit)() =
+				(decltype(dark_exit))::GetProcAddress(dark, "dark_exit");
+
+			return dark_exit();
 		}
 	};
 }
