@@ -9,9 +9,9 @@ namespace apn
 	struct StdAddinDialog : T
 	{
 		//
-		// このフラグがTRUEのときはWM_COMMANDを無視します。
+		// ロックカウントです。
 		//
-		BOOL locked = FALSE;
+		int lock_count = 0;
 
 		virtual void on_update_controls() {}
 		virtual void on_update_config() {}
@@ -20,18 +20,28 @@ namespace apn
 
 		//
 		// ロックされている場合はTRUEを返します。
+		// ロックされているときはWM_COMMANDを無視します。
 		//
-		BOOL is_locked() const { return locked; }
+		BOOL is_locked() const { return lock_count != 0; }
 
 		//
 		// ロックします。
 		//
-		void lock() { locked = TRUE; }
+		void lock() { lock_count++; }
 
 		//
 		// ロックを解除します。
 		//
-		void unlock() { locked = FALSE; }
+		void unlock() { lock_count--; }
+
+		//
+		// このクラスはダイアログをロックします。
+		//
+		struct Locker {
+			StdAddinDialog* dialog;
+			Locker(StdAddinDialog* dialog) : dialog(dialog) { dialog->lock(); }
+			~Locker() { dialog->unlock(); }
+		};
 
 		//
 		// 初期化処理を実行します。
@@ -39,6 +49,10 @@ namespace apn
 		BOOL init(HINSTANCE instance, HWND parent)
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}", instance, parent);
+
+			// 初期化中にエディットボックスがコマンドを発行してしまうので、
+			// それを防ぐためにロックしておきます。
+			Locker locker(this);
 
 			return __super::create(instance, MAKEINTRESOURCE(dialog_id), parent);
 		}
@@ -62,9 +76,9 @@ namespace apn
 
 			if (is_locked()) return FALSE;
 
-			lock();
+			Locker locker(this);
+
 			on_update_controls();
-			unlock();
 
 			return TRUE;
 		}
@@ -102,6 +116,8 @@ namespace apn
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
 					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+
+					if (is_locked()) break;
 
 					auto code = HIWORD(wParam);
 					auto id = LOWORD(wParam);
