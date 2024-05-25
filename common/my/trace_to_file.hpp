@@ -5,7 +5,7 @@ namespace my::tracer_to_file
 #ifdef MY_TRACE_ENABLED
 	inline HANDLE file = 0;
 
-	inline void init(HINSTANCE instance, LPCTSTR name = 0, BOOL add_bom = TRUE)
+	inline void init(HINSTANCE instance, LPCTSTR name = nullptr, BOOL add_bom = TRUE)
 	{
 		static struct FileLogger : Tracer::Logger
 		{
@@ -52,7 +52,7 @@ namespace my::tracer_to_file
 		::CloseHandle(file), file = 0;
 	}
 #else
-	inline void init(HINSTANCE instance, LPCTSTR name, BOOL add_bom = FALSE)
+	inline void init(HINSTANCE instance, LPCTSTR name = nullptr, BOOL add_bom = TRUE)
 	{
 	}
 

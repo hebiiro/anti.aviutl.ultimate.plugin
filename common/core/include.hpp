@@ -1,6 +1,6 @@
 ﻿#pragma once
-#define BOOST_ALL_DYN_LINK
-#define MY_TRACE_ENABLED
+//#define BOOST_ALL_DYN_LINK
+//#define MY_TRACE_ENABLED
 
 #include <tchar.h>
 #include <crtdbg.h>

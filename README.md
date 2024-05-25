@@ -6,7 +6,15 @@
 
 ## 🚀 導入方法
 
+* 以下のファイルをaviutlフォルダに入れてください。
+	* ultimate.auf
+	* ultimate.aul
+	* ultimate(フォルダ)
+<!--
 * install.exeを実行します。
+-->
+* ダークモード化アドインを使用するには32bit版のpython3.12(以上)が必要です。
+* pythonインストール後、さらに`install_python_packages.bat`を実行して追加パッケージをインストールしてください。
 
 ## 💡 使い方
 
@@ -14,6 +22,7 @@
 
 ## 🔖 更新履歴
 
+* r22 - 2024/05/25 💥 命名規則をスネークケースに変更
 * r21 - 2024/02/18 [SingleOut]予め指定されているファイルに保存できるようにしました
 * r20 - 2024/02/18 Nestのバグフィックス
 * r19 - 2024/02/12 [Nest]キャプションの表示状態を切り替えられるようにしました
@@ -39,19 +48,18 @@
 ## ⚗️ 動作確認
 
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版49 https://scrapbox.io/nazosauna/patch.aul
+* (共存確認) patch.aul r43 謎さうなフォーク版58 https://scrapbox.io/nazosauna/patch.aul
 
 ## 🧑‍💻 クレジット
 
 * Microsoft Research Detours Package https://github.com/microsoft/Detours
 * aviutl_exedit_sdk https://github.com/ePi5131/aviutl_exedit_sdk
-* Common Library https://github.com/hebiiro/Common-Library
 
 ## 👽️ 作成者情報
 
 * 作成者 - 蛇色 (へびいろ)
 * GitHub - https://github.com/hebiiro
-* Twitter - https://twitter.com/io_hebiiro
+* Twitter - https://x.com/io_hebiiro
 
 ## 🚨 免責事項
 

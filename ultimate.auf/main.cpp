@@ -109,7 +109,7 @@ namespace apn
 			.func_exit = func_exit,
 			.func_update = func_update,
 			.func_WndProc = func_wnd_proc,
-			.information = "アルティメットプラグイン r21",
+			.information = "アルティメットプラグイン r22",
 			.func_save_start = func_save_start,
 			.func_save_end = func_save_end,
 			.func_is_saveframe = func_is_save_frame,
