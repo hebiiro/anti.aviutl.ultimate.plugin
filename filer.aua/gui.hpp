@@ -43,8 +43,10 @@ namespace apn::filer
 				return FALSE;
 			}
 
-			auto result = ::WaitForSingleObject(event, INFINITE);
-			MY_TRACE("::WaitForSingleObject(event, INFINITE)が{:#010x}を返しました\n", result);
+			HANDLE handles[] = { event, pi.hProcess };
+			auto result = ::WaitForMultipleObjects(std::size(handles), handles, FALSE, INFINITE);
+			MY_TRACE("::WaitForMultipleObjects()が{:#010x}を返しました\n", result);
+			if (result != WAIT_OBJECT_0 + 0) return FALSE;
 
 			return TRUE;
 		}
