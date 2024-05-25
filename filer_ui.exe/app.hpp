@@ -138,6 +138,9 @@ namespace apn::filer_ui
 			// コンフィグ入出力を終了します。
 			config_io.exit();
 
+			// ダークモード化モジュールを終了します。
+			dark.exit();
+
 			AfxOleTerm(FALSE);
 
 			return __super::ExitInstance();
