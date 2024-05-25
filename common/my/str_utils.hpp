@@ -120,24 +120,97 @@ namespace my
 	inline tstring ts(const std::wstring &s) { return hs(s); }
 #endif
 
-	template <typename T> auto format_arg(T value) { return value; }
-	template <typename T> auto format_arg(T* value) { return (addr_t)value; }
-	template <typename T> auto format_arg(const T* value) { return (addr_t)value; }
-	inline tstring format_arg(char* s) { if (s) return ts(s); else return _T("null"); }
-	inline tstring format_arg(wchar_t* s) { if (s) return ts(s); else return _T("null"); }
-	inline tstring format_arg(const char* s) { if (s) return ts(s); else return _T("null"); }
-	inline tstring format_arg(const wchar_t* s) { if (s) return ts(s); else return _T("null"); }
-	inline tstring format_arg(const std::string& s) { return ts(s); }
-	inline tstring format_arg(const std::wstring& s) { return ts(s); }
-	inline tstring format_arg(const std::filesystem::path& path) { return ts(path); }
+	template <typename T>
+	struct FormatArg {
+		T value;
+		FormatArg(T value) : value(value) {}
+		T& operator()() { return value; }
+	};
 
-	//
+	template <typename T>
+	struct FormatArg<T*> {
+		unsigned value;
+		FormatArg(T* value) : value((unsigned)value) {}
+		unsigned& operator()() { return value; }
+	};
+
+	template <typename T>
+	struct FormatArg<const T*> {
+		unsigned value;
+		FormatArg(const T* value) : value((unsigned)value) {}
+		unsigned& operator()() { return value; }
+	};
+
+	template <>
+	struct FormatArg<char*> {
+		tstring s;
+		FormatArg(char* s) : s(s ? ts(s) : _T("null")) {}
+		tstring& operator()() { return s; }
+	};
+
+	template <>
+	struct FormatArg<const char*> {
+		tstring s;
+		FormatArg(const char* s) : s(s ? ts(s) : _T("null")) {}
+		tstring& operator()() { return s; }
+	};
+
+	template <>
+	struct FormatArg<wchar_t*> {
+		tstring s;
+		FormatArg(wchar_t* s) : s(s ? ts(s) : _T("null")) {}
+		tstring& operator()() { return s; }
+	};
+
+	template <>
+	struct FormatArg<const wchar_t*> {
+		tstring s;
+		FormatArg(const wchar_t* s) : s(s ? ts(s) : _T("null")) {}
+		tstring& operator()() { return s; }
+	};
+
+	template <>
+	struct FormatArg<std::string> {
+		tstring s;
+		FormatArg(const std::string& s) : s(ts(s)) {}
+		tstring& operator()() { return s; }
+	};
+
+	template <>
+	struct FormatArg<std::wstring> {
+		tstring s;
+		FormatArg(const std::wstring& s) : s(ts(s)) {}
+		tstring& operator()() { return s; }
+	};
+/*
+	template <>
+	struct FormatArg<case_insensitive_string> {
+		tstring s;
+		FormatArg(const case_insensitive_string& s) : s(ts(s.c_str())) {}
+		tstring& operator()() { return s; }
+	};
+
+	template <>
+	struct FormatArg<case_insensitive_wstring> {
+		tstring s;
+		FormatArg(const case_insensitive_wstring& s) : s(ts(s.c_str())) {}
+		tstring& operator()() { return s; }
+	};
+*/
+	template <>
+	struct FormatArg<std::filesystem::path> {
+		tstring s;
+		FormatArg(const std::filesystem::path& path) : s(ts(path)) {}
+		tstring& operator()() { return s; }
+	};
+
+    //
 	// std::format()にはハンドルや異なる文字コードセットの文字列を渡せない問題があるので、自分でカスタマイズしています。
 	//
 	template <typename... Args>
 	inline tstring format(tstring_view fmt, const Args&... args)
 	{
-		return vformat(fmt, {std::make_wformat_args(format_arg(args)...)});
+        return vformat(fmt, std::make_wformat_args(FormatArg(args)()...));
 	}
 
 	//
