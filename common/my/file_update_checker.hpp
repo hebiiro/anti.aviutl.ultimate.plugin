@@ -76,4 +76,45 @@ namespace my
 			return FALSE;
 		}
 	};
+
+	struct FileUpdateChecker2 : FileUpdateChecker
+	{
+		struct Handler {
+			virtual void on_file_update(FileUpdateChecker2* checker) = 0;
+		};
+
+		HWND hwnd = nullptr;
+		Handler* handler = nullptr;
+
+		FileUpdateChecker2()
+		{
+		}
+
+		FileUpdateChecker2(LPCWSTR file_name, HWND hwnd, Handler* handler)
+		{
+			init(file_name, hwnd, handler);
+		}
+
+		void init(LPCWSTR file_name, HWND hwnd, Handler* handler)
+		{
+			__super::init(file_name);
+
+			this->hwnd = hwnd;
+			this->handler = handler;
+
+			::SetTimer(hwnd, (UINT_PTR)this, 1000,
+				[](HWND hwnd, UINT message, UINT_PTR timer_id, DWORD time)
+				{
+					auto p = (FileUpdateChecker2*)timer_id;
+
+					if (p->check_update())
+						p->handler->on_file_update(p);
+				});
+		}
+
+		void exit()
+		{
+			::KillTimer(hwnd, (UINT_PTR)this);
+		}
+	};
 }
