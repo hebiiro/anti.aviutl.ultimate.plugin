@@ -48,7 +48,7 @@
 * 処理に対するコメントは次のように書く。
 ```
 	// メッセージボックスを表示します。
-	::MessageBoxW(0, L"hoge", L"test", MB_OK | MB_ICONWARNING);
+	::MessageBoxW(0, L"hoge", L"foo", MB_OK | MB_ICONWARNING);
 ```
 * ソースファイルの拡張子は`cpp`にする。
 * ヘッダーファイルの拡張子は`hpp`にする。

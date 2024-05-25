@@ -158,9 +158,9 @@ namespace apn::filer_ui
 		};
 
 		virtual HRESULT STDMETHODCALLTYPE ShouldShow( 
-			/* [in] */ __RPC__in_opt IShellFolder *psf,
-			/* [unique][in] */ __RPC__in_opt PCIDLIST_ABSOLUTE idlist_folder,
-			/* [in] */ __RPC__in PCUITEMID_CHILD pidlItem)
+			__RPC__in_opt IShellFolder *psf,
+			__RPC__in_opt PCIDLIST_ABSOLUTE idlist_folder,
+			__RPC__in PCUITEMID_CHILD pidlItem)
 		{
 			IShellItemPtr si;
 			HRESULT hr = ::SHCreateItemWithParent(0, psf, pidlItem, IID_PPV_ARGS(&si));
@@ -171,7 +171,7 @@ namespace apn::filer_ui
 			SFGAOF attributes = 0;
 			si->GetAttributes(SFGAO_FOLDER, &attributes);
 
-	//		MY_TRACE_FUNC("{}, {:#010x}", (LPWSTR)display_name, attributes);
+//			MY_TRACE_FUNC("{}, {:#010x}", (LPWSTR)display_name, attributes);
 
 			auto search_str = my::get_window_text(search_control);
 
@@ -195,10 +195,10 @@ namespace apn::filer_ui
 		}
 
 		virtual HRESULT STDMETHODCALLTYPE GetEnumFlags( 
-			/* [in] */ __RPC__in_opt IShellFolder *psf,
-			/* [in] */ __RPC__in PCIDLIST_ABSOLUTE idlist_folder,
-			/* [out] */ __RPC__deref_out_opt HWND *phwnd,
-			/* [out][in] */ __RPC__inout DWORD *pgrfFlags)
+			__RPC__in_opt IShellFolder *psf,
+			__RPC__in PCIDLIST_ABSOLUTE idlist_folder,
+			__RPC__deref_out_opt HWND *phwnd,
+			__RPC__inout DWORD *pgrfFlags)
 		{
 			MY_TRACE_FUNC("");
 

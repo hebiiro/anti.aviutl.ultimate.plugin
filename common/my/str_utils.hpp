@@ -182,21 +182,7 @@ namespace my
 		FormatArg(const std::wstring& s) : s(ts(s)) {}
 		tstring& operator()() { return s; }
 	};
-/*
-	template <>
-	struct FormatArg<case_insensitive_string> {
-		tstring s;
-		FormatArg(const case_insensitive_string& s) : s(ts(s.c_str())) {}
-		tstring& operator()() { return s; }
-	};
 
-	template <>
-	struct FormatArg<case_insensitive_wstring> {
-		tstring s;
-		FormatArg(const case_insensitive_wstring& s) : s(ts(s.c_str())) {}
-		tstring& operator()() { return s; }
-	};
-*/
 	template <>
 	struct FormatArg<std::filesystem::path> {
 		tstring s;
