@@ -27,7 +27,7 @@ namespace apn::workspace
 		//
 		// このコンテナに格納するコンテンツです。
 		//
-		Content* content = 0;
+		Content* content = nullptr;
 
 		//
 		// 位置変更を抑制するためのロックカウントです。
@@ -38,7 +38,7 @@ namespace apn::workspace
 		// このクラスはコンテナをロックします。
 		//
 		struct Locker {
-			Container* container = 0;
+			Container* container = nullptr;
 			Locker(Container* container) : container(container) { container->lock_count++; }
 			~Locker() { container->lock_count--; }
 		};
@@ -61,7 +61,7 @@ namespace apn::workspace
 				c_class_name,
 				style,
 				100, 100, 400, 400,
-				hive.main_window, 0, hive.instance, 0);
+				hive.main_window, nullptr, hive.instance, nullptr);
 		}
 
 		//
@@ -79,11 +79,11 @@ namespace apn::workspace
 		inline static AviUtl::FilterPlugin* get_filter(HWND hwnd)
 		{
 			// magi.fpがまだ設定されていない場合は失敗します。
-			if (!magi.fp) return 0;
+			if (!magi.fp) return nullptr;
 
 			// AviUtl::SysInfoを取得します。
 			AviUtl::SysInfo si = {};
-			magi.fp->exfunc->get_sys_info(0, &si);
+			magi.fp->exfunc->get_sys_info(nullptr, &si);
 
 			// 全てのフィルタを列挙します。
 			for (auto i = 0; i < si.filter_n; i++)
@@ -96,7 +96,7 @@ namespace apn::workspace
 				if (fp->hwnd == hwnd) return fp;
 			}
 
-			return 0;
+			return nullptr;
 		}
 
 		//
@@ -144,12 +144,12 @@ namespace apn::workspace
 
 		inline static BOOL set_window_pos(HWND hwnd, LPCRECT rc, UINT flags = SWP_NOZORDER | SWP_NOACTIVATE)
 		{
-			return ::SetWindowPos(hwnd, 0, rc->left, rc->top, my::get_width(*rc), my::get_height(*rc), flags);
+			return ::SetWindowPos(hwnd, nullptr, rc->left, rc->top, my::get_width(*rc), my::get_height(*rc), flags);
 		}
 
 		inline static WINDOWPOS rc_to_wp(LPCRECT rc, UINT flags = SWP_NOZORDER | SWP_NOACTIVATE)
 		{
-			return { 0, 0, rc->left, rc->top, my::get_width(*rc), my::get_height(*rc), flags };
+			return { nullptr, nullptr, rc->left, rc->top, my::get_width(*rc), my::get_height(*rc), flags };
 		}
 
 		inline static RECT wp_to_rc(const WINDOWPOS* wp)
@@ -174,7 +174,7 @@ namespace apn::workspace
 			w = std::max<int>(w, 0);
 			h = std::max<int>(h, 0);
 
-			set_window_pos_force(*this, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+			set_window_pos_force(*this, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
 		}
 
 		//
@@ -194,7 +194,7 @@ namespace apn::workspace
 			auto rc = my::get_client_rect(hwnd);
 
 			// クライアント矩形をスクリーン座標に変換します。
-			::MapWindowPoints(::GetParent(hwnd), 0, (LPPOINT)&rc, 2);
+			my::map_window_points(::GetParent(hwnd), nullptr, &rc);
 
 			// クライアント矩形をウィンドウ矩形に変換します。
 			my::client_to_window(*this, &rc);
@@ -214,7 +214,7 @@ namespace apn::workspace
 
 			auto hwnd = content->get_hwnd();
 
-			RECT rc = { 0, 0 };
+			auto rc = RECT { 0, 0 };
 			my::client_to_window(hwnd, &rc);
 			content->revise_content_position(&rc);
 			wp->x = rc.left;
@@ -255,10 +255,10 @@ namespace apn::workspace
 			auto rc = my::get_window_rect(hwnd);
 
 			// スクリーン座標からクライアント座標に変換します。
-			::MapWindowPoints(0, *this, (LPPOINT)&rc, 2);
+			my::map_window_points(nullptr, *this, &rc);
 
 			// コンテンツの位置を取得します。
-			WINDOWPOS wp = rc_to_wp(&rc);
+			auto wp = rc_to_wp(&rc);
 			revise_content_position(&wp);
 
 			// コンテンツの位置を変更します。
@@ -293,13 +293,13 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// コンテンツのウィンドウ矩形を取得します。
-			RECT rc = wp_to_rc(content_wp);
+			auto rc = wp_to_rc(content_wp);
 
 			// ウィンドウ矩形をクライアント矩形に変換します。
 			my::window_to_client(content->get_hwnd(), &rc);
 
 			// クライアント座標からスクリーン座標に変換します。
-			::MapWindowPoints(*this, 0, (LPPOINT)&rc, 2);
+			my::map_window_points(*this, nullptr, &rc);
 
 			// クライアント矩形をウィンドウ矩形に変換します。
 			my::client_to_window(*this, &rc);
@@ -322,7 +322,7 @@ namespace apn::workspace
 
 			// 元のコンテンツの位置を取得しておきます。
 			// この位置は主にAviUtlから指定された座標です。
-			WINDOWPOS content_wp = *wp;
+			auto content_wp = *wp;
 
 			// コンテンツの位置を修正します。
 			revise_content_position(wp);
@@ -398,8 +398,11 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_SHOWWINDOW, {:#010x}, {:#010x}", wParam, lParam);
 
+					// ::ShowWindow()の呼び出し以外がトリガーの場合は何もしません。
+					if (lParam) break;
+
 					// ターゲットウィンドウを取得します。
-					HWND target = content->get_hwnd();
+					auto target = content->get_hwnd();
 
 					// ターゲットウィンドウがフィルタウィンドウの場合は
 					auto fp = get_filter(content->get_hwnd());
@@ -468,13 +471,13 @@ namespace apn::workspace
 			case WM_RBUTTONUP:
 				{
 					// コンテンツのHWNDを取得します。
-					HWND hwnd = content->get_hwnd();
+					auto hwnd = content->get_hwnd();
 
 					// マウス座標を取得します。
 					auto point = my::lp_to_pt(lParam);
 
 					// コンテナの座標系からコンテンツの座標系へ変換します。
-					::MapWindowPoints(*this, hwnd, &point, 1);
+					my::map_window_points(*this, hwnd, &point);
 
 					// コンテンツにメッセージを転送します。
 					return ::SendMessage(hwnd, message, wParam, MAKELPARAM(point.x, point.y));
