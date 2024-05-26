@@ -15,39 +15,39 @@ namespace apn::item_align
 			hive.app = this;
 		}
 
-		virtual BOOL shift() override
+		virtual BOOL shift_selection() override
 		{
-			return Executor().shift();
+			return Executor().shift_selection();
 		}
 
-		virtual BOOL move_to_begin() override
+		virtual BOOL move_current_frame_to_start() override
 		{
-			return Executor().move_to_begin();
+			return Executor().move_current_frame_to_start();
 		}
 
-		virtual BOOL move_to_end() override
+		virtual BOOL move_current_frame_to_end() override
 		{
-			return Executor().move_to_end();
+			return Executor().move_current_frame_to_end();
 		}
 
-		virtual BOOL move_begin() override
+		virtual BOOL move_selection_start() override
 		{
-			return Executor().move_begin();
+			return Executor().move_selection_start();
 		}
 
-		virtual BOOL move_end() override
+		virtual BOOL move_selection_end() override
 		{
-			return Executor().move_end();
+			return Executor().move_selection_end();
 		}
 
-		virtual BOOL stretch_begin() override
+		virtual BOOL stretch_selection_start() override
 		{
-			return Executor().stretch_begin();
+			return Executor().stretch_selection_start();
 		}
 
-		virtual BOOL stretch_end() override
+		virtual BOOL stretch_selection_end() override
 		{
-			return Executor().stretch_end();
+			return Executor().stretch_selection_end();
 		}
 
 		virtual BOOL delete_midpt() override
@@ -55,9 +55,9 @@ namespace apn::item_align
 			return Executor().delete_midpt();
 		}
 
-		virtual BOOL fix_bpm() override
+		virtual BOOL fix_selection_bpm() override
 		{
-			return Executor().fix_bpm();
+			return Executor().fix_selection_bpm();
 		}
 	} app;
 }

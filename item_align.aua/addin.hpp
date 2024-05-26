@@ -45,15 +45,15 @@ namespace apn::item_align
 			if (!config_io.init()) return FALSE;
 
 			// AviUtlにメニューアイテムを追加します。
-			add_menu_item(fp, L"選択アイテムをずらす", IDC_SHIFT);
-			add_menu_item(fp, L"現在位置を選択アイテムの先頭に移動", IDC_MOVE_TO_BEGIN);
-			add_menu_item(fp, L"現在位置を選択アイテムの最後に移動", IDC_MOVE_TO_END);
-			add_menu_item(fp, L"選択アイテムを左に詰める", IDC_MOVE_BEGIN);
-			add_menu_item(fp, L"選択アイテムを右に詰める", IDC_MOVE_END);
-			add_menu_item(fp, L"選択アイテムを左に伸ばす", IDC_STRETCH_BEGIN);
-			add_menu_item(fp, L"選択アイテムを右に伸ばす", IDC_STRETCH_END);
+			add_menu_item(fp, L"選択アイテムをずらす", IDC_SHIFT_SELECTION);
+			add_menu_item(fp, L"現在位置を選択アイテムの先頭に移動", IDC_MOVE_CURRENT_FRAME_TO_START);
+			add_menu_item(fp, L"現在位置を選択アイテムの最後に移動", IDC_MOVE_CURRENT_FRAME_TO_END);
+			add_menu_item(fp, L"選択アイテムを左に詰める", IDC_MOVE_SELECTION_START);
+			add_menu_item(fp, L"選択アイテムを右に詰める", IDC_MOVE_SELECTION_END);
+			add_menu_item(fp, L"選択アイテムを左に伸ばす", IDC_STRETCH_SELECTION_START);
+			add_menu_item(fp, L"選択アイテムを右に伸ばす", IDC_STRETCH_SELECTION_END);
 			add_menu_item(fp, L"現在位置の近くにある中間点を削除", IDC_DELETE_MIDPT);
-			add_menu_item(fp, L"BPMズレを修正", IDC_FIX_BPM);
+			add_menu_item(fp, L"BPMズレを修正", IDC_FIX_SELECTION_BPM);
 
 			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
 

@@ -11,15 +11,15 @@ namespace apn::item_align
 		inline static constexpr auto c_display_name = L"アイテム整列";
 
 		struct App {
-			virtual BOOL shift() = 0;
-			virtual BOOL move_to_begin() = 0;
-			virtual BOOL move_to_end() = 0;
-			virtual BOOL move_begin() = 0;
-			virtual BOOL move_end() = 0;
-			virtual BOOL stretch_begin() = 0;
-			virtual BOOL stretch_end() = 0;
+			virtual BOOL shift_selection() = 0;
+			virtual BOOL move_current_frame_to_start() = 0;
+			virtual BOOL move_current_frame_to_end() = 0;
+			virtual BOOL move_selection_start() = 0;
+			virtual BOOL move_selection_end() = 0;
+			virtual BOOL stretch_selection_start() = 0;
+			virtual BOOL stretch_selection_end() = 0;
 			virtual BOOL delete_midpt() = 0;
-			virtual BOOL fix_bpm() = 0;
+			virtual BOOL fix_selection_bpm() = 0;
 		} *app = 0;
 
 		//

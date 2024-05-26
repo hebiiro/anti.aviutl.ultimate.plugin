@@ -676,7 +676,7 @@ namespace apn::item_align
 		//
 		// 選択アイテムを階段状にずらします。
 		//
-		BOOL shift()
+		BOOL shift_selection()
 		{
 			MY_TRACE_FUNC("");
 
@@ -692,7 +692,7 @@ namespace apn::item_align
 		//
 		// 現在フレームを選択アイテムの開始位置に移動します。
 		//
-		BOOL move_to_begin()
+		BOOL move_current_frame_to_start()
 		{
 			MY_TRACE_FUNC("");
 
@@ -704,7 +704,7 @@ namespace apn::item_align
 		//
 		// 現在フレームを選択アイテムの終了位置に移動します。
 		//
-		BOOL move_to_end()
+		BOOL move_current_frame_to_end()
 		{
 			MY_TRACE_FUNC("");
 
@@ -716,7 +716,7 @@ namespace apn::item_align
 		//
 		// アイテムの開始位置を動かします。終了位置もそれに連動して動かします。
 		//
-		BOOL move_begin()
+		BOOL move_selection_start()
 		{
 			MY_TRACE_FUNC("");
 
@@ -728,7 +728,7 @@ namespace apn::item_align
 		//
 		// アイテムの終了位置を動かします。開始位置もそれに連動して動かします。
 		//
-		BOOL move_end()
+		BOOL move_selection_end()
 		{
 			MY_TRACE_FUNC("");
 
@@ -740,7 +740,7 @@ namespace apn::item_align
 		//
 		// アイテムの開始位置を左に伸ばします。終了位置は動かしません。
 		//
-		BOOL stretch_begin()
+		BOOL stretch_selection_start()
 		{
 			MY_TRACE_FUNC("");
 
@@ -752,7 +752,7 @@ namespace apn::item_align
 		//
 		// アイテムの終了位置を右に伸ばします。開始位置は動かしません。
 		//
-		BOOL stretch_end()
+		BOOL stretch_selection_end()
 		{
 			MY_TRACE_FUNC("");
 
@@ -843,7 +843,7 @@ namespace apn::item_align
 		//
 		// 選択アイテムのBPMずれを修正します。
 		//
-		BOOL fix_bpm()
+		BOOL fix_selection_bpm()
 		{
 			MY_TRACE_FUNC("");
 

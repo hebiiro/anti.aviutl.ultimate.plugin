@@ -55,53 +55,34 @@ namespace apn::text_split
 			auto margin_value = 2;
 			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
 			auto row = std::make_shared<RelativePos>(get_base_size() + margin_value * 2);
-			auto half = std::make_shared<AbsolutePos>(1, 2);
-			auto full = std::make_shared<AbsolutePos>(2, 2);
+			std::shared_ptr<AbsolutePos> q[13];
+			for (auto i = 0; i < std::size(q); i++)
+				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_SPLIT_TEXT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_SPLIT_TEXT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_ERASE_ORIG_ITEM));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(IDC_SHIFT_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_SHIFT_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[2], margin, ctrl(IDC_SHIFT_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_SHIFT_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_SHIFT_OFFSET_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SHIFT_OFFSET));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[10], margin, ctrl(IDC_SHIFT_RANGE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_SHIFT_RANGE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(IDC_SHIFT_OFFSET_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_SHIFT_OFFSET));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(IDC_SHIFT_RANGE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_SHIFT_RANGE));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(IDC_EACH_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_EACH_MODE));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(IDC_FIT_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_FIT_MODE));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(IDC_FIT_WIDTH_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_FIT_WIDTH));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_ERASE_ORIG_ITEM));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[2], margin, ctrl(IDC_EACH_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_EACH_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_FIT_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_FIT_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[10], margin, ctrl(IDC_FIT_WIDTH_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_FIT_WIDTH));
 			}
 		}
 

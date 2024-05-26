@@ -83,18 +83,9 @@ namespace apn::dark
 			auto row = std::make_shared<RelativePos>(get_base_size() + margin_value * 2);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
-			std::shared_ptr<AbsolutePos> q[] =
-			{
-				std::make_shared<AbsolutePos>(0, 8),
-				std::make_shared<AbsolutePos>(1, 8),
-				std::make_shared<AbsolutePos>(2, 8),
-				std::make_shared<AbsolutePos>(3, 8),
-				std::make_shared<AbsolutePos>(4, 8),
-				std::make_shared<AbsolutePos>(5, 8),
-				std::make_shared<AbsolutePos>(6, 8),
-				std::make_shared<AbsolutePos>(7, 8),
-				std::make_shared<AbsolutePos>(8, 8),
-			};
+			std::shared_ptr<AbsolutePos> q[9];
+			for (auto i = 0; i < std::size(q); i++)
+				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
 			auto rc = my::get_client_rect(ctrl(IDC_ELLIPSE_SPIN));
 			auto spin_w = my::get_width(rc);
 			auto spin = std::make_shared<RelativePos>(spin_w);
