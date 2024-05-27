@@ -9,6 +9,12 @@
 
 namespace apn
 {
+	static const auto plugin_version = "r23"s;
+	static const auto video_filter_name = "アルティメットプラグイン"s;
+	static const auto video_filter_information = video_filter_name + " " + plugin_version;
+	static const auto audio_filter_name = video_filter_name + "(音声)";
+	static const auto audio_filter_information = audio_filter_name + " " + plugin_version;
+
 	//
 	// 初期化
 	//
@@ -100,16 +106,17 @@ namespace apn
 			.flag =
 				AviUtl::FilterPlugin::Flag::AlwaysActive |
 				AviUtl::FilterPlugin::Flag::WindowThickFrame |
-				AviUtl::FilterPlugin::Flag::WindowSize,
+				AviUtl::FilterPlugin::Flag::WindowSize |
+				AviUtl::FilterPlugin::Flag::ExInformation,
 			.x = 400,
 			.y = 400,
-			.name = "アルティメットプラグイン",
+			.name = video_filter_name.c_str(),
 			.func_proc = func_video_proc,
 			.func_init = func_init,
 			.func_exit = func_exit,
 			.func_update = func_update,
 			.func_WndProc = func_wnd_proc,
-			.information = "アルティメットプラグイン r22",
+			.information = video_filter_information.c_str(),
 			.func_save_start = func_save_start,
 			.func_save_end = func_save_end,
 			.func_is_saveframe = func_is_save_frame,
@@ -122,10 +129,11 @@ namespace apn
 			.flag =
 				AviUtl::FilterPlugin::Flag::AudioFilter |
 				AviUtl::FilterPlugin::Flag::NoConfig |
-				AviUtl::FilterPlugin::Flag::AlwaysActive,
-			.name = "アルティメットプラグイン(音声)",
+				AviUtl::FilterPlugin::Flag::AlwaysActive |
+				AviUtl::FilterPlugin::Flag::ExInformation,
+			.name = audio_filter_name.c_str(),
 			.func_proc = func_audio_proc,
-			.information = "アルティメットプラグイン(音声)",
+			.information = audio_filter_information.c_str(),
 		};
 
 		static AviUtl::FilterPluginDLL* list[] = {

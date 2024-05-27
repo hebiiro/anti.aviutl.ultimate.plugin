@@ -6,15 +6,14 @@
 
 ## 🚀 導入方法
 
-* 以下のファイルをaviutlフォルダに入れてください。
+1. r22以前のバージョンのファイルとフォルダをすべて削除してください。
+1. 以下のファイルをaviutlフォルダに入れてください。
+	※pluginsフォルダに入れても正常に動作しないので注意してください。
 	* ultimate.auf
 	* ultimate.aul
 	* ultimate(フォルダ)
-<!--
-* install.exeを実行します。
--->
-* ダークモード化アドインを使用するには32bit版のpython3.12(以上)が必要です。
-* pythonインストール後、さらに`install_python_packages.bat`を実行して追加パッケージをインストールしてください。
+1. エクスプローラで`assets/deploy_python.ps1`を右クリックして『PowerShellで実行』を選択します。
+これにより、`assets/python32`にPython環境が構築されます。
 
 ## 💡 使い方
 
@@ -22,6 +21,7 @@
 
 ## 🔖 更新履歴
 
+* r23 - 2024/05/27 ⚡️ Pythonの読み込み先を選択できる機能を追加
 * r22 - 2024/05/25 💥 命名規則をスネークケースに変更
 * r21 - 2024/02/18 [SingleOut]予め指定されているファイルに保存できるようにしました
 * r20 - 2024/02/18 Nestのバグフィックス
@@ -54,6 +54,7 @@
 
 * Microsoft Research Detours Package https://github.com/microsoft/Detours
 * aviutl_exedit_sdk https://github.com/ePi5131/aviutl_exedit_sdk
+* Python https://www.python.org/
 
 ## 👽️ 作成者情報
 
