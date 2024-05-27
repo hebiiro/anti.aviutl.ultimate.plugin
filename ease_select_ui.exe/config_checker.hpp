@@ -29,7 +29,7 @@ namespace apn::ease_select_ui
 					{
 						MY_TRACE("コンフィグファイルが更新されました\n");
 
-						config_io.read(); // コンフィグを再読み込みします。
+						hive.app->read_config(); // コンフィグを再読み込みします。
 					}
 				});
 

@@ -79,7 +79,7 @@ namespace apn
 		virtual BOOL write_stream(std::ofstream& ofs)
 		{
 			ptree root;
-			if (!write_node(root)) return FALSE;
+			write_node(root);
 			write_json(ofs, root);
 			return TRUE;
 		}

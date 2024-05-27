@@ -104,8 +104,6 @@ namespace apn::ease_select_ui
 				get_color(ease_node, "hot_point_color", ease_window.hot_point_color);
 			}
 
-			easing_window.load_image();
-
 			hive.config_loaded = TRUE;
 
 			return TRUE;

@@ -16,7 +16,7 @@ namespace apn::ease_select_ui
 		std::wstring horz = _T("left");
 		std::wstring vert = _T("center");
 		int alpha = 255;
-		int scale = 100;
+		int scale = 50;
 		Color sel_color = { 0x80, 0xff, 0x00, 0x00 };
 		Color hot_color = { 0x80, 0x00, 0xff, 0x00 };
 		CImage image;

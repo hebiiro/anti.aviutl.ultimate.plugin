@@ -30,6 +30,33 @@ namespace apn::ease_select_ui
 			my::tracer_to_file::exit();
 		}
 
+		//
+		// コンフィグを読み込みます。
+		// さらに他のオブジェクトに新しいコンフィグ値を適用します。
+		//
+		virtual BOOL read_config() override
+		{
+			MY_TRACE_FUNC("");
+
+			config_io.read();
+
+			easing_window.load_image();
+
+			return TRUE;
+		}
+
+		//
+		// コンフィグを書き込みます。
+		//
+		virtual BOOL write_config() override
+		{
+			MY_TRACE_FUNC("");
+
+			config_io.write();
+
+			return TRUE;
+		}
+
 		virtual BOOL InitInstance() override
 		{
 			MY_TRACE_FUNC("");
@@ -67,7 +94,7 @@ namespace apn::ease_select_ui
 			config_checker.init();
 			host_checker.init();
 
-			config_io.read();
+			read_config();
 
 			return TRUE;
 		}
@@ -76,7 +103,7 @@ namespace apn::ease_select_ui
 		{
 			MY_TRACE_FUNC("");
 
-			config_io.write();
+			write_config();
 
 			// 各種後始末処理を実行します。
 			host_checker.exit();

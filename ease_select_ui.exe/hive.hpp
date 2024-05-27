@@ -11,6 +11,8 @@ namespace apn::ease_select_ui
 		inline static constexpr auto c_display_name = L"イージング選択のUI";
 
 		struct App {
+			virtual BOOL read_config() = 0;
+			virtual BOOL write_config() = 0;
 		} *app = 0;
 
 		//
