@@ -82,9 +82,14 @@ namespace apn::workspace::hook
 			//
 			// スポイト処理をフックします。
 			//
-			static void init(my::addr_t exedit)
+			inline static void init(my::addr_t exedit)
 			{
+#if 1
+				my::hook::attach_import(GetPixel, (HMODULE)exedit, "GetPixel");
+#else
 				my::hook::attach_abs_call(GetPixel, exedit + 0x22128);
+				my::hook::attach_abs_call(GetPixel, exedit + 0x2AB49);
+#endif
 			}
 		} dropper;
 
@@ -93,7 +98,7 @@ namespace apn::workspace::hook
 			// このクラスはキーボードフックの::GetActiveWindow()をフックします。
 			//
 			inline static struct {
-				static HWND WINAPI hook_proc()
+				inline static HWND WINAPI hook_proc()
 				{
 					MY_TRACE_FUNC("");
 

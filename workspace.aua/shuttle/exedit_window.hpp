@@ -29,7 +29,7 @@ namespace apn::workspace
 
 				WNDCLASS wc = {};
 				wc.style = 0;
-				wc.hCursor = 0;
+				wc.hCursor = nullptr;
 				wc.lpfnWndProc = ::DefWindowProc;
 				wc.hInstance = ::GetModuleHandle(_T("exedit.auf"));
 				wc.lpszClassName = _T("AviUtl");
@@ -41,14 +41,14 @@ namespace apn::workspace
 					_T("拡張編集"),
 					WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 					0, 0, 0, 0,
-					hive.main_window, 0, wc.hInstance, 0);
+					hive.main_window, nullptr, wc.hInstance, nullptr);
 			}
 		}
 
 		virtual DWORD on_get_target_new_style() override
 		{
 			// ※WS_CAPTIONを外すとウィンドウの高さ調節にズレが生じるので外さないようにします。
-			DWORD style = my::get_style(*this);
+			auto style = my::get_style(*this);
 			style &= ~(WS_POPUP | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 			return style;
 		}
