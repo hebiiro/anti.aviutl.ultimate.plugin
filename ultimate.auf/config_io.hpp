@@ -20,7 +20,7 @@ namespace apn
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"dark", L"ダークモード化", TRUE, L"", std::vector<std::wstring>{ L"DarkenWindow.aul" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"workspace", L"ワークスペース化", TRUE, L"", std::vector<std::wstring>({ L"SplitWindow.aul" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"filer", L"ファイラ", TRUE, L"", std::vector<std::wstring>({ L"ObjectExplorer.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"レベルメーター", TRUE, L"", std::vector<std::wstring>({ L"LevelMeter.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"レベルメーター", FALSE, L"", std::vector<std::wstring>({ L"LevelMeter.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", FALSE, L"", std::vector<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
 
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", std::vector<std::wstring>({ L"CopyFilter.auf" })));
@@ -68,6 +68,8 @@ namespace apn
 
 			using namespace my::json;
 
+			get_string(root, "python_file_name", hive.python_file_name);
+
 			// ファイル内のアドイン情報を読み込みます。
 			if (auto addin_nodes_op = root.get_child_optional("addin"))
 			{
@@ -112,6 +114,8 @@ namespace apn
 
 			ofs << with_eol(indent++, R"({)"s);
 			{
+				ofs << with_eol(indent, std::format(R"("python_file_name": "{}",)", my::wide_to_cp(hive.python_file_name, CP_UTF8)));
+				ofs << with_eol(0, "");
 				ofs << with_eol(indent++, R"("addin": [)"s);
 				for (const auto& addin : hive.addins)
 				{

@@ -11,8 +11,9 @@ namespace apn
 		{
 			MY_TRACE_FUNC("{:#010x}", instance);
 
-			if (!initializer.init()) return FALSE;
+			if (!hook_manager.init()) return FALSE;
 			if (!config_io.init()) return FALSE;
+			if (!env.init()) return FALSE;
 			if (!addin_loader.init()) return FALSE;
 			if (!addin_manager.fire_dll_init()) return FALSE;
 
@@ -25,8 +26,9 @@ namespace apn
 
 			addin_manager.fire_dll_exit();
 			addin_loader.exit();
+			env.exit();
 			config_io.exit();
-			initializer.exit();
+			hook_manager.exit();
 
 			return TRUE;
 		}

@@ -51,6 +51,11 @@ namespace apn
 		std::wstring config_file_name;
 
 		//
+		// Pythonのファイル名です。
+		//
+		std::wstring python_file_name = L"ultimate/assets/python32/python312.dll";
+
+		//
 		// アドイン情報のコレクションです。
 		//
 		std::vector<std::unique_ptr<Addin>> addins;
@@ -58,7 +63,7 @@ namespace apn
 		//
 		// メッセージボックスを表示します。
 		//
-		int message_box(const std::wstring& text, HWND hwnd = 0, int type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = 0, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

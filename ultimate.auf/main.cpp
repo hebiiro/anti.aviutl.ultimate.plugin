@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "hive.hpp"
-#include "initializer.hpp"
+#include "hook.hpp"
+#include "env.hpp"
 #include "addin_loader.hpp"
 #include "plugin_window.hpp"
 #include "config_io.hpp"

@@ -2,7 +2,7 @@
 
 namespace apn
 {
-	inline struct Initializer
+	inline struct HookManager
 	{
 		BOOL exited = FALSE;
 
@@ -15,7 +15,7 @@ namespace apn
 			{
 				auto result = orig_proc(file_name);
 
-				if (initializer.exited) return result;
+				if (hook_manager.exited) return result;
 
 				MY_TRACE("::LoadLibraryA({}) => {:#010x}\n", file_name, result);
 
@@ -27,7 +27,7 @@ namespace apn
 					magi.exin.init();
 
 					// これ以上フックする必要はないのでフックを解除します。
-					initializer.exit();
+					hook_manager.exit();
 				}
 
 				return result;
@@ -67,5 +67,5 @@ namespace apn
 			return DetourTransactionCommit() == NO_ERROR;
 #endif
 		}
-	} initializer;
+	} hook_manager;
 }

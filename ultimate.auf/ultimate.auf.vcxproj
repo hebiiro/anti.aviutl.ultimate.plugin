@@ -197,8 +197,9 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="env.hpp" />
     <ClInclude Include="hive.hpp" />
-    <ClInclude Include="initializer.hpp" />
+    <ClInclude Include="hook.hpp" />
     <ClInclude Include="addin_loader.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="plugin_window.hpp" />
