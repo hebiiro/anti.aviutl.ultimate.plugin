@@ -99,8 +99,7 @@ namespace apn
 			.flag =
 				AviUtl::FilterPlugin::Flag::AlwaysActive |
 				AviUtl::FilterPlugin::Flag::WindowThickFrame |
-				AviUtl::FilterPlugin::Flag::WindowSize |
-				AviUtl::FilterPlugin::Flag::ExInformation,
+				AviUtl::FilterPlugin::Flag::WindowSize,
 			.x = 400,
 			.y = 400,
 			.name = "アルティメットプラグイン",
@@ -122,15 +121,14 @@ namespace apn
 			.flag =
 				AviUtl::FilterPlugin::Flag::AudioFilter |
 				AviUtl::FilterPlugin::Flag::NoConfig |
-				AviUtl::FilterPlugin::Flag::AlwaysActive |
-				AviUtl::FilterPlugin::Flag::ExInformation,
+				AviUtl::FilterPlugin::Flag::AlwaysActive,
 			.name = "アルティメットプラグイン(音声)",
 			.func_proc = func_audio_proc,
 			.information = "アルティメットプラグイン(音声)",
 		};
 
 		static AviUtl::FilterPluginDLL* list[] = {
-			&video_filter, &audio_filter, 0,
+			&video_filter, &audio_filter, nullptr,
 		};
 
 		return list;

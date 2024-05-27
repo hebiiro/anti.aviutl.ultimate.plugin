@@ -17,6 +17,21 @@ namespace apn
 			// 日本語が正しく表示されるように文字列のロケールを設定します。
 			_tsetlocale(LC_CTYPE, _T(""));
 
+			{
+				MY_TRACE("YUY2モードかどうかチェックします\n");
+
+				auto file_name = my::get_module_file_name(nullptr);
+				file_name.replace_filename(_T("aviutl.ini"));
+				MY_TRACE_STR(file_name);
+
+				if (::GetPrivateProfileInt(_T("system"), _T("yuy2mode"), FALSE, file_name.c_str()))
+				{
+					MY_TRACE("YUY2モードでは使用できません\n");
+
+					return TRUE;
+				}
+			}
+
 			auto file_name = my::get_module_file_name(hive.instance);
 			file_name.replace_extension(_T(".auf"));
 			hive.target = ::LoadLibraryW(file_name.c_str());
