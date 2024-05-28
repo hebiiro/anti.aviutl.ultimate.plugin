@@ -193,7 +193,7 @@
     <ClInclude Include="hook\double_buffer.hpp" />
     <ClInclude Include="hook\window.hpp" />
     <ClInclude Include="hook\draw.hpp" />
-    <ClInclude Include="hook\program.hpp" />
+    <ClInclude Include="hook\dll.hpp" />
     <ClInclude Include="hook\comdlg.hpp" />
     <ClInclude Include="hook\icon.hpp" />
     <ClInclude Include="hook\program\exedit.hpp" />
@@ -256,6 +256,9 @@
   <ItemGroup>
     <ProjectReference Include="..\dark.pyd\dark.pyd.vcxproj">
       <Project>{170aa2e5-3245-4015-8b3a-f1debb982645}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DarkenWindow.aul\DarkenWindow.aul.vcxproj">
+      <Project>{d30db443-e8be-4f53-80a0-6d9851c31db5}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

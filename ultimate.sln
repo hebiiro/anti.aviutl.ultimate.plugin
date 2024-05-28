@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.9.34701.34
+VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3BA88203-63EF-4334-AF22-39C789AA8406}"
 	ProjectSection(SolutionItems) = preProject
@@ -132,6 +132,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dark.aua", "dark.aua\dark.aua.vcxproj", "{9B59E47F-0E71-4672-8CB7-2FB03F8BC973}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dark.pyd", "dark.pyd\dark.pyd.vcxproj", "{170AA2E5-3245-4015-8B3A-F1DEBB982645}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DarkenWindow.aul", "DarkenWindow.aul\DarkenWindow.aul.vcxproj", "{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -357,6 +359,14 @@ Global
 		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x64.Build.0 = Release|x64
 		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x86.ActiveCfg = Release|Win32
 		{170AA2E5-3245-4015-8B3A-F1DEBB982645}.Release|x86.Build.0 = Release|Win32
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Debug|x64.ActiveCfg = Debug|x64
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Debug|x64.Build.0 = Debug|x64
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Debug|x86.ActiveCfg = Debug|Win32
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Debug|x86.Build.0 = Debug|Win32
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Release|x64.ActiveCfg = Release|x64
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Release|x64.Build.0 = Release|x64
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Release|x86.ActiveCfg = Release|Win32
+		{D30DB443-E8BE-4F53-80A0-6D9851C31DB5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

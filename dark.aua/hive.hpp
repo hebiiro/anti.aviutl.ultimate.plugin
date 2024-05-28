@@ -80,6 +80,7 @@ namespace apn::dark
 			virtual BOOL on_change_assets() = 0;
 			virtual uint32_t get_current_skin_id() = 0;
 			virtual BOOL redraw() = 0;
+			virtual BOOL deploy_darken_window_settings() = 0;
 		} *app = 0;
 
 		//
@@ -91,6 +92,11 @@ namespace apn::dark
 		// このアドインのインスタンスハンドルです。
 		//
 		HINSTANCE instance = nullptr;
+
+		//
+		// 黒窓(ダミー)のインスタンスハンドルです。
+		//
+		HINSTANCE darken_window = nullptr;
 
 		//
 		// コンフィグのファイル名です。

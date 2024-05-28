@@ -32,11 +32,11 @@
     <Filter Include="skin\theme">
       <UniqueIdentifier>{7a0ce9fa-b477-4380-88ef-8f1a1f805842}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hook\program">
-      <UniqueIdentifier>{a826918f-e840-4dd6-aeb6-c7dc83918608}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resource\icon">
       <UniqueIdentifier>{29d0b98b-fd4c-4b46-a31d-fc50debb219a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\program">
+      <UniqueIdentifier>{a826918f-e840-4dd6-aeb6-c7dc83918608}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -208,7 +208,7 @@
     <ClInclude Include="hook\draw.hpp">
       <Filter>hook</Filter>
     </ClInclude>
-    <ClInclude Include="hook\program.hpp">
+    <ClInclude Include="hook\dll.hpp">
       <Filter>hook</Filter>
     </ClInclude>
     <ClInclude Include="hook\comdlg.hpp">

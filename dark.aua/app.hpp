@@ -3,6 +3,14 @@
 namespace apn::dark
 {
 	//
+	// 出力ストリームにワイド文字列を書き込みます。
+	//
+	inline static auto& operator<<(std::ofstream& ofs, const std::wstring& s)
+	{
+		return ofs.write((LPCSTR)s.c_str(), s.length() * sizeof(wchar_t)), ofs;
+	}
+
+	//
 	// このクラスはHive::Appの実装です。
 	//
 	inline struct App : Hive::App, my::FileUpdateChecker2::Handler
@@ -71,6 +79,9 @@ namespace apn::dark
 
 			// 再描画します。
 			redraw();
+
+			// 黒窓の設定ファイルを構築します。
+			deploy_darken_window_settings();
 
 			{
 				// アセットフォルダを監視するスレッドを作成します。
@@ -363,6 +374,148 @@ namespace apn::dark
 
 					return TRUE;
 				}, 0);
+		}
+
+		inline static auto& write(std::ofstream& ofs, const std::wstring& s)
+		{
+			return ofs.write((LPCSTR)s.c_str(), s.length() * sizeof(wchar_t));
+		}
+
+		inline static std::wstring to_string(COLORREF color)
+		{
+#if 1
+			return std::format(LR"(#{:1x}{:1x}{:1x})",
+				GetRValue(color) >> 4, GetGValue(color) >> 4, GetBValue(color) >> 4);
+#else
+			return std::format(LR"(#{:02x}{:02x}{:02x})",
+				GetRValue(color), GetGValue(color), GetBValue(color));
+#endif
+		}
+
+		inline static std::wstring to_string(LPCWSTR name, LPCWSTR vsclass_name, int part_id, int state_id)
+		{
+			auto state = skin::theme::manager.get_state(vsclass_name, part_id, state_id);
+			if (!state) return std::wstring();
+			return std::format(LR"(<NamedColor name="{}" fillColor="{}" edgeColor="{}" textForeColor="{}" textBackColor="{}" />)",
+				name,
+				to_string(state->stuff.fill.color),
+				to_string(state->stuff.border.color),
+				to_string(state->stuff.text.color),
+				to_string(state->stuff.text.shadow_color));
+		}
+
+		//
+		// 黒窓の設定ファイルを構築します。
+		//
+		virtual BOOL deploy_darken_window_settings() override
+		{
+			MY_TRACE_FUNC("");
+
+			auto root_path = my::get_module_file_name(nullptr).parent_path();
+			auto plugins_path = root_path / L"plugins";
+			auto darken_window_path = plugins_path / L"DarkenWindow";
+			auto darken_window_settings_stem = L"DarkenWindowSettings.xml";
+			auto darken_window_settings_path = darken_window_path / darken_window_settings_stem;
+			auto skin_name = L"dummy"s;
+			auto skin_stem = skin_name + L".xml";
+			auto skin_relative_path = std::filesystem::path(L"Skin") / skin_stem;
+			auto skin_path = darken_window_path / skin_relative_path;
+			auto skin_settings_stem = L"_Settings.xml"s;
+			auto skin_settings_relative_path = std::filesystem::path(skin_name) / skin_settings_stem;
+			auto skin_settings_path = darken_window_path / L"Skin" / skin_settings_relative_path;
+
+			// 黒窓フォルダを作成します。
+			std::filesystem::create_directories(skin_settings_path.parent_path());
+
+			// 設定ファイルを作成します。
+			{
+				std::ofstream ofs(darken_window_settings_path, std::ios::out | std::ios::binary);
+				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
+				ofs << L"\r\n"s << std::format(LR"(<Settings skin="{}" shadowMode="{}" roundMode="{}" />)",
+					skin_relative_path.c_str(),
+					hive.shadow_mode == hive.c_shadow_mode.c_normal ? L"ON" : L"OFF",
+					hive.round_mode == hive.c_round_mode.c_normal ? L"ON" : L"OFF");
+			}
+
+			// スキンファイルを作成します。
+			{
+				std::ofstream ofs(skin_path, std::ios::out | std::ios::binary);
+				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
+				ofs << L"\r\n"s << std::format(LR"(<Settings>)");
+				ofs << L"\r\n\t"s << std::format(LR"(<Skin fileName="{}" />)", skin_settings_relative_path.c_str());
+				ofs << L"\r\n"s << std::format(LR"(</Settings>)");
+			}
+
+			// スキン設定ファイルを作成します。
+			{
+				std::ofstream ofs(skin_settings_path, std::ios::out | std::ios::binary);
+				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
+				ofs << L"\r\n"s << std::format(LR"(<Skin>)");
+				ofs << L"\r\n\t"s << std::format(LR"(<Attributes>)");
+				ofs << L"\r\n\t\t"s << std::format(LR"(<Dwm)");
+				ofs << L"\r\n\t\t\t"s << std::format(LR"(activeBorderColor="{}" activeCaptionColor="{}" activeTextColor="{}")",
+					to_string(skin::dwm.active.border_color),
+					to_string(skin::dwm.active.caption_color),
+					to_string(skin::dwm.active.text_color));
+				ofs << L"\r\n\t\t\t"s << std::format(LR"(inactiveBorderColor="{}" inactiveCaptionColor="{}" inactiveTextColor="{}")",
+					to_string(skin::dwm.inactive.border_color),
+					to_string(skin::dwm.inactive.caption_color),
+					to_string(skin::dwm.inactive.text_color));
+				ofs << L"\r\n\t\t\t"s << std::format(LR"(darkMode="{}" cornerMode="{}")", skin::dwm.dark_mode, skin::dwm.corner_mode);
+				ofs << L"\r\n\t\t"s << std::format(LR"(/>)");
+				ofs << L"\r\n\t\t"s << std::format(LR"(<NamedColors>)");
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"caption_active", VSCLASS_WINDOW, WP_CAPTION, CS_ACTIVE);
+				ofs << L"\r\n\t\t\t"s << to_string(L"caption_inactive", VSCLASS_WINDOW, WP_CAPTION, CS_INACTIVE);
+				ofs << L"\r\n\t\t\t"s << to_string(L"caption_disabled", VSCLASS_WINDOW, WP_CAPTION, CS_DISABLED);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"border_active", VSCLASS_WINDOW, WP_SEPARATOR, CS_ACTIVE);
+				ofs << L"\r\n\t\t\t"s << to_string(L"border_inactive", VSCLASS_WINDOW, WP_SEPARATOR, CS_INACTIVE);
+				ofs << L"\r\n\t\t\t"s << to_string(L"border_disabled", VSCLASS_WINDOW, WP_SEPARATOR, CS_DISABLED);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"dialog", VSCLASS_WINDOW, WP_DIALOG, ETS_NORMAL);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_normal", VSCLASS_EDIT, EP_EDITTEXT, ETS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_hot", VSCLASS_EDIT, EP_EDITTEXT, ETS_HOT);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_selected", VSCLASS_EDIT, EP_EDITTEXT, ETS_SELECTED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_disabled", VSCLASS_EDIT, EP_EDITTEXT, ETS_DISABLED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_readonly", VSCLASS_EDIT, EP_EDITTEXT, ETS_READONLY);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_statictext", VSCLASS_STATIC, STAT_TEXT, ETS_NORMAL);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"c2_normal", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c2_hot", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_HOT);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c2_selected", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_PRESSED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c2_disabled", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_DISABLED);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_normal", VSCLASS_SCROLLBAR, SBP_THUMBBTNHORZ, SCRBS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_hover", VSCLASS_SCROLLBAR, SBP_THUMBBTNHORZ, SCRBS_HOVER);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_hot", VSCLASS_SCROLLBAR, SBP_THUMBBTNHORZ, SCRBS_HOT);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_selected", VSCLASS_SCROLLBAR, SBP_THUMBBTNHORZ, SCRBS_PRESSED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_disabled", VSCLASS_SCROLLBAR, SBP_THUMBBTNHORZ, SCRBS_DISABLED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_gutter", VSCLASS_TRACKBAR, TKP_TRACK, TRS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c3_track", VSCLASS_TRACKBAR, TKP_TRACK, TRS_BACKGROUND);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_normal", VSCLASS_MENU, MENU_BARITEM, MBI_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_hot", VSCLASS_MENU, MENU_BARITEM, MBI_HOT);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_selected", VSCLASS_MENU, MENU_BARITEM, MBI_PUSHED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_disabled", VSCLASS_MENU, MENU_BARITEM, MBI_DISABLED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_disabled_hot", VSCLASS_MENU, MENU_BARITEM, MBI_DISABLEDHOT);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_disabled_selected", VSCLASS_MENU, MENU_BARITEM, MBI_DISABLEDPUSHED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_gutter", VSCLASS_MENU, MENU_POPUPGUTTER, 0);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c4_separator", VSCLASS_MENU, MENU_POPUPSEPARATOR, 0);
+
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_normal", VSCLASS_STATIC, STAT_TEXT, ETS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_hot", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_HOT);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_selected", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_PRESSED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_disabled", VSCLASS_STATIC, STAT_TEXT, ETS_DISABLED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_checked", VSCLASS_BUTTON, BP_CHECKBOX, CBS_CHECKEDNORMAL);
+
+				ofs << L"\r\n\t\t"s << std::format(LR"(</NamedColors>)");
+				ofs << L"\r\n\t"s << std::format(LR"(</Attributes>)");
+				ofs << L"\r\n"s << std::format(LR"(</Skin>)");
+			}
+
+			return TRUE;
 		}
 
 		//

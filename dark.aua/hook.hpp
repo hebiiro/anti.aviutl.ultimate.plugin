@@ -19,7 +19,7 @@ namespace apn::dark
 			if (!hook::icon.init()) return FALSE;
 			if (!hook::window.init()) return FALSE;
 			if (!hook::comdlg.init()) return FALSE;
-//			if (!hook::program.init()) return FALSE;
+			if (!hook::dll.init()) return FALSE;
 			if (!hook::double_buffer.init()) return FALSE;
 
 			return TRUE;
@@ -33,7 +33,7 @@ namespace apn::dark
 			MY_TRACE_FUNC("");
 
 			hook::double_buffer.exit();
-			hook::program.exit();
+			hook::dll.exit();
 			hook::comdlg.exit();
 			hook::window.exit();
 			hook::icon.exit();

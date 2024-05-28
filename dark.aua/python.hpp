@@ -157,6 +157,7 @@ namespace apn::dark
 					}
 					catch (const std::exception& error)
 					{
+						(void)error;
 						MY_TRACE("{}\n", error.what());
 					}
 				}

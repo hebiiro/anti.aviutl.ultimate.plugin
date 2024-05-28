@@ -40,8 +40,10 @@ namespace apn::dark::skin::theme
 		// このクラスはビジュアルスタイルクラスのコレクションです。
 		//
 		struct {
-			std::unordered_map<HTHEME, std::shared_ptr<VSClass>> from_handle;
-			std::unordered_map<Info, std::shared_ptr<VSClass>, Info::Hash> from_info;
+			std::map<HTHEME, std::shared_ptr<VSClass>> from_handle;
+			std::map<Info, std::shared_ptr<VSClass>> from_info;
+//			std::unordered_map<HTHEME, std::shared_ptr<VSClass>> from_handle;
+//			std::unordered_map<Info, std::shared_ptr<VSClass>, Info::Hash> from_info;
 		} vsclasses;
 
 		inline static HWND get_theme_window()
@@ -102,13 +104,26 @@ namespace apn::dark::skin::theme
 				my::theme::unique_ptr<> theme(for_dpi ?
 					open_theme_data_for_dpi(vsclass_name) : open_theme_data(vsclass_name));
 
-				// ビジュアルスタイルクラスのインスタンスを作成します。
-				// ここで渡されたテーマハンドルはビジュアルスタイルクラスが持つ
-				// スマートポインタによって閉じられます。
-				vsclass = std::make_shared<VSClass>(theme.release(), vsclass_name);
+				// まず既存のビジュアルスタイルクラスを検索します。
+				auto it = vsclasses.from_handle.find(theme.get());
 
-				// テーマハンドルからビジュアルスタイルクラスを取得できるようにしておきます。
-				vsclasses.from_handle[vsclass->theme.get()] = vsclass;
+				// 既存のビジュアルスタイルクラスが存在しない場合は
+				if (it == vsclasses.from_handle.end())
+				{
+					// ビジュアルスタイルクラスのインスタンスを作成します。
+					// ここで渡されたテーマハンドルはビジュアルスタイルクラスが持つ
+					// スマートポインタによって閉じられます。
+					vsclass = std::make_shared<VSClass>(theme.release(), vsclass_name);
+
+					// テーマハンドルからビジュアルスタイルクラスを取得できるようにしておきます。
+					vsclasses.from_handle[vsclass->theme.get()] = vsclass;
+				}
+				// 既存のビジュアルスタイルクラスが存在する場合は
+				else
+				{
+					// 既存のビジュアルスタイルクラスを使用します。
+					vsclass = it->second;
+				}
 
 				// ビジュアルスタイルクラス情報からビジュアルスタイルクラスを取得できるようにしておきます。
 				vsclasses.from_info[info] = vsclass;

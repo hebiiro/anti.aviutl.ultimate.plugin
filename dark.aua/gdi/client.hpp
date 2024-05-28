@@ -9,56 +9,63 @@ namespace apn::dark::gdi
 	{
 		inline static constexpr LPCTSTR c_prop_name = _T("apn::dark::gdi::client");
 
+		using Generator = std::shared_ptr<Renderer> (*)();
+		std::unordered_map<my::tstring, Generator> generators;
+
+		//
+		// コンストラクタです。
+		//
+		Client()
+		{
+			generators[normalize(_T("#32770"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<DialogRenderer>(); };
+			generators[normalize(WC_STATIC)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<StaticRenderer>(); };
+			generators[normalize(WC_BUTTON)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ButtonRenderer>(); };
+			generators[normalize(WC_EDIT)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<EditBoxRenderer>(); };
+			generators[normalize(WC_LISTBOX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
+			generators[normalize(_T("ListviewPopup"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
+			generators[normalize(_T("ComboLBox"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
+			generators[normalize(WC_COMBOBOX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ComboBoxRenderer>(); };
+//			generators[normalize(WC_COMBOBOXEX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
+			generators[normalize(WC_COMBOBOXEX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ComboBoxExRenderer>(); };
+			generators[normalize(TOOLTIPS_CLASS)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ToolTipRenderer>(); };
+			generators[normalize(TRACKBAR_CLASS)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TrackBarRenderer>(); };
+			generators[normalize(UPDOWN_CLASS)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<SpinRenderer>(); };
+			generators[normalize(WC_HEADER)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<HeaderRenderer>(); };
+			generators[normalize(WC_LISTVIEW)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListViewRenderer>(); };
+			generators[normalize(_T("DirectUIHWND"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListViewRenderer>(); };
+			generators[normalize(WC_TREEVIEW)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TreeViewRenderer>(); };
+			generators[normalize(TOOLBARCLASSNAME)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ToolBarRenderer>(); };
+			generators[normalize(WC_TABCONTROL)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TabRenderer>(); };
+			generators[normalize(_T("AviUtl"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlRenderer>(); };
+			generators[normalize(_T("AviUtlButton"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlButtonRenderer>(); };
+			generators[normalize(_T("ExtendedFilterClass"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<SettingDialogRenderer>(); };
+			generators[normalize(_T("WindowsForms10.msctls_trackbar32.app.0.297b065_r93_ad1"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TrackBarRenderer>(); };
+		}
+
+		//
+		// 与えられたクラス名をノーマライズして返します。
+		//
+		inline static my::tstring normalize(const my::tstring& class_name)
+		{
+			return my::transform(class_name, toupper);
+		}
+
 		//
 		// GDIレンダラをウィンドウにアタッチします。
 		//
-		inline static void attach_renderer(HWND hwnd, const auto& class_name)
+		void attach_renderer(HWND hwnd, const my::tstring& class_name)
 		{
 			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name);
 
-			if (class_name == _T("#32770")) Renderer::attach(hwnd, std::make_shared<DialogRenderer>());
-			else if (class_name == WC_STATIC) Renderer::attach(hwnd, std::make_shared<StaticRenderer>());
-			else if (class_name == WC_BUTTON) Renderer::attach(hwnd, std::make_shared<ButtonRenderer>());
-			else if (class_name == WC_EDIT) Renderer::attach(hwnd, std::make_shared<EditBoxRenderer>());
-			else if (class_name == WC_LISTBOX) Renderer::attach(hwnd, std::make_shared<ListBoxRenderer>());
-			else if (class_name == _T("ListviewPopup")) Renderer::attach(hwnd, std::make_shared<ListBoxRenderer>());
-			else if (class_name == _T("ComboLBox")) Renderer::attach(hwnd, std::make_shared<ListBoxRenderer>());
-			else if (class_name == WC_COMBOBOX) Renderer::attach(hwnd, std::make_shared<ComboBoxRenderer>());
-//			else if (class_name == WC_COMBOBOXEX) Renderer::attach(hwnd, std::make_shared<ListBoxRenderer>());
-			else if (class_name == WC_COMBOBOXEX) Renderer::attach(hwnd, std::make_shared<ComboBoxExRenderer>());
-			else if (class_name == TOOLTIPS_CLASS) Renderer::attach(hwnd, std::make_shared<ToolTipRenderer>());
-			else if (class_name == TRACKBAR_CLASS) Renderer::attach(hwnd, std::make_shared<TrackBarRenderer>());
-			else if (class_name == UPDOWN_CLASS) Renderer::attach(hwnd, std::make_shared<SpinRenderer>());
-			else if (class_name == WC_HEADER) Renderer::attach(hwnd, std::make_shared<HeaderRenderer>());
-			else if (class_name == WC_LISTVIEW) Renderer::attach(hwnd, std::make_shared<ListViewRenderer>());
-			else if (class_name == _T("DirectUIHWND")) Renderer::attach(hwnd, std::make_shared<ListViewRenderer>());
-			else if (class_name == WC_TREEVIEW) Renderer::attach(hwnd, std::make_shared<TreeViewRenderer>());
-			else if (class_name == TOOLBARCLASSNAME) Renderer::attach(hwnd, std::make_shared<ToolBarRenderer>());
-			else if (class_name == WC_TABCONTROL) Renderer::attach(hwnd, std::make_shared<TabRenderer>());
-			else if (class_name == _T("AviUtl")) Renderer::attach(hwnd, std::make_shared<AviUtlRenderer>());
-			else if (class_name == _T("AviUtlButton")) Renderer::attach(hwnd, std::make_shared<AviUtlButtonRenderer>());
-			else if (class_name == _T("ExtendedFilterClass")) Renderer::attach(hwnd, std::make_shared<SettingDialogRenderer>());
-#if 0
-			else if (class_name.find(_T("WindowsForms10.") _T("Window")) != class_name.npos) Renderer::attach(hwnd, std::make_shared<DialogRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_STATIC) != class_name.npos) Renderer::attach(hwnd, std::make_shared<StaticRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_BUTTON) != class_name.npos) Renderer::attach(hwnd, std::make_shared<ButtonRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_EDIT) != class_name.npos) Renderer::attach(hwnd, std::make_shared<EditBoxRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_COMBOBOX) != class_name.npos) Renderer::attach(hwnd, std::make_shared<ComboBoxRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_LISTBOX) != class_name.npos) Renderer::attach(hwnd, std::make_shared<ListBoxRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") TOOLTIPS_CLASS) != class_name.npos) Renderer::attach(hwnd, std::make_shared<ToolTipRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") TRACKBAR_CLASS) != class_name.npos) Renderer::attach(hwnd, std::make_shared<TrackBarRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") UPDOWN_CLASS) != class_name.npos) Renderer::attach(hwnd, std::make_shared<SpinRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_LISTVIEW) != class_name.npos) Renderer::attach(hwnd, std::make_shared<ListViewRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_TREEVIEW) != class_name.npos) Renderer::attach(hwnd, std::make_shared<TreeViewRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") TOOLBARCLASSNAME) != class_name.npos) Renderer::attach(hwnd, std::make_shared<ToolBarRenderer>());
-			else if (class_name.find(_T("WindowsForms10.") WC_TABCONTROL) != class_name.npos) Renderer::attach(hwnd, std::make_shared<TabRenderer>());
-#endif
+			auto it = generators.find(class_name);
+			if (it == generators.end()) return;
+			Renderer::attach(hwnd, (*it->second)());
 		}
 
 		//
 		// ウィンドウを微調整します。
 		//
-		inline static void tweak_window(HWND hwnd, const auto& class_name)
+		void tweak_window(HWND hwnd, const my::tstring& class_name)
 		{
 			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name);
 
@@ -67,12 +74,12 @@ namespace apn::dark::gdi
 				if (!hive.renderer_locked)
 					skin::dwm.set_window_attribute(hwnd, FALSE);
 			}
-			else if (class_name == WC_BUTTON)
+			else if (class_name == normalize(WC_BUTTON))
 			{
 				if (my::get_ex_style(hwnd) & WS_EX_STATICEDGE)
 					hive.static_edge_buttons.emplace_back(hwnd);
 			}
-			else if (class_name == WC_STATIC)
+			else if (class_name == normalize(WC_STATIC))
 			{
 				// ラウドネスメーター(全体)のスタティックテキストを微調整します。
 
@@ -87,12 +94,12 @@ namespace apn::dark::gdi
 		//
 		// レンダラーの初期化処理を実行します。
 		//
-		inline static void init_renderer(HWND hwnd)
+		void init_renderer(HWND hwnd)
 		{
 			MY_TRACE_FUNC("{:#010x}", hwnd);
 
 			// ウィンドウのクラス名を取得します。
-			auto class_name = my::get_class_name(hwnd);
+			auto class_name = normalize(my::get_class_name<my::tstring>(hwnd));
 			MY_TRACE_STR(class_name);
 
 			// GDIレンダラーをアタッチします。
@@ -105,7 +112,7 @@ namespace apn::dark::gdi
 		//
 		// レンダラーの後始末処理を実行します。
 		//
-		inline static void exit_renderer(HWND hwnd)
+		void exit_renderer(HWND hwnd)
 		{
 			MY_TRACE_FUNC("{:#010x}", hwnd);
 
@@ -131,11 +138,11 @@ namespace apn::dark::gdi
 			{
 				::SetProp(hwnd, c_prop_name, &client);
 
-				init_renderer(hwnd);
+				client.init_renderer(hwnd);
 			}
 			else if (message == WM_NCDESTROY && ::GetProp(hwnd, c_prop_name))
 			{
-				exit_renderer(hwnd);
+				client.exit_renderer(hwnd);
 			}
 
 //			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", wnd_proc, hwnd, message, wParam, lParam);
@@ -153,24 +160,6 @@ namespace apn::dark::gdi
 					MY_TRACE_FUNC("WM_ACTIVATE, {}", active);
 
 					skin::dwm.set_window_attribute(hwnd, active);
-
-					break;
-				}
-			case WM_RBUTTONUP:
-				{
-					// テスト
-
-					MY_TRACE_HWND(hwnd);
-					auto parent = ::GetParent(hwnd);
-					MY_TRACE_HWND(parent);
-					auto rc_hwnd = my::get_window_rect(hwnd);
-					auto rc_parent = my::get_window_rect(parent);
-
-					//::SetWindowPos(parent, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-
-					auto renderer = Renderer::from_handle(hwnd);
-
-					int n = 0;
 
 					break;
 				}

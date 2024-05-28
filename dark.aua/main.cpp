@@ -66,7 +66,7 @@
 #include "hook/icon.hpp"
 #include "hook/window.hpp"
 #include "hook/comdlg.hpp"
-#include "hook/program.hpp"
+#include "hook/dll.hpp"
 #include "hook/double_buffer.hpp"
 #include "hook.hpp"
 #include "addin_dialog.hpp"
@@ -89,13 +89,19 @@ namespace apn::dark
 		// カスタムロガーを設定します。
 		static struct Logger : my::Tracer::Logger {
 			virtual void output(LPCTSTR raw, LPCTSTR text) override {
-				if (::GetKeyState(VK_F1) < 0) ::OutputDebugString(text);
+				::OutputDebugString(text);
+//				if (::GetKeyState(VK_F1) < 0) ::OutputDebugString(text);
 			}
 		} logger;
 		my::Tracer::logger = &logger;
 #endif
 		my::case_insensitive_wstring args(_args);
 		if (args.find(L"debug") == args.npos) my::Tracer::logger = nullptr;
+
+		// 黒窓のダミーを読み込みます。
+		// 本物より先に読み込む必要があります。
+		hive.darken_window = ::LoadLibrary(magi.get_module_file_name(_T("DarkenWindow.aul")).c_str());
+		MY_TRACE_HEX(hive.darken_window);
 
 		return &addin;
 	}
@@ -109,7 +115,7 @@ namespace apn::dark
 		{
 		case DLL_PROCESS_ATTACH:
 			{
-				my::tracer_to_file::init(instance);
+//				my::tracer_to_file::init(instance);
 
 				MY_TRACE_FUNC("DLL_PROCESS_ATTACH");
 
@@ -131,7 +137,7 @@ namespace apn::dark
 				assets_io.exit();
 				config_io.exit();
 
-				my::tracer_to_file::exit();
+//				my::tracer_to_file::exit();
 
 				break;
 			}

@@ -24,7 +24,7 @@ namespace apn::dark::hook
 			my::hook::attach(DrawThemeTextEx);
 			my::hook::attach(DrawThemeIcon);
 			my::hook::attach(DrawThemeEdge);
-#if 1
+#if 0
 			my::hook::attach(OpenThemeData);
 			my::hook::attach(OpenThemeDataForDpi);
 			my::hook::attach(OpenThemeDataEx);
@@ -37,14 +37,15 @@ namespace apn::dark::hook
 				return FALSE;
 			}
 
-			hive.orig.DrawThemeParentBackground = DrawThemeParentBackground.orig_proc;
 			hive.orig.DrawThemeBackground = DrawThemeBackground.orig_proc;
 			hive.orig.DrawThemeBackgroundEx = DrawThemeBackgroundEx.orig_proc;
 			hive.orig.DrawThemeText = DrawThemeText.orig_proc;
 			hive.orig.DrawThemeTextEx = DrawThemeTextEx.orig_proc;
+#if 0
+			hive.orig.DrawThemeParentBackground = DrawThemeParentBackground.orig_proc;
 			hive.orig.DrawThemeIcon = DrawThemeIcon.orig_proc;
 			hive.orig.DrawThemeEdge = DrawThemeEdge.orig_proc;
-
+#endif
 			return TRUE;
 		}
 
