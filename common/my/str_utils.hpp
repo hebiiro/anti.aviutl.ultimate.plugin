@@ -79,6 +79,14 @@ namespace my
 	using case_insensitive_wstring = std::basic_string<wchar_t, case_insensitive_char_traits<wchar_t>>;
 	using case_insensitive_tstring = std::basic_string<TCHAR, case_insensitive_char_traits<TCHAR>>;
 
+	template <typename T, typename F>
+	inline T transform(const T& _s, F func)
+	{
+		T s(_s);
+		std::transform(s.begin(), s.end(), s.begin(), func);
+		return s;
+	}
+
 	//
 	// std::stringをstd::wstringに変換して返します。
 	// https://nprogram.hatenablog.com/entry/2018/01/03/113206
@@ -275,9 +283,10 @@ namespace my
 	//
 	// クラス名を返します。
 	//
+	template <typename T = case_insensitive_tstring>
 	inline auto get_class_name(HWND hwnd, size_t buffer_length = MAX_PATH)
 	{
-		case_insensitive_tstring buffer;
+		T buffer;
 		buffer.resize(buffer_length);
 		const auto length = ::GetClassName(hwnd, buffer.data(), buffer.length());
 		buffer.resize(length);
