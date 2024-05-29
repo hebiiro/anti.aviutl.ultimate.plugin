@@ -2,7 +2,10 @@
 
 * [AviUtl](http://spring-fragrance.mints.ne.jp/aviutl/)のプラグインです。
 * プラグイン数上限の問題を解決するために、既存の複数のプラグインの機能を一つにまとめています。
-* [最新バージョンをダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)
+
+## ⬇️ ダウンロード
+
+* [最新バージョンはこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)
 
 ## 🚀 導入方法
 
@@ -21,6 +24,7 @@
 
 ## 🔖 更新履歴
 
+* r26 - 2024/05/29 🩹 [dark] 日本語を含むファイルパスを正しく処理できない問題に対応
 * r25 - 2024/05/28 ⚡️ [dark] rigayaさんの出力プラグインに対応
 * r24 - 2024/05/27 🩹 [ease_select] コンフィグファイルが存在しない場合に発生していた問題に対応
 * r23 - 2024/05/27 ⚡️ Pythonの読み込み先を選択できる機能を追加
