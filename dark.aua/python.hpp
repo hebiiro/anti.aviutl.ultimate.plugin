@@ -131,7 +131,7 @@ namespace apn::dark
 			try
 			{
 				auto __file__ = ws(dark_module.attr("__file__"));
-				auto dark_dir_name = std::filesystem::path(__file__).parent_path();
+				auto dark_dir_name = std::filesystem::path(__file__).parent_path().wstring();
 				MY_TRACE_STR(dark_dir_name);
 
 				std::vector<std::string> unload_modules;
@@ -151,10 +151,9 @@ namespace apn::dark
 						auto __file__ = ws(module.attr("__file__"));
 						MY_TRACE_STR(__file__);
 
-						my::case_insensitive_wstring dir_name =
-							std::filesystem::path(__file__).parent_path().c_str();
-						MY_TRACE_STR(dir_name.c_str());
-						if (!dir_name.starts_with(dark_dir_name.c_str())) continue;
+						auto dir_name = std::filesystem::path(__file__).parent_path().wstring();
+						MY_TRACE_STR(dir_name);
+						if (!dir_name.starts_with(dark_dir_name)) continue;
 
 						auto base_name = std::filesystem::path(__file__).filename();
 						MY_TRACE_STR(base_name);

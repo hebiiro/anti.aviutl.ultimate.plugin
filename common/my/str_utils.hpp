@@ -10,83 +10,6 @@ namespace my
 	using tstring = std::basic_string<TCHAR>;
 	using tstring_view = std::basic_string_view<TCHAR>;
 
-	template <typename T>
-	struct case_insensitive_char_traits
-	{
-		using base_traits = std::char_traits<T>;
-
-		using char_type = T;
-		using int_type = int;
-		using off_type = std::streamoff;
-		using pos_type = std::streampos;
-		using state_type = std::mbstate_t;
-		using comparison_category = std::weak_ordering;
-
-		static constexpr void assign(char_type& c1, const char_type& c2) noexcept
-		{
-			base_traits::assign(c1, c2);
-		}
-
-		static constexpr bool eq(char_type c1, char_type c2) noexcept
-		{
-			return base_traits::eq(std::tolower(c1), std::tolower(c2));
-		}
-
-		static constexpr bool lt(char_type c1, char_type c2) noexcept
-		{
-			return base_traits::lt(std::tolower(c1), std::tolower(c2));
-		}
-
-		static constexpr int compare(const char_type* s1, const char_type* s2, size_t n)
-		{
-			auto order = std::lexicographical_compare_three_way(s1, s1 + n, s2, s2 + n,
-				[](char_type c1, char_type c2) -> std::weak_ordering { return std::tolower(c1) <=> std::tolower(c2); });
-			return order == std::weak_ordering::equivalent ? 0 : order == std::weak_ordering::greater ? 1 : -1;
-		}
-
-		static constexpr size_t length(const char_type* s)
-		{
-			return base_traits::length(s);
-		}
-
-		static constexpr const char_type* find(const char_type* s, size_t n, const char_type& a)
-		{
-			// https://x.com/sigma_axis/status/1784444143969947864
-			// >> 見つからなかった場合の戻り値が std::find_if() の場合は 第2引数，std::char_traits<>::find() の場合はnullptrです．
-			auto ret = std::find_if(s, s + n, [a](char_type c) { return std::tolower(c) == a; });
-			return ret == s + n ? nullptr : ret;
-
-//			return std::find_if(s, s + n, [a](char_type c) { return std::tolower(c) == a; });
-		}
-
-		static constexpr char_type* move(char_type* s1, const char_type* s2, size_t n)
-		{
-			return base_traits::move(s1, s2, n);
-		}
-
-		static constexpr char_type* copy(char_type* s1, const char_type* s2, size_t n)
-		{
-			return base_traits::copy(s1, s2, n);
-		}
-
-		static constexpr char_type* assign(char_type* s, size_t n, char_type a)
-		{
-			return base_traits::assign(s, n, a);
-		}
-	};
-
-	using case_insensitive_string = std::basic_string<char, case_insensitive_char_traits<char>>;
-	using case_insensitive_wstring = std::basic_string<wchar_t, case_insensitive_char_traits<wchar_t>>;
-	using case_insensitive_tstring = std::basic_string<TCHAR, case_insensitive_char_traits<TCHAR>>;
-
-	template <typename T, typename F>
-	inline T transform(const T& _s, F func)
-	{
-		T s(_s);
-		std::transform(s.begin(), s.end(), s.begin(), func);
-		return s;
-	}
-
 	//
 	// std::stringをstd::wstringに変換して返します。
 	// https://nprogram.hatenablog.com/entry/2018/01/03/113206
@@ -210,9 +133,9 @@ namespace my
 	//
 	// str内のfromをtoに置換した文字列を返します。
 	//
-	inline std::wstring replace(const std::wstring& str, const std::wstring& from, const std::wstring& to)
+	inline tstring replace(const tstring& str, const tstring& from, const tstring& to)
 	{
-		std::wstring result;
+		tstring result;
 
 		size_t current_pos = 0;
 		while (true)
@@ -231,19 +154,60 @@ namespace my
 	}
 
 	//
-	// s内にxが含まれているかを判定します。
+	// 与えられ文字列を小文字にして返します。
 	//
-	inline auto contains(const tstring& s, const tstring& x)
+	inline tstring to_lower(const tstring& s)
 	{
-		return s.find(x) != s.npos;
+		tstring result(s);
+		::CharLowerBuff(result.data(), result.size());
+		return result;
 	}
 
 	//
-	// s内にxが含まれているかを判定します。
+	// 与えられ文字列を大文字にして返します。
 	//
-	inline auto contains_i(const case_insensitive_tstring& s, const case_insensitive_tstring& x)
+	inline tstring to_upper(const tstring& s)
 	{
-		return s.find(x) != s.npos;
+		tstring result(s);
+		::CharUpperBuff(result.data(), result.size());
+		return result;
+	}
+
+	//
+	// 与えられ文字列が同じならtrueを返します。
+	//
+	inline bool eq(const tstring& s1, const tstring& s2)
+	{
+		return s1 == s2;
+	}
+
+	//
+	// s1内にs2が含まれている場合はtrueを返します。
+	//
+	inline auto contains(const tstring& s1, const tstring& s2)
+	{
+		return s1.find(s2) != s1.npos;
+	}
+
+	namespace case_insensitive
+	{
+		//
+		// 与えられ文字列が同じならtrueを返します。
+		// 大文字小文字を無視して比較します。
+		//
+		inline bool eq(const tstring& s1, const tstring& s2)
+		{
+			return my::eq(to_upper(s1), to_upper(s2));
+		}
+
+		//
+		// s1内にs2が含まれている場合はtrueを返します。
+		// 大文字小文字を無視して比較します。
+		//
+		inline auto contains(const tstring& s1, const tstring& s2)
+		{
+			return my::contains(to_upper(s1), to_upper(s2));
+		}
 	}
 
 	//
@@ -283,11 +247,9 @@ namespace my
 	//
 	// クラス名を返します。
 	//
-	template <typename T = case_insensitive_tstring>
 	inline auto get_class_name(HWND hwnd, size_t buffer_length = MAX_PATH)
 	{
-		T buffer;
-		buffer.resize(buffer_length);
+		tstring buffer(buffer_length, _T('\0'));
 		const auto length = ::GetClassName(hwnd, buffer.data(), buffer.length());
 		buffer.resize(length);
 		return buffer;

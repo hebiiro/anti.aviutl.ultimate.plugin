@@ -43,12 +43,9 @@ namespace apn::workspace::hook
 		//
 		// 指定されたウィンドウがフック対象の場合はTRUEを返します。
 		//
-		inline static BOOL is_hook_target(HWND hwnd, const auto& _class_name, const auto& _window_name)
+		inline static BOOL is_hook_target(HWND hwnd, const my::tstring& class_name, const my::tstring& window_name)
 		{
-			if (_class_name.empty() || _window_name.empty()) return FALSE;
-
-			my::case_insensitive_tstring class_name(_class_name.c_str());
-			my::case_insensitive_tstring window_name(_window_name.c_str());
+			if (class_name.empty() || window_name.empty()) return FALSE;
 
 			// ついでに主要ウィンドウのハンドルはここで取得しておきます。
 
@@ -78,7 +75,7 @@ namespace apn::workspace::hook
 		//
 		// ウィンドウをフックします。
 		//
-		inline static HWND hook_window(HWND hwnd, const auto& class_name, const auto& window_name)
+		inline static HWND hook_window(HWND hwnd, const my::tstring& class_name, const my::tstring& window_name)
 		{
 			MY_TRACE_FUNC("{:#010x}, {}, {}", hwnd, class_name, window_name);
 

@@ -108,7 +108,7 @@ namespace apn::image_export
 
 			std::filesystem::path path(file_name);
 			std::filesystem::create_directories(path.parent_path());
-			my::case_insensitive_wstring extension = path.extension().c_str();
+			auto extension = my::to_lower(path.extension());
 			MY_TRACE_STR(extension);
 
 			ULONG quality = hive.quality;

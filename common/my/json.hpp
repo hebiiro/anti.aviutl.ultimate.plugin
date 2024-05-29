@@ -258,8 +258,7 @@ namespace my
 		{
 			if (auto optional = node.get_value_optional<std::string>())
 			{
-				my::case_insensitive_wstring str =
-					my::cp_to_wide(optional.value(), CP_UTF8).c_str();
+				auto str = my::cp_to_wide(optional.value(), CP_UTF8);
 
 				for (const auto& label : labels)
 				{

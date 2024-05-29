@@ -95,8 +95,8 @@ namespace apn::dark
 		} logger;
 		my::Tracer::logger = &logger;
 #endif
-		my::case_insensitive_wstring args(_args);
-		if (args.find(L"debug") == args.npos) my::Tracer::logger = nullptr;
+		auto args = my::to_lower(_args);
+		if (my::contains(args, L"debug")) my::Tracer::logger = nullptr;
 
 		// 黒窓のダミーを読み込みます。
 		// 本物より先に読み込む必要があります。

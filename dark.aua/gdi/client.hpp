@@ -47,7 +47,7 @@ namespace apn::dark::gdi
 		//
 		inline static my::tstring normalize(const my::tstring& class_name)
 		{
-			return my::transform(class_name, toupper);
+			return my::to_upper(class_name);
 		}
 
 		//
@@ -99,7 +99,7 @@ namespace apn::dark::gdi
 			MY_TRACE_FUNC("{:#010x}", hwnd);
 
 			// ウィンドウのクラス名を取得します。
-			auto class_name = normalize(my::get_class_name<my::tstring>(hwnd));
+			auto class_name = normalize(my::get_class_name(hwnd));
 			MY_TRACE_STR(class_name);
 
 			// GDIレンダラーをアタッチします。
