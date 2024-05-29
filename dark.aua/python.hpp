@@ -52,6 +52,8 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
+				MY_TRACE_STR(error.what());
+
 				std::cout << error.what() << std::endl;
 
 				return FALSE;
@@ -101,10 +103,16 @@ namespace apn::dark
 			catch (const std::exception& error)
 			{
 				(void)error;
+
 //				std::cout << error.what() << std::endl;
 
 				return FALSE;
 			}
+		}
+
+		inline static auto ws(const py::object& o)
+		{
+			return my::cp_to_wide(o.cast<std::string>(), CP_UTF8);
 		}
 
 		//
@@ -122,7 +130,7 @@ namespace apn::dark
 
 			try
 			{
-				auto __file__ = dark_module.attr("__file__").cast<std::string>();
+				auto __file__ = ws(dark_module.attr("__file__"));
 				auto dark_dir_name = std::filesystem::path(__file__).parent_path();
 				MY_TRACE_STR(dark_dir_name);
 
@@ -140,25 +148,26 @@ namespace apn::dark
 						MY_TRACE_STR(name);
 						if (name == "__main__") continue;
 
-						auto __file__ = module.attr("__file__").cast<std::string>();
+						auto __file__ = ws(module.attr("__file__"));
 						MY_TRACE_STR(__file__);
 
-						my::case_insensitive_string dir_name =
-							std::filesystem::path(__file__).parent_path().string().c_str();
+						my::case_insensitive_wstring dir_name =
+							std::filesystem::path(__file__).parent_path().c_str();
 						MY_TRACE_STR(dir_name.c_str());
-						if (!dir_name.starts_with(dark_dir_name.string().c_str())) continue;
+						if (!dir_name.starts_with(dark_dir_name.c_str())) continue;
 
 						auto base_name = std::filesystem::path(__file__).filename();
 						MY_TRACE_STR(base_name);
 
-						if (base_name == "dark.pyd" || base_name == "boot.py") continue;
+						if (base_name == L"dark.pyd" || base_name == L"boot.py") continue;
 
 						unload_modules.emplace_back(name);
 					}
 					catch (const std::exception& error)
 					{
 						(void)error;
-						MY_TRACE("{}\n", error.what());
+
+						MY_TRACE_STR(error.what());
 					}
 				}
 
@@ -174,6 +183,8 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
+				MY_TRACE_STR(error.what());
+
 				std::cout << error.what() << std::endl;
 
 				return FALSE;
@@ -237,6 +248,7 @@ namespace apn::dark
 			catch (const std::exception& error)
 			{
 				MY_TRACE_STR(error.what());
+
 				std::cout << error.what() << std::endl;
 
 				return FALSE;
@@ -268,6 +280,7 @@ namespace apn::dark
 			catch (const std::exception& error)
 			{
 				MY_TRACE_STR(error.what());
+
 				std::cout << error.what() << std::endl;
 
 				return FALSE;
@@ -292,6 +305,8 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
+				MY_TRACE_STR(error.what());
+
 				std::cout << error.what() << std::endl;
 
 				return FALSE;
@@ -312,6 +327,8 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
+				MY_TRACE_STR(error.what());
+
 				std::cout << error.what() << std::endl;
 
 				return FALSE;

@@ -20,7 +20,7 @@
     <my_config_dir>$(my_core_dir)\config</my_config_dir>
     <my_assets_dir>$(my_core_dir)\assets</my_assets_dir>
     <my_debug_dir>$(my_source)\test</my_debug_dir>
-    <my_debug_host_dir>$(my_debug_dir)\aviutl</my_debug_host_dir>
+    <my_debug_host_dir>$(my_debug_dir)\aviutl_テスト</my_debug_host_dir>
     <my_debug_host_exe>$(my_debug_host_dir)\aviutl.exe</my_debug_host_exe>
     <my_debug_core_dir>$(my_debug_host_dir)\ultimate</my_debug_core_dir>
     <my_debug_module_dir>$(my_debug_core_dir)\module</my_debug_module_dir>
