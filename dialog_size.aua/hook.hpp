@@ -7,12 +7,54 @@ namespace apn::dialog_size
 	//
 	inline struct HookManager
 	{
+		HINSTANCE aviutl = nullptr;
+		HINSTANCE exedit = nullptr;
+
+		//
+		// カスタマイズされたダイアログのインスタンスを返します。
+		//
+		inline static HINSTANCE customize(HINSTANCE instance)
+		{
+			return hive.instance;
+		}
+
+		//
+		// カスタマイズされたダイアログのテンプレート名を返します。
+		//
+		inline static std::string customize(LPCSTR template_name)
+		{
+			std::string s(template_name);
+			auto it = std::find_if(std::begin(hive.custom_templates), std::end(hive.custom_templates),
+				[s](const auto& custom_template) { return s == custom_template.target_template_name; });
+			if (it != std::end(hive.custom_templates))
+			{
+				if (it->active)
+					return s + "_CUSTOM";
+			}
+
+			return s;
+		}
+
+		//
+		// 与えられたインスタンスがカスタマイズ対象の場合はTRUEを返します。
+		//
+		inline BOOL is_target(HINSTANCE instance)
+		{
+			if (instance == aviutl) return TRUE;
+			if (instance == exedit) return TRUE;
+
+			return FALSE;
+		}
+
 		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
 		{
 			MY_TRACE_FUNC("");
+
+			aviutl = ::GetModuleHandle(nullptr);
+			exedit = ::GetModuleHandle(_T("exedit.auf"));
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
@@ -57,7 +99,7 @@ namespace apn::dialog_size
 		// このクラスは::DialogBoxParamA()をフックします。
 		//
 		inline static struct {
-			inline static INT_PTR WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dialogFunc, LPARAM init_param)
+			inline static INT_PTR WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc, LPARAM init_param)
 			{
 				if ((DWORD)template_name <= 0x0000FFFF)
 				{
@@ -67,25 +109,24 @@ namespace apn::dialog_size
 				{
 					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
 
-					if (instance == ::GetModuleHandle(_T("exedit.auf")) ||
-						instance == ::GetModuleHandle(0))
+					if (hook_manager.is_target(instance))
 					{
 						MY_TRACE("ダイアログを置き換えます\n");
 
-						instance = hive.instance;
+						return orig_proc(customize(instance), customize(template_name).c_str(), parent, dlg_proc, init_param);
 					}
 				}
 
-				return orig_proc(instance, template_name, parent, dialogFunc, init_param);
+				return orig_proc(instance, template_name, parent, dlg_proc, init_param);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} DialogBoxParamA;
 
 		//
 		// このクラスは::CreateDialogParamA()をフックします。
 		//
 		inline static struct {
-			inline static HWND WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dialogFunc, LPARAM init_param)
+			inline static HWND WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc, LPARAM init_param)
 			{
 				if ((DWORD)template_name <= 0x0000FFFF)
 				{
@@ -95,18 +136,17 @@ namespace apn::dialog_size
 				{
 					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
 
-					if (instance == ::GetModuleHandle(_T("exedit.auf")) ||
-						instance == ::GetModuleHandle(0))
+					if (hook_manager.is_target(instance))
 					{
 						MY_TRACE("ダイアログを置き換えます\n");
 
-						instance = hive.instance;
+						return orig_proc(customize(instance), customize(template_name).c_str(), parent, dlg_proc, init_param);
 					}
 				}
 
-				return orig_proc(instance, template_name, parent, dialogFunc, init_param);
+				return orig_proc(instance, template_name, parent, dlg_proc, init_param);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} CreateDialogParamA;
 
 		//
@@ -117,16 +157,16 @@ namespace apn::dialog_size
 			{
 				MY_TRACE_FUNC("");
 
-				if (ofn->hInstance == ::GetModuleHandle(0))
+				if (ofn->hInstance == hook_manager.aviutl)
 				{
 					MY_TRACE("ダイアログを置き換えます\n");
 
-					ofn->hInstance = hive.instance;
+					ofn->hInstance = customize(ofn->hInstance);
 				}
 
 				return orig_proc(ofn);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} GetOpenFileNameA;
 
 		//
@@ -137,16 +177,16 @@ namespace apn::dialog_size
 			{
 				MY_TRACE_FUNC("");
 
-				if (ofn->hInstance == ::GetModuleHandle(0))
+				if (ofn->hInstance == hook_manager.aviutl)
 				{
 					MY_TRACE("ダイアログを置き換えます\n");
 
-					ofn->hInstance = hive.instance;
+					ofn->hInstance = customize(ofn->hInstance);
 				}
 
 				return orig_proc(ofn);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} GetSaveFileNameA;
 	} hook_manager;
 }

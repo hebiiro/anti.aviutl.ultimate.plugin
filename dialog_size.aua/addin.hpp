@@ -29,6 +29,10 @@ namespace apn::dialog_size
 		virtual BOOL on_window_init(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
 		{
 			if (!hook_manager.init()) return FALSE;
+			if (!config_io.init()) return FALSE;
+			if (!addin_window.init()) return FALSE;
+
+			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
 
 			return FALSE;
 		}
@@ -38,10 +42,34 @@ namespace apn::dialog_size
 		//
 		virtual BOOL on_window_exit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
 		{
+			config_io.write();
+
+			addin_window.exit();
+			config_io.exit();
 			hook_manager.exit();
+
+			return FALSE;
+		}
+
+		//
+		// この仮想関数は、ウィンドウコマンドを実行するときに呼ばれます。
+		//
+		virtual BOOL on_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+			switch (wParam)
+			{
+			case magi.c_command_id.c_addin.c_command:
+				{
+					MY_TRACE_FUNC("magi.c_command_id.c_addin.c_command");
+
+					// アドインウィンドウを表示します。
+					if (::IsWindow(addin_window)) addin_window.show();
+
+					break;
+				}
+			}
 
 			return FALSE;
 		}
 	} addin;
 }
-#pragma once
