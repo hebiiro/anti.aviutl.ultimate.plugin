@@ -80,9 +80,6 @@ namespace apn::dark
 			// 再描画します。
 			redraw();
 
-			// 黒窓の設定ファイルを構築します。
-			deploy_darken_window_settings();
-
 			{
 				// アセットフォルダを監視するスレッドを作成します。
 				DWORD tid = 0;
@@ -383,7 +380,7 @@ namespace apn::dark
 
 		inline static std::wstring to_string(COLORREF color)
 		{
-#if 1
+#if 0
 			return std::format(LR"(#{:1x}{:1x}{:1x})",
 				GetRValue(color) >> 4, GetGValue(color) >> 4, GetBValue(color) >> 4);
 #else
