@@ -36,20 +36,17 @@
     <ClCompile Include="app.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="FilerGui.rc">
-      <Filter>resource</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <c_none Include="res\FilerGui.rc2">
-      <Filter>resource</Filter>
-    </c_none>
     <c_none Include="main.def">
       <Filter>framework</Filter>
     </c_none>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\FilerGui.ico">
+    <ResourceCompile Include="filer_ui.exe.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\filer_ui.exe.ico">
       <Filter>resource</Filter>
     </Image>
   </ItemGroup>
