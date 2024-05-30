@@ -39,7 +39,6 @@ namespace apn::dark::gdi
 			generators[normalize(_T("AviUtl"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlRenderer>(); };
 			generators[normalize(_T("AviUtlButton"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlButtonRenderer>(); };
 			generators[normalize(_T("ExtendedFilterClass"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<SettingDialogRenderer>(); };
-			generators[normalize(_T("WindowsForms10.msctls_trackbar32.app.0.297b065_r93_ad1"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TrackBarRenderer>(); };
 		}
 
 		//
@@ -58,7 +57,14 @@ namespace apn::dark::gdi
 			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name);
 
 			auto it = generators.find(class_name);
-			if (it == generators.end()) return;
+			if (it == generators.end())
+			{
+				if (my::contains(class_name, normalize(_T("WindowsForms10.") TRACKBAR_CLASS)))
+					it = generators.find(normalize(TRACKBAR_CLASS));
+
+				if (it == generators.end())
+					return;
+			}
 			Renderer::attach(hwnd, (*it->second)());
 		}
 
