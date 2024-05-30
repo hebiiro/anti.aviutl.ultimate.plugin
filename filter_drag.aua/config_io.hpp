@@ -69,27 +69,6 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			aim_src.available = TRUE;
-			aim_src.alpha = 100;
-			aim_src.color = RGB(0x00, 0x00, 0xff);
-
-			aim_dst.available = TRUE;
-			aim_dst.alpha = 100;
-			aim_dst.color = RGB(0xff, 0x00, 0x00);
-
-			sight.config.available = FALSE;
-			sight.config.canvas_size = { 600, 400 };
-			sight.config.alpha = 200;
-			sight.config.pen_color = Color(192, 0, 0, 0);
-			sight.config.pen_width = 2.0f;
-			sight.config.brush_color = Color(255, 255, 255, 255);
-			sight.config.base = 16;
-			sight.config.width = 8;
-			sight.config.font_name = L"Segoe UI";
-			sight.config.font_size = 32.0f;
-			sight.config.rotate = 7.77f;
-			sight.config.start_offset = Point(0, 100);
-
 			using namespace my::json;
 
 			get_bool(root, "use_shift", keyboard_hook.use_shift);

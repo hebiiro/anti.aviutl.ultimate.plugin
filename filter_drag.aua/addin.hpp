@@ -38,6 +38,14 @@ namespace apn::filter_drag
 			if (!keyboard_hook.init()) return FALSE;
 			if (!config_checker.init()) return FALSE;
 
+			aim_src.available = TRUE;
+			aim_src.alpha = 100;
+			aim_src.color = RGB(0x00, 0x00, 0xff);
+
+			aim_dst.available = TRUE;
+			aim_dst.alpha = 100;
+			aim_dst.color = RGB(0xff, 0x00, 0x00);
+
 			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
 
 			return FALSE;
