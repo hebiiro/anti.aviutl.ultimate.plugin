@@ -17,13 +17,15 @@ namespace apn::dark::hook
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			my::hook::attach(DrawThemeParentBackground);
 			my::hook::attach(DrawThemeBackground);
 			my::hook::attach(DrawThemeBackgroundEx);
 			my::hook::attach(DrawThemeText);
 			my::hook::attach(DrawThemeTextEx);
+#if 0
+			my::hook::attach(DrawThemeParentBackground);
 			my::hook::attach(DrawThemeIcon);
 			my::hook::attach(DrawThemeEdge);
+#endif
 #if 0
 			my::hook::attach(OpenThemeData);
 			my::hook::attach(OpenThemeDataForDpi);
