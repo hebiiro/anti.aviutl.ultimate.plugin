@@ -20,8 +20,8 @@ namespace apn
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"dark", L"ダークモード化", TRUE, L"", std::vector<std::wstring>{ L"DarkenWindow.aul" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"workspace", L"ワークスペース化", TRUE, L"", std::vector<std::wstring>({ L"SplitWindow.aul" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"filer", L"ファイラ", TRUE, L"", std::vector<std::wstring>({ L"ObjectExplorer.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"レベルメーター", FALSE, L"", std::vector<std::wstring>({ L"LevelMeter.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", FALSE, L"", std::vector<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
+//			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"レベルメーター", FALSE, L"", std::vector<std::wstring>({ L"LevelMeter.auf" })));
+//			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", FALSE, L"", std::vector<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
 
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", std::vector<std::wstring>({ L"CopyFilter.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", std::vector<std::wstring>({ L"DragFilter.auf" })));
