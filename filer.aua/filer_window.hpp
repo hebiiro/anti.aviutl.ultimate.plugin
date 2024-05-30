@@ -16,7 +16,7 @@ namespace apn::filer
 		//
 		// 指定された名前のファイラウィンドウを作成して返します。
 		//
-		inline static std::shared_ptr<FilerWindow> create_instance(LPCTSTR name, BOOL full)
+		inline static std::shared_ptr<FilerWindow> create_instance(LPCTSTR name, BOOL full, const RECT& rc)
 		{
 			MY_TRACE_FUNC("{}, {}", name, full);
 
@@ -29,7 +29,7 @@ namespace apn::filer
 				WS_EX_NOPARENTNOTIFY | WS_EX_TOOLWINDOW,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				100, 100, 600, 400))
+				rc.left, rc.top, my::get_width(rc), my::get_height(rc)))
 			{
 				hive.message_box(L"{}(ファイラウィンドウ)の作成に失敗しました");
 
@@ -206,13 +206,6 @@ namespace apn::filer
 					// ターゲットのウィンドウ名を更新します。
 					update_window_name();
 
-					if (full)
-					{
-						// ファイラダイアログの状態が整ったので
-						// ファイラウィンドウを表示します。
-						::ShowWindow(*this, SW_SHOW);
-					}
-
 					break;
 				}
 			case share::message::c_get_file_name: // このメッセージはファイラダイアログで「取得」ボタンが押されたときに通知されます。
@@ -274,9 +267,9 @@ namespace apn::filer
 		//
 		// 指定された名前のファイラウィンドウを作成して返します。
 		//
-		auto create_filer_window(LPCTSTR name, BOOL full)
+		auto create_filer_window(LPCTSTR name, BOOL full, const RECT& rc)
 		{
-			return FilerWindow::create_instance(name, full);
+			return FilerWindow::create_instance(name, full, rc);
 		}
 
 		//
