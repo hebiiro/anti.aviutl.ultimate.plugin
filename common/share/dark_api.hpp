@@ -114,8 +114,8 @@ namespace Dark
 	//
 	struct Api
 	{
-		UINT (WINAPI* dark_get_current_id)() = 0;
-		Stuff* (WINAPI* dark_get_stuff)(LPCWSTR name) = 0;
+		UINT (WINAPI* dark_get_current_id)() = nullptr;
+		Stuff* (WINAPI* dark_get_stuff)(LPCWSTR name) = nullptr;
 
 		//
 		// ダークモードプラグインのエクスポート関数を取得します。
@@ -167,7 +167,7 @@ namespace Dark
 		//
 		Stuff* get_stuff(LPCWSTR name)
 		{
-			if (!dark_get_stuff) return 0;
+			if (!dark_get_stuff) return nullptr;
 
 			return dark_get_stuff(name);
 		}
@@ -178,7 +178,9 @@ namespace Dark
 	//
 	struct Module : Api
 	{
-		HMODULE dark = 0;
+		HMODULE python = nullptr;
+		HMODULE dark = nullptr;
+		HMODULE darken_window = nullptr;
 
 		//
 		// ダークモードプラグインをロードします。
@@ -200,30 +202,27 @@ namespace Dark
 				for (DWORD i = 0; i < c; i++) {
 					char file_name[MAX_PATH] = {};
 					::GetModuleFileNameExA(host, modules[i], file_name, std::size(file_name));
-					if (::StrStrIA(file_name, "dark.aua")) {
-						HMODULE dark = ::LoadLibraryExA(file_name, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+					if (::StrStrIA(file_name, "python312.dll")) {
+						python = ::LoadLibraryA(file_name);
+					} else if (::StrStrIA(file_name, "dark.aua")) {
+						dark = ::LoadLibraryExA(file_name, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
 						BOOL (WINAPI* dark_init)(HWND hwnd) =
 							(decltype(dark_init))::GetProcAddress(dark, "dark_init");
 						if (!dark_init) continue;
 						dark_init(client_window);
-						this->dark = dark;
-						break;
-					}
-					else if (::StrStrIA(file_name, "DarkenWindow.aul")) {
-						HMODULE dark = ::LoadLibraryExA(file_name, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+					} else if (::StrStrIA(file_name, "DarkenWindow.aul")) {
+						darken_window = ::LoadLibraryExA(file_name, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
 						void (WINAPI* DarkenWindow_init)(HWND hwnd) =
-							(decltype(DarkenWindow_init))::GetProcAddress(dark, "DarkenWindow_init");
+							(decltype(DarkenWindow_init))::GetProcAddress(darken_window, "DarkenWindow_init");
 						if (!DarkenWindow_init) continue;
 						DarkenWindow_init(client_window);
-						this->dark = dark;
-						break;
 					}
 				}
 			}
 
 			::CloseHandle(host);
 
-			if (!this->dark) return FALSE;
+			if (!dark && !darken_window) return FALSE;
 
 			return __super::init();
 		}
@@ -234,10 +233,11 @@ namespace Dark
 		//
 		BOOL exit()
 		{
-			if (!dark) return FALSE;
+			if (!dark && !darken_window) return FALSE;
 
 			BOOL (WINAPI* dark_exit)() =
 				(decltype(dark_exit))::GetProcAddress(dark, "dark_exit");
+			if (!dark_exit) return FALSE;
 
 			return dark_exit();
 		}
