@@ -38,7 +38,7 @@ namespace apn::dark::gdi
 						}
 					}
 
-					return draw_nc_paint(hwnd, &rc);
+					return draw_nc_paint(hwnd, origin, &rc);
 				}
 			}
 

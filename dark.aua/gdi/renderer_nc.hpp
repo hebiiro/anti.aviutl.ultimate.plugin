@@ -22,7 +22,7 @@ namespace apn::dark::gdi
 					auto rc = my::get_window_rect(hwnd);
 					auto origin = POINT { rc.left, rc.top };
 					::OffsetRect(&rc, -origin.x, -origin.y);
-					return draw_nc_paint(hwnd, &rc);
+					return draw_nc_paint(hwnd, origin, &rc);
 				}
 			}
 

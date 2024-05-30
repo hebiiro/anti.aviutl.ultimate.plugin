@@ -55,14 +55,23 @@ namespace apn::dark::gdi
 			return hive.orig.CallWindowProcInternal(current_state->wnd_proc, current_state->hwnd, current_state->message, current_state->wParam, current_state->lParam);
 		}
 
-		virtual LRESULT draw_nc_paint(HWND hwnd, LPRECT rc)
+		virtual LRESULT draw_nc_paint(HWND hwnd, const POINT& origin, LPRECT rc)
 		{
 			my::WindowDC dc(hwnd);
-			auto style = my::get_style(hwnd);
-			auto ex_style = my::get_ex_style(hwnd);
+
+			auto client_rc = my::get_client_rect(hwnd);
+			my::client_to_window(hwnd, &client_rc);
+			::OffsetRect(&client_rc, -origin.x, -origin.y);
+			::ExcludeClipRect(dc, client_rc.left, client_rc.top, client_rc.right, client_rc.bottom);
+
+			auto brush = (HBRUSH)::SendMessage(::GetParent(hwnd), WM_CTLCOLORDLG, (WPARAM)(HDC)dc, (LPARAM)hwnd);
+			if (brush) hive.orig.FillRect(dc, rc, brush);
 
 			if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 			{
+				auto style = my::get_style(hwnd);
+				auto ex_style = my::get_ex_style(hwnd);
+
 				if (ex_style & WS_EX_WINDOWEDGE)
 				{
 					auto part_id = WP_WINDOW_EDGE;
