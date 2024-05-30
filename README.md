@@ -16,7 +16,9 @@
 	* ultimate.aul
 	* ultimate(フォルダ)
 1. エクスプローラで`assets/deploy_python.ps1`を右クリックして『PowerShellで実行』を選択します。
-これにより、`assets/python32`にPython環境が構築されます。
+	1. これにより、`assets/python32`にPython環境が構築されます。
+	1. 実行してもウィンドウがすぐに閉じてしまう場合は、『プロパティ』の中の『許可する』にチェックを入れて再度試してください。
+
 
 ## 💡 使い方
 
