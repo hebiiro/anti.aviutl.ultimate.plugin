@@ -51,6 +51,16 @@ namespace apn::output_check
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			return addin_dialog.update_controls();
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -63,8 +73,6 @@ namespace apn::output_check
 			get_bool(root, "check_last_frame", hive.check_last_frame);
 			get_bool(root, "check_frame_rate", hive.check_frame_rate);
 			get_window(root, "addin_window", addin_window);
-
-			addin_dialog.update_controls();
 
 			return TRUE;
 		}

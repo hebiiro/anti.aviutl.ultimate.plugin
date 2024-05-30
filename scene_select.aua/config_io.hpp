@@ -51,6 +51,19 @@ namespace apn::scene_select
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			addin_window.calc_layout();
+			addin_window.redraw();
+
+			return TRUE;
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -65,9 +78,6 @@ namespace apn::scene_select
 			get_int(root, "button_count", hive.button_count);
 			get_size(root, "button_size", hive.button_size);
 			get_window(root, "addin_window", addin_window);
-
-			addin_window.calc_layout();
-			addin_window.redraw();
 
 			return TRUE;
 		}

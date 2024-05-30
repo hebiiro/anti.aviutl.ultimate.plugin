@@ -51,6 +51,16 @@ namespace apn::item_align
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			return addin_dialog.update_controls();
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -62,8 +72,6 @@ namespace apn::item_align
 			get_int(root, "frame", hive.frame);
 			get_bool(root, "use_current_frame", hive.use_current_frame);
 			get_window(root, "addin_window", addin_window);
-
-			addin_dialog.update_controls();
 
 			return TRUE;
 		}

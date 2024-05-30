@@ -51,6 +51,16 @@ namespace apn::text_split
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			return addin_dialog.update_controls();
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -67,8 +77,6 @@ namespace apn::text_split
 			get_int(root, "fit_width", hive.fit_width);
 			get_int(root, "erase_orig_item", hive.erase_orig_item);
 			get_window(root, "addin_window", addin_window);
-
-			addin_dialog.update_controls();
 
 			return TRUE;
 		}

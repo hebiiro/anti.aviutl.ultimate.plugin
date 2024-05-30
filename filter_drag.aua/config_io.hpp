@@ -51,6 +51,18 @@ namespace apn::filter_drag
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			sight.update_context();
+
+			return TRUE;
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -105,8 +117,6 @@ namespace apn::filter_drag
 			get_float(root, "sight.font_size", sight.config.font_size);
 			get_float(root, "sight.rotate", sight.config.rotate);
 			get_point(root, "sight.start_offset", sight.config.start_offset);
-
-			sight.update_context();
 
 			return TRUE;
 		}

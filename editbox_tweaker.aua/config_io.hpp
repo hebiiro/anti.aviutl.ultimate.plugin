@@ -51,6 +51,26 @@ namespace apn::editbox_tweaker
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			if (!hive.font.name.empty())
+			{
+				// HFONTを作成します。
+				// 複数行エディットボックスのWM_SETFONTでこのハンドルが渡されます。
+				hive.font.handle.reset(::CreateFontW(
+					hive.font.height, 0,
+					0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
+					0, 0, 0, hive.font.pitch, hive.font.name.c_str()));
+			}
+
+			return TRUE;
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -66,16 +86,6 @@ namespace apn::editbox_tweaker
 			get_string(root, "font.name", hive.font.name);
 			get_int(root, "font.height", hive.font.height);
 			get_int(root, "font.pitch", hive.font.pitch);
-
-			if (!hive.font.name.empty())
-			{
-				// HFONTを作成します。
-				// 複数行エディットボックスのWM_SETFONTでこのハンドルが渡されます。
-				hive.font.handle.reset(::CreateFontW(
-					hive.font.height, 0,
-					0, 0, 0, 0, 0, 0, DEFAULT_CHARSET,
-					0, 0, 0, hive.font.pitch, hive.font.name.c_str()));
-			}
 
 			return TRUE;
 		}

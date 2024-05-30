@@ -12,6 +12,12 @@ namespace apn
 		//
 		BOOL read_file(const std::wstring& config_file_name, auto& error_handler)
 		{
+			struct Updater {
+				StdConfigIO* config_io;
+				Updater(StdConfigIO* config_io) : config_io(config_io) {}
+				~Updater() { config_io->update(); }
+			} updater(this);
+
 			if (!std::filesystem::exists(config_file_name)) return FALSE;
 
 			try
@@ -54,6 +60,11 @@ namespace apn
 
 			return TRUE;
 		}
+
+		//
+		// この仮想関数はコンフィグが更新されたときに呼び出されます。
+		//
+		virtual BOOL update() { return FALSE; }
 
 		//
 		// 指定されたストリームから設定を読み込みます。

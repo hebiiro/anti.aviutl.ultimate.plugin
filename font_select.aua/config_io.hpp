@@ -51,6 +51,16 @@ namespace apn::font_select
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			return addin_dialog.update_controls();
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -74,8 +84,6 @@ namespace apn::font_select
 			get_bool(root, "use_backward", hive.use_backward);
 			get_bool(root, "use_forward", hive.use_forward);
 			get_window(root, "addin_window", addin_window);
-
-			addin_dialog.update_controls();
 
 			return TRUE;
 		}

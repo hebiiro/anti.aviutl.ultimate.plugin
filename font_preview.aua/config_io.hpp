@@ -51,6 +51,16 @@ namespace apn::font_preview
 		}
 
 		//
+		// コンフィグが更新されたのでコントロールに適用します。
+		//
+		virtual BOOL update() override
+		{
+			MY_TRACE_FUNC("");
+
+			return addin_dialog.update_controls();
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(ptree& root) override
@@ -71,8 +81,6 @@ namespace apn::font_preview
 			get_color(root, "paint.palette.select.color.sample", paint.palette[paint.c_style.c_select].color.sample);
 			get_color(root, "paint.palette.select.color.font_name", paint.palette[paint.c_style.c_select].color.font_name);
 			get_window(root, "addin_window", addin_window);
-
-			addin_dialog.update_controls();
 
 			return TRUE;
 		}
