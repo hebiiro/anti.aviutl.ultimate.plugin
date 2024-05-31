@@ -55,18 +55,8 @@ namespace apn::dark::gdi
 			return hive.orig.CallWindowProcInternal(current_state->wnd_proc, current_state->hwnd, current_state->message, current_state->wParam, current_state->lParam);
 		}
 
-		virtual LRESULT draw_nc_paint(HWND hwnd, const POINT& origin, LPRECT rc)
+		virtual LRESULT draw_nc_paint(HWND hwnd, HDC dc, const POINT& origin, LPRECT rc)
 		{
-			my::WindowDC dc(hwnd);
-
-			auto client_rc = my::get_client_rect(hwnd);
-			my::client_to_window(hwnd, &client_rc);
-			::OffsetRect(&client_rc, -origin.x, -origin.y);
-			::ExcludeClipRect(dc, client_rc.left, client_rc.top, client_rc.right, client_rc.bottom);
-
-			auto brush = (HBRUSH)::SendMessage(::GetParent(hwnd), WM_CTLCOLORDLG, (WPARAM)(HDC)dc, (LPARAM)hwnd);
-			if (brush) hive.orig.FillRect(dc, rc, brush);
-
 			if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 			{
 				auto style = my::get_style(hwnd);
@@ -101,6 +91,17 @@ namespace apn::dark::gdi
 					auto state_id = 0;
 					python.call_draw_figure(theme, dc, part_id, state_id, rc);
 					::InflateRect(rc, -2, -2);
+				}
+
+				if (style & WS_HSCROLL && style & WS_VSCROLL)
+				{
+					auto corner_rc = *rc;
+					corner_rc.top = corner_rc.bottom - ::GetSystemMetrics(SM_CYHSCROLL);
+					corner_rc.left = corner_rc.right - ::GetSystemMetrics(SM_CXVSCROLL);
+
+					auto part_id = WP_WINDOW_FACE;
+					auto state_id = 0;
+					python.call_draw_figure(theme, dc, part_id, state_id, &corner_rc);
 				}
 			}
 

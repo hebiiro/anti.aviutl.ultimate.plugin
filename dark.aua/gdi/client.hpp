@@ -39,6 +39,7 @@ namespace apn::dark::gdi
 			generators[normalize(_T("AviUtl"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlRenderer>(); };
 			generators[normalize(_T("AviUtlButton"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlButtonRenderer>(); };
 			generators[normalize(_T("ExtendedFilterClass"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<SettingDialogRenderer>(); };
+			generators[normalize(_T("apn::workspace::container"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<RendererNc>(); };
 		}
 
 		//

@@ -4,6 +4,7 @@ namespace apn::dark::gdi
 {
 	struct ListBoxRenderer : RendererNc
 	{
+#if 0
 		virtual LRESULT on_subclass_proc(MessageState* current_state) override
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}",
@@ -11,7 +12,7 @@ namespace apn::dark::gdi
 
 			return __super::on_subclass_proc(current_state);
 		}
-
+#endif
 		virtual HBRUSH on_ctl_color(HWND hwnd, UINT message, HDC dc, HWND control, HBRUSH brush) override
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}, bk_color = {:#010x}, text_color = {:#010x}", hwnd, message, dc, control, brush, ::GetBkColor(dc), ::GetTextColor(dc));

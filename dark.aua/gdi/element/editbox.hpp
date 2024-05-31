@@ -2,47 +2,58 @@
 
 namespace apn::dark::gdi
 {
-	struct EditBoxRenderer : Renderer
+	struct EditBoxRenderer : RendererNc
 	{
+#if 0
 		virtual LRESULT on_subclass_proc(MessageState* current_state) override
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}",
-//				current_state->hwnd, current_state->message, current_state->wParam, current_state->lParam);
+			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}",
+				current_state->hwnd, current_state->message, current_state->wParam, current_state->lParam);
 
-			switch (current_state->message)
+			return __super::on_subclass_proc(current_state);
+		}
+#endif
+		virtual LRESULT draw_nc_paint(HWND hwnd, HDC dc, const POINT& origin, LPRECT rc) override
+		{
+			// スピンボタンのバディの場合の処理です。
+
+			auto spin = ::GetWindow(hwnd, GW_HWNDNEXT);
+			if (my::get_class_name(spin) == UPDOWN_CLASS)
 			{
-			case WM_NCPAINT:
+				auto spin_style = my::get_style(spin);
+				if (spin_style & UDS_AUTOBUDDY)
 				{
-					auto hwnd = current_state->hwnd;
-					auto rc = my::get_window_rect(hwnd);
-					auto origin = POINT { rc.left, rc.top };
-					::OffsetRect(&rc, -origin.x, -origin.y);
+					auto spin_rc = my::get_window_rect(spin);
+					auto spin_w = my::get_width(spin_rc);
+					auto spin_h = my::get_height(spin_rc);
 
-					auto spin = ::GetWindow(hwnd, GW_HWNDNEXT);
-					if (my::get_class_name(spin) == UPDOWN_CLASS)
+					if (spin_style & UDS_ALIGNLEFT)
 					{
-						auto spin_style = my::get_style(spin);
-						if (spin_style & UDS_AUTOBUDDY)
-						{
-							auto spin_rc = my::get_window_rect(spin);
-							auto spin_w = my::get_width(spin_rc);
-							auto spin_h = my::get_height(spin_rc);
-
-							if (spin_style & UDS_ALIGNLEFT)
-							{
-							}
-							else if (spin_style & UDS_ALIGNRIGHT)
-							{
-								rc.right += spin_w;
-							}
-						}
 					}
+					else if (spin_style & UDS_ALIGNRIGHT)
+					{
+						if (auto theme = skin::theme::manager.get_theme(VSCLASS_EDIT))
+						{
+							my::WindowDC dc(hwnd);
 
-					return draw_nc_paint(hwnd, origin, &rc);
+							auto client_rc = my::get_client_rect(hwnd);
+							auto client_w = my::get_width(client_rc);
+							auto window_w = my::get_width(*rc);
+
+							auto fill_rc = *rc;
+							fill_rc.left = fill_rc.right - (window_w - client_w) / 2;
+
+							auto part_id = EP_EDITTEXT;
+							auto state_id = ::IsWindowEnabled(hwnd) ? ETS_NORMAL : ETS_DISABLED;
+							python.call_draw_figure(theme, dc, part_id, state_id, &fill_rc);
+						}
+
+						rc->right += spin_w;
+					}
 				}
 			}
 
-			return __super::on_subclass_proc(current_state);
+			return __super::draw_nc_paint(hwnd, dc, origin, rc);
 		}
 
 		virtual HBRUSH on_ctl_color(HWND hwnd, UINT message, HDC dc, HWND control, HBRUSH brush) override
