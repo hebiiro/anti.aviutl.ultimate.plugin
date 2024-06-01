@@ -83,7 +83,7 @@ namespace apn::dark
 	// エクスポート関数です。
 	// このDLLで実装したアドインオブジェクトを返します。
 	//
-	Addin* WINAPI core_get_addin(LPCWSTR _args)
+	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
 #if defined(_DEBUG) && 1
 		// カスタムロガーを設定します。
@@ -95,8 +95,7 @@ namespace apn::dark
 		} logger;
 		my::Tracer::logger = &logger;
 #endif
-		auto args = my::to_lower(_args);
-		if (my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
 
 		// 黒窓のダミーを読み込みます。
 		// 本物より先に読み込む必要があります。
