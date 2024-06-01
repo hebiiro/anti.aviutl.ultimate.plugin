@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="font_listbox.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="hook.hpp" />
     <ClInclude Include="addin_dialog.hpp" />

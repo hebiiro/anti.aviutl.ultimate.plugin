@@ -33,117 +33,6 @@ namespace apn::font_preview
 			return TRUE;
 		}
 
-		//
-		// ドロップダウン時の処理です。
-		// ドロップダウンリストの位置を調整します。
-		//
-		BOOL on_drop_down(HWND combobox)
-		{
-			MY_TRACE_FUNC("{:#010x}", combobox);
-
-			COMBOBOXINFO cbi = { sizeof(cbi) };
-			::GetComboBoxInfo(combobox, &cbi);
-
-			auto listbox = cbi.hwndList;
-
-			// 一旦リストボックスを非表示にします。
-			::ShowWindow(listbox, SW_HIDE);
-
-			auto rc_combobox = my::get_window_rect(combobox);
-			auto rc_listbox = RECT { 0, 0, hive.window_size.cx, hive.window_size.cy };
-			my::client_to_window(listbox, &rc_listbox);
-			auto x = 0;
-			auto y = 0;
-			auto w = my::get_width(rc_listbox);
-			auto h = my::get_height(rc_listbox);
-
-			{
-				// 一旦リストボックスにサイズを適用します。
-				::SetWindowPos(listbox, 0, 0, 0, w, h,
-					SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-
-				// 改めてサイズを取得します。
-				rc_listbox = my::get_window_rect(listbox);
-				w = my::get_width(rc_listbox);
-				h = my::get_height(rc_listbox);
-			}
-
-			auto flag = FALSE;
-			auto rc_monitor = my::get_monitor_rect(combobox);
-
-			// リストボックスのボトムがモニタのボトムからはみ出す場合は
-			if (rc_combobox.bottom + h > rc_monitor.bottom)
-			{
-				// リストボックスのトップがモニタのトップからはみ出す場合は
-				if (rc_combobox.top - h < rc_monitor.top)
-				{
-					y = rc_monitor.top;
-					h = std::min<int>(h, my::get_height(rc_monitor));
-
-					// リストボックスのレフトがモニタのレフトからはみ出す場合は
-					if (rc_combobox.left - w < rc_monitor.left)
-					{
-						// リストボックスをコンボボックスの右側に配置します。
-						x = rc_combobox.right;
-						w = std::min<int>(w, rc_monitor.right - x);
-					}
-					else
-					{
-						// リストボックスをコンボボックスの左側に配置します。
-						x = rc_combobox.left - w;
-					}
-
-					// xとwをセットしたのでフラグを立てます。
-					flag = TRUE;
-				}
-				else
-				{
-					// リストボックスをコンボボックスの上側に配置します。
-					y = rc_combobox.top - h;
-				}
-			}
-			else
-			{
-				// リストボックスをコンボボックスの下側に配置します。
-				y = rc_combobox.bottom;
-			}
-
-			// xとwがまだセットされていない場合は
-			if (!flag)
-			{
-				// リストボックスの幅がモニタの幅を超えないように調整します。
-				w = std::min<int>(w, my::get_width(rc_monitor));
-
-				// リストボックスのレフトがモニタのレフトからはみ出す場合は
-				if (rc_combobox.left < rc_monitor.left)
-				{
-					// リストボックスのレフトがモニタのレフトと一致するように配置します。
-					x = rc_monitor.left;
-				}
-				// リストボックスのライトがモニタのライトからはみ出す場合は
-				else if (rc_combobox.left + w > rc_monitor.right)
-				{
-					// リストボックスのライトがモニタのライトと一致するように配置します。
-					x = rc_monitor.right - w;
-				}
-				else
-				{
-					// リストボックスのレフトがコンボボックスのレフトと一致するように配置します。
-					x = rc_combobox.left;
-				}
-			}
-
-			// リストボックス内のアイテムの高さを変更します。
-			::SendMessage(combobox, CB_SETITEMHEIGHT, 0, hive.item_size.cy);
-
-			// リストボックス本体の位置を変更します。
-			::SetWindowPos(listbox, 0, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
-
-			// リストボックスを表示します。
-			::ShowWindow(listbox, SW_SHOW);
-
-			return TRUE;
-		}
 
 		//
 		// オーナードロー用の処理です。
@@ -172,7 +61,7 @@ namespace apn::font_preview
 
 				// フォント名を描画します。
 				paint.draw_font_name(dc, font_name.c_str(), -1, &rc,
-					DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX, style);
+					DT_LEFT | DT_VCENTER | DT_SINGLELINE, style);
 			}
 			else
 			{
@@ -186,19 +75,19 @@ namespace apn::font_preview
 				// 背景を描画します。
 				paint.draw_background(dc, &rc, style);
 
-				if (hive.single_line)
+				if (hive.singleline)
 				{
 					// フォント名とサンプルをまとめて描画します。
 
 					auto text = font_name + hive.sample;
 
 					my::gdi::unique_ptr<HFONT> font(::CreateFont(
-						my::get_height(rc), 0, 0, 0, 0, FALSE, FALSE, FALSE,
+						hive.font_height, 0, 0, 0, 0, FALSE, FALSE, FALSE,
 						DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 						DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font_name.c_str()));
 					my::gdi::selector font_selector(dc, font.get());
 
-					paint.draw_sample(dc, text.c_str(), -1, &rc, DT_LEFT | DT_TOP | DT_NOPREFIX, style);
+					paint.draw_sample(dc, text.c_str(), -1, &rc, DT_LEFT | DT_TOP, style);
 				}
 				else
 				{
@@ -208,12 +97,17 @@ namespace apn::font_preview
 						auto text = hive.sample;
 
 						my::gdi::unique_ptr<HFONT> font(::CreateFont(
-							my::get_height(rc), 0, 0, 0, 0, FALSE, FALSE, FALSE,
+							hive.font_height, 0, 0, 0, 0, FALSE, FALSE, FALSE,
 							DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 							DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font_name.c_str()));
 						my::gdi::selector font_selector(dc, font.get());
 
-						paint.draw_sample(dc, text.c_str(), -1, &rc, DT_RIGHT | DT_BOTTOM | DT_NOPREFIX, style);
+						auto size = RECT {};
+						paint.draw_sample(dc, text.c_str(), -1, &size, DT_CALCRECT, style);
+
+						auto text_rc = rc;
+						text_rc.top = rc.bottom - size.bottom;
+						paint.draw_sample(dc, text.c_str(), -1, &text_rc, DT_RIGHT | DT_TOP, style);
 					}
 
 					{
@@ -221,7 +115,7 @@ namespace apn::font_preview
 
 						auto text = font_name;
 
-						paint.draw_font_name(dc, text.c_str(), -1, &rc, DT_LEFT | DT_TOP | DT_NOPREFIX, style);
+						paint.draw_font_name(dc, text.c_str(), -1, &rc, DT_LEFT | DT_TOP, style);
 					}
 				}
 			}
@@ -242,14 +136,10 @@ namespace apn::font_preview
 					auto id = LOWORD(wParam);
 					auto sender = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, id, sender);
+					MY_TRACE_FUNC("WM_COMMAND, {:#06x}, {:#06x}, {:#010x}", code, id, sender);
 
 					if (id == hive.c_control_id.c_font_combobox && code == CBN_DROPDOWN)
-					{
-						// このタイミングでは早すぎるので
-						// 一旦メッセージをポストしてから処理します。
-						::PostMessage(hwnd, hive.c_message.c_drop_down, 0, (LPARAM)sender);
-					}
+						font_listbox.start_hook(sender);
 
 					break;
 				}
@@ -261,12 +151,6 @@ namespace apn::font_preview
 
 					break;
 				}
-			}
-
-			if (message == hive.c_message.c_drop_down)
-			{
-				// CBN_DROPDOWNからの続きを処理します。
-				on_drop_down((HWND)lParam);
 			}
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);

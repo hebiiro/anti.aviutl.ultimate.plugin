@@ -14,6 +14,8 @@ namespace apn::font_preview
 		{
 			MY_TRACE_FUNC("");
 
+			std::fill(std::begin(hive.custom_colors), std::end(hive.custom_colors), RGB(0xff, 0xff, 0xff));
+
 			hive.config_file_name = magi.get_config_file_name(hive.instance);
 			MY_TRACE_STR(hive.config_file_name);
 
@@ -69,10 +71,11 @@ namespace apn::font_preview
 
 			using namespace my::json;
 
-			get_size(root, "item_size", hive.item_size);
+			get_int(root, "item_height", hive.item_height);
+			get_int(root, "font_height", hive.font_height);
 			get_size(root, "window_size", hive.window_size);
 			get_string(root, "sample", hive.sample);
-			get_bool(root, "single_line", hive.single_line);
+			get_bool(root, "singleline", hive.singleline);
 			get_label(root, "paint.mode", paint.mode, paint.c_mode.labels);
 			get_color(root, "paint.palette.normal.color.background", paint.palette[paint.c_style.c_normal].color.background);
 			get_color(root, "paint.palette.normal.color.sample", paint.palette[paint.c_style.c_normal].color.sample);
@@ -94,10 +97,11 @@ namespace apn::font_preview
 
 			using namespace my::json;
 
-			set_size(root, "item_size", hive.item_size);
+			set_int(root, "item_height", hive.item_height);
+			set_int(root, "font_height", hive.font_height);
 			set_size(root, "window_size", hive.window_size);
 			set_string(root, "sample", hive.sample);
-			set_bool(root, "single_line", hive.single_line);
+			set_bool(root, "singleline", hive.singleline);
 			set_label(root, "paint.mode", paint.mode, paint.c_mode.labels);
 			set_color(root, "paint.palette.normal.color.background", paint.palette[paint.c_style.c_normal].color.background);
 			set_color(root, "paint.palette.normal.color.sample", paint.palette[paint.c_style.c_normal].color.sample);

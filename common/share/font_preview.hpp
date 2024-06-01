@@ -38,9 +38,7 @@ namespace apn::font_preview
 		//
 		// テーマのハンドルです。
 		//
-		std::unique_ptr<
-			typename std::remove_pointer<HTHEME>::type,
-			decltype([](HTHEME x){ ::CloseThemeData(x); })> theme;
+		my::theme::unique_ptr<> theme;
 
 		//
 		// 描画モードです。
@@ -70,7 +68,9 @@ namespace apn::font_preview
 			dark.init();
 
 			// AviUtlウィンドウからメニューのテーマを取得します。
-			theme.reset(::OpenThemeData(magi.fp->hwnd_parent, VSCLASS_MENU));
+			auto hwnd = magi.fp->hwnd_parent;
+			auto dpi = ::GetDpiForWindow(hwnd);
+			theme.reset(::OpenThemeDataForDpi(hwnd, VSCLASS_MENU, dpi));
 
 			return TRUE;
 		}

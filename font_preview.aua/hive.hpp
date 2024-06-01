@@ -14,10 +14,6 @@ namespace apn::font_preview
 			inline static constexpr uint32_t c_font_combobox = 0x5654;
 		} c_control_id;
 
-		inline static constexpr struct Message {
-			inline static const uint32_t c_drop_down = ::RegisterWindowMessage(_T("apn::font_preview::drop_down"));
-		} c_message;
-
 		//
 		// このアドインのインスタンスハンドルです。
 		//
@@ -34,14 +30,19 @@ namespace apn::font_preview
 		HWND main_window = 0;
 
 		//
-		// プレビューアイテムのサイズです。
-		//
-		SIZE item_size = { 0, 48 };
-
-		//
 		// プレビューウィンドウのサイズです。
 		//
 		SIZE window_size = { 400, 600 };
+
+		//
+		// プレビューアイテムの高さです。
+		//
+		int item_height = 48;
+
+		//
+		// プレビューフォントの高さです。
+		//
+		int font_height = 48;
 
 		//
 		// プレビュー用のサンプル文字列です。
@@ -51,7 +52,12 @@ namespace apn::font_preview
 		//
 		// TRUEの場合はフォント名とサンプルをまとめて表示します。
 		//
-		BOOL single_line = FALSE;
+		BOOL singleline = FALSE;
+
+		//
+		// カラー選択ダイアログで使用するカスタムカラーの配列です。
+		//
+		COLORREF custom_colors[16] = {};
 
 		//
 		// メッセージボックスを表示します。

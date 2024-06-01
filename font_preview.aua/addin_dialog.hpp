@@ -5,81 +5,190 @@ namespace apn::font_preview
 	//
 	// このクラスはメインダイアログです。
 	//
-	inline struct AddinDialog : my::Dialog
+	inline struct AddinDialog : StdAddinDialog<IDD_MAIN_DIALOG>
 	{
-		BOOL locked = FALSE;
-		COLORREF colors[16] = {};
-
 		//
-		// 初期化処理を実行します。
+		// コントロールを更新します。
 		//
-		BOOL init(HWND parent)
-		{
-			MY_TRACE_FUNC("{:#010x}", parent);
-
-			return __super::create(hive.instance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), parent);
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
+		virtual void on_update_controls() override
 		{
 			MY_TRACE_FUNC("");
 
-			return destroy();
-		}
-
-		//
-		// コントロールの値を更新します。
-		//
-		BOOL update_controls()
-		{
-			MY_TRACE_FUNC("{}", locked);
-
-			if (locked) return FALSE;
-
-			locked = TRUE;
-
-			set_int(IDC_ITEM_SIZE_H, hive.item_size.cy);
+			set_text(IDC_SAMPLE_TEXT, hive.sample);
+			set_int(IDC_ITEM_HEIGHT, hive.item_height);
+			set_int(IDC_FONT_HEIGHT, hive.font_height);
 			set_int(IDC_WINDOW_SIZE_W, hive.window_size.cx);
 			set_int(IDC_WINDOW_SIZE_H, hive.window_size.cy);
-			set_text(IDC_SAMPLE, hive.sample);
+			set_check(IDC_SINGLELINE, hive.singleline);
 			set_combobox_index(IDC_PAINT_MODE, paint.mode);
-			set_check(IDC_SINGLE_LINE, hive.single_line);
-			set_uint(IDC_NORMAL_FILL, paint.palette[paint.c_style.c_normal].color.background);
-			set_uint(IDC_NORMAL_TEXT, paint.palette[paint.c_style.c_normal].color.sample);
-			set_uint(IDC_SELECT_FILL, paint.palette[paint.c_style.c_select].color.background);
-			set_uint(IDC_SELECT_TEXT, paint.palette[paint.c_style.c_select].color.sample);
-
-			locked = FALSE;
-
-			return TRUE;
+			set_uint(IDC_NORMAL_BACKGROUND_COLOR, paint.palette[paint.c_style.c_normal].color.background);
+			set_uint(IDC_NORMAL_PREVIEW_COLOR, paint.palette[paint.c_style.c_normal].color.sample);
+			set_uint(IDC_NORMAL_FONT_NAME_COLOR, paint.palette[paint.c_style.c_normal].color.font_name);
+			set_uint(IDC_SELECT_BACKGROUND_COLOR, paint.palette[paint.c_style.c_select].color.background);
+			set_uint(IDC_SELECT_PREVIEW_COLOR, paint.palette[paint.c_style.c_select].color.sample);
+			set_uint(IDC_SELECT_FONT_NAME_COLOR, paint.palette[paint.c_style.c_select].color.font_name);
 		}
 
 		//
-		// コンフィグの値を更新します。
+		// コンフィグを更新します。
 		//
-		BOOL update_config()
+		virtual void on_update_config() override
 		{
-			if (locked) return FALSE;
+			MY_TRACE_FUNC("");
 
-			hive.item_size.cy = get_int(IDC_ITEM_SIZE_H);
-			hive.window_size.cx = get_int(IDC_WINDOW_SIZE_W);
-			hive.window_size.cy = get_int(IDC_WINDOW_SIZE_H);
-			hive.sample = get_text(IDC_SAMPLE);
-			hive.single_line = get_check(IDC_SINGLE_LINE);
-			paint.mode = get_combobox_index(IDC_PAINT_MODE);
-			paint.palette[paint.c_style.c_normal].color.background = get_uint(IDC_NORMAL_FILL);
-			paint.palette[paint.c_style.c_normal].color.sample = get_uint(IDC_NORMAL_TEXT);
-			paint.palette[paint.c_style.c_select].color.background = get_uint(IDC_SELECT_FILL);
-			paint.palette[paint.c_style.c_select].color.sample = get_uint(IDC_SELECT_TEXT);
+			get_text(IDC_SAMPLE_TEXT, hive.sample);
+			get_int(IDC_ITEM_HEIGHT, hive.item_height);
+			get_int(IDC_FONT_HEIGHT, hive.font_height);
+			get_int(IDC_WINDOW_SIZE_W, hive.window_size.cx);
+			get_int(IDC_WINDOW_SIZE_H, hive.window_size.cy);
+			get_check(IDC_SINGLELINE, hive.singleline);
+			get_combobox_index(IDC_PAINT_MODE, paint.mode);
+			get_uint(IDC_NORMAL_BACKGROUND_COLOR, paint.palette[paint.c_style.c_normal].color.background);
+			get_uint(IDC_NORMAL_PREVIEW_COLOR, paint.palette[paint.c_style.c_normal].color.sample);
+			get_uint(IDC_NORMAL_FONT_NAME_COLOR, paint.palette[paint.c_style.c_normal].color.font_name);
+			get_uint(IDC_SELECT_BACKGROUND_COLOR, paint.palette[paint.c_style.c_select].color.background);
+			get_uint(IDC_SELECT_PREVIEW_COLOR, paint.palette[paint.c_style.c_select].color.sample);
+			get_uint(IDC_SELECT_FONT_NAME_COLOR, paint.palette[paint.c_style.c_select].color.font_name);
 
 			auto hwnd = magi.exin.get_setting_dialog();
 			auto combobox = ::GetDlgItem(hwnd, hive.c_control_id.c_font_combobox);
-			::InvalidateRect(combobox, 0, TRUE);
+			::InvalidateRect(combobox, nullptr, TRUE);
+		}
 
-			return TRUE;
+		//
+		// ダイアログの初期化処理です。
+		//
+		virtual void on_init_dialog() override
+		{
+			MY_TRACE_FUNC("");
+
+			init_combobox(IDC_PAINT_MODE, _T("自動"), _T("システムカラー"), _T("テーマ"), _T("カスタムカラー"));
+
+			using namespace my::layout;
+
+			auto margin_value = 2;
+			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
+			auto row = std::make_shared<RelativePos>(get_base_size() + margin_value * 2);
+			std::shared_ptr<AbsolutePos> q[12 + 1];
+			for (auto i = 0; i < std::size(q); i++)
+				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
+			auto multiline_row = std::make_shared<RelativePos>((get_base_size() + margin_value * 2) * 3);
+			auto groupbox_margin = RECT { margin_value * 4, get_base_size() / 2 + margin_value, margin_value * 4, margin_value * 4 };
+			auto groupbox_row = std::make_shared<RelativePos>(get_base_size() * 2 + margin_value * 2);
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, multiline_row);
+
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[5], margin, ctrl(IDC_SAMPLE_TEXT));
+				}
+
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, nullptr);
+
+					{
+						auto node = sub_node->add_pane(c_axis.c_vert, c_align.c_top, row);
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_ITEM_HEIGHT_STAT));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_ITEM_HEIGHT));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[10], margin, ctrl(IDC_FONT_HEIGHT_STAT));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_FONT_HEIGHT));
+					}
+
+					{
+						auto node = sub_node->add_pane(c_axis.c_vert, c_align.c_top, row);
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_WINDOW_SIZE_STAT));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_WINDOW_SIZE_W));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_WINDOW_SIZE_H));
+					}
+
+					{
+						auto node = sub_node->add_pane(c_axis.c_vert, c_align.c_top, row);
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[5], margin, ctrl(IDC_SINGLELINE));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_PAINT_MODE_STAT));
+						node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_PAINT_MODE));
+					}
+				}
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, groupbox_row, margin, ctrl(IDC_NORMAL_STAT));
+				auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12], groupbox_margin);
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[2], margin, ctrl(IDC_NORMAL_BACKGROUND_COLOR_STAT));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_NORMAL_BACKGROUND_COLOR));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_NORMAL_PREVIEW_COLOR_STAT));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_NORMAL_PREVIEW_COLOR));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[10], margin, ctrl(IDC_NORMAL_FONT_NAME_COLOR_STAT));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_NORMAL_FONT_NAME_COLOR));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, groupbox_row, margin, ctrl(IDC_SELECT_STAT));
+				auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12], groupbox_margin);
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[2], margin, ctrl(IDC_SELECT_BACKGROUND_COLOR_STAT));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_SELECT_BACKGROUND_COLOR));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_SELECT_PREVIEW_COLOR_STAT));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SELECT_PREVIEW_COLOR));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[10], margin, ctrl(IDC_SELECT_FONT_NAME_COLOR_STAT));
+				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_SELECT_FONT_NAME_COLOR));
+			}
+		}
+
+		//
+		// ダイアログのコマンド処理です。
+		//
+		virtual void on_command(UINT code, UINT id, HWND control) override
+		{
+			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+
+			switch (id)
+			{
+			case IDC_SAMPLE_TEXT:
+			case IDC_ITEM_HEIGHT:
+			case IDC_FONT_HEIGHT:
+			case IDC_WINDOW_SIZE_W:
+			case IDC_WINDOW_SIZE_H:
+				{
+					if (code == EN_UPDATE) update_config();
+
+					break;
+				}
+			case IDC_SINGLELINE:
+				{
+					update_config();
+
+					break;
+				}
+			case IDC_PAINT_MODE:
+				{
+					if (code == CBN_SELCHANGE) update_config();
+
+					break;
+				}
+			case IDC_NORMAL_BACKGROUND_COLOR:
+			case IDC_NORMAL_PREVIEW_COLOR:
+			case IDC_NORMAL_FONT_NAME_COLOR:
+			case IDC_SELECT_BACKGROUND_COLOR:
+			case IDC_SELECT_PREVIEW_COLOR:
+			case IDC_SELECT_FONT_NAME_COLOR:
+				{
+					auto color = get_uint(id);
+
+					CHOOSECOLOR cc { sizeof(cc) };
+					cc.hwndOwner = hwnd;
+					cc.lpCustColors = hive.custom_colors;
+					cc.rgbResult = color;
+					cc.Flags = CC_RGBINIT | CC_FULLOPEN;
+					if (!::ChooseColor(&cc)) return;
+
+					set_uint(id, cc.rgbResult);
+
+					::InvalidateRect(control, 0, FALSE);
+
+					update_config();
+
+					break;
+				}
+			}
 		}
 
 		//
@@ -89,86 +198,18 @@ namespace apn::font_preview
 		{
 			switch (message)
 			{
-			case WM_INITDIALOG:
-				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
-
-					std::fill(std::begin(colors), std::end(colors), RGB(0xff, 0xff, 0xff));
-
-					init_combobox(IDC_PAINT_MODE, _T("自動"), _T("システムカラー"), _T("テーマ"), _T("カスタムカラー"));
-
-					break;
-				}
-			case WM_COMMAND:
-				{
-					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
-
-					auto code = HIWORD(wParam);
-					auto id = LOWORD(wParam);
-					auto control = (HWND)lParam;
-
-					switch (id)
-					{
-					case IDOK:
-					case IDCANCEL: return 0;
-					case IDC_ITEM_SIZE_H:
-					case IDC_WINDOW_SIZE_W:
-					case IDC_WINDOW_SIZE_H:
-					case IDC_SAMPLE:
-					case IDC_NORMAL_THEME:
-					case IDC_SELECT_THEME:
-						{
-							if (code == EN_UPDATE) update_config();
-
-							break;
-						}
-					case IDC_PAINT_MODE:
-						{
-							if (code == CBN_SELCHANGE) update_config();
-
-							break;
-						}
-					case IDC_SINGLE_LINE:
-						{
-							update_config();
-
-							break;
-						}
-					case IDC_NORMAL_FILL:
-					case IDC_NORMAL_TEXT:
-					case IDC_SELECT_FILL:
-					case IDC_SELECT_TEXT:
-						{
-							auto color = get_uint(id);
-
-							CHOOSECOLOR cc { sizeof(cc) };
-							cc.hwndOwner = hwnd;
-							cc.lpCustColors = colors;
-							cc.rgbResult = color;
-							cc.Flags = CC_RGBINIT | CC_FULLOPEN;
-							if (!::ChooseColor(&cc)) return TRUE;
-
-							color = cc.rgbResult;
-
-							set_uint(id, color);
-							::InvalidateRect(control, 0, FALSE);
-
-							return TRUE;
-						}
-					}
-
-					break;
-				}
 			case WM_DRAWITEM:
 				{
 					auto id = (UINT)wParam;
 
 					switch (id)
 					{
-					case IDC_NORMAL_FILL:
-					case IDC_NORMAL_TEXT:
-					case IDC_SELECT_FILL:
-					case IDC_SELECT_TEXT:
+					case IDC_NORMAL_BACKGROUND_COLOR:
+					case IDC_NORMAL_PREVIEW_COLOR:
+					case IDC_NORMAL_FONT_NAME_COLOR:
+					case IDC_SELECT_BACKGROUND_COLOR:
+					case IDC_SELECT_PREVIEW_COLOR:
+					case IDC_SELECT_FONT_NAME_COLOR:
 						{
 							auto dis = (DRAWITEMSTRUCT*)lParam;
 							auto color = get_uint(id);

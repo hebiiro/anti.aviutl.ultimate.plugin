@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "hive.hpp"
 #include "hook.hpp"
+#include "font_listbox.hpp"
 #include "setting_dialog.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
@@ -16,7 +17,7 @@ namespace apn::font_preview
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!::StrStrIW(args, L"debug")) my::Tracer::logger = 0;
+		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
 
 		return &addin;
 	}

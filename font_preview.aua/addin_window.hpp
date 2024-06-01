@@ -46,7 +46,7 @@ namespace apn::font_preview
 				{
 					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
 
-					if (!addin_dialog.init(hwnd))
+					if (!addin_dialog.init(hive.instance, hwnd))
 					{
 						MY_TRACE("メインダイアログの作成に失敗しました\n");
 
