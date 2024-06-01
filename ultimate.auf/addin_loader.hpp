@@ -25,9 +25,6 @@ namespace apn
 					continue;
 				}
 
-				// 競合していないかチェックします。
-				if (conflicts(addin)) continue;
-
 				// アドインのファイル名を取得します。
 				auto file_name = magi.get_addin_file_name(addin->name);
 				MY_TRACE_STR(file_name);
@@ -45,26 +42,6 @@ namespace apn
 		BOOL exit()
 		{
 			return TRUE;
-		}
-
-		//
-		// 指定されたアドインが他のモジュールと競合している場合はTRUEを返します。
-		//
-		BOOL conflicts(const auto& addin)
-		{
-			BOOL result = FALSE;
-
-			for (const auto& conflict : addin->conflicts)
-			{
-				if (::GetModuleHandleW(conflict.c_str()))
-				{
-					std::wcout << std::format(L"\033[31m" L"{}と競合しているので{}は使用できません" L"\033[m", conflict, addin->name) << std::endl;
-
-					result = TRUE;
-				}
-			}
-
-			return result;
 		}
 
 		//

@@ -4,30 +4,52 @@ namespace apn
 {
 	inline struct HookManager
 	{
-		BOOL exited = FALSE;
-
 		//
 		// このクラスは::LoadLibraryA()をフックします。
 		//
 		inline static struct
 		{
-			inline static HMODULE WINAPI hook_proc(LPCSTR file_name)
+			//
+			// 指定されたプラグインと競合しているアドイン情報を返します。
+			//
+			inline static const Hive::Addin* conflicts(const std::wstring& file_name)
 			{
-				auto result = orig_proc(file_name);
+				for (const auto& addin : hive.addins)
+				{
+					if (!addin->active) continue;
 
-				if (hook_manager.exited) return result;
+					for (const auto& conflict : addin->conflicts)
+					{
+						if (::StrStrIW(file_name.c_str(), conflict.c_str()))
+							return addin.get();
+					}
+				}
+
+				return nullptr;
+			}
+
+			inline static HMODULE WINAPI hook_proc(LPCSTR _file_name)
+			{
+				auto file_name = my::ws(_file_name);
+
+				if (auto conflict = conflicts(file_name))
+				{
+					std::wcout << std::format(L"\033[31m" L"『{}』アドインと競合しているので『{}』プラグインは使用できません" L"\033[m",
+						conflict->display_name, std::filesystem::path(file_name).filename().wstring()) << std::endl;
+
+					return nullptr;
+				}
+
+				auto result = orig_proc(_file_name);
 
 				MY_TRACE("::LoadLibraryA({}) => {:#010x}\n", file_name, result);
 
-				if (::StrStrIA(file_name, "exedit.auf"))
+				if (::StrStrIW(file_name.c_str(), L"exedit.auf"))
 				{
 					MY_TRACE("拡張編集が読み込まれたのでアドレスを取得します\n");
 
 					// 拡張編集関連のアドレス情報を初期化します。
 					magi.exin.init();
-
-					// これ以上フックする必要はないのでフックを解除します。
-					hook_manager.exit();
 				}
 
 				return result;
@@ -53,19 +75,8 @@ namespace apn
 		BOOL exit()
 		{
 			MY_TRACE_FUNC("");
-#if 1
-			// フックをデタッチすると他のプログラムのフックもデタッチされてしまいます。
-			// そのため、フックはデタッチせずにフラグを立てるだけにします。
-			exited = TRUE;
+
 			return TRUE;
-#else
-			DetourTransactionBegin();
-			DetourUpdateThread(::GetCurrentThread());
-
-			my::hook::detach(LoadLibraryA);
-
-			return DetourTransactionCommit() == NO_ERROR;
-#endif
 		}
 	} hook_manager;
 }
