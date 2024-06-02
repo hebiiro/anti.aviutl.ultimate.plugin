@@ -13,16 +13,15 @@ namespace apn::dark::gdi
 					MY_TRACE_FUNC("WM_NCPAINT, {:#010x}, {:#010x}, {:#010x}",
 						current_state->hwnd, current_state->wParam, current_state->lParam);
 
+					__super::on_subclass_proc(current_state);
+
 					auto hwnd = current_state->hwnd;
-
-					auto style = my::get_style(hwnd);
-					if ((style & WS_CAPTION) == WS_CAPTION)
-						return __super::on_subclass_proc(current_state);
-
 					auto rc = my::get_window_rect(hwnd);
 					auto origin = POINT { rc.left, rc.top };
 					::OffsetRect(&rc, -origin.x, -origin.y);
+
 					my::WindowDC dc(hwnd);
+
 					return draw_nc_paint(hwnd, dc, origin, &rc);
 				}
 			}

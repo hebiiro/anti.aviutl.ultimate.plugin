@@ -27,6 +27,7 @@ namespace my
 		HDC dc = 0;
 
 		WindowDC(HWND hwnd) : hwnd(hwnd), dc(::GetWindowDC(hwnd)) {}
+		WindowDC(HWND hwnd, HRGN rgn, DWORD flags) : hwnd(hwnd), dc(::GetDCEx(hwnd, rgn, flags)) {}
 		~WindowDC() { if (dc) ::ReleaseDC(hwnd, dc); }
 		operator HDC() { return dc; }
 	};

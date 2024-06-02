@@ -85,6 +85,7 @@ namespace apn::ease_select_ui
 				get_string(ease_node, "horz", ease_window.horz);
 				get_string(ease_node, "vert", ease_window.vert);
 				get_int(ease_node, "alpha", ease_window.alpha);
+				get_int(ease_node, "margin", ease_window.margin);
 				get_int(ease_node, "hit_distance", ease_window.hit_distance);
 				get_int(ease_node, "segment_count", ease_window.segment_count);
 				get_bool(ease_node, "hide_cursor", ease_window.hide_cursor);
@@ -141,6 +142,7 @@ namespace apn::ease_select_ui
 				set_string(ease_node, "horz", ease_window.horz);
 				set_string(ease_node, "vert", ease_window.vert);
 				set_int(ease_node, "alpha", ease_window.alpha);
+				set_int(ease_node, "margin", ease_window.margin);
 				set_int(ease_node, "hit_distance", ease_window.hit_distance);
 				set_int(ease_node, "segment_count", ease_window.segment_count);
 				set_bool(ease_node, "hide_cursor", ease_window.hide_cursor);
