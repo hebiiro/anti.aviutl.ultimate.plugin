@@ -468,15 +468,14 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("{:#010x}", site);
 
+			// フローティングコンテナを非表示にします。
+			::ShowWindow(*float_container, SW_HIDE);
+
 			// ドッキングコンテナの親ウィンドウを指定されたウィンドウに切り替えます。
 			::SetParent(*dock_container, site);
 
 			// ターゲットの親ウィンドウをドッキングコンテナに切り替えます。
 			::SetParent(*this, *dock_container);
-
-			// フローティングコンテナを非表示にし、ドッキングコンテナを表示します。
-			::ShowWindow(*float_container, SW_HIDE);
-			::ShowWindow(*dock_container, SW_SHOW);
 		}
 
 		//
@@ -494,6 +493,9 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
+			// ドッキングコンテナを非表示にします。
+			::ShowWindow(*dock_container, SW_HIDE);
+
 			// フローティングコンテナのテキストを更新します。
 			::SetWindowTextW(*float_container,
 				my::get_window_text(*this).c_str());
@@ -503,11 +505,6 @@ namespace apn::workspace
 
 			// ターゲットの親ウィンドウをフローティングコンテナに切り替えます。
 			::SetParent(*this, *float_container);
-
-			// ドッキングコンテナを非表示にし、フローティングコンテナを表示します。
-			::ShowWindow(*dock_container, SW_HIDE);
-			if (::IsWindowVisible(*this))
-				::ShowWindow(*float_container, SW_SHOW);
 
 			// ドッキングコンテナの親ウィンドウをメインウィンドウに切り替えます。
 			::SetParent(*dock_container, hive.main_window);

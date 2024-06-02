@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="layout_list.hpp" />
     <ClInclude Include="preference_loader.hpp" />
     <ClInclude Include="preference_saver.hpp" />
     <ClInclude Include="Container\container.hpp" />

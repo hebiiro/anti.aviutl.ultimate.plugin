@@ -5,16 +5,29 @@ namespace apn::workspace
 	//
 	// このクラスはファイルからプリファレンスを保存します。
 	//
-	inline struct PreferenceSaver
+	struct PreferenceSaver : StdConfigIO
 	{
 		//
-		// 指定された要素からプリファレンスを保存します。
+		// 入出力オプションです。
 		//
-		BOOL save(ptree& node, BOOL layout_only)
-		{
-			MY_TRACE_FUNC("{}", layout_only);
+		uint32_t flags;
 
-//			if (!layout_only)
+		//
+		// コンストラクタです。
+		//
+		explicit PreferenceSaver(uint32_t flags = hive.c_preference_flag.c_default)
+			: flags(flags)
+		{
+		}
+
+		//
+		// ノードにプリファレンスを保存します。
+		//
+		virtual BOOL write_node(ptree& node) override
+		{
+			MY_TRACE_FUNC("");
+
+//			if (flags & hive.c_preference_flag.c_config)
 			{
 				set_int(node, "border_width", Pane::border_width);
 				set_int(node, "caption_height", Pane::caption_height);
@@ -31,6 +44,7 @@ namespace apn::workspace
 				set_bool(node, "scroll_force", hive.scroll_force);
 				set_bool(node, "maximum_play", hive.maximum_play);
 				set_bool(node, "show_tab_force", hive.show_tab_force);
+				set_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
 			}
 
 			// メインウィンドウを保存します。
@@ -112,6 +126,7 @@ namespace apn::workspace
 
 			ptree root_pane_node;
 			{
+				set_bool(root_pane_node, "is_solid", root->is_solid);
 				save_pane(root_pane_node, root);
 			}
 			node.put_child("root_pane", root_pane_node);
@@ -127,7 +142,6 @@ namespace apn::workspace
 			ptree main_window_node;
 			{
 				set_window(main_window_node, "placement", hive.main_window);
-
 				save_root_pane(main_window_node, hive.main_window);
 			}
 			node.put_child("main_window", main_window_node);
@@ -147,7 +161,6 @@ namespace apn::workspace
 					ptree sub_window_node;
 					{
 						set_shuttle_name(sub_window_node, "name", sub_window->name);
-
 						save_root_pane(sub_window_node, *sub_window);
 					}
 					sub_window_nodes.push_back(std::make_pair("", sub_window_node));
@@ -179,5 +192,5 @@ namespace apn::workspace
 			}
 			node.put_child("float_shuttle", float_shuttle_nodes);
 		}
-	} preference_saver;
+	};
 }

@@ -12,6 +12,8 @@ namespace apn::workspace
 		//
 		App()
 		{
+			MY_TRACE_FUNC("");
+
 			hive.app = this;
 		}
 
@@ -20,6 +22,8 @@ namespace apn::workspace
 		//
 		virtual BOOL read_preference() override
 		{
+			MY_TRACE_FUNC("");
+
 			return preference_io.read();
 		}
 
@@ -28,6 +32,8 @@ namespace apn::workspace
 		//
 		virtual BOOL write_preference() override
 		{
+			MY_TRACE_FUNC("");
+
 			return preference_io.write();
 		}
 
@@ -36,11 +42,24 @@ namespace apn::workspace
 		//
 		virtual BOOL import_layout() override
 		{
+			MY_TRACE_FUNC("");
+
 			// ファイル選択ダイアログを表示してファイル名を取得します。
 
-			// Shiftキーが押されている場合はレイアウトだけのインポートではなく、
-			// すべてのプリファレンスを完全に読み込みます。
-			auto layout_only = ::GetKeyState(VK_SHIFT) >= 0;
+			uint32_t flags = 0;
+
+			// Shiftキーが押されている場合は
+			if (::GetKeyState(VK_SHIFT) < 0)
+			{
+				// レイアウトだけのインポートではなく、
+				// すべてのプリファレンスを完全に読み込みます。
+				flags |= hive.c_preference_flag.c_config;
+			}
+			else
+			{
+				// 流動的なレイアウトだけを読み込みます。
+//				flags |= hive.c_preference_flag.c_fluid;
+			}
 
 			// ユーザーが指定したファイル名が格納されるバッファです。
 			std::wstring file_name(MAX_PATH, L'\0');
@@ -58,7 +77,7 @@ namespace apn::workspace
 				return FALSE;
 
 			// レイアウトをインポートします。
-			return PreferenceIO(TRUE).read_file(file_name, hive);
+			return PreferenceLoader(flags).read_file(file_name, hive);
 		}
 
 		//
@@ -66,6 +85,8 @@ namespace apn::workspace
 		//
 		virtual BOOL export_layout() override
 		{
+			MY_TRACE_FUNC("");
+
 			// ファイル選択ダイアログを表示してファイル名を取得します。
 
 			// ユーザーが指定したファイル名が格納されるバッファです。
@@ -84,7 +105,17 @@ namespace apn::workspace
 				return FALSE;
 
 			// レイアウトをエクスポートします。
-			return PreferenceIO(TRUE).write_file(file_name, hive);
+			return PreferenceSaver().write_file(file_name, hive);
+		}
+
+		//
+		// レイアウトを変更します。
+		//
+		virtual BOOL change_layout(const std::wstring& file_name) override
+		{
+			MY_TRACE_FUNC("{}", file_name);
+
+			return PreferenceLoader(hive.c_preference_flag.c_fluid).read_file(file_name, hive);
 		}
 	} app;
 }

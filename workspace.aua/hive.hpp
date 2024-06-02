@@ -16,7 +16,25 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_write_preference = WM_APP + 3;
 			inline static constexpr uint32_t c_init_shuttle = WM_APP + 4;
 			inline static constexpr uint32_t c_refresh_title = WM_APP + 5;
+			inline static constexpr uint32_t c_update_layout_list = WM_APP + 6;
 		} c_message;
+
+		inline static struct PreferenceFlag {
+			inline static constexpr uint32_t c_config = 0x00000001;
+			inline static constexpr uint32_t c_fluid = 0x00000002;
+			inline static constexpr uint32_t c_default = c_config;
+		} c_preference_flag;
+
+		inline static struct LayoutListMode {
+			inline static constexpr int32_t c_none = 0;
+			inline static constexpr int32_t c_top = 1;
+			inline static constexpr int32_t c_bottom = 2;
+			inline static constexpr my::Label labels[] = {
+				{ c_none, L"none" },
+				{ c_top, L"top" },
+				{ c_bottom, L"bottom" },
+			};
+		} c_layout_list_mode;
 
 		struct OrigWindow {
 			DWORD ex_style = 0;
@@ -54,6 +72,7 @@ namespace apn::workspace
 			virtual BOOL write_preference() = 0;
 			virtual BOOL import_layout() = 0;
 			virtual BOOL export_layout() = 0;
+			virtual BOOL change_layout(const std::wstring& file_name) = 0;
 		} *app = 0;
 
 		//
@@ -93,6 +112,7 @@ namespace apn::workspace
 		BOOL scroll_force = FALSE;
 		BOOL maximum_play = FALSE;
 		BOOL show_tab_force = FALSE;
+		int32_t layout_list_mode = c_layout_list_mode.c_none;
 
 		BOOL use_maximum_play = FALSE;
 

@@ -65,6 +65,30 @@ namespace apn::workspace
 		}
 
 		//
+		// 流動的なサブウィンドウを削除します。
+		//
+		inline static void clear_fluids()
+		{
+			// サブウィンドウを削除する度にコレクションの個数が変わってしまうので、まずコピーを作ります。
+			auto copy = collection;
+			for (auto sub_window : copy)
+			{
+				// ルートペインを取得します。
+				auto root = sub_window->get_root_pane(*sub_window);
+				if (!root) continue;
+
+				// ペインのレイアウトが固体化されている場合は何もしません。
+				if (root->is_solid) continue;
+
+				// 無駄な描画を減らすためにウィンドウを非表示にします。
+				::ShowWindow(*sub_window, SW_HIDE);
+
+				// サブウィンドウを削除します。
+				sub_window->destroy();
+			}
+		}
+
+		//
 		// 使用可能なシャトル名を返します。
 		//
 		inline static std::wstring get_available_name()
@@ -459,6 +483,18 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			SubWindow::clear();
+
+			return TRUE;
+		}
+
+		//
+		// 流動的なサブウィンドウを削除します。
+		//
+		BOOL clear_fluids()
+		{
+			MY_TRACE_FUNC("");
+
+			SubWindow::clear_fluids();
 
 			return TRUE;
 		}

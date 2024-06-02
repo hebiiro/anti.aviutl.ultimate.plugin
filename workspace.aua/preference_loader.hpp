@@ -5,16 +5,29 @@ namespace apn::workspace
 	//
 	// このクラスはファイルからプリファレンスを読み込みます。
 	//
-	inline struct PreferenceLoader
+	struct PreferenceLoader : StdConfigIO
 	{
 		//
-		// 指定された要素からプリファレンスを読み込みます。
+		// 入出力オプションです。
 		//
-		BOOL load(const ptree& node, BOOL layout_only)
-		{
-			MY_TRACE_FUNC("{}", layout_only);
+		uint32_t flags;
 
-			if (!layout_only)
+		//
+		// コンストラクタです。
+		//
+		explicit PreferenceLoader(uint32_t flags = hive.c_preference_flag.c_default)
+			: flags(flags)
+		{
+		}
+
+		//
+		// ノードからプリファレンスを読み込みます。
+		//
+		virtual BOOL read_node(ptree& node) override
+		{
+			MY_TRACE_FUNC("");
+
+			if (flags & hive.c_preference_flag.c_config)
 			{
 				get_int(node, "border_width", Pane::border_width);
 				get_int(node, "caption_height", Pane::caption_height);
@@ -31,6 +44,7 @@ namespace apn::workspace
 				get_bool(node, "scroll_force", hive.scroll_force);
 				get_bool(node, "maximum_play", hive.maximum_play);
 				get_bool(node, "show_tab_force", hive.show_tab_force);
+				get_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
 			}
 
 			// 事前にサブウィンドウを読み込みます。
@@ -99,7 +113,7 @@ namespace apn::workspace
 					if (!shuttle) continue;
 
 					//  ペインにシャトルを追加します。
-					pane->insert_shuttle(shuttle.get());
+					pane->insert_shuttle(shuttle.get(), FALSE);
 				}
 			}
 
@@ -132,7 +146,16 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
+			// ルートペインを取得します。
 			auto root = SubWindow::get_root_pane(hwnd);
+			if (!root) return;
+
+			// フルイドモードの場合は
+			if (flags & hive.c_preference_flag.c_fluid)
+			{
+				// ルートペインが固体化されている場合は何もしません。
+				if (root->is_solid) return;
+			}
 
 			// 一旦すべてのペインをリセットします。
 			root->reset_pane();
@@ -140,7 +163,10 @@ namespace apn::workspace
 			// ルートペインを読み込みます。
 			if (auto root_pane_nodes_op = node.get_child_optional("root_pane"))
 			{
-				load_pane(root_pane_nodes_op.value(), root);
+				const auto& root_pane_node = root_pane_nodes_op.value();
+
+				get_bool(root_pane_node, "is_solid", root->is_solid);
+				load_pane(root_pane_node, root);
 			}
 		}
 
@@ -152,8 +178,16 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			// 一旦すべてのサブウィンドウを削除します。
-			sub_window_manager.clear();
+			if (flags & hive.c_preference_flag.c_fluid)
+			{
+				// 一旦流動的なサブウィンドウを削除します。
+				sub_window_manager.clear_fluids();
+			}
+			else
+			{
+				// 一旦すべてのサブウィンドウを削除します。
+				sub_window_manager.clear();
+			}
 
 			// サブウィンドウを読み込みます。
 			if (auto sub_window_nodes_op = node.get_child_optional("sub_window"))
@@ -167,10 +201,19 @@ namespace apn::workspace
 					get_shuttle_name(sub_window_node, "name", name);
 					MY_TRACE_STR(name);
 
-					// サブウィンドウを作成します。
-					auto sub_window = std::make_shared<SubWindow>();
-					if (sub_window->create(name, hive.main_window))
-						sub_window->init(name, *sub_window);
+					// 既存のサブウィンドウが存在する場合は
+					if (auto shuttle = shuttle_manager.get(name))
+					{
+						// 何もしません。
+					}
+					// 既存のサブウィンドウが存在しない場合は
+					else
+					{
+						// サブウィンドウを作成します。
+						auto sub_window = std::make_shared<SubWindow>();
+						if (sub_window->create(name, hive.main_window))
+							sub_window->init(name, *sub_window);
+					}
 				}
 			}
 		}
@@ -261,5 +304,5 @@ namespace apn::workspace
 				}
 			}
 		}
-	} preference_loader;
+	};
 }

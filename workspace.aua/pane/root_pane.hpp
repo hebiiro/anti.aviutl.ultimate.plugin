@@ -10,6 +10,12 @@ namespace apn::workspace
 		std::shared_ptr<Pane> maximized_pane;
 
 		//
+		// レイアウトが固定かどうかのフラグです。
+		// TRUEの場合はレイアウトの再読み込みが抑制されます。
+		//
+		BOOL is_solid = FALSE;
+
+		//
 		// コンストラクタです。
 		//
 		RootPane(HWND owner)
@@ -69,7 +75,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			maximized_pane = 0;
+			maximized_pane = nullptr;
 
 			clear_all_shuttles();
 
@@ -78,30 +84,30 @@ namespace apn::workspace
 				if (!child) continue;
 
 				child->reset_pane();
-				child = 0;
+				child = nullptr;
 			}
 		}
 
 		//
 		// ペインを更新します。
 		//
-		virtual void update(LPCRECT rc, uint32_t flags) override
+		virtual void update(HDWP dwp, LPCRECT rc, uint32_t flags) override
 		{
 			MY_TRACE_FUNC("");
 
 			if (maximized_pane)
 			{
-				// ShowTabフラグなしで子ペインを更新します。
+				// c_show_tabフラグなしで子ペインを更新します。
 				// これにより、すべての子孫ペインのタブが非表示になります。
-				update_children(UpdateFlag::c_deep);
+				update_children(dwp, UpdateFlag::c_deep);
 
 				// maximized_paneがルートペインとなるようにレイアウトを更新します。
-				maximized_pane->update(rc, flags);
+				maximized_pane->update(dwp, rc, flags);
 			}
 			else
 			{
 				// thisがルートペインとなるようにレイアウトを更新します。
-				__super::update(rc, flags);
+				__super::update(dwp, rc, flags);
 			}
 		}
 	};

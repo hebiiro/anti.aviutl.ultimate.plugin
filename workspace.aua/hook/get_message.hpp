@@ -16,7 +16,7 @@ namespace apn::workspace::hook
 		{
 			MY_TRACE_FUNC("");
 
-			hook.reset(::SetWindowsHookEx(WH_GETMESSAGE, hook_proc, 0, ::GetCurrentThreadId()));
+			hook.reset(::SetWindowsHookEx(WH_GETMESSAGE, hook_proc, nullptr, ::GetCurrentThreadId()));
 			MY_TRACE_HEX(hook.get());
 
 			return !!hook;
@@ -49,7 +49,7 @@ namespace apn::workspace::hook
 				hwnd = ::GetParent(hwnd);
 			}
 
-			return 0;
+			return nullptr;
 		}
 
 		//
@@ -90,7 +90,7 @@ namespace apn::workspace::hook
 							if (!root) break;
 
 							// カーソル位置をクライアント座標に変換します。
-							::MapWindowPoints(0, dock_site, &point, 1);
+							::MapWindowPoints(nullptr, dock_site, &point, 1);
 
 							// カーソル位置にあるペインを取得します。
 							auto pane = root->hittest_pane(point);
@@ -105,11 +105,11 @@ namespace apn::workspace::hook
 									pane->set_caption_mode(Pane::c_caption_mode.c_show);
 
 								// ペインのレイアウトを更新します。
-								pane->update();
+								pane->update_origin();
 							}
 
 							// ウィンドウにメッセージが送られないようにします。
-							msg->hwnd = 0;
+							msg->hwnd = nullptr;
 						}
 
 						break;
@@ -142,7 +142,7 @@ namespace apn::workspace::hook
 				}
 			}
 
-			return ::CallNextHookEx(0, code, wParam, lParam);
+			return ::CallNextHookEx(nullptr, code, wParam, lParam);
 		}
 	} get_message;
 }

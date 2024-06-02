@@ -35,6 +35,7 @@ namespace apn::workspace
 			if (!preference_io.init()) return FALSE;
 			if (!container_manager.init()) return FALSE;
 			if (!main_window->init()) return FALSE;
+			if (!layout_list.init()) return FALSE;
 
 			if (!hook_manager.pre_init()) return FALSE;
 
@@ -50,6 +51,7 @@ namespace apn::workspace
 
 			hook_manager.post_exit();
 
+			layout_list.exit();
 			main_window->exit();
 			container_manager.exit();
 			preference_io.exit();

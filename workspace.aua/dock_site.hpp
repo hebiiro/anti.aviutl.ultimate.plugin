@@ -29,6 +29,7 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_move_to_left = 1102;
 			inline static constexpr uint32_t c_move_to_right = 1103;
 			inline static constexpr uint32_t c_undock = 1104;
+			inline static constexpr uint32_t c_is_solid = 1105;
 			inline static constexpr struct Shuttle {
 				inline static constexpr uint32_t c_begin = 2000;
 				inline static constexpr uint32_t c_end = 3000;
@@ -95,8 +96,18 @@ namespace apn::workspace
 		inline static std::shared_ptr<RootPane> get_root_pane(HWND hwnd)
 		{
 			auto p = (std::shared_ptr<RootPane>*)::GetProp(hwnd, c_prop_name);
-			if (!p) return 0; // 取得できなかった場合は0を返します。
+			if (!p) return nullptr; // 取得できなかった場合はnullptrを返します。
 			return *p;
+		}
+		//
+		// ルートペインを返します。
+		//
+		inline static std::shared_ptr<RootPane> get_root_pane(const std::shared_ptr<Shuttle>& shuttle)
+		{
+			if (shuttle)
+				return get_root_pane(*shuttle);
+			else
+				return nullptr;
 		}
 
 		//
@@ -114,7 +125,7 @@ namespace apn::workspace
 		inline static std::shared_ptr<Pane> get_top_level_pane(HWND dock_site)
 		{
 			auto root = get_root_pane(dock_site);
-			if (!root) return 0; // 取得できなかった場合は0を返します。
+			if (!root) return nullptr; // 取得できなかった場合はnullptrを返します。
 			auto maximized_pane = root->get_maximized_pane();
 			if (maximized_pane) return maximized_pane; // 最大化されたペインがあれば、それを返します。
 			return root;
@@ -137,22 +148,6 @@ namespace apn::workspace
 			}
 
 			return TRUE;
-		}
-
-		//
-		// すべてのペインのレイアウトを更新します。
-		//
-		inline static void update_layout(HWND dock_site)
-		{
-//			MY_TRACE_FUNC("{:#010x}", dock_site);
-
-			auto root = get_root_pane(dock_site);
-			if (root)
-			{
-				auto rc = my::get_client_rect(dock_site);
-
-				root->update(&rc, Pane::c_update_flag.c_default);
-			}
 		}
 
 		//
@@ -338,7 +333,7 @@ namespace apn::workspace
 				::AppendMenu(menu.get(), MF_POPUP, (UINT)sub_menu[i].get(), c_category.labels[i]);
 			}
 
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_none, _T("分割なし"));
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_vert, _T("左右に分割"));
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_horz, _T("上下に分割"));
@@ -347,7 +342,7 @@ namespace apn::workspace
 			case Pane::c_split_mode.c_vert: ::CheckMenuItem(menu.get(), c_command_id.c_split_mode.c_vert, MF_CHECKED); break;
 			case Pane::c_split_mode.c_horz: ::CheckMenuItem(menu.get(), c_command_id.c_split_mode.c_horz, MF_CHECKED); break;
 			}
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_origin.c_top_left, _T("左上を原点にする"));
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_origin.c_bottom_right, _T("右下を原点にする"));
 			switch (pane->origin) {
@@ -355,7 +350,7 @@ namespace apn::workspace
 			case Pane::c_origin.c_bottom_right: ::CheckMenuItem(menu.get(), c_command_id.c_origin.c_bottom_right, MF_CHECKED); break;
 			}
 #if 0
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_caption_mode.c_show, _T("キャプションを表示する"));
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_caption_mode.c_hide, _T("キャプションを表示しない"));
 			switch (pane->caption_mode) {
@@ -363,7 +358,7 @@ namespace apn::workspace
 			case Pane::c_caption_mode.c_show: ::CheckMenuItem(menu.get(), c_command_id.c_caption_mode.c_show, MF_CHECKED); break;
 			}
 #endif
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_move_to_left, _T("左に移動する"));
 			if (ht == -1 || ht <= 0)
 				::EnableMenuItem(menu.get(), c_command_id.c_move_to_left, MF_GRAYED | MF_DISABLED);
@@ -376,7 +371,10 @@ namespace apn::workspace
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_rename_sub_window, _T("名前を変更"));
 			if (!is_sub_window) // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
 				::EnableMenuItem(menu.get(), c_command_id.c_rename_sub_window, MF_GRAYED | MF_DISABLED);
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, 0);
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_is_solid, _T("レイアウトを固定化"));
+			if (root->is_solid)
+				::CheckMenuItem(menu.get(), c_command_id.c_is_solid, MF_CHECKED);
+			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_undock, _T("ドッキングを解除"));
 			if (c == 0) // ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
 				::EnableMenuItem(menu.get(), c_command_id.c_undock, MF_DISABLED | MF_GRAYED);
@@ -419,7 +417,7 @@ namespace apn::workspace
 
 			auto id = ::TrackPopupMenu(menu.get(),
 				TPM_NONOTIFY | TPM_RETURNCMD,
-				cursor_pos.x, cursor_pos.y, 0, dock_site, 0);
+				cursor_pos.x, cursor_pos.y, 0, dock_site, nullptr);
 
 			if (id)
 			{
@@ -441,6 +439,8 @@ namespace apn::workspace
 				case c_command_id.c_is_border_locked: pane->is_border_locked = !pane->is_border_locked; break;
 
 				case c_command_id.c_rename_sub_window: shuttle_manager.show_rename_dialog(shuttle, dock_site); break;
+
+				case c_command_id.c_is_solid: root->is_solid = !root->is_solid; break;
 
 				case c_command_id.c_undock:
 					{
@@ -479,7 +479,7 @@ namespace apn::workspace
 					if (shuttle && can_docking(dock_site, *shuttle))
 					{
 						// シャトルをペインにドッキングさせます。
-						auto index = pane->insert_shuttle(shuttle.get(), ht);
+						auto index = pane->insert_shuttle(shuttle.get(), FALSE, ht);
 						if (index != -1) // ドッキングに成功した場合は-1以外になります。
 						{
 							// ドッキングしたシャトルをカレントにしてペインを更新します。
@@ -489,7 +489,7 @@ namespace apn::workspace
 				}
 
 				// ペインの状態が変更されたのでレイアウトを更新します。
-				pane->update();
+				pane->update_origin();
 			}
 		}
 
@@ -501,6 +501,33 @@ namespace apn::workspace
 			auto pane = get_root_pane(*this);
 			if (!pane) return;
 			pane->reset_pane();
+		}
+
+		//
+		// クライアント矩形を返します。
+		//
+		virtual RECT get_client_rect()
+		{
+			return my::get_client_rect(*this);
+		}
+
+		//
+		// すべてのペインのレイアウトを更新します。
+		//
+		virtual void update_dock_site(const RECT& rc)
+		{
+			auto root = get_root_pane(*this);
+			if (!root) return;
+
+			root->update_origin(&rc, Pane::c_update_flag.c_default);
+		}
+
+		//
+		// すべてのペインのレイアウトを更新します。
+		//
+		void update_dock_site()
+		{
+			update_dock_site(get_client_rect());
 		}
 
 		//
@@ -531,7 +558,7 @@ namespace apn::workspace
 							if (root->get_maximized_pane().get() == pane)
 							{
 								// 最大化を解除します。
-								root->set_maximized_pane(0);
+								root->set_maximized_pane(nullptr);
 							}
 							else
 							{
@@ -540,12 +567,16 @@ namespace apn::workspace
 							}
 
 							// レイアウトを更新します。
-							update_layout(hwnd);
+							update_dock_site();
 
 							break;
 						}
 					case NM_RCLICK:
 						{
+							// タブからペインを取得します。
+							auto pane = Pane::get_pane(header->hwndFrom);
+							if (!pane) break;
+
 							// タブ上で右クリックが発生した場合はペインメニューを表示します。
 							show_pane_menu(hwnd);
 
@@ -553,13 +584,12 @@ namespace apn::workspace
 						}
 					case TCN_SELCHANGE:
 						{
-							// タブアイテムが切り替わった場合はペインをリフレッシュします。
+							// タブからペインを取得します。
 							auto pane = Pane::get_pane(header->hwndFrom);
-							if (pane)
-							{
-								// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
-								pane->update();
-							}
+							if (!pane) break;
+
+							// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
+							pane->update_origin();
 
 							break;
 						}
@@ -587,7 +617,7 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
-					update_layout(hwnd);
+					update_dock_site();
 
 					break;
 				}
@@ -599,7 +629,7 @@ namespace apn::workspace
 					{
 						auto root = get_root_pane(hwnd);
 
-						static_cast<Pane*>(root.get())->update();
+						root->update_origin();
 					}
 
 					break;
@@ -609,13 +639,17 @@ namespace apn::workspace
 					auto rc = my::get_client_rect(hwnd);
 
 					my::PaintDC pdc(hwnd);
+#if 1
+					my::DoubleBufferDC dc(pdc, &rc);
+#else
 					my::UxDC dc(pdc, &rc);
-
 					if (!dc.is_valid()) return 0;
-
+#endif
 					// ルートペインを取得します。
 					auto root = get_top_level_pane(hwnd);
 					if (!root) return 0;
+
+					rc = get_client_rect();
 
 					{
 						// 背景を塗りつぶします。
@@ -674,13 +708,13 @@ namespace apn::workspace
 					{
 					case Pane::c_split_mode.c_vert:
 						{
-							::SetCursor(::LoadCursor(0, IDC_SIZEWE));
+							::SetCursor(::LoadCursor(nullptr, IDC_SIZEWE));
 
 							return TRUE;
 						}
 					case Pane::c_split_mode.c_horz:
 						{
-							::SetCursor(::LoadCursor(0, IDC_SIZENS));
+							::SetCursor(::LoadCursor(nullptr, IDC_SIZENS));
 
 							return TRUE;
 						}
@@ -754,7 +788,7 @@ namespace apn::workspace
 							hot_border_pane->drag_border(point);
 
 							// レイアウトを更新します。
-							hot_border_pane->update();
+							hot_border_pane->update_origin();
 						}
 					}
 
@@ -771,7 +805,7 @@ namespace apn::workspace
 					if (root->get_maximized_pane())
 					{
 						// 最大化を解除します。
-						root->set_maximized_pane(0);
+						root->set_maximized_pane(nullptr);
 					}
 					else
 					{
@@ -788,7 +822,7 @@ namespace apn::workspace
 					}
 
 					// レイアウトを更新します。
-					update_layout(hwnd);
+					update_dock_site();
 
 					break;
 				}
@@ -821,7 +855,7 @@ namespace apn::workspace
 							hot_border_pane->drag_border(point);
 
 							// レイアウトを更新します。
-							hot_border_pane->update();
+							hot_border_pane->update_origin();
 						}
 					}
 					else
@@ -840,7 +874,7 @@ namespace apn::workspace
 							hot_border_pane = pane;
 
 							// 再描画します。
-							::InvalidateRect(hwnd, 0, FALSE);
+							::InvalidateRect(hwnd, nullptr, FALSE);
 						}
 
 						// マウスリーブイベントをトラックします。
@@ -863,7 +897,7 @@ namespace apn::workspace
 						hot_border_pane->invalidate();
 
 						// ホットボーダーを無効にします。
-						hot_border_pane = 0;
+						hot_border_pane = nullptr;
 					}
 
 					break;
@@ -876,7 +910,7 @@ namespace apn::workspace
 
 					auto delta = (short)HIWORD(wParam);
 					auto point = my::lp_to_pt(lParam);
-					::MapWindowPoints(0, hwnd, &point, 1);
+					::MapWindowPoints(nullptr, hwnd, &point, 1);
 					auto child = ::ChildWindowFromPointEx(hwnd, point,
 						CWP_SKIPDISABLED | CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT);
 
@@ -899,7 +933,7 @@ namespace apn::workspace
 						current = std::min<int>(current, c - 1);
 
 						pane->set_current_index(current);
-						pane->update();
+						pane->update_origin();
 
 						return 0;
 					}

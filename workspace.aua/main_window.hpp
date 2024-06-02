@@ -278,10 +278,10 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			update_layout(*this);
+			__super::update_dock_site();
 
 			for (auto& sub_window : SubWindow::collection)
-				update_layout(*sub_window);
+				sub_window->update_dock_site();
 		}
 
 		//
@@ -375,6 +375,73 @@ namespace apn::workspace
 			}
 
 			return TRUE;
+		}
+
+		//
+		// この仮想関数はクライアント矩形が必要なときに呼び出されます。
+		//
+		virtual RECT get_client_rect() override
+		{
+			auto rc = __super::get_client_rect();
+			switch (hive.layout_list_mode)
+			{
+			default:
+			case hive.c_layout_list_mode.c_none: break;
+			case hive.c_layout_list_mode.c_top: rc.top += Pane::tab_height; break;
+			case hive.c_layout_list_mode.c_bottom: rc.bottom -= Pane::tab_height; break;
+			}
+
+			return rc;
+		}
+
+		//
+		// この仮想関数はドッキングサイトのレイアウトを更新する必要があるときに呼び出されます。
+		//
+		virtual void update_dock_site(const RECT& rc) override
+		{
+			MY_TRACE_FUNC("");
+
+			switch (hive.layout_list_mode)
+			{
+			default:
+			case hive.c_layout_list_mode.c_none:
+				{
+					// レイアウトリストを非表示にします。
+					::ShowWindow(layout_list, SW_HIDE);
+
+					break;
+				}
+			case hive.c_layout_list_mode.c_top:
+				{
+					// レイアウトリストをメインウィンドウの上側に配置します。
+					auto x = rc.left;
+					auto y = rc.top - Pane::tab_height;
+					auto w = my::get_width(rc);
+					auto h = Pane::tab_height;
+
+					// レイアウトリストを表示します。
+					::SetWindowPos(layout_list, HWND_TOP,
+						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+					break;
+				}
+			case hive.c_layout_list_mode.c_bottom:
+				{
+					// レイアウトリストをメインウィンドウの下側に配置します。
+					auto x = rc.left;
+					auto y = rc.bottom;
+					auto w = my::get_width(rc);
+					auto h = Pane::tab_height;
+
+					// レイアウトリストを表示します。
+					::SetWindowPos(layout_list, HWND_TOP,
+						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+
+					break;
+				}
+			}
+
+			__super::update_dock_site(rc);
 		}
 
 		//
@@ -549,6 +616,21 @@ namespace apn::workspace
 
 					break;
 				}
+			case WM_NOTIFY: // レイアウトリストから通知されます。
+				{
+					// レイアウトリストのタブが切り替わった場合は
+					auto header = (NMHDR*)lParam;
+					if (header->hwndFrom == layout_list && header->code == TCN_SELCHANGE)
+					{
+						// レイアウトを変更します。
+						hive.app->change_layout(layout_list.get_current_file_name());
+
+						// レイアウトを更新します。
+						update_all_layouts();
+					}
+
+					break;
+				}
 			case WM_INITMENUPOPUP:
 				{
 					init_system_menu_popup();
@@ -583,6 +665,12 @@ namespace apn::workspace
 					// まだAviUtlのフォントが作成されていなかったので
 					// ここでタブのフォントをセットします。
 					get_root_pane(hwnd)->tab.set_font();
+
+					// レイアウトリストのフォントもここでセットします。
+					layout_list.set_font();
+
+					// レイアウトリストを更新します。
+					layout_list.update_layout_list();
 
 					// システムメニューに独自の項目を追加する。
 					init_system_menu();
@@ -655,8 +743,9 @@ namespace apn::workspace
 				set_uint(IDC_CAPTION_HEIGHT, Pane::caption_height);
 				set_uint(IDC_TAB_HEIGHT, Pane::tab_height);
 				set_combobox_index(IDC_TAB_MODE, Pane::tab_mode, _T("タイトル"), _T("上"), _T("下"));
+				set_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
 				set_check(IDC_USE_THEME, hive.use_theme);
-				set_check(IDC_FORCE_SCROLL, hive.scroll_force);
+				set_check(IDC_SCROLL_FORCE, hive.scroll_force);
 				set_check(IDC_SHOW_PLAYER, hive.maximum_play);
 				set_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
 

@@ -8,7 +8,6 @@ namespace apn::workspace
 			inline static constexpr int32_t c_none = 0;
 			inline static constexpr int32_t c_vert = 1;
 			inline static constexpr int32_t c_horz = 2;
-
 			inline static constexpr my::Label labels[] = {
 				{ c_none, L"none" },
 				{ c_vert, L"vert" },
@@ -19,7 +18,6 @@ namespace apn::workspace
 		inline static struct Origin {
 			inline static constexpr int32_t c_top_left = 0;
 			inline static constexpr int32_t c_bottom_right = 1;
-
 			inline static constexpr my::Label labels[] = {
 				{ c_top_left, L"top_left" },
 				{ c_bottom_right, L"bottom_right" },
@@ -29,7 +27,6 @@ namespace apn::workspace
 		inline static struct CaptionMode {
 			inline static constexpr int32_t c_hide = 0;
 			inline static constexpr int32_t c_show = 1;
-
 			inline static constexpr my::Label labels[] = {
 				{ c_hide, L"hide" },
 				{ c_show, L"show" },
@@ -40,7 +37,6 @@ namespace apn::workspace
 			inline static constexpr int32_t c_caption = 0;
 			inline static constexpr int32_t c_top = 1;
 			inline static constexpr int32_t c_bottom = 2;
-
 			inline static constexpr my::Label labels[] = {
 				{ c_caption, L"caption" },
 				{ c_top, L"top" },
@@ -55,7 +51,10 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_normalize = 0x00000008;
 			inline static constexpr uint32_t c_show_current_shuttle = 0x00000010;
 			inline static constexpr uint32_t c_show_tab = 0x00000020;
-			inline static constexpr uint32_t c_default = c_deep | c_invalidate | c_set_focus | c_normalize | c_show_current_shuttle | c_show_tab;
+			inline static constexpr uint32_t c_origin = 0x00000040;
+			inline static constexpr uint32_t c_default =
+				c_deep | c_invalidate | c_set_focus | c_normalize |
+				c_show_current_shuttle | c_show_tab | c_origin;
 		} c_update_flag;
 
 		inline static constexpr auto c_prop_name = _T("apn::workspace::pane");
@@ -64,14 +63,14 @@ namespace apn::workspace
 		inline static auto tab_height = 24;
 		inline static auto tab_mode = TabMode::c_bottom;
 
-		HWND owner = 0;
+		HWND owner = nullptr;
 		RECT position = {};
-		int split_mode = SplitMode::c_none;
-		int origin = Origin::c_bottom_right;
-		int caption_mode = CaptionMode::c_show;
+		int32_t split_mode = SplitMode::c_none;
+		int32_t origin = Origin::c_bottom_right;
+		int32_t caption_mode = CaptionMode::c_show;
 		BOOL is_border_locked = FALSE;
-		int border = 0; // ボーダーの位置です。
-		int drag_offset = 0; // ドラッグ処理に使用します。
+		int32_t border = 0; // ボーダーの位置です。
+		int32_t drag_offset = 0; // ドラッグ処理に使用します。
 
 		Tab tab; // タブコントロールです。
 		std::shared_ptr<Pane> children[2]; // 子ペインです。
@@ -91,7 +90,7 @@ namespace apn::workspace
 				WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
 				TCS_FOCUSNEVER,
 				0, 0, 0, 0,
-				owner, 0, hive.instance, 0);
+				owner, nullptr, hive.instance, nullptr);
 			tab.set_font();
 
 			// このペインをタブに関連付けます。
@@ -126,7 +125,7 @@ namespace apn::workspace
 		//
 		// タブの数を返します。
 		//
-		int get_tab_count()
+		int32_t get_tab_count()
 		{
 			return ::SendMessage(tab, TCM_GETITEMCOUNT, 0, 0);
 		}
@@ -134,9 +133,9 @@ namespace apn::workspace
 		//
 		// 指定されたインデックスにあるタブのシャトルを返します。
 		//
-		Shuttle* get_shuttle(int index)
+		Shuttle* get_shuttle(int32_t index)
 		{
-			if (index == -1) return 0;
+			if (index == -1) return nullptr;
 
 			TCITEM item = {};
 			item.mask = TCIF_PARAM;
@@ -148,7 +147,7 @@ namespace apn::workspace
 		//
 		// タブのカレントインデックスを返します。
 		//
-		int get_current_index()
+		int32_t get_current_index()
 		{
 			return ::SendMessage(tab, TCM_GETCURSEL, 0, 0);
 		}
@@ -156,7 +155,7 @@ namespace apn::workspace
 		//
 		// タブのカレントインデックスを指定されたインデックスに変更します。
 		//
-		int set_current_index(int index)
+		int32_t set_current_index(int32_t index)
 		{
 			if (index < 0 || index >= get_tab_count())
 				index = 0;
@@ -168,7 +167,7 @@ namespace apn::workspace
 		// 指定された座標にあるタブのインデックスを返します。
 		// pointはタブの親ウィンドウの座標系で指定します。
 		//
-		int hittest(POINT point)
+		int32_t hittest(POINT point)
 		{
 			TCHITTESTINFO hti = {};
 			hti.pt = point;
@@ -181,7 +180,7 @@ namespace apn::workspace
 		// shuttleはタブに関連付けるシャトルです。
 		// textはタブ名です。
 		//
-		int add_tab(Shuttle* shuttle, LPCTSTR text, int index)
+		int32_t add_tab(Shuttle* shuttle, LPCTSTR text, int32_t index)
 		{
 			TCITEM item = {};
 			item.mask = TCIF_PARAM | TCIF_TEXT;
@@ -193,7 +192,7 @@ namespace apn::workspace
 		//
 		// 指定されたインデックスのタブを削除します。
 		//
-		void erase_tab(int index)
+		void erase_tab(int32_t index)
 		{
 			::SendMessage(tab, TCM_DELETEITEM, index, 0);
 		}
@@ -210,10 +209,10 @@ namespace apn::workspace
 		// 指定されたシャトルを持つタブのインデックスを返します。
 		// 存在しない場合は-1を返します。
 		//
-		int find_tab(Shuttle* shuttle)
+		int32_t find_tab(Shuttle* shuttle)
 		{
-			int c = get_tab_count();
-			for (int i = 0; i < c; i++)
+			auto c = get_tab_count();
+			for (decltype(c) i = 0; i < c; i++)
 			{
 				if (get_shuttle(i) == shuttle)
 					return i;
@@ -226,7 +225,7 @@ namespace apn::workspace
 		// fromで指定された位置にあるタブをtoで指定された位置へ移動します。
 		// 失敗した場合は-1を返します。
 		//
-		int move_tab(int from, int to)
+		int32_t move_tab(int32_t from, int32_t to)
 		{
 			auto c = get_tab_count();
 
@@ -297,7 +296,7 @@ namespace apn::workspace
 		//
 		void float_shuttle(Shuttle* shuttle)
 		{
-			set_pane(*shuttle, 0);
+			set_pane(*shuttle, nullptr);
 			shuttle->remove_listener(this);
 			shuttle->float_window();
 		}
@@ -305,7 +304,7 @@ namespace apn::workspace
 		//
 		// 指定されたタブインデックスの位置に指定されたシャトルを追加します。
 		//
-		int insert_shuttle(Shuttle* shuttle, int index = -1)
+		int32_t insert_shuttle(Shuttle* shuttle, BOOL show, int32_t index = -1)
 		{
 			MY_TRACE_FUNC("{:#010x}, {}", shuttle, index);
 
@@ -363,7 +362,7 @@ namespace apn::workspace
 			}
 
 			// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
-			update();
+			update_origin();
 
 			// シャトルをフローティング状態にします。
 			float_shuttle(shuttle);
@@ -402,14 +401,14 @@ namespace apn::workspace
 				if (!child) continue;
 
 				child->reset_pane();
-				child = 0;
+				child = nullptr;
 			}
 		}
 
 		//
 		// ペインの分割モードを変更します。
 		//
-		void set_split_mode(int new_split_mode)
+		void set_split_mode(int32_t new_split_mode)
 		{
 			split_mode = new_split_mode;
 
@@ -448,7 +447,7 @@ namespace apn::workspace
 		// ペインの原点を変更します。
 		// そのとき、ボーダーの見た目の位置が変化しないように調整します。
 		//
-		void set_origin(int new_origin)
+		void set_origin(int32_t new_origin)
 		{
 			if (origin == new_origin) return;
 			origin = new_origin;
@@ -466,7 +465,7 @@ namespace apn::workspace
 		//
 		// キャプションモードを変更します。
 		//
-		void set_caption_mode(int new_caption_mode)
+		void set_caption_mode(int32_t new_caption_mode)
 		{
 			if (caption_mode == new_caption_mode) return;
 			caption_mode = new_caption_mode;
@@ -475,20 +474,20 @@ namespace apn::workspace
 		//
 		// このペインのキャプションの高さを返します。
 		//
-		int get_caption_height()
+		int32_t get_caption_height()
 		{
 			if (caption_mode == CaptionMode::c_hide) return 0;
 			return caption_height;
 		}
 
-		inline static int clamp(int x, int minValue, int maxValue)
+		inline static int32_t clamp(int32_t x, int32_t minValue, int32_t maxValue)
 		{
 			if (x < minValue) return minValue;
 			if (x > maxValue) return maxValue;
 			return x;
 		}
 
-		int absolute_x(int x)
+		int32_t absolute_x(int32_t x)
 		{
 			switch (origin)
 			{
@@ -499,7 +498,7 @@ namespace apn::workspace
 			return 0;
 		}
 
-		int absolute_y(int y)
+		int32_t absolute_y(int32_t y)
 		{
 			switch (origin)
 			{
@@ -510,7 +509,7 @@ namespace apn::workspace
 			return 0;
 		}
 
-		int relative_x(int x)
+		int32_t relative_x(int32_t x)
 		{
 			switch (origin)
 			{
@@ -521,7 +520,7 @@ namespace apn::workspace
 			return 0;
 		}
 
-		int relative_y(int y)
+		int32_t relative_y(int32_t y)
 		{
 			switch (origin)
 			{
@@ -629,18 +628,30 @@ namespace apn::workspace
 		}
 
 		//
+		// このペインを起点にして、
 		// このペインおよび子孫ペインの位置情報を更新します。
 		//
-		void update(uint32_t flags = UpdateFlag::c_default)
+		void update_origin(uint32_t flags = UpdateFlag::c_default)
 		{
-			update(&position, flags);
+			update_origin(&position, flags);
+		}
+
+		//
+		// このペインを起点にして、
+		// このペインおよび子孫ペインの位置情報を更新します。
+		//
+		void update_origin(LPCRECT rc, uint32_t flags = UpdateFlag::c_default)
+		{
+			auto dwp = ::BeginDeferWindowPos(100);
+			update(dwp, rc, flags);
+			::EndDeferWindowPos(dwp);
 		}
 
 		//
 		// このペインおよび子孫ペインの位置情報を更新します。
 		// rcはこのペインの新しい位置です。
 		//
-		virtual void update(LPCRECT rc, uint32_t flags)
+		virtual void update(HDWP dwp, LPCRECT rc, uint32_t flags)
 		{
 //			MY_TRACE_FUNC("");
 
@@ -660,13 +671,15 @@ namespace apn::workspace
 			// タブの数が最小数以上の場合は
 			if (has_tab() && flags & UpdateFlag::c_show_tab)
 			{
-				update_tab_layout();
+				update_tab(dwp);
 			}
 			// タブの数が最小数未満の場合は
 			else
 			{
 				// タブコントロールを非表示にします。
-				::ShowWindow(tab, SW_HIDE);
+				::DeferWindowPos(dwp, tab, nullptr, 0, 0, 0, 0,
+					SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+//				::ShowWindow(tab, SW_HIDE);
 			}
 
 			// シャトルを持っている場合は
@@ -676,7 +689,7 @@ namespace apn::workspace
 				if (flags & UpdateFlag::c_show_current_shuttle)
 				{
 					// カレントシャトルのみを表示し、フォーカスを与えます。
-					show_current_shuttle(flags);
+					update_shuttles(dwp, flags);
 				}
 
 				return; // シャトルを持つペインはボーダーも子ペインも持たないので、ここで処理を終了します。
@@ -693,7 +706,7 @@ namespace apn::workspace
 				// 子ペインを再帰的に更新します。
 				// すでに親ペインの再描画が発行されている場合は
 				// c_invalidateフラグは冗長になるので除外します。
-				update_children(flags & ~UpdateFlag::c_invalidate);
+				update_children(dwp, flags & ~UpdateFlag::c_invalidate);
 			}
 		}
 
@@ -701,7 +714,7 @@ namespace apn::workspace
 		// タブのウィンドウ位置を更新します。
 		// update()から呼び出されます。
 		//
-		void update_tab_layout()
+		void update_tab(HDWP dwp)
 		{
 			// キャプションの高さを取得します。
 			auto caption_height = get_caption_height();
@@ -710,8 +723,8 @@ namespace apn::workspace
 			{
 			case TabMode::c_caption: // タブをキャプションに表示するなら
 				{
-					int cx = 0;
-					int cy = std::max<int>(caption_height, tab_height);
+					auto cx = 0;
+					auto cy = std::max<int32_t>(caption_height, tab_height);
 
 					// 現在表示しているシャトルを取得します。
 					auto shuttle = get_current_shuttle();
@@ -725,45 +738,45 @@ namespace apn::workspace
 						}
 					}
 
-					int x = position.left;
-					int y = position.top;
-					int w = my::get_width(position) - cx; // 右側にあるメニューアイコンの分だけ少し狭めます。
-					int h = cy;
+					auto x = position.left;
+					auto y = position.top;
+					auto w = my::get_width(position) - cx; // 右側にあるメニューアイコンの分だけ少し狭めます。
+					auto h = cy;
 
 					modify_style(tab, TCS_BOTTOM, 0);
 
 					// タブコントロールを表示します。
-					::SetWindowPos(tab, HWND_TOP,
+					::DeferWindowPos(dwp, tab, HWND_TOP,
 						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 					break;
 				}
 			case TabMode::c_top: // タブを上に表示するなら
 				{
-					int x = position.left;
-					int y = position.top + caption_height;
-					int w = my::get_width(position);
-					int h = tab_height;
+					auto x = position.left;
+					auto y = position.top + caption_height;
+					auto w = my::get_width(position);
+					auto h = tab_height;
 
 					modify_style(tab, TCS_BOTTOM, 0);
 
 					// タブコントロールを表示します。
-					::SetWindowPos(tab, HWND_TOP,
+					::DeferWindowPos(dwp, tab, HWND_TOP,
 						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 					break;
 				}
 			case TabMode::c_bottom: // タブを下に表示するなら
 				{
-					int x = position.left;
-					int y = position.bottom - tab_height;
-					int w = my::get_width(position);
-					int h = tab_height;
+					auto x = position.left;
+					auto y = position.bottom - tab_height;
+					auto w = my::get_width(position);
+					auto h = tab_height;
 
 					modify_style(tab, 0, TCS_BOTTOM);
 
 					// タブコントロールを表示します。
-					::SetWindowPos(tab, HWND_TOP,
+					::DeferWindowPos(dwp, tab, HWND_TOP,
 						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 					break;
@@ -772,10 +785,10 @@ namespace apn::workspace
 		}
 
 		//
-		// タブのウィンドウ位置を更新します。
+		// シャトルを更新します。
 		// update()から呼び出されます。
 		//
-		void show_current_shuttle(uint32_t flags)
+		void update_shuttles(HDWP dwp, uint32_t flags)
 		{
 			// タブの数を取得します。
 			auto c = get_tab_count();
@@ -809,17 +822,24 @@ namespace apn::workspace
 					{
 						MY_TRACE("空の設定ダイアログなので表示できません\n");
 
-						::ShowWindow(*shuttle->dock_container, SW_HIDE);
+						::DeferWindowPos(dwp, *shuttle->dock_container,
+							nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+//						::ShowWindow(*shuttle->dock_container, SW_HIDE);
 					}
 					else
 					{
 						MY_TRACE("「{}」を表示します\n", shuttle->name);
-
+#if 1
+						::DeferWindowPos(dwp, *shuttle->dock_container,
+							HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+						::SendMessage(*shuttle->dock_container, WM_SHOWWINDOW, TRUE, 0);
+#else
 						// SWP_SHOWWINDOWを使用してウィンドウを表示した場合は
 						// WM_SHOWWINDOWが送信されないので使用できません。
 						::SetWindowPos(*shuttle->dock_container,
 							HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 						::ShowWindow(*shuttle->dock_container, SW_SHOW);
+#endif
 					}
 
 					if (flags & UpdateFlag::c_set_focus)
@@ -831,8 +851,13 @@ namespace apn::workspace
 				else
 				{
 					MY_TRACE("「{}」を非表示にします\n", shuttle->name);
-
+#if 1
+					::DeferWindowPos(dwp, *shuttle->dock_container,
+						nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+					::SendMessage(*shuttle->dock_container, WM_SHOWWINDOW, FALSE, 0);
+#else
 					::ShowWindow(*shuttle->dock_container, SW_HIDE);
+#endif
 				}
 
 				MY_TRACE_INT(::IsWindowVisible(*shuttle));
@@ -845,7 +870,7 @@ namespace apn::workspace
 		// 子ペインを更新します。
 		// update()から呼び出されます。
 		//
-		void update_children(uint32_t flags)
+		void update_children(HDWP dwp, uint32_t flags)
 		{
 			switch (split_mode)
 			{
@@ -857,14 +882,14 @@ namespace apn::workspace
 					{
 						RECT rc = { position.left, position.top, abs_border, position.bottom };
 
-						children[0]->update(&rc, flags);
+						children[0]->update(dwp, &rc, flags);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { abs_border + border_width, position.top, position.right, position.bottom };
 
-						children[1]->update(&rc, flags);
+						children[1]->update(dwp, &rc, flags);
 					}
 
 					break;
@@ -877,14 +902,14 @@ namespace apn::workspace
 					{
 						RECT rc = { position.left, position.top, position.right, abs_border };
 
-						children[0]->update(&rc, flags);
+						children[0]->update(dwp, &rc, flags);
 					}
 
 					if (children[1])
 					{
 						RECT rc = { position.left, abs_border + border_width, position.right, position.bottom };
 
-						children[1]->update(&rc, flags);
+						children[1]->update(dwp, &rc, flags);
 					}
 
 					break;
@@ -892,6 +917,9 @@ namespace apn::workspace
 			}
 		}
 
+		//
+		// 指定された位置がキャプション内の場合はTRUEを返します。
+		//
 		BOOL hittest_caption(const POINT& point)
 		{
 			RECT rc = get_caption_rect();
@@ -899,11 +927,14 @@ namespace apn::workspace
 			return ::PtInRect(&rc, point);
 		}
 
+		//
+		// 指定された位置にあるペインを返します。
+		//
 		std::shared_ptr<Pane> hittest_pane(const POINT& point)
 		{
 			// pointがこのペインの範囲外なら
 			if (!::PtInRect(&position, point))
-				return 0; // ヒットしていないので0を返します。
+				return nullptr; // ヒットしていないのでnullptrを返します。
 
 			// このペインがシャトルを持っているなら
 			if (get_tab_count())
@@ -930,15 +961,18 @@ namespace apn::workspace
 			return shared_from_this(); // ボーダーなどにヒットしているのでこのペインを返します。
 		}
 
+		//
+		// 指定された位置にあるボーダーを持つペインを返します。
+		//
 		std::shared_ptr<Pane> hittest_border(const POINT& point)
 		{
 			// pointがこのペインの範囲外なら
 			if (!::PtInRect(&position, point))
-				return 0; // ヒットしていないので0を返します。
+				return nullptr; // ヒットしていないのでnullptrを返します。
 
 			// このペインがウィンドウを持っているなら
 			if (get_tab_count())
-				return 0; // ヒットしていないので0を返します。
+				return nullptr; // ヒットしていないのでnullptrを返します。
 
 			// このペインのボーダーがロックされていないなら
 			if (!is_border_locked || ::GetKeyState(VK_CONTROL) < 0)
@@ -967,7 +1001,7 @@ namespace apn::workspace
 					}
 				default:
 					{
-						return 0;
+						return nullptr;
 					}
 				}
 			}
@@ -981,10 +1015,14 @@ namespace apn::workspace
 				if (pane) return pane;
 			}
 
-			return 0;
+			return nullptr;
 		}
 
-		int get_drag_offset(POINT point)
+		//
+		// ドラッグ量を返します。
+		// 内部的に使用されます。
+		//
+		int32_t get_drag_offset(POINT point)
 		{
 			switch (split_mode)
 			{
@@ -995,6 +1033,10 @@ namespace apn::workspace
 			return 0;
 		}
 
+		//
+		// ボーダーをドラッグ移動します。
+		// 内部的に使用されます。
+		//
 		void drag_border(POINT point)
 		{
 			switch (split_mode)
@@ -1004,6 +1046,9 @@ namespace apn::workspace
 			}
 		}
 
+		//
+		// ボーダー矩形を返します。
+		//
 		BOOL get_border_rect(LPRECT rc)
 		{
 			// シャトルを持っている場合は
@@ -1039,6 +1084,9 @@ namespace apn::workspace
 			return FALSE;
 		}
 
+		//
+		// ボーダーを描画します。
+		//
 		void draw_border(HDC dc)
 		{
 			// シャトルを持っている場合は
@@ -1077,11 +1125,13 @@ namespace apn::workspace
 			}
 		}
 
+		//
+		// キャプションを描画します。
+		//
 		void draw_caption(HDC dc)
 		{
 			// カレントシャトルが存在するなら
-			auto shuttle = get_current_shuttle();
-			if (shuttle)
+			if (auto shuttle = get_current_shuttle())
 			{
 				// キャプションを描画します。
 
@@ -1108,7 +1158,7 @@ namespace apn::workspace
 					if (!::IsWindowEnabled(*shuttle)) state_id = CS_DISABLED;
 
 					// テーマAPIを使用してタイトルを描画します。
-					::DrawThemeBackground(hive.theme.get(), dc, WP_CAPTION, state_id, &rc, 0);
+					::DrawThemeBackground(hive.theme.get(), dc, WP_CAPTION, state_id, &rc, nullptr);
 
 					{
 						auto rc_text = rc;
@@ -1205,7 +1255,7 @@ namespace apn::workspace
 			erase_shuttle(shuttle);
 
 			// レイアウトを更新します。
-			update();
+			update_origin();
 		}
 
 		//

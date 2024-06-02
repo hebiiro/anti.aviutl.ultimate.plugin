@@ -19,6 +19,7 @@
 #include "sub_process/psdtoolkit.hpp"
 #include "sub_process/bouyomisan.hpp"
 #include "sub_process/console.hpp"
+#include "layout_list.hpp"
 #include "main_window.hpp"
 #include "hook/menu.hpp"
 #include "hook/window.hpp"

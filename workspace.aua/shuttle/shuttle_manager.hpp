@@ -62,7 +62,7 @@ namespace apn::workspace
 		std::shared_ptr<Shuttle> get(const std::wstring& name)
 		{
 			auto it = collection.find(name);
-			if (it == collection.end()) return 0;
+			if (it == collection.end()) return nullptr;
 			return it->second;
 		}
 
@@ -105,7 +105,7 @@ namespace apn::workspace
 		//
 		struct RenameDialog : my::Dialog2
 		{
-			Shuttle* shuttle = 0;
+			Shuttle* shuttle = nullptr;
 
 			RenameDialog(Shuttle* shuttle)
 				: shuttle(shuttle)

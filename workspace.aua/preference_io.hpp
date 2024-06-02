@@ -8,19 +8,6 @@ namespace apn::workspace
 	inline struct PreferenceIO : StdConfigIO
 	{
 		//
-		// TRUEの場合はレイアウトのみを入出力します。
-		//
-		BOOL layout_only = FALSE;
-
-		//
-		// コンストラクタです。
-		//
-		explicit PreferenceIO(BOOL layout_only = FALSE)
-			: layout_only(layout_only)
-		{
-		}
-
-		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -46,41 +33,21 @@ namespace apn::workspace
 		//
 		// コンフィグを読み込みます。
 		//
-		BOOL read()
+		BOOL read(uint32_t flags = hive.c_preference_flag.c_default)
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("{:#010x}", flags);
 
-			return read_file(hive.preference_file_name, hive);
+			return PreferenceLoader(flags).read_file(hive.preference_file_name, hive);
 		}
 
 		//
 		// コンフィグを保存します。
 		//
-		BOOL write()
+		BOOL write(uint32_t flags = hive.c_preference_flag.c_default)
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("{:#010x}", flags);
 
-			return write_file(hive.preference_file_name, hive);
-		}
-
-		//
-		// ノードからプリファレンスを読み込みます。
-		//
-		virtual BOOL read_node(ptree& root) override
-		{
-			MY_TRACE_FUNC("");
-
-			return preference_loader.load(root, layout_only);
-		}
-
-		//
-		// ノードにプリファレンスを保存します。
-		//
-		virtual BOOL write_node(ptree& root) override
-		{
-			MY_TRACE_FUNC("");
-
-			return preference_saver.save(root, layout_only);
+			return PreferenceSaver(flags).write_file(hive.preference_file_name, hive);
 		}
 	} preference_io;
 }

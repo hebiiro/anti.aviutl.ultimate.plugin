@@ -123,6 +123,7 @@
       <Filter>hook\program</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
+    <ClInclude Include="layout_list.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -136,7 +137,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Nest.rc">
+    <ResourceCompile Include="workspace.aua.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
   </ItemGroup>
