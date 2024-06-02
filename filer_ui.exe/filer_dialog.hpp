@@ -436,7 +436,7 @@ namespace apn::filer_ui
 
 			auto folder_name = my::get_window_text(folder_control);
 			MY_TRACE_STR(folder_name);
-			auto index = folder_control.FindString(0, folder_name.c_str());
+			auto index = folder_control.FindStringExact(0, folder_name.c_str());
 			if (index == CB_ERR) folder_control.AddString(folder_name.c_str());
 		}
 
@@ -446,7 +446,7 @@ namespace apn::filer_ui
 
 			auto folder_name = my::get_window_text(folder_control);
 			MY_TRACE_STR(folder_name);
-			auto index = folder_control.FindString(0, folder_name.c_str());
+			auto index = folder_control.FindStringExact(0, folder_name.c_str());
 			if (index != CB_ERR) folder_control.DeleteString(index);
 		}
 
