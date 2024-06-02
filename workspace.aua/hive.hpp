@@ -110,11 +110,11 @@ namespace apn::workspace
 		COLORREF inactive_caption_text_color = RGB(0x00, 0x00, 0x00);
 		BOOL use_theme = FALSE;
 		BOOL scroll_force = FALSE;
-		BOOL maximum_play = FALSE;
+		BOOL fullscreen_player = FALSE;
 		BOOL show_tab_force = FALSE;
 		int32_t layout_list_mode = c_layout_list_mode.c_none;
 
-		BOOL use_maximum_play = FALSE;
+		BOOL use_fullscreen_player = FALSE;
 
 		//
 		// メッセージボックスを表示します。

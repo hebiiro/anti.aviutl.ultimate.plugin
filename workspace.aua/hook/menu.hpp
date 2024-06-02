@@ -73,11 +73,11 @@ namespace apn::workspace::hook
 				if (hwnd == hive.main_window)
 				{
 					// 最大化再生を使用する場合は
-					if (hive.use_maximum_play)
+					if (hive.use_fullscreen_player)
 					{
 						// メニューアイテムを追加します。
-						if (::GetMenuState(menu, MainWindow::c_command_id.c_maximum_play, MF_BYCOMMAND) == -1)
-							::AppendMenu(menu, MF_STRING, MainWindow::c_command_id.c_maximum_play, _T(""));
+						if (::GetMenuState(menu, MainWindow::c_command_id.c_fullscreen_player, MF_BYCOMMAND) == -1)
+							::AppendMenu(menu, MF_STRING, MainWindow::c_command_id.c_fullscreen_player, _T(""));
 					}
 				}
 

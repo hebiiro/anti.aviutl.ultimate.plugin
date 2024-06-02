@@ -18,7 +18,7 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_export_layout = 1002;
 			inline static constexpr uint32_t c_create_sub_window = 1003;
 
-			inline static constexpr uint32_t c_maximum_play = 30000;
+			inline static constexpr uint32_t c_fullscreen_player = 30000;
 		} c_command_id;
 
 		//
@@ -234,12 +234,12 @@ namespace apn::workspace
 			auto menu = ::GetMenu(*this);
 
 			auto text = _T("再生時最大化 OFF");
-			if (hive.maximum_play) text = _T("再生時最大化 ON");
+			if (hive.fullscreen_player) text = _T("再生時最大化 ON");
 
 			MENUITEMINFO mii = { sizeof(mii) };
 			mii.fMask = MIIM_STRING;
 			mii.dwTypeData = (LPTSTR)text;
-			::SetMenuItemInfo(menu, c_command_id.c_maximum_play, FALSE, &mii);
+			::SetMenuItemInfo(menu, c_command_id.c_fullscreen_player, FALSE, &mii);
 
 			::DrawMenuBar(*this);
 		}
@@ -513,11 +513,11 @@ namespace apn::workspace
 
 					switch (id)
 					{
-					case c_command_id.c_maximum_play:
+					case c_command_id.c_fullscreen_player:
 						{
-							MY_TRACE("c_command_id.c_maximum_play\n");
+							MY_TRACE("c_command_id.c_fullscreen_player\n");
 
-							hive.maximum_play = !hive.maximum_play;
+							hive.fullscreen_player = !hive.fullscreen_player;
 
 							update_main_menu();
 
@@ -746,7 +746,7 @@ namespace apn::workspace
 				set_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
 				set_check(IDC_USE_THEME, hive.use_theme);
 				set_check(IDC_SCROLL_FORCE, hive.scroll_force);
-				set_check(IDC_SHOW_PLAYER, hive.maximum_play);
+				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_player);
 				set_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
 
 				return do_modal2(parent);

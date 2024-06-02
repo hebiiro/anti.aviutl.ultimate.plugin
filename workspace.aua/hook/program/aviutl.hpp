@@ -77,7 +77,7 @@ namespace apn::workspace::hook
 				MY_TRACE_FUNC("");
 
 				// フラグが立っていない場合はデフォルト処理のみ行います。
-				if (!hive.maximum_play)
+				if (!hive.fullscreen_player)
 					return do_default(u1, u2, u3, u4, u5, u6);
 
 				// AviUtlウィンドウまたは再生ウィンドウを取得します。
@@ -183,7 +183,7 @@ namespace apn::workspace::hook
 				MY_TRACE_FUNC("");
 
 				// フラグが立っていない場合はデフォルト処理のみ行います。
-				if (!hive.maximum_play)
+				if (!hive.fullscreen_player)
 					return do_default(u1, u2, u3, u4, u5);
 
 				// AviUtlウィンドウまたは再生ウィンドウを取得します。
@@ -268,7 +268,7 @@ namespace apn::workspace::hook
 			MY_TRACE_FUNC("");
 
 			// AviUtlのモジュールハンドルを取得します。
-			auto aviutl = (my::addr_t)::GetModuleHandle(0);
+			auto aviutl = (my::addr_t)::GetModuleHandle(nullptr);
 			MY_TRACE_HEX(aviutl);
 
 			// AviUtl内の::AdjustWindowRectEx()をフックします。
@@ -276,11 +276,11 @@ namespace apn::workspace::hook
 			MY_TRACE_HEX(AdjustWindowRectEx.orig_proc);
 
 			// 最大化再生を使用する場合は
-			if (hive.use_maximum_play)
+			if (hive.use_fullscreen_player)
 			{
 				// AviUtl内の再生関係の関数をフックします。
 
-				auto file_name = my::get_module_file_name(0).parent_path() / _T("aviutl.ini");
+				auto file_name = my::get_module_file_name(nullptr).parent_path() / _T("aviutl.ini");
 				MY_TRACE_STR(file_name);
 
 				movieplaymain = ::GetPrivateProfileInt(_T("system"), _T("movieplaymain"), 0, file_name.c_str());

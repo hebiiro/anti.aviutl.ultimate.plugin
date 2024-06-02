@@ -82,7 +82,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "use_maximum_play", hive.use_maximum_play);
+			get_bool(root, "use_fullscreen_player", hive.use_fullscreen_player);
 			get_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
 			get_sub_process(root, "psdtoolkit", hive.psdtoolkit);
 			get_sub_process(root, "bouyomisan", hive.bouyomisan);
@@ -98,7 +98,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "use_maximum_play", hive.use_maximum_play);
+			set_bool(root, "use_fullscreen_player", hive.use_fullscreen_player);
 			set_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
 			set_sub_process(root, "psdtoolkit", hive.psdtoolkit);
 			set_sub_process(root, "bouyomisan", hive.bouyomisan);
