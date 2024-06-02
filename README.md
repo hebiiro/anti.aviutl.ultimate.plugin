@@ -25,6 +25,7 @@
 
 ## 🔖 更新履歴
 
+* r29 - 2024/06/02 ✨ [workspace] タブでレイアウトを切り替えられる機能を追加
 * r28 - 2024/06/01 🩹 [dark] 外部プロセスでPythonをロードしていなかった問題に対応
 * r27 - 2024/05/30 ✨ [dialog_size] ダイアログのレイアウトを変更する機能を追加
 * r26 - 2024/05/29 🩹 [dark] 日本語を含むファイルパスを正しく処理できない問題に対応
@@ -59,10 +60,11 @@
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
 * (共存確認) patch.aul r43 謎さうなフォーク版58 https://scrapbox.io/nazosauna/patch.aul
 
-## 🧑‍💻 クレジット
+## 💳 クレジット
 
 * Microsoft Research Detours Package https://github.com/microsoft/Detours
 * aviutl_exedit_sdk https://github.com/ePi5131/aviutl_exedit_sdk
+* Boost https://www.boost.org/
 * Python https://www.python.org/
 
 ## 👽️ 作成者情報
