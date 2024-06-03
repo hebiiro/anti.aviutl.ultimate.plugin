@@ -143,7 +143,7 @@ namespace apn::color_code
 									text = text.substr(offset);
 
 									// テキストを数値に変換します。
-									auto color = std::stoul(text, 0, 16);
+									auto color = wcstoul(text.c_str(), nullptr, 16);
 									MY_TRACE_HEX(color);
 
 									int r, g, b;
@@ -194,7 +194,7 @@ namespace apn::color_code
 
 						return orig_proc(hdlg, message, wParam, lParam);
 					}
-					inline static decltype(&hook_proc) orig_proc = 0;
+					inline static decltype(&hook_proc) orig_proc = nullptr;
 				} hooker;
 
 				inline static INT_PTR CDECL hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc)
@@ -212,7 +212,7 @@ namespace apn::color_code
 
 					return orig_proc(instance, template_name, parent, dlg_proc);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} show_dialog;
 
 			//
@@ -227,7 +227,7 @@ namespace apn::color_code
 
 					update_color_code(r, g, b);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} set_color;
 
 			//
@@ -240,7 +240,7 @@ namespace apn::color_code
 
 					orig_proc(hdlg);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} update_color_circle;
 
 			//
@@ -255,7 +255,7 @@ namespace apn::color_code
 
 					update_color_code(r, g, b);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} update_controls;
 		} color_dialog;
 
@@ -270,7 +270,7 @@ namespace apn::color_code
 
 					// すべてのモニタのすべての場所から色を抽出できるようにします。
 
-					auto hwnd = (HWND)0;
+					auto hwnd = (HWND)nullptr;
 					auto point = my::get_cursor_pos();
 					::LogicalToPhysicalPointForPerMonitorDPI(hwnd, &point);
 
@@ -278,7 +278,7 @@ namespace apn::color_code
 
 					return ::GetPixel(dc, point.x, point.y);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} GetPixel;
 		} dropper;
 	} hook_manager;
