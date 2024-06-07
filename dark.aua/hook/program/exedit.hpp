@@ -18,7 +18,7 @@ namespace apn::dark::hook
 		{
 			auto sep = name.find(L'#');
 			if (sep == name.npos) return CLR_NONE;
-			auto color = std::stoul(name.substr(sep + 1), 0, 16);
+			auto color = wcstoul(name.substr(sep + 1).c_str(), 0, 16);
 			return RGB(GetBValue(color), GetGValue(color), GetRValue(color));
 		}
 
@@ -40,7 +40,7 @@ namespace apn::dark::hook
 
 				if (!sep[1]) return CLR_NONE; // セパレータ以降が空文字列ならデフォルトカラーを使用します。
 
-				auto color = std::stoul(sep + 1, 0, 16);
+				auto color = strtoul(sep + 1, 0, 16);
 				return RGB(GetBValue(color), GetGValue(color), GetRValue(color));
 			}
 

@@ -224,7 +224,7 @@ namespace apn::ease_select_ui
 			::SendMessage(child, WM_GETTEXT, std::size(text), (LPARAM)text);
 			MY_TRACE_STR(text);
 
-			auto n = std::stoi(text);
+			auto n = _ttoi(text);
 			if (n < 0) return;
 
 			points[c_points.c_first].x  = std::clamp<int>(n / 100 / 100 / 100 % 100, c_position.c_start_x, c_position.c_end_x);

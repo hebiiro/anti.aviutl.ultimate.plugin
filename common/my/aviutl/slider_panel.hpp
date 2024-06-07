@@ -7,7 +7,7 @@ namespace my::aviutl
 	{
 		inline static T value_from_text(const std::wstring& text)
 		{
-			return (T)std::stoi(text);
+			return (T)_wtoi(text.c_str());
 		}
 
 		inline static std::wstring text_from_value(T value)
@@ -21,7 +21,7 @@ namespace my::aviutl
 	{
 		inline static T value_from_text(const std::wstring& text)
 		{
-			return (T)std::stof(text);
+			return (T)_wtof(text.c_str());
 		}
 
 		inline static std::wstring text_from_value(T value)

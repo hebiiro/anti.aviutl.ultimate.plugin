@@ -172,7 +172,7 @@ namespace apn::ease_select_ui
 			TCHAR text[MAX_PATH] = {};
 			::SendMessage(child, WM_GETTEXT, std::size(text), (LPARAM)text);
 
-			auto easing = std::stoi(text);
+			auto easing = _ttoi(text);
 			if (ease_window.enabled)
 				easing = -easing - 1;
 			else

@@ -356,7 +356,7 @@ namespace apn::text_split
 			if (sep1 == value.npos)
 			{
 				pos->mode = c_pos_mode.c_solo;
-				pos->pos[pos->c_begin] = std::stof(value);
+				pos->pos[pos->c_begin] = stof(value);
 				return TRUE;
 			}
 
@@ -366,16 +366,16 @@ namespace apn::text_split
 			if (sep2 == value.npos)
 			{
 				pos->mode = c_pos_mode.c_pair;
-				pos->pos[pos->c_begin] = std::stof(value);
-				pos->pos[pos->c_end] = std::stof(value.substr(sep1 + 1));
+				pos->pos[pos->c_begin] = stof(value);
+				pos->pos[pos->c_end] = stof(value.substr(sep1 + 1));
 				return TRUE;
 			}
 
 			// valueが数字2個とアニメーションテキストの場合は
 			{
 				pos->mode = c_pos_mode.c_animation;
-				pos->pos[pos->c_begin] = std::stof(value);
-				pos->pos[pos->c_end] = std::stof(value.substr(sep1 + 1, sep2 - (sep1 + 1)));
+				pos->pos[pos->c_begin] = stof(value);
+				pos->pos[pos->c_end] = stof(value.substr(sep1 + 1, sep2 - (sep1 + 1)));
 				pos->animation = value.substr(sep2 + 1);
 				return TRUE;
 			}

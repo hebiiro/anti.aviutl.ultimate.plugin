@@ -63,7 +63,7 @@ namespace apn::ease_select_ui
 
 			{
 				// ホストウィンドウを取得します。
-				hive.host_window = (HWND)std::stoul(::GetCommandLine(), 0, 0);
+				hive.host_window = (HWND)_tcstoul(::GetCommandLine(), 0, 0);
 				::GetWindowThreadProcessId(hive.host_window, &hive.host_process_id);
 				MY_TRACE_HWND(hive.host_window);
 				if (!::IsWindow(hive.host_window)) return FALSE;

@@ -128,17 +128,17 @@ namespace my
 
 		int get_int(UINT id)
 		{
-			return ::GetDlgItemInt(*this, id, 0, TRUE);
+			return ::GetDlgItemInt(*this, id, nullptr, TRUE);
 		}
 
 		UINT get_uint(UINT id)
 		{
-			return ::GetDlgItemInt(*this, id, 0, FALSE);
+			return ::GetDlgItemInt(*this, id, nullptr, FALSE);
 		}
 
 		float get_float(UINT id)
 		{
-			try { return std::stof(get_text(id)); } catch (...) { return 0; }
+			return wcstof(get_text(id).c_str(), nullptr);
 		}
 
 		BOOL get_check(UINT id)
