@@ -61,6 +61,22 @@ namespace apn::workspace::hook
 			{
 				auto msg = (MSG*)lParam;
 
+				if (hive.bypass_keyboard_message)
+				{
+					if (msg->message >= WM_KEYFIRST && msg->message <= WM_KEYLAST)
+					{
+						MY_TRACE_HWND(msg->hwnd);
+
+						auto class_name = my::get_class_name(msg->hwnd);
+						if (!my::contains(class_name, WC_EDIT))
+						{
+							MY_TRACE("キーボードメッセージを拡張編集ウィンドウにバイパスします\n");
+
+							msg->hwnd = hive.exedit_window;
+						}
+					}
+				}
+
 				switch (msg->message)
 				{
 				case WM_KEYDOWN:

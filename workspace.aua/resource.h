@@ -21,6 +21,7 @@
 #define IDC_TAB_HEIGHT                  1031
 #define IDC_SHOW_PLAYER                 1032
 #define IDC_SHOW_TAB_FORCE              1033
+#define IDC_BYPASS_KEYBOARD_MESSAGE     1034
 
 // Next default values for new objects
 // 

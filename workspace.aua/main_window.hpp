@@ -748,6 +748,7 @@ namespace apn::workspace
 				set_check(IDC_SCROLL_FORCE, hive.scroll_force);
 				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_player);
 				set_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
+				set_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
 
 				return do_modal2(parent);
 			}

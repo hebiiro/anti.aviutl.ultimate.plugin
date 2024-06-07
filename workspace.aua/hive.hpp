@@ -112,6 +112,7 @@ namespace apn::workspace
 		BOOL scroll_force = FALSE;
 		BOOL fullscreen_player = FALSE;
 		BOOL show_tab_force = FALSE;
+		BOOL bypass_keyboard_message = FALSE;
 		int32_t layout_list_mode = c_layout_list_mode.c_none;
 
 		BOOL use_fullscreen_player = FALSE;
