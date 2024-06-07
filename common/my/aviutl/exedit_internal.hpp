@@ -105,6 +105,7 @@ namespace my
 				int32_t (CDECL* erase_midpt)(int32_t object_index, int32_t frame) = 0;
 				void (CDECL* draw_item)(HDC dc, int32_t object_index) = 0;
 				void (CDECL* redraw_setting_dialog)(int32_t object_index) = 0;
+				int32_t (CDECL* update_object_table)() = 0;
 			} function;
 		} address;
 
@@ -178,6 +179,7 @@ namespace my
 			tools::assign(address.function.redraw_layer, exedit + 0x00039290);
 			tools::assign(address.function.redraw_layers, exedit + 0x000392F0);
 			tools::assign(address.function.erase_midpt, exedit + 0x00034A30);
+			tools::assign(address.function.update_object_table, exedit + 0x0002B0F0);
 
 			return TRUE;
 		}
@@ -326,6 +328,21 @@ namespace my
 		void redraw_layer(int32_t layer_index) { address.function.redraw_layer(layer_index); }
 		void redraw_layers(int32_t flags[]) { address.function.redraw_layers(flags); }
 		int32_t erase_midpt(int32_t object_index, int32_t frame) { return address.function.erase_midpt(object_index, frame); }
+		int32_t update_object_table() { return address.function.update_object_table(); }
+
+		//
+		// 拡張編集ウィンドウを再描画します。
+		//
+		// rc [in, opt]
+		// 再描画する領域です。
+		//
+		// 戻り値
+		// 成功した場合はTRUEです。
+		//
+		BOOL invalidate(LPCRECT rc = nullptr)
+		{
+			return ::InvalidateRect(get_exedit_window(), rc, FALSE);
+		}
 
 		//
 		// 指定されたアイテムの指定されたフィルタの拡張データを返します。
