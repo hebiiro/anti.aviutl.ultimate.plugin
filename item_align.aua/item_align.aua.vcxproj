@@ -160,15 +160,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="action\absolute_space_left.hpp" />
+    <ClInclude Include="action\absolute_space_right.hpp" />
+    <ClInclude Include="action\action.hpp" />
+    <ClInclude Include="action\erase_midpt.hpp" />
+    <ClInclude Include="action\fix_bpm.hpp" />
+    <ClInclude Include="action\align_left.hpp" />
+    <ClInclude Include="action\align_right.hpp" />
+    <ClInclude Include="action\move_vert_down.hpp" />
+    <ClInclude Include="action\move_vert_up.hpp" />
+    <ClInclude Include="action\relative_space_left.hpp" />
+    <ClInclude Include="action\relative_space_right.hpp" />
+    <ClInclude Include="action\shift_down.hpp" />
+    <ClInclude Include="action\shift_up.hpp" />
+    <ClInclude Include="action\stretch_left.hpp" />
+    <ClInclude Include="action\stretch_right.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
-    <ClInclude Include="executor.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="addin.hpp" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

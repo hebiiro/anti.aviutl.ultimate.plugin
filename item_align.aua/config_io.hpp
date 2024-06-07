@@ -69,8 +69,19 @@ namespace apn::item_align
 
 			using namespace my::json;
 
-			get_int(root, "frame", hive.frame);
 			get_bool(root, "use_current_frame", hive.use_current_frame);
+			get_string(root, "align_time", hive.align_time);
+			get_string(root, "stretch_time", hive.stretch_time);
+			get_string(root, "shift_time", hive.shift_time);
+			get_string(root, "relative_space_time", hive.relative_space_time);
+			get_string(root, "absolute_space_time", hive.absolute_space_time);
+			get_int(root, "move_vert_layer", hive.move_vert_layer);
+			get_int(root, "sub_time_mode", hive.sub_time_mode);
+			get_int(root, "align_sub_time", hive.align_sub_time);
+			get_int(root, "stretch_sub_time", hive.stretch_sub_time);
+			get_int(root, "shift_sub_time", hive.shift_sub_time);
+			get_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
+			get_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -85,8 +96,19 @@ namespace apn::item_align
 
 			using namespace my::json;
 
-			set_int(root, "frame", hive.frame);
 			set_bool(root, "use_current_frame", hive.use_current_frame);
+			set_string(root, "align_time", hive.align_time);
+			set_string(root, "stretch_time", hive.stretch_time);
+			set_string(root, "shift_time", hive.shift_time);
+			set_string(root, "relative_space_time", hive.relative_space_time);
+			set_string(root, "absolute_space_time", hive.absolute_space_time);
+			set_int(root, "move_vert_layer", hive.move_vert_layer);
+			set_int(root, "sub_time_mode", hive.sub_time_mode);
+			set_int(root, "align_sub_time", hive.align_sub_time);
+			set_int(root, "stretch_sub_time", hive.stretch_sub_time);
+			set_int(root, "shift_sub_time", hive.shift_sub_time);
+			set_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
+			set_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;

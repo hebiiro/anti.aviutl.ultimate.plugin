@@ -15,49 +15,19 @@ namespace apn::item_align
 			hive.app = this;
 		}
 
-		virtual BOOL shift_selection() override
-		{
-			return Executor().shift_selection();
-		}
-
-		virtual BOOL move_current_frame_to_start() override
-		{
-			return Executor().move_current_frame_to_start();
-		}
-
-		virtual BOOL move_current_frame_to_end() override
-		{
-			return Executor().move_current_frame_to_end();
-		}
-
-		virtual BOOL move_selection_start() override
-		{
-			return Executor().move_selection_start();
-		}
-
-		virtual BOOL move_selection_end() override
-		{
-			return Executor().move_selection_end();
-		}
-
-		virtual BOOL stretch_selection_start() override
-		{
-			return Executor().stretch_selection_start();
-		}
-
-		virtual BOOL stretch_selection_end() override
-		{
-			return Executor().stretch_selection_end();
-		}
-
-		virtual BOOL delete_midpt() override
-		{
-			return Executor().delete_midpt();
-		}
-
-		virtual BOOL fix_selection_bpm() override
-		{
-			return Executor().fix_selection_bpm();
-		}
+		virtual void align_left() override { return AlignLeft().execute(); }
+		virtual void align_right() override { return AlignRight().execute(); }
+		virtual void stretch_left() override { return StretchLeft().execute(); }
+		virtual void stretch_right() override { return StretchRight().execute(); }
+		virtual void relative_space_left() override { return RelativeSpaceLeft().execute(); }
+		virtual void relative_space_right() override { return RelativeSpaceRight().execute(); }
+		virtual void absolute_space_left() override { return AbsoluteSpaceLeft().execute(); }
+		virtual void absolute_space_right() override { return AbsoluteSpaceRight().execute(); }
+		virtual void shift_down() override { return ShiftDown().execute(); }
+		virtual void shift_up() override { return ShiftUp().execute(); }
+		virtual void move_vert_down() override { MoveVertDown().execute(); }
+		virtual void move_vert_up() override { MoveVertUp().execute(); }
+		virtual void fix_bpm() override { return FixBpm().execute(); }
+		virtual void erase_midpt() override { return EraseMidpt().execute(); }
 	} app;
 }
