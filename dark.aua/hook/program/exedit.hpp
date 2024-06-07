@@ -271,6 +271,9 @@ namespace apn::dark::hook
 						auto str = my::ws(std::string(text, c));
 						str = str.substr(0, str.find(L'#')); // 記号より前にある文字列を取り出します。
 
+						// 文字列が空の場合はデフォルトのレイヤー名にします。
+						if (str.empty()) str = std::format(L"Layer {}", drawing_layer_index + 1);
+
 						// レイヤーボタンの文字列を描画します。
 #if 1
 						if (python.call_draw_text(theme, dc, WP_EXEDIT, state_id,
