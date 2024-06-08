@@ -44,7 +44,7 @@ namespace apn::dark::gdi
 
 			if (auto theme = skin::theme::manager.get_theme(VSCLASS_TAB))
 			{
-				if (python.call_draw_figure(theme, dc, 0, 0, rc))
+				if (python.call_draw_figure(current_state->hwnd, theme, dc, 0, 0, rc))
 					return TRUE;
 			}
 

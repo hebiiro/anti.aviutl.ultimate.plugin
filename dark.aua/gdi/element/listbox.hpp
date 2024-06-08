@@ -100,7 +100,7 @@ namespace apn::dark::gdi
 					if (::GetBkColor(dc) == ::GetSysColor(COLOR_HIGHLIGHT))
 						state_id = ETS_SELECTED; // 選択状態として描画します。
 
-					if (python.call_text_out(theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
+					if (python.call_text_out(current_state->hwnd, theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
 						return TRUE;
 				}
 			}

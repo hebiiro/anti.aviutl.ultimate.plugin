@@ -435,6 +435,7 @@ namespace apn::dark::share
 	struct DrawFigureArgs
 	{
 		VisualStyle vs;
+		HWND hwnd;
 		HDC dc;
 		LPCRECT rc;
 	};
@@ -445,6 +446,7 @@ namespace apn::dark::share
 	struct DrawTextArgs
 	{
 		VisualStyle vs;
+		HWND hwnd;
 		HDC dc;
 		LPCRECT rc;
 		LPCWSTR text;
@@ -458,6 +460,7 @@ namespace apn::dark::share
 	struct TextOutArgs
 	{
 		VisualStyle vs;
+		HWND hwnd;
 		HDC dc;
 		LPCRECT rc;
 		LPCWSTR text;

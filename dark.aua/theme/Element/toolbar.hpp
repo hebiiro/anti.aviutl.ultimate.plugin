@@ -16,7 +16,7 @@ namespace apn::dark::theme
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), ({})", theme, dc, part_id, state_id, safe_string(rc), safe_string(rc_clip));
 
 			{
-				if (python.call_draw_figure(theme, dc, part_id, state_id, rc))
+				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
 			}
 
@@ -35,7 +35,7 @@ namespace apn::dark::theme
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, ({})", theme, dc, part_id, state_id, safe_string(text, c), text_flags, text_flags2, safe_string(rc));
 
 			{
-				if (python.call_draw_text(theme, dc, part_id, state_id, text, c, text_flags, rc))
+				if (python.call_draw_text(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, text, c, text_flags, rc))
 					return S_OK;
 			}
 

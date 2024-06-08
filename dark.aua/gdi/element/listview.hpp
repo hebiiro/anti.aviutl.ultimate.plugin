@@ -17,17 +17,17 @@ namespace apn::dark::gdi
 
 					if (color == ::GetSysColor(COLOR_HIGHLIGHT))
 					{
-						if (python.call_draw_figure(theme, dc, LVP_LISTITEM, LISS_HOT, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, LVP_LISTITEM, LISS_HOT, rc))
 							return TRUE;
 					}
 					else if (color == ::GetSysColor(COLOR_BTNFACE))
 					{
-						if (python.call_draw_figure(theme, dc, LVP_LISTITEM, LISS_SELECTEDNOTFOCUS, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, LVP_LISTITEM, LISS_SELECTEDNOTFOCUS, rc))
 							return TRUE;
 					}
 					else
 					{
-						if (python.call_draw_figure(theme, dc, LVP_LISTITEM, LISS_NORMAL, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, LVP_LISTITEM, LISS_NORMAL, rc))
 							return TRUE;
 					}
 				}
@@ -107,7 +107,7 @@ namespace apn::dark::gdi
 							state_id = LISS_HOT;
 					}
 
-					if (python.call_text_out(theme, dc, LVP_LISTITEM, state_id, x, y, options, rc, text, c, dx))
+					if (python.call_text_out(current_state->hwnd, theme, dc, LVP_LISTITEM, state_id, x, y, options, rc, text, c, dx))
 						return TRUE;
 				}
 			}

@@ -197,7 +197,7 @@ namespace apn::dark::hook
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
-					if (python.call_draw_figure(theme, dc, WP_EXEDIT, 0, rc))
+					if (python.call_draw_figure(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, 0, rc))
 						return TRUE;
 				}
 
@@ -218,7 +218,7 @@ namespace apn::dark::hook
 				{
 					auto str = my::ws(std::string(text, c));
 
-					if (python.call_text_out(theme, dc, WP_EXEDIT, EES_SCENE_BUTTON, x, y, options, rc, str.c_str(), str.length(), dx))
+					if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCENE_BUTTON, x, y, options, rc, str.c_str(), str.length(), dx))
 						return TRUE;
 				}
 
@@ -237,7 +237,7 @@ namespace apn::dark::hook
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
-					if (python.call_draw_figure(theme, dc, WP_EXEDIT, EES_SCENE_BUTTON_EDGE, rc))
+					if (python.call_draw_figure(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCENE_BUTTON_EDGE, rc))
 						return TRUE;
 				}
 
@@ -276,11 +276,12 @@ namespace apn::dark::hook
 
 						// レイヤーボタンの文字列を描画します。
 #if 1
-						if (python.call_draw_text(theme, dc, WP_EXEDIT, state_id,
+						if (python.call_draw_text(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, state_id,
 							str.c_str(), str.length(), DT_CENTER | DT_VCENTER | DT_SINGLELINE, rc))
 							return TRUE;
 #else
-						if (python.call_text_out(theme, dc, WP_EXEDIT, state_id, x, y, options, rc, str.c_str(), str.length(), dx))
+						if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, state_id,
+							x, y, options, rc, str.c_str(), str.length(), dx))
 							return TRUE;
 #endif
 					}
@@ -303,7 +304,7 @@ namespace apn::dark::hook
 				{
 					auto state_id = EES_EVEN_LAYER_BUTTON_EDGE + drawing_layer_index % 2;
 
-					if (python.call_draw_figure(theme, dc, WP_EXEDIT, state_id, rc))
+					if (python.call_draw_figure(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, state_id, rc))
 						return TRUE;
 				}
 
@@ -377,10 +378,10 @@ namespace apn::dark::hook
 					UINT options = 0;
 					if (rc.left > 0) options |= ETO_CLIPPED;
 
-					if (python.call_text_out(theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
+					if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
 						rc.left, rc.top, options, &rc, str.c_str(), str.length(), nullptr)) return;
 #else
-					if (python.call_draw_text(theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
+					if (python.call_draw_text(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
 						str.c_str(), str.length(), DT_LEFT | DT_VCENTER | DT_SINGLELINE, &rc)) return;
 #endif
 				}
@@ -420,7 +421,7 @@ namespace apn::dark::hook
 					{
 						state_id += drawing_layer_index % 2;
 
-						if (python.call_draw_figure(theme, dc, WP_EXEDIT, state_id, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_EXEDIT, state_id, rc))
 							return TRUE;
 					}
 				}
@@ -541,6 +542,18 @@ namespace apn::dark::hook
 
 				// ここで現在描画しているレイヤーのインデックスを取得します。
 				drawing_layer_index = layer_index;
+
+				// Pythonから値にアクセスできるようにします。
+				try
+				{
+					python.get_context().attr("exedit").attr("drawing_layer_index") = drawing_layer_index;
+				}
+				catch (const std::exception& error)
+				{
+					MY_TRACE_STR(error.what());
+
+					std::cout << error.what() << std::endl;
+				}
 
 				orig_proc(dc, layer_index, a3, a4, a5, a6, a7);
 			}

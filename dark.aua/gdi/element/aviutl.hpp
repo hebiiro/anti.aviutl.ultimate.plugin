@@ -12,7 +12,7 @@ namespace apn::dark::gdi
 			{
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 				{
-					if (python.call_draw_figure(theme, dc, WP_DIALOG, ETS_NORMAL, rc))
+					if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, ETS_NORMAL, rc))
 						return TRUE;
 				}
 			}
@@ -51,7 +51,7 @@ namespace apn::dark::gdi
 
 				if (flags & BF_MIDDLE)
 				{
-					if (python.call_draw_figure(theme, dc, WP_DIALOG, ETS_NORMAL, rc))
+					if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, ETS_NORMAL, rc))
 						result |= TRUE;
 				}
 
@@ -59,42 +59,42 @@ namespace apn::dark::gdi
 				{
 				case BDR_RAISEDOUTER:
 					{
-						if (python.call_draw_figure(theme, dc, WP_LIGHT_RAISED_EDGE, 0, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_LIGHT_RAISED_EDGE, 0, rc))
 							result |= TRUE;
 
 						break;
 					}
 				case BDR_SUNKENOUTER:
 					{
-						if (python.call_draw_figure(theme, dc, WP_LIGHT_SUNKEN_EDGE, 0, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_LIGHT_SUNKEN_EDGE, 0, rc))
 							result |= TRUE;
 
 						break;
 					}
 				case EDGE_RAISED:
 					{
-						if (python.call_draw_figure(theme, dc, WP_RAISED_EDGE, 0, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_RAISED_EDGE, 0, rc))
 							result |= TRUE;
 
 						break;
 					}
 				case EDGE_SUNKEN:
 					{
-						if (python.call_draw_figure(theme, dc, WP_SUNKEN_EDGE, 0, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_SUNKEN_EDGE, 0, rc))
 							result |= TRUE;
 
 						break;
 					}
 				case EDGE_BUMP:
 					{
-						if (python.call_draw_figure(theme, dc, WP_BUMP_EDGE, 0, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_BUMP_EDGE, 0, rc))
 							result |= TRUE;
 
 						break;
 					}
 				case EDGE_ETCHED:
 					{
-						if (python.call_draw_figure(theme, dc, WP_ETCHED_EDGE, 0, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_ETCHED_EDGE, 0, rc))
 							result |= TRUE;
 
 						break;

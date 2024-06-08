@@ -66,14 +66,14 @@ namespace apn::dark::gdi
 				{
 					auto part_id = WP_WINDOW_EDGE;
 					auto state_id = 0;
-					python.call_draw_figure(theme, dc, part_id, state_id, rc);
+					python.call_draw_figure(hwnd, theme, dc, part_id, state_id, rc);
 					::InflateRect(rc, -2, -2);
 				}
 				else if (style & WS_BORDER)
 				{
 					auto part_id = WP_BORDER;
 					auto state_id = 0;
-					python.call_draw_figure(theme, dc, part_id, state_id, rc);
+					python.call_draw_figure(hwnd, theme, dc, part_id, state_id, rc);
 					::InflateRect(rc, -1, -1);
 				}
 
@@ -81,7 +81,7 @@ namespace apn::dark::gdi
 				{
 					auto part_id = WP_STATIC_EDGE;
 					auto state_id = 0;
-					python.call_draw_figure(theme, dc, part_id, state_id, rc);
+					python.call_draw_figure(hwnd, theme, dc, part_id, state_id, rc);
 					::InflateRect(rc, -1, -1);
 				}
 
@@ -89,7 +89,7 @@ namespace apn::dark::gdi
 				{
 					auto part_id = WP_CLIENT_EDGE;
 					auto state_id = 0;
-					python.call_draw_figure(theme, dc, part_id, state_id, rc);
+					python.call_draw_figure(hwnd, theme, dc, part_id, state_id, rc);
 					::InflateRect(rc, -2, -2);
 				}
 
@@ -101,7 +101,7 @@ namespace apn::dark::gdi
 
 					auto part_id = WP_WINDOW_FACE;
 					auto state_id = 0;
-					python.call_draw_figure(theme, dc, part_id, state_id, &corner_rc);
+					python.call_draw_figure(hwnd, theme, dc, part_id, state_id, &corner_rc);
 				}
 			}
 

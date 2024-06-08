@@ -67,7 +67,7 @@ namespace apn::dark::theme
 				auto my_state_id = get_my_state_id(part_id, state_id);
 
 				if (my_state_id != 0)
-					python.call_draw_figure(theme, dc, my_part_id, my_state_id, &rc_client);
+					python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, my_part_id, my_state_id, &rc_client);
 
 				// マークを描画します。
 
@@ -78,12 +78,12 @@ namespace apn::dark::theme
 				else
 					::OffsetRect(&rc_mark, 2, 0);
 
-				if (python.call_draw_figure(theme, dc, part_id, state_id, &rc_mark))
+				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, &rc_mark))
 					return S_OK;
 			}
 			else
 			{
-				if (python.call_draw_figure(theme, dc, part_id, state_id, rc))
+				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
 			}
 
@@ -111,12 +111,12 @@ namespace apn::dark::theme
 					rc_text.left = rc->left;
 					rc_text.right = rc->right;
 
-					if (python.call_draw_text(theme, dc, part_id, state_id, text, c, text_flags, &rc_text))
+					if (python.call_draw_text(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, text, c, text_flags, &rc_text))
 						return S_OK;
 				}
 				else
 				{
-					if (python.call_draw_text(theme, dc, part_id, state_id, text, c, text_flags, rc))
+					if (python.call_draw_text(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, text, c, text_flags, rc))
 						return S_OK;
 				}
 			}

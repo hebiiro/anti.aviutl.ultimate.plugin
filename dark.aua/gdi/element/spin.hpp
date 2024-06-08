@@ -21,7 +21,7 @@ namespace apn::dark::gdi
 
 					if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 					{
-						if (python.call_draw_figure(theme, dc, WP_WINDOW_FACE, 0, &rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_WINDOW_FACE, 0, &rc))
 							return TRUE;
 					}
 

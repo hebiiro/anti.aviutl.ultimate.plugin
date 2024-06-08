@@ -352,7 +352,7 @@ namespace apn::dark
 		//
 		// スキンモジュールの図形描画関数を呼び出します。
 		//
-		BOOL call_draw_figure(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc)
+		BOOL call_draw_figure(HWND hwnd, HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc)
 		{
 			ExtTextOutLocker locker; // このスコープ内での::ExtTextOutW()のフックをブロックします。
 
@@ -360,14 +360,15 @@ namespace apn::dark
 				"dark_draw_figure",
 				share::DrawFigureArgs {
 					{ (share::HTHEME)theme, part_id, state_id },
-					(share::HDC)dc, rc,
+					(share::HWND)hwnd, (share::HDC)dc, rc,
 				});
 		}
 
 		//
 		// スキンモジュールの文字列描画関数を呼び出します。
 		//
-		BOOL call_draw_text(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, LPCRECT rc)
+		BOOL call_draw_text(HWND hwnd, HTHEME theme, HDC dc, int part_id, int state_id,
+			LPCWSTR text, int c, DWORD text_flags, LPCRECT rc)
 		{
 			ExtTextOutLocker locker; // このスコープ内での::ExtTextOutW()のフックをブロックします。
 
@@ -375,22 +376,30 @@ namespace apn::dark
 				"dark_draw_text",
 				share::DrawTextArgs {
 					{ (share::HTHEME)theme, part_id, state_id },
-					(share::HDC)dc, rc, text, c, text_flags,
+					(share::HWND)hwnd, (share::HDC)dc, rc, text, c, text_flags,
 				});
 		}
 
 		//
 		// スキンモジュールの文字列出力関数を呼び出します。
 		//
-		BOOL call_text_out(HTHEME theme, HDC dc, int part_id, int state_id,
+		BOOL call_text_out(HWND hwnd, HTHEME theme, HDC dc, int part_id, int state_id,
 			int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx)
 		{
 			return call_python_func(
 				"dark_text_out",
 				share::TextOutArgs {
 					{ (share::HTHEME)theme, part_id, state_id },
-					(share::HDC)dc, rc, text, c, options, x, y, (my::addr_t)dx,
+					(share::HWND)hwnd, (share::HDC)dc, rc, text, c, options, x, y, (my::addr_t)dx,
 				});
+		}
+
+		//
+		// ダークモジュールのコンテキストを返します。
+		//
+		auto get_context()
+		{
+			return dark_module.attr("context");
 		}
 	} thread_local python;
 }

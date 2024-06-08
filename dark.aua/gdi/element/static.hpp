@@ -62,7 +62,7 @@ namespace apn::dark::gdi
 			{
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_STATIC))
 				{
-					if (python.call_draw_figure(theme, dc, STAT_ETCHED_EDGE, 0, rc))
+					if (python.call_draw_figure(current_state->hwnd, theme, dc, STAT_ETCHED_EDGE, 0, rc))
 						return TRUE;
 				}
 			}
@@ -92,7 +92,7 @@ namespace apn::dark::gdi
 //			if (!(options & ETO_IGNORELANGUAGE))
 			{
 				auto theme = skin::theme::manager.get_theme(VSCLASS_STATIC);
-				if (python.call_text_out(theme, dc, STAT_TEXT, 0, x, y, options, rc, text, c, dx))
+				if (python.call_text_out(current_state->hwnd, theme, dc, STAT_TEXT, 0, x, y, options, rc, text, c, dx))
 					return TRUE;
 			}
 

@@ -69,12 +69,12 @@ namespace apn::dark::gdi
 			{
 				if (my::get_style(current_state->hwnd) & TTS_BALLOON)
 				{
-					if (python.call_text_out(theme, dc, TTP_BALLOON, TTBS_NORMAL, x, y, options, rc, text, c, dx))
+					if (python.call_text_out(current_state->hwnd, theme, dc, TTP_BALLOON, TTBS_NORMAL, x, y, options, rc, text, c, dx))
 						return TRUE;
 				}
 				else
 				{
-					if (python.call_text_out(theme, dc, TTP_STANDARD, TTSS_NORMAL, x, y, options, rc, text, c, dx))
+					if (python.call_text_out(current_state->hwnd, theme, dc, TTP_STANDARD, TTSS_NORMAL, x, y, options, rc, text, c, dx))
 						return TRUE;
 				}
 			}

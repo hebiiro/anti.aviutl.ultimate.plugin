@@ -35,12 +35,12 @@ namespace apn::dark::gdi
 					auto color = painter::get_brush_color(brush);
 					if (color == ::GetSysColor(COLOR_WINDOW))
 					{
-						if (python.call_draw_figure(theme, dc, EP_EDITTEXT, ETS_NORMAL, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, EP_EDITTEXT, ETS_NORMAL, rc))
 							return TRUE;
 					}
 					else
 					{
-						if (python.call_draw_figure(theme, dc, EP_EDITTEXT, ETS_SELECTED, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, EP_EDITTEXT, ETS_SELECTED, rc))
 							return TRUE;
 					}
 				}
@@ -93,11 +93,11 @@ namespace apn::dark::gdi
 
 					if (flags & BF_MIDDLE)
 					{
-						if (python.call_draw_figure(theme, dc, WP_DIALOG, ETS_NORMAL, rc))
+						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, ETS_NORMAL, rc))
 							result |= TRUE;
 					}
 
-					if (python.call_draw_figure(theme, dc, part_id, state_id, rc))
+					if (python.call_draw_figure(current_state->hwnd, theme, dc, part_id, state_id, rc))
 					{
 						if (flags & BF_ADJUST)
 							::InflateRect(rc, -2, -2);
@@ -142,12 +142,12 @@ namespace apn::dark::gdi
 						auto bk_color = ::GetBkColor(dc);
 						if (bk_color == RGB(0xff, 0xff, 0xff))
 						{
-							if (python.call_text_out(theme, dc, EP_EDITTEXT, ETS_NORMAL, x, y, options, rc, text, c, dx))
+							if (python.call_text_out(current_state->hwnd, theme, dc, EP_EDITTEXT, ETS_NORMAL, x, y, options, rc, text, c, dx))
 								return TRUE;
 						}
 						else
 						{
-							if (python.call_text_out(theme, dc, EP_EDITTEXT, ETS_SELECTED, x, y, options, rc, text, c, dx))
+							if (python.call_text_out(current_state->hwnd, theme, dc, EP_EDITTEXT, ETS_SELECTED, x, y, options, rc, text, c, dx))
 								return TRUE;
 						}
 					}

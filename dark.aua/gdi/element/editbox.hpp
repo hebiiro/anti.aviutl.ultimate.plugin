@@ -45,7 +45,7 @@ namespace apn::dark::gdi
 
 							auto part_id = EP_EDITTEXT;
 							auto state_id = ::IsWindowEnabled(hwnd) ? ETS_NORMAL : ETS_DISABLED;
-							python.call_draw_figure(theme, dc, part_id, state_id, &fill_rc);
+							python.call_draw_figure(hwnd, theme, dc, part_id, state_id, &fill_rc);
 						}
 
 						rc->right += spin_w;
@@ -155,7 +155,7 @@ namespace apn::dark::gdi
 						auto part_id = STAT_TEXT;
 						auto state_id = ::IsWindowEnabled(current_state->hwnd) ? ETS_NORMAL : ETS_DISABLED;
 
-						if (python.call_text_out(theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
+						if (python.call_text_out(current_state->hwnd, theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
 							return TRUE;
 					}
 				}
@@ -171,7 +171,7 @@ namespace apn::dark::gdi
 						if (bk_color == ::GetSysColor(COLOR_HIGHLIGHT))
 							state_id = ETS_SELECTED; // 選択状態として描画します。
 
-						if (python.call_text_out(theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
+						if (python.call_text_out(current_state->hwnd, theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
 							return TRUE;
 					}
 				}

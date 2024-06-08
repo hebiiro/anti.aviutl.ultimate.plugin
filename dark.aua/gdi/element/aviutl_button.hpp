@@ -55,7 +55,7 @@ namespace apn::dark::gdi
 					state_id = PBS_PRESSED;
 				}
 
-				python.call_draw_figure(theme, dc, part_id, state_id, rc);
+				python.call_draw_figure(current_state->hwnd, theme, dc, part_id, state_id, rc);
 
 				return ::DrawIconEx(dc, x, y, icon, w, h, 0, 0, DI_NORMAL);
 			}

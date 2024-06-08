@@ -21,7 +21,7 @@ namespace apn::dark::theme
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 				{
-					if (python.call_draw_figure(theme, dc, WP_CLIENT_EDGE, 0, rc))
+					if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, WP_CLIENT_EDGE, 0, rc))
 						return S_OK;
 				}
 			}

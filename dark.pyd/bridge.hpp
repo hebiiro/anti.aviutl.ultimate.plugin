@@ -10,6 +10,11 @@ namespace apn::dark
 	Exports exports;
 
 	//
+	// ダークモード化アドインのコンテキストです。
+	//
+	inline struct Context {} context;
+
+	//
 	// 初期化処理を実行します。
 	//
 	BOOL init(void* addin)
@@ -384,6 +389,7 @@ namespace apn::dark
 		// DrawFigureArgsを登録します。
 		py::class_<DrawFigureArgs>(mod, "DrawFigureArgs")
 			.def_readwrite("vs", &DrawFigureArgs::vs)
+			.def_readwrite("hwnd", &DrawFigureArgs::hwnd)
 			.def_readwrite("dc", &DrawFigureArgs::dc)
 			.def_readwrite("rc", &DrawFigureArgs::rc)
 		;
@@ -391,6 +397,7 @@ namespace apn::dark
 		// DrawTextArgsを登録します。
 		py::class_<DrawTextArgs>(mod, "DrawTextArgs")
 			.def_readwrite("vs", &DrawTextArgs::vs)
+			.def_readwrite("hwnd", &DrawTextArgs::hwnd)
 			.def_readwrite("dc", &DrawTextArgs::dc)
 			.def_readwrite("rc", &DrawTextArgs::rc)
 			.def_readwrite("text", &DrawTextArgs::text)
@@ -401,6 +408,7 @@ namespace apn::dark
 		// TextOutArgsを登録します。
 		py::class_<TextOutArgs>(mod, "TextOutArgs")
 			.def_readwrite("vs", &TextOutArgs::vs)
+			.def_readwrite("hwnd", &TextOutArgs::hwnd)
 			.def_readwrite("dc", &TextOutArgs::dc)
 			.def_readwrite("rc", &TextOutArgs::rc)
 			.def_readwrite("text", &TextOutArgs::text)
@@ -657,5 +665,17 @@ namespace apn::dark
 		}
 
 		mod.attr("exports") = py::cast(&apn::dark::exports);
+
+		// Contextを登録します。
+		auto context = py::class_<Context>(mod, "Context", py::dynamic_attr())
+			.def(py::init<>())
+		;
+
+//		auto global = py::dict(py::module::import("__main__").attr("__dict__"));
+		auto global = py::dict(mod.attr("__dict__"));
+		auto local = py::dict(mod.attr("__dict__"));
+
+		py::eval<py::eval_single_statement>("context = Context()", global, global);
+		py::eval<py::eval_single_statement>("context.exedit = Context()", global, global);
 	}
 }

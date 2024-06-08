@@ -18,7 +18,7 @@ namespace apn::dark::theme
 			// ここではホットアイテムの背景色しか描画できません。(コモンダイアログの場合)
 
 			{
-				if (python.call_draw_figure(theme, dc, part_id, state_id, rc))
+				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
 			}
 
@@ -32,7 +32,7 @@ namespace apn::dark::theme
 			// ここではホットアイテムの背景色しか描画できません。(コモンダイアログの場合)
 
 			{
-				if (python.call_draw_figure(theme, dc, part_id, state_id, rc))
+				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
 			}
 
@@ -46,7 +46,7 @@ namespace apn::dark::theme
 			// ここはOSからは呼ばれませんが、その他のアプリから呼ばれる可能性があるため処理します。
 
 			{
-				if (python.call_draw_text(theme, dc, part_id, state_id, text, c, text_flags, rc))
+				if (python.call_draw_text(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, text, c, text_flags, rc))
 					return S_OK;
 			}
 
@@ -60,7 +60,7 @@ namespace apn::dark::theme
 			// ここはOSからは呼ばれませんが、その他のアプリから呼ばれる可能性があるため処理します。
 
 			{
-				if (python.call_draw_text(theme, dc, part_id, state_id, text, c, text_flags, rc))
+				if (python.call_draw_text(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, text, c, text_flags, rc))
 					return S_OK;
 			}
 
