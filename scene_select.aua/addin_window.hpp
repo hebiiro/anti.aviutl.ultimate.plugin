@@ -56,7 +56,7 @@ namespace apn::scene_select
 		//
 		BOOL redraw()
 		{
-			return ::InvalidateRect(*this, 0, FALSE);
+			return ::InvalidateRect(*this, nullptr, FALSE);
 		}
 
 		//
@@ -129,7 +129,7 @@ namespace apn::scene_select
 				rc.bottom = rc.top + hive.button_size.cy * row_count;
 				my::client_to_window(*this, &rc);
 
-				::SetWindowPos(*this, 0,
+				::SetWindowPos(*this, nullptr,
 					0, 0, my::get_width(rc), my::get_height(rc),
 					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
 			}
@@ -183,10 +183,10 @@ namespace apn::scene_select
 				auto rc = client_rc;
 				rc.right = rc.left + hive.button_size.cx * col_count;
 				rc.bottom = rc.top + hive.button_size.cy * row_count;
-				::MapWindowPoints(*this, 0, (LPPOINT)&rc, 2);
+				my::map_window_points(*this, nullptr, &rc);
 				my::client_to_window(*this, &rc);
 
-				::SetWindowPos(*this, 0, 0, 0, my::get_width(rc), my::get_height(rc), SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
+				::SetWindowPos(*this, nullptr, 0, 0, my::get_width(rc), my::get_height(rc), SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
 			}
 		}
 
@@ -214,19 +214,21 @@ namespace apn::scene_select
 			auto client_rc = my::get_client_rect(hwnd);
 
 			my::PaintDC pdc(hwnd);
+#if 1
+			my::DoubleBufferDC dc(pdc, &client_rc);
+#else
 			my::UxDC dc(pdc, &client_rc);
-
 			if (!dc.is_valid()) return;
-
+#endif
 			AviUtl::SysInfo si = {};
-			magi.fp->exfunc->get_sys_info(0, &si);
+			magi.fp->exfunc->get_sys_info(nullptr, &si);
 
 			// フォントをセットします。
 			my::gdi::selector font_selector(dc, si.hfont);
 
 			{
 				// ブラシを取得します。
-				auto brush = (HBRUSH)::SendMessage(hwnd, WM_CTLCOLORDLG, (WPARAM)(HDC)dc, (LPARAM)hwnd);
+				auto brush = (HBRUSH)(COLOR_BTNFACE + 1);
 
 				// 背景を塗りつぶします。
 				::FillRect(dc, &client_rc, brush);
