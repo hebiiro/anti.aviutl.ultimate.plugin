@@ -38,34 +38,34 @@
       <Filter>resource</Filter>
     </ClInclude>
     <ClInclude Include="hive.hpp" />
-    <ClInclude Include="Shuttle\aviutl_window.hpp">
+    <ClInclude Include="shuttle\aviutl_window.hpp">
       <Filter>element\pane\shuttle</Filter>
     </ClInclude>
-    <ClInclude Include="Shuttle\exedit_window.hpp">
+    <ClInclude Include="shuttle\exedit_window.hpp">
       <Filter>element\pane\shuttle</Filter>
     </ClInclude>
-    <ClInclude Include="Shuttle\setting_dialog.hpp">
+    <ClInclude Include="shuttle\setting_dialog.hpp">
       <Filter>element\pane\shuttle</Filter>
     </ClInclude>
-    <ClInclude Include="Pane\pane.hpp">
+    <ClInclude Include="pane\pane.hpp">
       <Filter>element\pane</Filter>
     </ClInclude>
-    <ClInclude Include="Shuttle\shuttle.hpp">
+    <ClInclude Include="shuttle\shuttle.hpp">
       <Filter>element\pane\shuttle</Filter>
     </ClInclude>
-    <ClInclude Include="Shuttle\shuttle_manager.hpp">
+    <ClInclude Include="shuttle\shuttle_manager.hpp">
       <Filter>element\pane\shuttle</Filter>
     </ClInclude>
-    <ClInclude Include="Container\container.hpp">
+    <ClInclude Include="container\container.hpp">
       <Filter>element\pane\shuttle\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\scroll_container.hpp">
+    <ClInclude Include="container\scroll_container.hpp">
       <Filter>element\pane\shuttle\container</Filter>
     </ClInclude>
-    <ClInclude Include="Container\spread_container.hpp">
+    <ClInclude Include="container\spread_container.hpp">
       <Filter>element\pane\shuttle\container</Filter>
     </ClInclude>
-    <ClInclude Include="Pane\tab.hpp">
+    <ClInclude Include="pane\tab.hpp">
       <Filter>element\pane</Filter>
     </ClInclude>
     <ClInclude Include="main_window.hpp" />
@@ -74,7 +74,7 @@
     <ClInclude Include="preference_loader.hpp" />
     <ClInclude Include="preference_saver.hpp" />
     <ClInclude Include="addin.hpp" />
-    <ClInclude Include="Pane\root_pane.hpp">
+    <ClInclude Include="pane\root_pane.hpp">
       <Filter>element\pane</Filter>
     </ClInclude>
     <ClInclude Include="config_io.hpp" />

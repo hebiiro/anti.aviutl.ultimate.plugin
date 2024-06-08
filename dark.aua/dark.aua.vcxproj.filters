@@ -49,152 +49,152 @@
     </ClInclude>
     <ClInclude Include="act_ctx.hpp" />
     <ClInclude Include="hive.hpp" />
-    <ClInclude Include="Theme\manager.hpp">
+    <ClInclude Include="theme\manager.hpp">
       <Filter>renderer\theme</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\manager.hpp">
+    <ClInclude Include="gdi\manager.hpp">
       <Filter>renderer\gdi</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\renderer.hpp">
+    <ClInclude Include="gdi\renderer.hpp">
       <Filter>renderer\gdi</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\renderer.hpp">
+    <ClInclude Include="theme\renderer.hpp">
       <Filter>renderer\theme</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\menu.hpp">
+    <ClInclude Include="theme\element\menu.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\client.hpp">
+    <ClInclude Include="theme\client.hpp">
       <Filter>renderer\theme</Filter>
     </ClInclude>
     <ClInclude Include="painter.hpp" />
-    <ClInclude Include="Gdi\client.hpp">
+    <ClInclude Include="gdi\client.hpp">
       <Filter>renderer\gdi</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\dialog.hpp">
+    <ClInclude Include="gdi\element\dialog.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\button.hpp">
+    <ClInclude Include="gdi\element\button.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\editbox.hpp">
+    <ClInclude Include="gdi\element\editbox.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\static.hpp">
+    <ClInclude Include="gdi\element\static.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\renderer_nc.hpp">
+    <ClInclude Include="gdi\renderer_nc.hpp">
       <Filter>renderer\gdi</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\static.hpp">
+    <ClInclude Include="theme\element\static.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\button.hpp">
+    <ClInclude Include="theme\element\button.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\scrollbar.hpp">
+    <ClInclude Include="theme\element\scrollbar.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\editbox.hpp">
+    <ClInclude Include="theme\element\editbox.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\combobox.hpp">
+    <ClInclude Include="gdi\element\combobox.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\listbox.hpp">
+    <ClInclude Include="gdi\element\listbox.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\combobox.hpp">
+    <ClInclude Include="theme\element\combobox.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\listbox.hpp">
+    <ClInclude Include="theme\element\listbox.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\aviutl_button.hpp">
+    <ClInclude Include="gdi\element\aviutl_button.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\aviutl.hpp">
+    <ClInclude Include="gdi\element\aviutl.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\tooltip.hpp">
+    <ClInclude Include="gdi\element\tooltip.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\trackbar.hpp">
+    <ClInclude Include="gdi\element\trackbar.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\spin.hpp">
+    <ClInclude Include="gdi\element\spin.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\listview.hpp">
+    <ClInclude Include="gdi\element\listview.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\treeview.hpp">
+    <ClInclude Include="gdi\element\treeview.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\tab.hpp">
+    <ClInclude Include="gdi\element\tab.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\toolbar.hpp">
+    <ClInclude Include="gdi\element\toolbar.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\spin.hpp">
+    <ClInclude Include="theme\element\spin.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\trackbar.hpp">
+    <ClInclude Include="theme\element\trackbar.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\tooltip.hpp">
+    <ClInclude Include="theme\element\tooltip.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\command_module.hpp">
+    <ClInclude Include="theme\element\command_module.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\common_items_dialog.hpp">
+    <ClInclude Include="theme\element\common_items_dialog.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\header.hpp">
+    <ClInclude Include="theme\element\header.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\listview.hpp">
+    <ClInclude Include="theme\element\listview.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\preview_pane.hpp">
+    <ClInclude Include="theme\element\preview_pane.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\tab.hpp">
+    <ClInclude Include="theme\element\tab.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\toolbar.hpp">
+    <ClInclude Include="theme\element\toolbar.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\treeview.hpp">
+    <ClInclude Include="theme\element\treeview.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Theme\Element\window.hpp">
+    <ClInclude Include="theme\element\window.hpp">
       <Filter>renderer\theme\element</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\dwm.hpp">
+    <ClInclude Include="skin\dwm.hpp">
       <Filter>skin</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\stuff.hpp">
+    <ClInclude Include="skin\stuff.hpp">
       <Filter>skin</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\Theme\manager.hpp">
+    <ClInclude Include="skin\theme\manager.hpp">
       <Filter>skin\theme</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\Theme\part.hpp">
+    <ClInclude Include="skin\theme\part.hpp">
       <Filter>skin\theme</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\Theme\state.hpp">
+    <ClInclude Include="skin\theme\state.hpp">
       <Filter>skin\theme</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\Theme\vsclass.hpp">
+    <ClInclude Include="skin\theme\vsclass.hpp">
       <Filter>skin\theme</Filter>
     </ClInclude>
-    <ClInclude Include="Skin\icon.hpp">
+    <ClInclude Include="skin\icon.hpp">
       <Filter>skin</Filter>
     </ClInclude>
-    <ClInclude Include="Gdi\Element\setting_dialog.hpp">
+    <ClInclude Include="gdi\element\setting_dialog.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
     <ClInclude Include="python.hpp" />
