@@ -40,6 +40,9 @@ namespace apn::filer
 				return nullptr;
 			}
 
+			// ファイラウィンドウにカテゴリ名を設定します。
+			::SetProp(*filer_window, L"aviutl.plugin.category_name", (HANDLE)hive.c_display_name);
+
 			// クライアントプロセスにファイラウィンドウが作成されたことを通知します。
 			hive.post_message(share::message::c_init_filer_window, (HWND)*filer_window, full);
 
