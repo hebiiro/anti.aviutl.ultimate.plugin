@@ -16,12 +16,16 @@ namespace apn::filer
 		//
 		// 指定された名前のファイラウィンドウを作成して返します。
 		//
-		inline static std::shared_ptr<FilerWindow> create_instance(LPCTSTR name, BOOL full, const RECT& rc)
+		inline static std::shared_ptr<FilerWindow> create_instance(LPCTSTR name, BOOL full)
 		{
 			MY_TRACE_FUNC("{}, {}", name, full);
 
 			// ファイラウィンドウのインスタンスを作成します。
 			auto filer_window = std::make_shared<FilerWindow>();
+
+			// ファイラウィンドウの表示位置を算出します。
+			auto rc = my::get_window_rect(magi.exin.get_aviutl_window());
+			::InflateRect(&rc, -my::get_width(rc) / 5, -my::get_height(rc) / 5);
 
 			// ファイラウィンドウを作成します。
 			if (!filer_window->create_as_plugin(
@@ -33,7 +37,7 @@ namespace apn::filer
 			{
 				hive.message_box(L"{}(ファイラウィンドウ)の作成に失敗しました");
 
-				return 0;
+				return nullptr;
 			}
 
 			// クライアントプロセスにファイラウィンドウが作成されたことを通知します。
@@ -50,16 +54,16 @@ namespace apn::filer
 		{
 			// カレントオブジェクトのインデックスを取得します。
 			auto object_index = magi.exin.get_current_object_index();
-			if (object_index < 0) return std::wstring();
+			if (object_index < 0) return {};
 
 			// カレントオブジェクトを取得します。
 			auto object = magi.exin.get_object(object_index);
-			if (!object) return std::wstring();
+			if (!object) return {};
 
 			// 先頭のフィルタを取得します。
 			auto filter_index = 0;
 			auto filter = magi.exin.get_filter(object, filter_index);
-			if (!filter) return std::wstring();
+			if (!filter) return {};
 
 			// 拡張データへのオフセットとサイズを取得します。
 			auto offset = -1, size = -1;
@@ -73,7 +77,7 @@ namespace apn::filer
 			case 82: offset = 0; size = 260; break; // 動画ファイル合成
 			case 83: offset = 4; size = 256; break; // 画像ファイル合成
 			}
-			if (size <= 0) return std::wstring(); // サイズを取得できなかった場合は何もしません。
+			if (size <= 0) return {}; // サイズを取得できなかった場合は何もしません。
 
 			// 拡張データからファイル名を取得します。
 			auto exdata = magi.exin.get_exdata(object, filter_index);
@@ -83,12 +87,18 @@ namespace apn::filer
 			return std::filesystem::path(file_name).parent_path();
 		}
 
+		//
+		// ウィンドウ名を更新します。
+		//
 		void update_window_name(LPCTSTR name)
 		{
 			::SetWindowText(*this, name);
 			::SetWindowText(get_target(), name);
 		}
 
+		//
+		// ウィンドウ名を更新します。
+		//
 		void update_window_name()
 		{
 			auto name = my::get_window_text(*this);
@@ -267,9 +277,9 @@ namespace apn::filer
 		//
 		// 指定された名前のファイラウィンドウを作成して返します。
 		//
-		auto create_filer_window(LPCTSTR name, BOOL full, const RECT& rc)
+		auto create_filer_window(LPCTSTR name, BOOL full)
 		{
-			return FilerWindow::create_instance(name, full, rc);
+			return FilerWindow::create_instance(name, full);
 		}
 
 		//

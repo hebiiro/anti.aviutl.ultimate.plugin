@@ -153,11 +153,8 @@ namespace apn::filer
 			if (dialog.do_modal(addin_window) != IDOK) return FALSE;
 			MY_TRACE_STR(dialog.new_name);
 
-			// アドインウィンドウのウィンドウ矩形を取得します。
-			auto rc = my::get_window_rect(addin_window);
-
 			// ファイラを作成します。
-			auto filer_window = filer_window_manager.create_filer_window(dialog.new_name.c_str(), TRUE, rc);
+			auto filer_window = filer_window_manager.create_filer_window(dialog.new_name.c_str(), TRUE);
 
 			// ファイラを表示します。
 			::ShowWindow(*filer_window, SW_SHOW);

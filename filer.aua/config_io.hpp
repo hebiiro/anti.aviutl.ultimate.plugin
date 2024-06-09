@@ -44,16 +44,10 @@ namespace apn::filer
 			{
 				// デフォルトのファイラを作成します。
 
-				// デフォルトのウィンドウ矩形です。
-				auto rc = RECT { 0, 0, 800, 600 };
-
 				for (auto i = 0; i < 3; i++)
 				{
-					// 矩形を少しずらします。
-					::OffsetRect(&rc, 24, 24);
-
 					// ファイラを作成します。
-					auto filer_window = filer_window_manager.create_filer_window(std::format(L"素材{}", i + 1).c_str(), TRUE, rc);
+					auto filer_window = filer_window_manager.create_filer_window(std::format(L"素材{}", i + 1).c_str(), TRUE);
 
 					// ファイラを表示します。
 //					::ShowWindow(*filer_window, SW_SHOW);
@@ -90,9 +84,6 @@ namespace apn::filer
 			// アドインウィンドウのウィンドウ位置を読み込みます。
 			workspace::share::get_window(root, "addin_window", addin_window);
 
-			// アドインウィンドウのウィンドウ矩形を取得します。
-			auto rc = my::get_window_rect(addin_window);
-
 			if (auto filer_nodes_op = root.get_child_optional("filer"))
 			{
 				for (const auto& pair : filer_nodes_op.value())
@@ -104,7 +95,7 @@ namespace apn::filer
 					get_string(filer_node, "name", name);
 
 					// ファイラウィンドウを作成します。
-					auto filer_window = filer_window_manager.create_filer_window(name.c_str(), FALSE, rc);
+					auto filer_window = filer_window_manager.create_filer_window(name.c_str(), FALSE);
 					if (filer_window)
 					{
 						// ファイラウィンドウのウィンドウ位置を読み込みます。
