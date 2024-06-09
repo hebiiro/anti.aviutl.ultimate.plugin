@@ -49,6 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{9759D4C9-A
 		common\core\module.hpp = common\core\module.hpp
 		common\core\object_holder.hpp = common\core\object_holder.hpp
 		common\core\std_addin_dialog.hpp = common\core\std_addin_dialog.hpp
+		common\core\std_addin_window.hpp = common\core\std_addin_window.hpp
 		common\core\std_config_io.hpp = common\core\std_config_io.hpp
 	EndProjectSection
 EndProject

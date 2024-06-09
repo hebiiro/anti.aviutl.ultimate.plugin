@@ -28,8 +28,8 @@ namespace apn
 			} c_setting_dialog;
 		} c_command_id;
 
-		HINSTANCE instance = 0; // ultimate.aufのインスタンスハンドルです。
-		AviUtl::FilterPlugin* fp = 0; // フィルタプラグインのポインタです。
+		HINSTANCE instance = nullptr; // ultimate.aufのインスタンスハンドルです。
+		AviUtl::FilterPlugin* fp = nullptr; // フィルタプラグインのポインタです。
 		my::AviUtlInternal auin; // AviUtlにアクセスするためのオブジェクトです。
 		my::ExEditInternal exin; // 拡張編集にアクセスするためのオブジェクトです。
 

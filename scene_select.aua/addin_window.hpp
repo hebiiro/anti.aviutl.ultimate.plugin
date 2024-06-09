@@ -6,7 +6,7 @@ namespace apn::scene_select
 	// このクラスはアドインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	inline struct AddinWindow : my::aviutl::PluginWindow
+	inline struct AddinWindow : StdAddinWindow
 	{
 		my::theme::unique_ptr<> window_theme;
 		my::theme::unique_ptr<> button_theme;

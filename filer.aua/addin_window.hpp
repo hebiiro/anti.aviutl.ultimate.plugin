@@ -5,7 +5,7 @@ namespace apn::filer
 	//
 	// このクラスはホストプロセスのメインウィンドウです。
 	//
-	inline struct AddinWindow : my::aviutl::PluginWindow
+	inline struct AddinWindow : StdAddinWindow
 	{
 		//
 		// 初期化処理を実行します。

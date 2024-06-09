@@ -6,7 +6,7 @@ namespace apn::font_select
 	// このクラスはメインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	inline struct AddinWindow : my::aviutl::PluginWindow
+	inline struct AddinWindow : StdAddinWindow
 	{
 		//
 		// 初期化処理を実行します。

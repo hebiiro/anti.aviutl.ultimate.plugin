@@ -95,6 +95,7 @@ using namespace Gdiplus;
 #include "common/core/addin_manager.hpp"
 #include "common/core/std_config_io.hpp"
 #include "common/core/std_addin_dialog.hpp"
+#include "common/core/std_addin_window.hpp"
 #include "common/core/object_holder.hpp"
 #include "common/core/filter_holder.hpp"
 #include "common/core/layered_window_info.hpp"
