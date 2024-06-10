@@ -117,5 +117,15 @@ namespace apn::workspace
 
 			return PreferenceLoader(hive.c_preference_flag.c_fluid).read_file(file_name, hive);
 		}
+
+		//
+		// 再生時最大化を有効/無効化します。
+		//
+		virtual BOOL enable_fullscreen_preview(BOOL enable) override
+		{
+			MY_TRACE_FUNC("{}", enable);
+
+			return hook::aviutl.enable_hook(enable);
+		}
 	} app;
 }

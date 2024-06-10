@@ -175,8 +175,8 @@ namespace apn::workspace
 			// 一旦すべての項目を削除します。
 			while (::DeleteMenu(extra_menu, 0, MF_BYPOSITION)) {}
 
-			if (hive.use_fullscreen_player)
-				::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_fullscreen_player, _T("再生時にプレビューを最大化"));
+			if (hive.use_fullscreen_preview)
+				::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_fullscreen_preview, _T("再生時にプレビューを最大化"));
 
 			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_create_sub_window, _T("サブウィンドウを新規作成"));
 			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_import_layout, _T("レイアウトのインポート"));
@@ -192,8 +192,8 @@ namespace apn::workspace
 						::CheckMenuItem(sub_menu, id, MF_CHECKED);
 				});
 
-			if (hive.fullscreen_player)
-				::CheckMenuItem(extra_menu, hive.c_command_id.c_fullscreen_player, MF_CHECKED);
+			if (hive.fullscreen_preview)
+				::CheckMenuItem(extra_menu, hive.c_command_id.c_fullscreen_preview, MF_CHECKED);
 		}
 
 		//
@@ -224,6 +224,16 @@ namespace apn::workspace
 		}
 
 		//
+		// コンフィグを更新します。
+		//
+		void update_config()
+		{
+			MY_TRACE_FUNC("");
+
+			hive.app->enable_fullscreen_preview(hive.use_fullscreen_preview && hive.fullscreen_preview);
+		}
+
+		//
 		// すべてのドッキングサイトのレイアウトを更新します。
 		//
 		void update_all_layouts()
@@ -244,6 +254,9 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			hive.app->read_preference();
+
+			// コンフィグを更新します。
+			update_config();
 
 			// レイアウトを更新します。
 			update_all_layouts();
@@ -459,10 +472,13 @@ namespace apn::workspace
 
 						switch (id)
 						{
-						case hive.c_command_id.c_fullscreen_player:
+						case hive.c_command_id.c_fullscreen_preview:
 							{
 								// 再生時最大化の有効/無効を切り替えます。
-								hive.fullscreen_player = !hive.fullscreen_player;
+								hive.fullscreen_preview = !hive.fullscreen_preview;
+
+								// コンフィグを更新します。
+								update_config();
 
 								break;
 							}
@@ -492,6 +508,9 @@ namespace apn::workspace
 								// コンフィグダイアログを開きます。
 								if (IDOK == show_config_dialog(hwnd))
 								{
+									// コンフィグを更新します。
+									update_config();
+
 									// レイアウトを更新します。
 									update_all_layouts();
 								}
@@ -675,7 +694,7 @@ namespace apn::workspace
 				set_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
 				set_check(IDC_USE_THEME, hive.use_theme);
 				set_check(IDC_SCROLL_FORCE, hive.scroll_force);
-				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_player);
+				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_preview);
 				set_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
 				set_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
 

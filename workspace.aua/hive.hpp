@@ -26,7 +26,7 @@ namespace apn::workspace
 		inline static constexpr struct CommandID {
 			inline static constexpr uint32_t c_begin = 19800;
 			inline static constexpr uint32_t c_end = c_begin + 100;
-			inline static constexpr uint32_t c_fullscreen_player = c_begin + 0;
+			inline static constexpr uint32_t c_fullscreen_preview = c_begin + 0;
 			inline static constexpr uint32_t c_show_config_dialog = c_begin + 1;
 			inline static constexpr uint32_t c_import_layout = c_begin + 2;
 			inline static constexpr uint32_t c_export_layout = c_begin + 3;
@@ -94,6 +94,7 @@ namespace apn::workspace
 			virtual BOOL import_layout() = 0;
 			virtual BOOL export_layout() = 0;
 			virtual BOOL change_layout(const std::wstring& file_name) = 0;
+			virtual BOOL enable_fullscreen_preview(BOOL enable) = 0;
 		} *app = nullptr;
 
 		//
@@ -131,12 +132,12 @@ namespace apn::workspace
 		COLORREF inactive_caption_text_color = RGB(0x00, 0x00, 0x00);
 		BOOL use_theme = FALSE;
 		BOOL scroll_force = FALSE;
-		BOOL fullscreen_player = FALSE;
+		BOOL fullscreen_preview = FALSE;
 		BOOL show_tab_force = FALSE;
 		BOOL bypass_keyboard_message = FALSE;
 		int32_t layout_list_mode = c_layout_list_mode.c_none;
 
-		BOOL use_fullscreen_player = FALSE;
+		BOOL use_fullscreen_preview = FALSE;
 
 		//
 		// メッセージボックスを表示します。

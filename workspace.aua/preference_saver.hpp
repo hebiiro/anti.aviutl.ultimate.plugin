@@ -42,7 +42,7 @@ namespace apn::workspace
 				set_color(node, "inactive_caption_text_color", hive.inactive_caption_text_color);
 				set_bool(node, "use_theme", hive.use_theme);
 				set_bool(node, "scroll_force", hive.scroll_force);
-				set_bool(node, "fullscreen_player", hive.fullscreen_player);
+				set_bool(node, "fullscreen_preview", hive.fullscreen_preview);
 				set_bool(node, "show_tab_force", hive.show_tab_force);
 				set_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
 				set_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);

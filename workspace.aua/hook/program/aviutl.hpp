@@ -6,7 +6,7 @@ namespace apn::workspace::hook
 	{
 		struct WindowPlacement
 		{
-			HWND hwnd = 0;
+			HWND hwnd = nullptr;
 			WINDOWPLACEMENT wp = { sizeof(wp) };
 
 			WindowPlacement(HWND hwnd)
@@ -77,7 +77,7 @@ namespace apn::workspace::hook
 				MY_TRACE_FUNC("");
 
 				// フラグが立っていない場合はデフォルト処理のみ行います。
-				if (!hive.fullscreen_player)
+				if (!hive.fullscreen_preview)
 					return do_default(u1, u2, u3, u4, u5, u6);
 
 				// AviUtlウィンドウまたは再生ウィンドウを取得します。
@@ -131,11 +131,28 @@ namespace apn::workspace::hook
 				}
 			}
 
-			inline LONG init(my::addr_t aviutl)
+			inline BOOL init(my::addr_t aviutl)
 			{
-				orig = aviutl + 0x00053320;
+				MY_TRACE_FUNC("{:#010x}", aviutl);
 
-				return DetourAttach((PVOID*)&orig, hook);
+				orig = aviutl + 0x00053320;
+				MY_TRACE_HEX(orig);
+
+				return TRUE;
+			}
+
+			inline LONG enable_hook()
+			{
+				MY_TRACE_FUNC("");
+
+				return DetourAttach(&(PVOID&)orig, hook);
+			}
+
+			inline LONG disable_hook()
+			{
+				MY_TRACE_FUNC("");
+
+				return DetourDetach(&(PVOID&)orig, hook);
 			}
 		}
 
@@ -183,7 +200,7 @@ namespace apn::workspace::hook
 				MY_TRACE_FUNC("");
 
 				// フラグが立っていない場合はデフォルト処理のみ行います。
-				if (!hive.fullscreen_player)
+				if (!hive.fullscreen_preview)
 					return do_default(u1, u2, u3, u4, u5);
 
 				// AviUtlウィンドウまたは再生ウィンドウを取得します。
@@ -235,11 +252,28 @@ namespace apn::workspace::hook
 				}
 			}
 
-			inline LONG init(my::addr_t aviutl)
+			inline BOOL init(my::addr_t aviutl)
 			{
-				orig = aviutl + 0x00051150;
+				MY_TRACE_FUNC("{:#010x}", aviutl);
 
-				return DetourAttach((PVOID*)&orig, hook);
+				orig = aviutl + 0x00051150;
+				MY_TRACE_HEX(orig);
+
+				return TRUE;
+			}
+
+			inline LONG enable_hook()
+			{
+				MY_TRACE_FUNC("");
+
+				return DetourAttach(&(PVOID&)orig, hook);
+			}
+
+			inline LONG disable_hook()
+			{
+				MY_TRACE_FUNC("");
+
+				return DetourDetach(&(PVOID&)orig, hook);
 			}
 		}
 	}
@@ -257,7 +291,7 @@ namespace apn::workspace::hook
 
 				return TRUE;
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} AdjustWindowRectEx;
 
 		//
@@ -275,19 +309,16 @@ namespace apn::workspace::hook
 			my::hook::attach_import(AdjustWindowRectEx, (HMODULE)aviutl, "AdjustWindowRectEx");
 			MY_TRACE_HEX(AdjustWindowRectEx.orig_proc);
 
-			// 最大化再生を使用する場合は
-			if (hive.use_fullscreen_player)
-			{
-				// AviUtl内の再生関係の関数をフックします。
+			// AviUtlのiniファイルのパスを取得します。
+			auto file_name = my::get_module_file_name(nullptr).parent_path() / _T("aviutl.ini");
+			MY_TRACE_STR(file_name);
 
-				auto file_name = my::get_module_file_name(nullptr).parent_path() / _T("aviutl.ini");
-				MY_TRACE_STR(file_name);
+			// AviUtlの設定を取得します。
+			movieplaymain = ::GetPrivateProfileInt(_T("system"), _T("movieplaymain"), 0, file_name.c_str());
 
-				movieplaymain = ::GetPrivateProfileInt(_T("system"), _T("movieplaymain"), 0, file_name.c_str());
-
-				play_main::init(aviutl);
-				play_sub::init(aviutl);
-			}
+			// フック用のアドレスを初期化します。
+			play_main::init(aviutl);
+			play_sub::init(aviutl);
 
 			return TRUE;
 		}
@@ -300,6 +331,41 @@ namespace apn::workspace::hook
 			MY_TRACE_FUNC("");
 
 			return TRUE;
+		}
+
+		//
+		// フックを有効/無効化します。
+		//
+		BOOL enable_hook(BOOL enable)
+		{
+			MY_TRACE_FUNC("{}", enable);
+
+			DetourTransactionBegin();
+			DetourUpdateThread(::GetCurrentThread());
+
+			if (enable)
+			{
+				play_main::enable_hook();
+				play_sub::enable_hook();
+			}
+			else
+			{
+				play_main::disable_hook();
+				play_sub::disable_hook();
+			}
+
+			if (DetourTransactionCommit() == NO_ERROR)
+			{
+				MY_TRACE("APIフックに成功しました\n");
+
+				return TRUE;
+			}
+			else
+			{
+				MY_TRACE("APIフックに失敗しました\n");
+
+				return FALSE;
+			}
 		}
 	} aviutl;
 }
