@@ -9,7 +9,7 @@
 
 namespace apn
 {
-	static const auto plugin_version = "r31"s;
+	static const auto plugin_version = "r32"s;
 	static const auto video_filter_name = "アルティメットプラグイン"s;
 	static const auto video_filter_information = video_filter_name + " " + plugin_version;
 	static const auto audio_filter_name = video_filter_name + "(音声)";
