@@ -119,10 +119,10 @@ namespace apn::workspace
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
-			wc.lpszClassName = Hive::SubWindow::c_class_name;
+			wc.lpszClassName = hive.c_class_name.c_sub_window;
 			::RegisterClass(&wc);
 
 			return __super::create(
@@ -265,6 +265,9 @@ namespace apn::workspace
 			case WM_CREATE:
 				{
 					MY_TRACE_FUNC("{:#010x}, WM_CREATE, {:#010x}, {:#010x}", hwnd,  wParam, lParam);
+
+					// このウィンドウにカテゴリ名を設定します。
+					::SetProp(hwnd, _T("aviutl.plugin.category_name"), (HANDLE)L"サブウィンドウ");
 
 					break;
 				}

@@ -42,9 +42,17 @@ namespace apn::workspace
 			virtual void on_exit_shuttle(const std::shared_ptr<Shuttle>& shuttle) = 0;
 		};
 
+		inline static const std::vector<std::wstring> c_default_category = {
+			L"プライマリ",
+			L"セカンダリ",
+			L"サブウィンドウ",
+			L"サブプロセス",
+			L"アルティメット",
+		};
+
 		inline static constexpr LPCTSTR c_prop_name = _T("apn::workspace::shuttle");
 
-		inline static StaticListener* static_listener = 0; // このクラスのスタティックリスナーです。
+		inline static StaticListener* static_listener = nullptr; // このクラスのスタティックリスナーです。
 		std::set<Listener*> listeners; // このクラスのリスナーです。
 		std::wstring name; // このシャトルの名前です。
 		std::shared_ptr<Container> dock_container; // このシャトル専用のドッキングコンテナです。
@@ -109,9 +117,9 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("{:#010x}, {}", (HWND)*this, name);
 #if 0
-			// ターゲットウィンドウの親ウィンドウを0にします。
+			// ターゲットウィンドウの親ウィンドウをnullptrにします。
 			// これにより、コンテナウィンドウが破壊されてもターゲットウィンドウが道連れに破壊されずにすみます。
-			::SetParent(*this, 0);
+			::SetParent(*this, nullptr);
 #endif
 			// サブクラス化を解除して、これ以降の後始末処理を省略します。
 			unsubclass();
@@ -136,6 +144,10 @@ namespace apn::workspace
 			// HWNDにポインタを関連付けます。
 			set_pointer(hwnd, this);
 
+			// カテゴリ名を取得してウィンドウに設定します。
+			if (auto category_name = get_initial_category_name())
+				::SetProp(hwnd, _T("aviutl.plugin.category_name"), (HANDLE)category_name);
+
 			// ターゲットウィンドウの表示状態を取得しておきます。
 			auto visible = ::IsWindowVisible(*this);
 			MY_TRACE_INT(visible);
@@ -149,7 +161,7 @@ namespace apn::workspace
 			MY_TRACE_RECT2(rc_client);
 
 			// クライアント矩形をスクリーン座標に変換しておきます。
-			my::map_window_points(*this, 0, &rc_client);
+			my::map_window_points(*this, nullptr, &rc_client);
 			MY_TRACE_RECT2(rc_client);
 
 			// 設定ダイアログの初期位置は縦に長過ぎたりするので微調整します。
@@ -177,7 +189,8 @@ namespace apn::workspace
 
 				auto rc_window = rc_client;
 				::AdjustWindowRectEx(&rc_window, style, !!menu, ex_style);
-				::SetWindowPos(*this, 0, 0, 0, my::get_width(rc_window), my::get_height(rc_window),
+				::SetWindowPos(*this, nullptr,
+					0, 0, my::get_width(rc_window), my::get_height(rc_window),
 					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 			}
 
@@ -210,6 +223,35 @@ namespace apn::workspace
 			if (static_listener)
 				static_listener->on_init_shuttle(shared_from_this());
 		}
+
+		virtual LPCWSTR get_initial_category_name()
+		{
+			if (name == L"* AviUtl" ||
+				name == L"* 拡張編集" ||
+				name == L"* 設定ダイアログ" ||
+				name == L"ぼかしフィルタ" ||
+				name == L"クリッピング＆リサイズ" ||
+				name == L"シャープフィルタ" ||
+				name == L"ツールウィンドウ" ||
+				name == L"ノイズ除去(時間軸)フィルタ" ||
+				name == L"ノイズ除去フィルタ" ||
+				name == L"ヒストグラム" ||
+				name == L"偶数" ||
+				name == L"再生ウィンドウ" ||
+				name == L"奇数" ||
+				name == L"拡張色調補正" ||
+				name == L"縁塗りつぶし" ||
+				name == L"自動24fps" ||
+				name == L"色調補正フィルタ" ||
+				name == L"音声の位置調整" ||
+				name == L"音量の最大化" ||
+				name == L"音量の調整")
+			{
+				return L"プライマリ";
+			}
+
+			return nullptr;
+		};
 
 		//
 		// ドッキングコンテナを作成して返します。
@@ -337,7 +379,7 @@ namespace apn::workspace
 
 					auto rc = my::get_window_rect(hwnd);
 					auto rc_clip = my::get_client_rect(hwnd);
-					my::map_window_points(hwnd, 0, &rc_clip);
+					my::map_window_points(hwnd, nullptr, &rc_clip);
 					::OffsetRect(&rc_clip, -rc.left, -rc.top);
 					::OffsetRect(&rc, -rc.left, -rc.top);
 
@@ -345,7 +387,7 @@ namespace apn::workspace
 					my::gdi::unique_ptr<HRGN> rgn(::CreateRectRgnIndirect(&rc_clip));
 					::ExtSelectClipRgn(dc, rgn.get(), RGN_DIFF);
 					painter.fill_background(dc, &rc);
-					::ExtSelectClipRgn(dc, 0, RGN_COPY);
+					::ExtSelectClipRgn(dc, nullptr, RGN_COPY);
 
 					return 0;
 				}
@@ -353,8 +395,7 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("{}, WM_SHOWWINDOW, {:#010x}, {:#010x}", name, wParam, lParam);
 
-					auto container = get_current_container();
-					if (container)
+					if (auto container = get_current_container())
 					{
 						// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
 						// ここで::ShowWindowAsync()を使用すると一部ウィンドウ(拡張編集)の表示がおかしくなります。
@@ -364,7 +405,7 @@ namespace apn::workspace
 							flags |= SWP_SHOWWINDOW;
 						else
 							flags |= SWP_HIDEWINDOW;
-						::SetWindowPos(*container, 0, 0, 0, 0, 0, flags);
+						::SetWindowPos(*container, nullptr, 0, 0, 0, 0, flags);
 					}
 
 					break;
@@ -375,8 +416,7 @@ namespace apn::workspace
 
 					auto text = (LPCTSTR)lParam;
 
-					auto container = get_current_container();
-					if (container)
+					if (auto container = get_current_container())
 					{
 						// コンテナのウィンドウテキストを変更します。
 						::SetWindowText(*container, text);
@@ -426,8 +466,7 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("{}, WM_WINDOWPOSCHANGING, {:#010x}, {:#010x}", name, wParam, lParam);
 
-					auto container = get_current_container();
-					if (container)
+					if (auto container = get_current_container())
 					{
 						auto wp = (WINDOWPOS*)lParam;
 						if (!(wp->flags & SWP_NOMOVE) ||
@@ -443,8 +482,7 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("{}, WM_WINDOWPOSCHANGED, {:#010x}, {:#010x}", name, wParam, lParam);
 
-					auto container = get_current_container();
-					if (container)
+					if (auto container = get_current_container())
 					{
 						auto wp = (WINDOWPOS*)lParam;
 						if (!(wp->flags & SWP_NOMOVE) ||

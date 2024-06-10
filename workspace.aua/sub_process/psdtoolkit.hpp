@@ -7,6 +7,9 @@ namespace apn::workspace
 	//
 	struct PSDToolKit : SubProcess
 	{
+		//
+		// このクラスはPSDToolKitウィンドウのドッキングを一時的に解除します。
+		//
 		struct
 		{
 			HWND dialog;
@@ -26,7 +29,7 @@ namespace apn::workspace
 				this->dialog = dialog;
 
 				// 「口パク」「目パチ」ダイアログだけに限定します。
-				if (!::FindWindowEx(dialog, 0, WC_STATIC, _T("開き"))) return;
+				if (!::FindWindowEx(dialog, nullptr, WC_STATIC, _T("開き"))) return;
 
 				// サブプロセスウィンドウのハンドルを取得します。
 				hwnd = shuttle->window;
@@ -37,7 +40,7 @@ namespace apn::workspace
 				auto rc = my::get_client_rect(hwnd);
 
 				// クライアント矩形をスクリーン座標に変換します。
-				::MapWindowPoints(hwnd, 0, (LPPOINT)&rc, 2);
+				my::map_window_points(hwnd, nullptr, &rc);
 
 				// サブプロセスウィンドウの元の状態を取得しておきます。
 				parent = ::GetParent(hwnd);
@@ -47,11 +50,11 @@ namespace apn::workspace
 
 				// フローティング状態になるようにサブプロセスウィンドウの状態を変更します。
 				::ShowWindow(hwnd, SW_HIDE);
-				::SetParent(hwnd, 0);
+				::SetParent(hwnd, nullptr);
 //				::SetWindowLong(hwnd, GWL_HWNDPARENT, 0); // この処理は必要ないようです。
 				::SetWindowLong(hwnd, GWL_STYLE, WS_CAPTION | WS_SYSMENU |
 					WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS);
-				::SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
+				::SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
 
 				// クライアント矩形をウィンドウ矩形に変換します。
 				my::client_to_window(hwnd, &rc);
@@ -84,13 +87,20 @@ namespace apn::workspace
 				::SetParent(hwnd, parent);
 				::SendMessage(parent, WM_SIZE, 0, 0);
 
-				hwnd = 0;
+				hwnd = nullptr;
 			}
 		} undock = {};
 
-		virtual HWND find_window() override
+		//
+		// PSDToolKitウィンドウを見つけます。
+		//
+		virtual BOOL on_find_window() override
 		{
-			return ::FindWindow(_T("NuklearWindowClass"), 0);
+			MY_TRACE_FUNC("");
+
+			window = ::FindWindow(_T("NuklearWindowClass"), nullptr);
+
+			return window != nullptr;
 		}
-	}; inline std::shared_ptr<PSDToolKit> psdtoolkit;
+	}; inline auto psdtoolkit = std::make_shared<PSDToolKit>();
 }

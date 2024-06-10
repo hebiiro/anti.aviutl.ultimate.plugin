@@ -10,7 +10,37 @@ namespace apn::workspace
 		inline static constexpr auto c_name = L"workspace";
 		inline static constexpr auto c_display_name = L"ワークスペース化";
 
-		inline static constexpr struct WindowMessage {
+		inline static constexpr struct MainMenuItemIndex {
+			inline static constexpr uint32_t c_file = 0;
+			inline static constexpr uint32_t c_filter = 1;
+			inline static constexpr uint32_t c_config = 2;
+			inline static constexpr uint32_t c_edit = 3;
+			inline static constexpr uint32_t c_profile = 4;
+			inline static constexpr uint32_t c_view = 5;
+			inline static constexpr uint32_t c_etc = 6;
+		} c_main_menu_item_index;
+
+		//
+		// 範囲19800～19900のAviUtlウィンドウのコマンドIDを使用しています。
+		//
+		inline static constexpr struct CommandID {
+			inline static constexpr uint32_t c_begin = 19800;
+			inline static constexpr uint32_t c_end = c_begin + 100;
+			inline static constexpr uint32_t c_fullscreen_player = c_begin + 0;
+			inline static constexpr uint32_t c_show_config_dialog = c_begin + 1;
+			inline static constexpr uint32_t c_import_layout = c_begin + 2;
+			inline static constexpr uint32_t c_export_layout = c_begin + 3;
+			inline static constexpr uint32_t c_create_sub_window = c_begin + 4;
+			inline static constexpr uint32_t c_shuttle_begin = c_begin + 10;
+			inline static constexpr uint32_t c_shuttle_end = c_end;
+		} c_command_id;
+
+		inline static constexpr struct ClassName {
+			inline static constexpr auto c_sub_window = L"apn::workspace::sub_window";
+			inline static constexpr auto c_sub_process = L"apn::workspace::sub_process";
+		} c_class_name;
+
+		inline static constexpr struct Message {
 			inline static constexpr uint32_t c_post_init = WM_APP + 1;
 			inline static constexpr uint32_t c_read_preference = WM_APP + 2;
 			inline static constexpr uint32_t c_write_preference = WM_APP + 3;
@@ -41,27 +71,18 @@ namespace apn::workspace
 			std::wstring window_name;
 		};
 
-		struct SubWindow {
-			inline static constexpr LPCTSTR c_class_name = _T("apn::workspace::sub_window");
-		};
-
 		struct SubProcess {
-			inline static constexpr LPCTSTR c_class_name = _T("apn::workspace::sub_process");
-			BOOL dock = FALSE;
-			std::wstring run;
-		};
-
-		struct PSDToolKit : SubProcess {
-			inline static constexpr LPCTSTR c_name = _T("PSDToolKit(外部)");
-		} psdtoolkit;
-
-		struct Bouyomisan : SubProcess {
-			inline static constexpr LPCTSTR c_name = _T("棒読みさん(外部)");
-		} bouyomisan;
-
-		struct Console : SubProcess {
-			inline static constexpr LPCTSTR c_name = _T("コンソール");
-		} console;
+			struct Node {
+				BOOL active = FALSE;
+				std::wstring type;
+				std::wstring name;
+				std::wstring class_name;
+				std::wstring window_name;
+				std::unordered_set<std::wstring> exit_mode;
+				std::wstring path;
+			};
+			std::vector<std::shared_ptr<Node>> collection;
+		} sub_process;
 
 		struct ShortcutKey {
 			my::ShortcutKey show_caption = { L"z", L"shift win" };
@@ -73,7 +94,7 @@ namespace apn::workspace
 			virtual BOOL import_layout() = 0;
 			virtual BOOL export_layout() = 0;
 			virtual BOOL change_layout(const std::wstring& file_name) = 0;
-		} *app = 0;
+		} *app = nullptr;
 
 		//
 		// このアドインのインスタンスハンドルです。

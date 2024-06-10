@@ -79,9 +79,6 @@
     </ClInclude>
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="painter.hpp" />
-    <ClInclude Include="sub_process\bouyomisan.hpp">
-      <Filter>element\sub_process</Filter>
-    </ClInclude>
     <ClInclude Include="sub_process\console.hpp">
       <Filter>element\sub_process</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="layout_list.hpp" />
+    <ClInclude Include="sub_process\sub_process_manager.hpp">
+      <Filter>element\sub_process</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

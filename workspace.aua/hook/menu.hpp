@@ -70,17 +70,6 @@ namespace apn::workspace::hook
 
 				hwnd = get_menu_owner(hwnd);
 
-				if (hwnd == hive.main_window)
-				{
-					// 最大化再生を使用する場合は
-					if (hive.use_fullscreen_player)
-					{
-						// メニューアイテムを追加します。
-						if (::GetMenuState(menu, MainWindow::c_command_id.c_fullscreen_player, MF_BYCOMMAND) == -1)
-							::AppendMenu(menu, MF_STRING, MainWindow::c_command_id.c_fullscreen_player, _T(""));
-					}
-				}
-
 				return orig_proc(hwnd, menu);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::SetMenu;

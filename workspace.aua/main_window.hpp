@@ -8,34 +8,28 @@ namespace apn::workspace
 	//
 	struct MainWindow : DockSite<my::Window>
 	{
-		inline static constexpr struct CommandID {
-			inline static constexpr struct Shuttle {
-				inline static constexpr uint32_t c_begin = 100;
-				inline static constexpr uint32_t c_end = 300;
-			} c_shuttle;
-			inline static constexpr uint32_t c_show_config_dialog = 1000;
-			inline static constexpr uint32_t c_import_layout = 1001;
-			inline static constexpr uint32_t c_export_layout = 1002;
-			inline static constexpr uint32_t c_create_sub_window = 1003;
-
-			inline static constexpr uint32_t c_fullscreen_player = 30000;
-		} c_command_id;
-
 		//
 		// カラー選択ダイアログのカスタムカラーです。
 		//
 		inline static COLORREF custom_colors[16] = {};
 
 		//
-		// システムメニューのサブメニューです。
+		// メインメニューに独自に追加したポップアップメニューです。
 		//
-		HMENU sub_menu[c_category.c_max_size] = {};
+		HMENU extra_menu = nullptr;
+
+		//
+		// メインメニューの『その他』にextra_menuを挿入した位置です。
+		//
+		uint32_t extra_menu_index = -1;
 
 		//
 		// コンストラクタです。
 		//
 		MainWindow()
 		{
+			MY_TRACE_FUNC("");
+
 			// カラー選択ダイアログで使用するカスタムカラーを初期化します。
 			std::fill(std::begin(custom_colors), std::end(custom_colors), RGB(0xff, 0xff, 0xff));
 		}
@@ -57,11 +51,11 @@ namespace apn::workspace
 
 			//「AoiSupport」用の処理です。
 			// クラス名を"AviUtl"にして、AviUtlウィンドウに偽装します。
-			static const auto c_class_name = _T("AviUtl");
+			constexpr auto c_class_name = _T("AviUtl");
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
 			wc.lpszClassName = c_class_name;
@@ -75,7 +69,7 @@ namespace apn::workspace
 				WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-				0, 0, hive.instance, 0);
+				nullptr, nullptr, hive.instance, nullptr);
 		}
 
 		//
@@ -157,91 +151,49 @@ namespace apn::workspace
 		}
 
 		//
-		// システムメニューを初期化します。
+		// エキストラメニューを初期化します。
 		//
-		void init_system_menu()
+		void init_extra_menu()
 		{
 			MY_TRACE_FUNC("");
 
-			auto menu = ::GetSystemMenu(*this, FALSE);
-			auto index = 0;
-
-			// サブメニューを作成し、システムメニューに追加します。
-			for (size_t i = 0; i < std::size(sub_menu); i++)
-			{
-				sub_menu[i] = ::CreatePopupMenu();
-
-				::InsertMenu(menu, index++, MF_BYPOSITION | MF_POPUP, (UINT)sub_menu[i], c_category.labels[i]);
-			}
-
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, c_command_id.c_create_sub_window, _T("サブウィンドウを新規作成"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, c_command_id.c_import_layout, _T("レイアウトのインポート"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, c_command_id.c_export_layout, _T("レイアウトのエクスポート"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_STRING, c_command_id.c_show_config_dialog, _T("ワークスペース化アドインの設定"));
-			::InsertMenu(menu, index++, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
+			auto menu = ::GetMenu(hwnd);
+			auto etc_menu = ::GetSubMenu(menu, hive.c_main_menu_item_index.c_etc);
+			extra_menu = ::CreatePopupMenu();
+			extra_menu_index = ::GetMenuItemCount(etc_menu);
+			::InsertMenu(etc_menu, extra_menu_index,
+				MF_BYPOSITION | MF_POPUP, (UINT_PTR)extra_menu, hive.c_name);
 		}
 
 		//
-		// システムメニューのサブメニューを初期化します。
+		// エキストラメニューを更新します。
 		//
-		void init_system_menu_popup()
+		void update_extra_menu()
 		{
 			MY_TRACE_FUNC("");
 
 			// 一旦すべての項目を削除します。
-			for (auto& menu : sub_menu)
-				while (::DeleteMenu(menu, 0, MF_BYPOSITION)){}
+			while (::DeleteMenu(extra_menu, 0, MF_BYPOSITION)) {}
 
-			// フローティング状態のシャトルをサブメニューに追加します。
-			auto id = c_command_id.c_shuttle.c_begin;
-			for (auto& pair : shuttle_manager.collection)
-			{
-				auto& shuttle = pair.second;
+			if (hive.use_fullscreen_player)
+				::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_fullscreen_player, _T("再生時にプレビューを最大化"));
 
-				// ドッキング状態のシャトルは除外します。
-				if (shuttle->is_docking()) continue;
+			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_create_sub_window, _T("サブウィンドウを新規作成"));
+			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_import_layout, _T("レイアウトのインポート"));
+			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_export_layout, _T("レイアウトのエクスポート"));
+			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_show_config_dialog, (hive.c_name + _T("の設定"s)).c_str());
+			::AppendMenu(extra_menu, MF_SEPARATOR, 0, nullptr);
 
-				// シャトルのカテゴリを取得します。
-				auto category = get_category(shuttle.get());
-				if (category == c_category.c_none) continue;
-
-				// 追加先メニューを取得します。
-				auto menu = sub_menu[category];
-
-				// メニューアイテムを追加します。
-				::AppendMenu(menu, MF_STRING, id, shuttle->name.c_str());
-
-				// シャトルが表示されているなら
-				if (::IsWindowVisible(*shuttle))
+			// シャトルメニューはドッキングサイトで構築します。
+			__super::add_shuttle_list(extra_menu, hive.c_command_id.c_shuttle_begin,
+				[=](HMENU sub_menu, UINT_PTR id, auto shuttle)
 				{
-					// メニューアイテムにチェックを入れます。
-					::CheckMenuItem(menu, id, MF_CHECKED);
-				}
+					if (::IsWindowVisible(*shuttle))
+						::CheckMenuItem(sub_menu, id, MF_CHECKED);
+				});
 
-				// メニューアイテムのIDをインクリメントします。
-				id++;
-			}
-		}
-
-		//
-		// メインメニューを更新します。
-		//
-		void update_main_menu()
-		{
-			MY_TRACE_FUNC("");
-
-			auto menu = ::GetMenu(*this);
-
-			auto text = _T("再生時最大化 OFF");
-			if (hive.fullscreen_player) text = _T("再生時最大化 ON");
-
-			MENUITEMINFO mii = { sizeof(mii) };
-			mii.fMask = MIIM_STRING;
-			mii.dwTypeData = (LPTSTR)text;
-			::SetMenuItemInfo(menu, c_command_id.c_fullscreen_player, FALSE, &mii);
-
-			::DrawMenuBar(*this);
+			if (hive.fullscreen_player)
+				::CheckMenuItem(extra_menu, hive.c_command_id.c_fullscreen_player, MF_CHECKED);
 		}
 
 		//
@@ -293,9 +245,6 @@ namespace apn::workspace
 
 			hive.app->read_preference();
 
-			// メインメニューを更新します。
-			update_main_menu();
-
 			// レイアウトを更新します。
 			update_all_layouts();
 
@@ -343,35 +292,6 @@ namespace apn::workspace
 			{
 				sub_window->init(name, *sub_window);
 				::ShowWindowAsync(*sub_window, SW_SHOW);
-			}
-
-			return TRUE;
-		}
-
-		//
-		// サブプロセス用のウィンドウを作成します。
-		//
-		BOOL create_sub_processes(HWND parent)
-		{
-			if (hive.psdtoolkit.dock) {
-				const auto name = Hive::PSDToolKit::c_name;
-				auto shuttle = psdtoolkit = std::make_shared<PSDToolKit>();
-				shuttle->create(name, *this);
-				shuttle->init(name, *shuttle);
-			}
-
-			if (hive.bouyomisan.dock) {
-				const auto name = Hive::Bouyomisan::c_name;
-				auto shuttle = bouyomisan = std::make_shared<Bouyomisan>();
-				shuttle->create(name, *this);
-				shuttle->init(name, *shuttle);
-			}
-
-			if (hive.console.dock) {
-				const auto name = Hive::Console::c_name;
-				auto shuttle = console = std::make_shared<Console>();
-				shuttle->create(name, *this);
-				shuttle->init(name, *shuttle);
 			}
 
 			return TRUE;
@@ -470,10 +390,11 @@ namespace apn::workspace
 
 					break;
 				}
-			case WM_ACTIVATE: // 「patch.aul」用の処理です。
+			case WM_ACTIVATE:
 				{
 					MY_TRACE_FUNC("WM_ACTIVATE, {:#010x}, {:#010x}", wParam, lParam);
 
+					// 「patch.aul」用の処理です。
 					if (LOWORD(wParam) == WA_INACTIVE)
 						::SendMessage(hive.aviutl_window, message, wParam, lParam);
 
@@ -491,13 +412,12 @@ namespace apn::workspace
 
 					break;
 				}
-			case WM_MENUSELECT: // 「patch.aul」用の処理です。
+			case WM_MENUSELECT:
 				{
 					MY_TRACE_FUNC("WM_MENUSELECT, {:#010x}, {:#010x}", wParam, lParam);
 
-					::SendMessage(hive.aviutl_window, message, wParam, lParam);
-
-					break;
+					// 「patch.aul」用の処理です。
+					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
 				}
 			case WM_CLOSE:
 				{
@@ -511,22 +431,80 @@ namespace apn::workspace
 
 					auto id = LOWORD(wParam);
 
-					switch (id)
+					if (id >= hive.c_command_id.c_begin && id < hive.c_command_id.c_end)
 					{
-					case c_command_id.c_fullscreen_player:
+						if (id >= hive.c_command_id.c_shuttle_begin && id < hive.c_command_id.c_shuttle_end)
 						{
-							MY_TRACE("c_command_id.c_fullscreen_player\n");
+							auto menu = ::GetMenu(hwnd);
 
-							hive.fullscreen_player = !hive.fullscreen_player;
+							// メニューアイテムのテキストを取得します。
+							auto text = my::get_menu_item_text(menu, id, MF_BYCOMMAND);
+							MY_TRACE_STR(text);
 
-							update_main_menu();
+							// テキストからシャトルを取得します。
+							auto shuttle = shuttle_manager.get(text);
+							if (!shuttle) break;
+#if 1
+							// シャトルをフローティング状態にします。
+							shuttle->float_window();
 
-							return 0;
+							// シャトルを表示します。
+							::ShowWindow(*shuttle, SW_SHOW);
+#else
+							// シャトルの表示状態を切り替えます。
+							::SendMessage(*shuttle, WM_CLOSE, 0, 0);
+#endif
+							break;
 						}
+
+						switch (id)
+						{
+						case hive.c_command_id.c_fullscreen_player:
+							{
+								// 再生時最大化の有効/無効を切り替えます。
+								hive.fullscreen_player = !hive.fullscreen_player;
+
+								break;
+							}
+						case hive.c_command_id.c_create_sub_window:
+							{
+								// サブウィンドウを新規作成します。
+								create_sub_window(hwnd);
+
+								break;
+							}
+						case hive.c_command_id.c_import_layout:
+							{
+								// レイアウトをインポートします。
+								hive.app->import_layout();
+
+								break;
+							}
+						case hive.c_command_id.c_export_layout:
+							{
+								// レイアウトをエクスポートします。
+								hive.app->export_layout();
+
+								break;
+							}
+						case hive.c_command_id.c_show_config_dialog:
+							{
+								// コンフィグダイアログを開きます。
+								if (IDOK == show_config_dialog(hwnd))
+								{
+									// レイアウトを更新します。
+									update_all_layouts();
+								}
+
+								break;
+							}
+						}
+
+						break;
 					}
 
 					// 「PSDToolKit」用の処理です。
-					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズします。
+					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズしてしまいます。
 					if (psdtoolkit && ::IsWindowVisible(*psdtoolkit))
 					{
 						// PSDToolKitを非表示にしてマウスメッセージが飛ばないようにします。
@@ -548,66 +526,12 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_SYSCOMMAND, {:#010x}, {:#010x}", wParam, lParam);
 
-					if (wParam >= c_command_id.c_shuttle.c_begin && wParam < c_command_id.c_shuttle.c_end)
-					{
-						auto menu = ::GetSystemMenu(hwnd, FALSE);
-						auto id = (UINT)wParam;
-
-						// メニューアイテムのテキストを取得します。
-						auto text = my::get_menu_item_text(menu, id, MF_BYCOMMAND);
-						MY_TRACE_STR(text);
-
-						// テキストからシャトルを取得します。
-						auto shuttle = shuttle_manager.get(text);
-						if (!shuttle) break;
-
-						// シャトルの表示状態を切り替えます。
-						::SendMessage(*shuttle, WM_CLOSE, 0, 0);
-
-						break;
-					}
-
 					switch (wParam)
 					{
-					case c_command_id.c_show_config_dialog:
-						{
-							// コンフィグダイアログを開きます。
-							if (IDOK == show_config_dialog(hwnd))
-							{
-								// レイアウトを更新します。
-								update_all_layouts();
-
-								// 設定が変更された可能性があるので、
-								// メインウィンドウのメニューを更新します。
-								update_main_menu();
-							}
-
-							break;
-						}
-					case c_command_id.c_import_layout:
-						{
-							// レイアウトをインポートします。
-							hive.app->import_layout();
-
-							break;
-						}
-					case c_command_id.c_export_layout:
-						{
-							// レイアウトをエクスポートします。
-							hive.app->export_layout();
-
-							break;
-						}
-					case c_command_id.c_create_sub_window:
-						{
-							// サブウィンドウを新規作成します。
-							create_sub_window(hwnd);
-
-							break;
-						}
 					case SC_RESTORE:
-					case SC_MINIMIZE: // 「patch.aul」用の処理です。
+					case SC_MINIMIZE:
 						{
+							// 「patch.aul」用の処理です。
 							::SendMessage(hive.aviutl_window, message, wParam, lParam);
 
 							break;
@@ -633,7 +557,12 @@ namespace apn::workspace
 				}
 			case WM_INITMENUPOPUP:
 				{
-					init_system_menu_popup();
+					MY_TRACE_FUNC("WM_INITMENUPOPUP, {:#010x}, {:#010x}", wParam, lParam);
+
+					auto menu = (HMENU)wParam;
+
+					// エキストラメニューが表示されようとしているので更新します。
+					if (menu == extra_menu) update_extra_menu();
 
 					break;
 				}
@@ -661,6 +590,9 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("{:#010x}, c_post_init, {:#010x}, {:#010x}, c_begin", hwnd, wParam, lParam);
 
+					// エキストラメニューを初期化します。
+					init_extra_menu();
+
 					// メインウィンドウが初期化された時点では
 					// まだAviUtlのフォントが作成されていなかったので
 					// ここでタブのフォントをセットします。
@@ -671,9 +603,6 @@ namespace apn::workspace
 
 					// レイアウトリストを更新します。
 					layout_list.update_layout_list();
-
-					// システムメニューに独自の項目を追加する。
-					init_system_menu();
 
 					// プリファレンスを読み込みます。
 					read_preference();
@@ -760,6 +689,7 @@ namespace apn::workspace
 				case WM_COMMAND:
 					{
 						auto id = LOWORD(wParam);
+						auto control = (HWND)lParam;
 
 						switch (id)
 						{
@@ -771,9 +701,7 @@ namespace apn::workspace
 						case IDC_INACTIVE_CAPTION_COLOR:
 						case IDC_INACTIVE_CAPTION_TEXT_COLOR:
 							{
-								auto control = (HWND)lParam;
-
-								auto color = (COLORREF)::GetDlgItemInt(hwnd, id, 0, FALSE);
+								auto color = (COLORREF)::GetDlgItemInt(hwnd, id, nullptr, FALSE);
 
 								CHOOSECOLOR cc { sizeof(cc) };
 								cc.hwndOwner = hwnd;
@@ -785,7 +713,7 @@ namespace apn::workspace
 								color = cc.rgbResult;
 
 								::SetDlgItemInt(hwnd, id, color, FALSE);
-								::InvalidateRect(control, 0, FALSE);
+								::InvalidateRect(control, nullptr, FALSE);
 
 								return TRUE;
 							}
@@ -809,7 +737,7 @@ namespace apn::workspace
 							{
 								auto dis = (DRAWITEMSTRUCT*)lParam;
 
-								auto color = (COLORREF)::GetDlgItemInt(hwnd, id, 0, FALSE);
+								auto color = (COLORREF)::GetDlgItemInt(hwnd, id, nullptr, FALSE);
 
 								my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(color));
 
@@ -827,30 +755,4 @@ namespace apn::workspace
 			}
 		};
 	}; inline auto main_window = std::make_shared<MainWindow>();
-
-	inline struct SubProcessManager
-	{
-		//
-		// 初期化処理を実行します。
-		//
-		BOOL init()
-		{
-			MY_TRACE_FUNC("");
-
-			// サブプロセス用のドッキングウィンドウを作成します。
-			main_window->create_sub_processes(hive.main_window);
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-	} sub_process_manager;
 }

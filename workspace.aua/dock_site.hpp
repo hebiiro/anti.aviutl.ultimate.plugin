@@ -36,25 +36,6 @@ namespace apn::workspace
 			} c_shuttle;
 		} c_command_id;
 
-		inline static constexpr struct Category {
-			inline static constexpr int32_t c_none = -1;
-			inline static constexpr int32_t c_primary = 0;
-			inline static constexpr int32_t c_secondary = 1;
-			inline static constexpr int32_t c_sub_window = 2;
-			inline static constexpr int32_t c_sub_process = 3;
-			inline static constexpr int32_t c_ultimate = 4;
-			inline static constexpr int32_t c_filer = 5;
-			inline static constexpr int32_t c_max_size = 6;
-			inline static constexpr LPCTSTR labels[] = {
-				_T("プライマリ"),
-				_T("セカンダリ"),
-				_T("サブウィンドウ"),
-				_T("サブプロセス"),
-				_T("アルティメット"),
-				_T("ファイラ"),
-			};
-		} c_category;
-
 		inline static constexpr auto c_prop_name = _T("apn::dock_site::root_pane");
 		inline static std::shared_ptr<Pane> hot_border_pane;
 
@@ -217,7 +198,7 @@ namespace apn::workspace
 			copy_menu(dst_menu, src_menu);
 
 			// ポップアップメニューを表示します。
-			::TrackPopupMenuEx(dst_menu, TPM_VERPOSANIMATION, point.x, point.y, hwnd, 0);
+			::TrackPopupMenuEx(dst_menu, TPM_VERPOSANIMATION, point.x, point.y, hwnd, nullptr);
 
 			// ポップアップメニューを削除します。
 			::DestroyMenu(dst_menu);
@@ -226,64 +207,76 @@ namespace apn::workspace
 		}
 
 		//
-		// 指定されたシャトルのカテゴリを返します。
+		// 指定されたメニューにシャトル一覧メニューを構築して追加します。
 		//
-		inline static int get_category(Shuttle* shuttle)
+		inline static void add_shuttle_list(HMENU menu, uint32_t begin_id, auto func)
 		{
-			if (shuttle->name == L"* AviUtl") return c_category.c_primary;
-			if (shuttle->name == L"* 拡張編集") return c_category.c_primary;
-			if (shuttle->name == L"* 設定ダイアログ") return c_category.c_primary;
-			if (shuttle->name == L"ぼかしフィルタ") return c_category.c_primary;
-			if (shuttle->name == L"クリッピング＆リサイズ") return c_category.c_primary;
-			if (shuttle->name == L"シャープフィルタ") return c_category.c_primary;
-			if (shuttle->name == L"ツールウィンドウ") return c_category.c_primary;
-			if (shuttle->name == L"ノイズ除去(時間軸)フィルタ") return c_category.c_primary;
-			if (shuttle->name == L"ノイズ除去フィルタ") return c_category.c_primary;
-			if (shuttle->name == L"ヒストグラム") return c_category.c_primary;
-			if (shuttle->name == L"偶数") return c_category.c_primary;
-			if (shuttle->name == L"再生ウィンドウ") return c_category.c_primary;
-			if (shuttle->name == L"奇数") return c_category.c_primary;
-			if (shuttle->name == L"拡張色調補正") return c_category.c_primary;
-			if (shuttle->name == L"縁塗りつぶし") return c_category.c_primary;
-			if (shuttle->name == L"自動24fps") return c_category.c_primary;
-			if (shuttle->name == L"色調補正フィルタ") return c_category.c_primary;
-			if (shuttle->name == L"音声の位置調整") return c_category.c_primary;
-			if (shuttle->name == L"音量の最大化") return c_category.c_primary;
-			if (shuttle->name == L"音量の調整") return c_category.c_primary;
-			if (shuttle->name == L"アルティメットプラグイン") return c_category.c_ultimate;
+			// カテゴリ毎のサブメニューのコレクションです。
+			std::unordered_map<my::tstring, HMENU> sub_menus;
 
+			// デフォルトのカテゴリを構築します。
+			for (const auto& category : Shuttle::c_default_category)
 			{
-				// シャトルのクラス名を取得します。
-				auto class_name = my::get_class_name(*shuttle);
+				// カテゴリ毎のサブメニューを作成します。
+				auto sub_menu = ::CreatePopupMenu();
 
-				if (class_name == Hive::SubWindow::c_class_name) return c_category.c_sub_window;
-				if (class_name == Hive::SubProcess::c_class_name) return c_category.c_sub_process;
+				// カテゴリ毎のサブメニューをメニューに追加します。
+				::AppendMenuW(menu, MF_POPUP, (UINT_PTR)sub_menu, category.c_str());
+
+				// カテゴリ毎のサブメニューをコレクションに追加します。
+				sub_menus[category] = sub_menu;
 			}
 
+			// 最初のコマンドIDを取得します。
+			auto id = begin_id;
+
+			// すべてのシャトルを走査します。
+			for (auto& pair : shuttle_manager.collection)
 			{
-				// シャトルのモジュールハンドルを取得します。
-				auto instance = (HINSTANCE)::GetWindowLongPtr(*shuttle, GWLP_HINSTANCE);
-				MY_TRACE_HEX(instance);
+				// シャトルを取得します。
+				auto& shuttle = pair.second;
 
-				// シャトルのモジュールファイル名を取得します。
-				auto file_name = my::get_module_file_name(instance);
-				MY_TRACE_STR(file_name);
+				// カテゴリ名を取得します。
+				auto category_name = (LPCWSTR)::GetProp(*shuttle, L"aviutl.plugin.category_name");
 
-				// シャトルがアドインの場合は
-				if (file_name.extension() == ".aua")
+				// シャトルのカテゴリ名を取得できた場合は
+				if (category_name)
 				{
-					// シャトルがファイラの場合は
-					if (file_name.stem() == "filer")
-					{
-						if (!filer::share::host_window::get_client_window(*shuttle))
-							return c_category.c_filer;
-					}
-
-					return c_category.c_ultimate;
+					// カテゴリ名が空文字列のシャトルはメニューから除外します。
+					if (!*category_name) continue;
 				}
-			}
+				// シャトルのカテゴリ名を取得できなかった場合は
+				else
+				{
+					// デフォルトのカテゴリに割り当てます。
+					category_name = L"セカンダリ";
+				}
 
-			return c_category.c_secondary;
+				// カテゴリ毎のサブメニューを取得します。
+				auto& sub_menu = sub_menus[category_name];
+
+				// カテゴリ毎のサブメニューがまだ作成されていない場合は
+				if (!sub_menu)
+				{
+					// カテゴリ毎のサブメニューを作成します。
+					sub_menu = ::CreatePopupMenu();
+
+					// カテゴリ毎のサブメニューをメニューに追加します。
+					::AppendMenuW(menu, MF_POPUP, (UINT_PTR)sub_menu, category_name);
+
+					// カテゴリ毎のサブメニューをコレクションに追加します。
+					sub_menus[category_name] = sub_menu;
+				}
+
+				// シャトルをカテゴリ毎のサブメニューに追加します。
+				::AppendMenuW(sub_menu, MF_STRING, id, shuttle->name.c_str());
+
+				// 追加されたメニュー項目を操作します。
+				func(sub_menu, id, shuttle);
+
+				// IDを次に進めます。
+				id++;
+			}
 		}
 
 		//
@@ -298,14 +291,14 @@ namespace apn::workspace
 			// カーソル座標を取得して、クライアント座標に変換します。
 			auto cursor_pos = my::get_cursor_pos();
 			auto point = cursor_pos;
-			::ScreenToClient(dock_site, &point);
+			my::map_window_points(nullptr, dock_site, &point);
 
 			// カーソル座標にヒットするペインを取得します。
 			auto pane = root->hittest_pane(point);
 			if (!pane) return;
 
 			auto point2 = point;
-			::MapWindowPoints(dock_site, pane->owner, &point2, 1);
+			my::map_window_points(dock_site, pane->owner, &point2);
 			auto in_caption = pane->hittest_caption(point2);
 
 			auto c = pane->get_tab_count();
@@ -324,14 +317,24 @@ namespace apn::workspace
 			// メニューを作成します。
 			my::menu::unique_ptr<> menu(::CreatePopupMenu());
 
-			// サブメニューを作成します。
-			my::menu::unique_ptr<> sub_menu[c_category.c_max_size] = {};
-			for (size_t i = 0; i < std::size(sub_menu); i++)
-			{
-				sub_menu[i].reset(::CreatePopupMenu());
+			// メニューにシャトルの一覧を追加します。
+			add_shuttle_list(menu.get(), c_command_id.c_shuttle.c_begin,
+				[=](HMENU sub_menu, UINT_PTR id, auto shuttle)
+				{
+					// シャトルのタブが存在するなら
+					if (pane->find_tab(shuttle.get()) != -1)
+					{
+						// メニューアイテムにチェックを入れます。
+						::CheckMenuItem(sub_menu, id, MF_CHECKED);
+					}
 
-				::AppendMenu(menu.get(), MF_POPUP, (UINT)sub_menu[i].get(), c_category.labels[i]);
-			}
+					// ドッキング不可能なら
+					if (!can_docking(dock_site, *shuttle))
+					{
+						// メニューアイテムを無効にします。
+						::EnableMenuItem(sub_menu, id, MF_DISABLED | MF_GRAYED);
+					}
+				});
 
 			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_none, _T("分割なし"));
@@ -379,118 +382,80 @@ namespace apn::workspace
 			if (c == 0) // ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
 				::EnableMenuItem(menu.get(), c_command_id.c_undock, MF_DISABLED | MF_GRAYED);
 
-			{
-				// シャトルをメニューに追加します。
-				auto id = c_command_id.c_shuttle.c_begin;
-				for (auto& pair : shuttle_manager.collection)
-				{
-					auto& shuttle = pair.second;
-
-					// シャトルのカテゴリを取得します。
-					auto category = get_category(shuttle.get());
-					if (category == c_category.c_none) continue;
-
-					// 追加先メニューを取得します。
-					auto& menu = sub_menu[category];
-
-					// メニューアイテムを追加します。
-					::AppendMenu(menu.get(), MF_STRING, id, shuttle->name.c_str());
-
-					// シャトルのタブが存在するなら
-					if (pane->find_tab(shuttle.get()) != -1)
-					{
-						// メニューアイテムにチェックを入れます。
-						::CheckMenuItem(menu.get(), id, MF_CHECKED);
-					}
-
-					// ドッキング不可能なら
-					if (!can_docking(dock_site, *shuttle))
-					{
-						// メニューアイテムを無効にします。
-						::EnableMenuItem(menu.get(), id, MF_DISABLED | MF_GRAYED);
-					}
-
-					// IDをインクリメントします。
-					id++;
-				}
-			}
-
 			auto id = ::TrackPopupMenu(menu.get(),
 				TPM_NONOTIFY | TPM_RETURNCMD,
 				cursor_pos.x, cursor_pos.y, 0, dock_site, nullptr);
+			if (!id) return;
 
-			if (id)
+			switch (id)
 			{
-				switch (id)
+			case c_command_id.c_split_mode.c_none: pane->set_split_mode(Pane::c_split_mode.c_none); break;
+			case c_command_id.c_split_mode.c_vert: pane->set_split_mode(Pane::c_split_mode.c_vert); break;
+			case c_command_id.c_split_mode.c_horz: pane->set_split_mode(Pane::c_split_mode.c_horz); break;
+
+			case c_command_id.c_origin.c_top_left: pane->set_origin(Pane::c_origin.c_top_left); break;
+			case c_command_id.c_origin.c_bottom_right: pane->set_origin(Pane::c_origin.c_bottom_right); break;
+
+			case c_command_id.c_caption_mode.c_hide: pane->set_caption_mode(Pane::c_caption_mode.c_hide); break;
+			case c_command_id.c_caption_mode.c_show: pane->set_caption_mode(Pane::c_caption_mode.c_show); break;
+
+			case c_command_id.c_move_to_left: pane->move_tab(ht, ht - 1); break;
+			case c_command_id.c_move_to_right: pane->move_tab(ht, ht + 1); break;
+
+			case c_command_id.c_is_border_locked: pane->is_border_locked = !pane->is_border_locked; break;
+
+			case c_command_id.c_rename_sub_window: shuttle_manager.show_rename_dialog(shuttle, dock_site); break;
+
+			case c_command_id.c_is_solid: root->is_solid = !root->is_solid; break;
+
+			case c_command_id.c_undock:
 				{
-				case c_command_id.c_split_mode.c_none: pane->set_split_mode(Pane::c_split_mode.c_none); break;
-				case c_command_id.c_split_mode.c_vert: pane->set_split_mode(Pane::c_split_mode.c_vert); break;
-				case c_command_id.c_split_mode.c_horz: pane->set_split_mode(Pane::c_split_mode.c_horz); break;
+					// ドッキングを解除します。
 
-				case c_command_id.c_origin.c_top_left: pane->set_origin(Pane::c_origin.c_top_left); break;
-				case c_command_id.c_origin.c_bottom_right: pane->set_origin(Pane::c_origin.c_bottom_right); break;
+					// カーソルの位置にあるタブアイテムのインデックスです。
+					auto index = ht;
 
-				case c_command_id.c_caption_mode.c_hide: pane->set_caption_mode(Pane::c_caption_mode.c_hide); break;
-				case c_command_id.c_caption_mode.c_show: pane->set_caption_mode(Pane::c_caption_mode.c_show); break;
+					// インデックスが無効の場合はカレントインデックスを使用します。
+					if (index == -1)
+						index = pane->get_current_index();
 
-				case c_command_id.c_move_to_left: pane->move_tab(ht, ht - 1); break;
-				case c_command_id.c_move_to_right: pane->move_tab(ht, ht + 1); break;
-
-				case c_command_id.c_is_border_locked: pane->is_border_locked = !pane->is_border_locked; break;
-
-				case c_command_id.c_rename_sub_window: shuttle_manager.show_rename_dialog(shuttle, dock_site); break;
-
-				case c_command_id.c_is_solid: root->is_solid = !root->is_solid; break;
-
-				case c_command_id.c_undock:
+					// インデックスが有効の場合は
+					if (index != -1)
 					{
-						// ドッキングを解除します。
-
-						// カーソルの位置にあるタブアイテムのインデックスです。
-						auto index = ht;
-
-						// インデックスが無効の場合はカレントインデックスを使用します。
-						if (index == -1)
-							index = pane->get_current_index();
-
-						// インデックスが有効の場合は
-						if (index != -1)
-						{
-							// ドッキングしているシャトルを取得します。
-							auto shuttle = pane->get_shuttle(index);
-							if (shuttle) // ドッキングしているシャトルが存在する場合は
-								pane->release_shuttle(shuttle); // ドッキングを解除します。
-						}
-
-						break;
+						// ドッキングしているシャトルを取得します。
+						auto shuttle = pane->get_shuttle(index);
+						if (shuttle) // ドッキングしているシャトルが存在する場合は
+							pane->release_shuttle(shuttle); // ドッキングを解除します。
 					}
+
+					break;
 				}
-
-				if (id >= c_command_id.c_shuttle.c_begin && id <= c_command_id.c_shuttle.c_end)
-				{
-					// ユーザーが指定したシャトルをクリックされたペインにドッキングさせます。
-
-					// メニューアイテムのテキストを取得します。
-					auto text = my::get_menu_item_text(menu.get(), id, MF_BYCOMMAND);
-					MY_TRACE_STR(text);
-
-					// テキストからシャトルを取得します。ドッキングできるかもチェックします。
-					auto shuttle = shuttle_manager.get(text);
-					if (shuttle && can_docking(dock_site, *shuttle))
-					{
-						// シャトルをペインにドッキングさせます。
-						auto index = pane->insert_shuttle(shuttle.get(), FALSE, ht);
-						if (index != -1) // ドッキングに成功した場合は-1以外になります。
-						{
-							// ドッキングしたシャトルをカレントにしてペインを更新します。
-							pane->set_current_index(index);
-						}
-					}
-				}
-
-				// ペインの状態が変更されたのでレイアウトを更新します。
-				pane->update_origin();
 			}
+
+			if (id >= c_command_id.c_shuttle.c_begin && id <= c_command_id.c_shuttle.c_end)
+			{
+				// ユーザーが指定したシャトルをクリックされたペインにドッキングさせます。
+
+				// メニューアイテムのテキストを取得します。
+				auto text = my::get_menu_item_text(menu.get(), id, MF_BYCOMMAND);
+				MY_TRACE_STR(text);
+
+				// テキストからシャトルを取得します。ドッキングできるかもチェックします。
+				auto shuttle = shuttle_manager.get(text);
+				if (shuttle && can_docking(dock_site, *shuttle))
+				{
+					// シャトルをペインにドッキングさせます。
+					auto index = pane->insert_shuttle(shuttle.get(), FALSE, ht);
+					if (index != -1) // ドッキングに成功した場合は-1以外になります。
+					{
+						// ドッキングしたシャトルをカレントにしてペインを更新します。
+						pane->set_current_index(index);
+					}
+				}
+			}
+
+			// ペインの状態が変更されたのでレイアウトを更新します。
+			pane->update_origin();
 		}
 
 		//

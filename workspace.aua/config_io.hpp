@@ -2,6 +2,35 @@
 
 namespace apn::workspace
 {
+	void get_child_nodes(const ptree& node, const std::string& name, auto func)
+	{
+		if (auto child_nodes_op = node.get_child_optional(name))
+		{
+			for (const auto& pair : child_nodes_op.value())
+			{
+				const auto& child_node = pair.second;
+
+				func(child_node);
+			}
+		}
+	}
+
+	void set_child_nodes(ptree& node, const std::string& name, const auto& collection, auto func)
+	{
+		ptree child_nodes;
+		{
+			for (const auto& value : collection)
+			{
+				ptree child_node;
+				{
+					func(child_node, value);
+				}
+				child_nodes.push_back(std::make_pair("", child_node));
+			}
+		}
+		node.put_child(name, child_nodes);
+	}
+
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
@@ -53,26 +82,39 @@ namespace apn::workspace
 		//
 		// 指定されたファイルからサブプロセスの設定を読み込みます。
 		//
-		void get_sub_process(const ptree& node, const std::string& name, Hive::SubProcess& sub_process)
+		void get_sub_process(const ptree& node, std::shared_ptr<Hive::SubProcess::Node>& sub_process)
 		{
-			get_bool(node, name + ".dock", sub_process.dock);
-			get_string(node, name + ".run", sub_process.run);
-
-			if (!sub_process.run.empty())
-			{
-				std::filesystem::path path(sub_process.run);
-
-				::ShellExecute(hive.main_window, 0, path.c_str(), 0, path.parent_path().c_str(), SW_SHOW);
-			}
+			get_bool(node, "active", sub_process->active);
+			get_string(node, "type", sub_process->type);
+			get_string(node, "name", sub_process->name);
+			get_string(node, "class_name", sub_process->class_name);
+			get_string(node, "window_name", sub_process->window_name);
+			get_child_nodes(node, "exit_mode",
+				[&](const ptree& exit_mode_node)
+				{
+					std::wstring exit_mode;
+					get_string(exit_mode_node, "", exit_mode);
+					if (!exit_mode.empty()) sub_process->exit_mode.emplace(exit_mode);
+				});
+			get_string(node, "path", sub_process->path);
 		}
 
 		//
 		// 指定されたファイルにサブプロセスの設定を保存します。
 		//
-		void set_sub_process(ptree& node, const std::string& name, const Hive::SubProcess& sub_process)
+		void set_sub_process(ptree& node, const std::shared_ptr<Hive::SubProcess::Node>& sub_process)
 		{
-			set_bool(node, name + ".dock", sub_process.dock);
-			set_string(node, name + ".run", sub_process.run);
+			set_bool(node, "active", sub_process->active);
+			if (!sub_process->type.empty()) set_string(node, "type", sub_process->type);
+			if (!sub_process->name.empty()) set_string(node, "name", sub_process->name);
+			if (!sub_process->class_name.empty()) set_string(node, "class_name", sub_process->class_name);
+			if (!sub_process->window_name.empty()) set_string(node, "window_name", sub_process->window_name);
+			if (!sub_process->exit_mode.empty()) set_child_nodes(node, "exit_mode", sub_process->exit_mode,
+				[&](ptree& exit_mode_node, const auto& exit_mode)
+				{
+					set_string(exit_mode_node, "", exit_mode);
+				});
+			if (!sub_process->path.empty()) set_string(node, "path", sub_process->path);
 		}
 
 		//
@@ -84,9 +126,13 @@ namespace apn::workspace
 
 			get_bool(root, "use_fullscreen_player", hive.use_fullscreen_player);
 			get_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
-			get_sub_process(root, "psdtoolkit", hive.psdtoolkit);
-			get_sub_process(root, "bouyomisan", hive.bouyomisan);
-			get_sub_process(root, "console", hive.console);
+			get_child_nodes(root, "sub_process",
+				[&](const ptree& sub_process_node)
+				{
+					auto sub_process = std::make_shared<Hive::SubProcess::Node>();
+					hive.sub_process.collection.emplace_back(sub_process);
+					get_sub_process(sub_process_node, sub_process);
+				});
 
 			return TRUE;
 		}
@@ -100,9 +146,11 @@ namespace apn::workspace
 
 			set_bool(root, "use_fullscreen_player", hive.use_fullscreen_player);
 			set_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
-			set_sub_process(root, "psdtoolkit", hive.psdtoolkit);
-			set_sub_process(root, "bouyomisan", hive.bouyomisan);
-			set_sub_process(root, "console", hive.console);
+			set_child_nodes(root, "sub_process", hive.sub_process.collection,
+				[&](ptree& sub_process_node, const auto& sub_process)
+				{
+					set_sub_process(sub_process_node, sub_process);
+				});
 
 			return TRUE;
 		}

@@ -193,10 +193,10 @@
     <ClInclude Include="Shuttle\setting_dialog.hpp" />
     <ClInclude Include="Shuttle\shuttle.hpp" />
     <ClInclude Include="Shuttle\shuttle_manager.hpp" />
-    <ClInclude Include="sub_process\bouyomisan.hpp" />
     <ClInclude Include="sub_process\console.hpp" />
     <ClInclude Include="sub_process\psdtoolkit.hpp" />
     <ClInclude Include="sub_process\sub_process.hpp" />
+    <ClInclude Include="sub_process\sub_process_manager.hpp" />
     <ClInclude Include="sub_window.hpp" />
   </ItemGroup>
   <ItemGroup>
