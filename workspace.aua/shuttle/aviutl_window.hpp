@@ -61,7 +61,7 @@ namespace apn::workspace
 					MY_TRACE_FUNC("WM_CLOSE, {:#010x}, {:#010x}", wParam, lParam);
 
 					// AviUtlが終了しようとしているのでレイアウトを保存します。
-					::SendMessage(hive.main_window, Hive::WindowMessage::c_write_preference, 0, 0);
+					::SendMessage(hive.main_window, hive.c_message.c_write_preference, 0, 0);
 
 					break;
 				}
@@ -72,7 +72,7 @@ namespace apn::workspace
 					auto result = __super::on_wnd_proc(hwnd, message, wParam, lParam);
 
 					// メインウィンドウのウィンドウテキストを更新します。
-					::SendMessage(hive.main_window, Hive::WindowMessage::c_refresh_title, 0, 0);
+					::SendMessage(hive.main_window, hive.c_message.c_refresh_title, 0, 0);
 
 					return result;
 				}

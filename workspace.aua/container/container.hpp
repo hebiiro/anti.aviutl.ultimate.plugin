@@ -22,7 +22,7 @@ namespace apn::workspace
 			virtual BOOL revise_content_position(LPRECT rc) = 0;
 		};
 
-		inline static constexpr LPCTSTR c_class_name = _T("apn::workspace::container");
+		inline static constexpr auto c_class_name = _T("apn::workspace::container");
 
 		//
 		// このコンテナに格納するコンテンツです。
@@ -46,7 +46,7 @@ namespace apn::workspace
 		//
 		// コンテナがロックされている場合はTRUEを返します。
 		//
-		BOOL locks() { return lock_count != 0; }
+		BOOL is_locked() { return lock_count != 0; }
 
 		//
 		// コンストラクタです。
@@ -106,7 +106,7 @@ namespace apn::workspace
 		{
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
 			wc.lpszClassName = c_class_name;
@@ -232,7 +232,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// ロックされている場合は何もしません。
-			if (locks()) return FALSE;
+			if (is_locked()) return FALSE;
 
 			// ロックします。
 			Locker locker(this);
@@ -276,7 +276,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// ロックされている場合は何もしません。
-			if (locks()) return FALSE;
+			if (is_locked()) return FALSE;
 
 			// ロックします。
 			Locker locker(this);
@@ -318,7 +318,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// ロックされている場合は何もしません。
-			if (locks()) return FALSE;
+			if (is_locked()) return FALSE;
 
 			// 元のコンテンツの位置を取得しておきます。
 			// この位置は主にAviUtlから指定された座標です。
@@ -341,7 +341,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// ロックされている場合は何もしません。
-			if (locks()) return FALSE;
+			if (is_locked()) return FALSE;
 
 			return TRUE;
 		}

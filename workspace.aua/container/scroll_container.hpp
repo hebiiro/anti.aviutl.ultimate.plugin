@@ -167,7 +167,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("{}, {}, {}, {}", rc->left, rc->top, rc->right, rc->bottom);
 
 			// ロックされている場合は何もしません。
-			if (locks()) return;
+			if (is_locked()) return;
 
 			// ロックします。
 			Locker locker(this);

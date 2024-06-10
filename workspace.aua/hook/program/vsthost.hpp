@@ -17,7 +17,7 @@ namespace apn::workspace::hook
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
 			wc.lpszClassName = c_class_name;
