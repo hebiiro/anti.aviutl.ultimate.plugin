@@ -595,5 +595,33 @@ namespace my
 			node.put(name, std::format(R"({}, {}, {}, {})", color.GetR(), color.GetG(), color.GetB(), color.GetA()));
 		}
 #endif
+		void get_child_nodes(const ptree& node, const std::string& name, auto func)
+		{
+			if (auto child_nodes_op = node.get_child_optional(name))
+			{
+				for (const auto& pair : child_nodes_op.value())
+				{
+					const auto& child_node = pair.second;
+
+					func(child_node);
+				}
+			}
+		}
+
+		void set_child_nodes(ptree& node, const std::string& name, const auto& collection, auto func)
+		{
+			ptree child_nodes;
+			{
+				for (const auto& value : collection)
+				{
+					ptree child_node;
+					{
+						func(child_node, value);
+					}
+					child_nodes.push_back(std::make_pair("", child_node));
+				}
+			}
+			node.put_child(name, child_nodes);
+		}
 	}
 }
