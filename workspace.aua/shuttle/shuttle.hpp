@@ -276,8 +276,8 @@ namespace apn::workspace
 		{
 			// フローティングコンテナのスタイルを決定します。
 			auto style = my::get_style(*this);
-			decltype(style) float_style = WS_CAPTION | WS_SYSMENU | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-			float_style |= style & (WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+			decltype(style) float_style = WS_CAPTION | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+			float_style |= style & (WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 
 			// フローティングコンテナのタイプを決定します。
 			if (style & WS_THICKFRAME)
