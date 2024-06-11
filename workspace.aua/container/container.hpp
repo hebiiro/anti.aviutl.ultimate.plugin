@@ -387,6 +387,7 @@ namespace apn::workspace
 
 					break;
 				}
+			case WM_GETMINMAXINFO:
 			case WM_ACTIVATE:
 			case WM_COMMAND:
 			case WM_CLOSE:
