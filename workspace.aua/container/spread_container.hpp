@@ -10,8 +10,8 @@ namespace apn::workspace
 		//
 		// コンストラクタです。
 		//
-		SpreadContainer(Content* content, DWORD style)
-			: Container(content, style)
+		SpreadContainer(Content* content, DWORD style, DWORD ex_style)
+			: Container(content, style, ex_style)
 		{
 		}
 

@@ -52,11 +52,11 @@ namespace apn::workspace
 		// コンストラクタです。
 		// コンテンツとウィンドウスタイルを受け取り、コンテナウィンドウを作成します。
 		//
-		Container(Content* content, DWORD style)
+		Container(Content* content, DWORD style, DWORD ex_style)
 			: content(content)
 		{
 			create(
-				WS_EX_NOPARENTNOTIFY,
+				ex_style,
 				c_class_name,
 				c_class_name,
 				style,

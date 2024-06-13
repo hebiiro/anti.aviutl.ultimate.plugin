@@ -245,6 +245,16 @@ namespace my
 	}
 
 	//
+	// 指定されたプロセスのモジュールファイルのパスを返します。
+	//
+	inline std::filesystem::path get_module_file_name_ex(HANDLE process, HINSTANCE instance, size_t buffer_length = MAX_PATH)
+	{
+		auto buffer = std::make_unique<TCHAR[]>(buffer_length);
+		::GetModuleFileNameEx(process, instance, buffer.get(), buffer_length);
+		return buffer.get();
+	}
+
+	//
 	// クラス名を返します。
 	//
 	inline auto get_class_name(HWND hwnd, size_t buffer_length = MAX_PATH)

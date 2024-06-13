@@ -262,11 +262,16 @@ namespace apn::workspace
 			auto style = my::get_style(*this);
 			decltype(style) dock_style = WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
+			// ドッキングコンテナの拡張スタイルを決定します。
+			auto ex_style = my::get_ex_style(*this);
+			decltype(ex_style) dock_ex_style = WS_EX_NOPARENTNOTIFY;
+			dock_ex_style |= ex_style & (WS_EX_TOOLWINDOW);
+
 			// ドッキングコンテナのタイプを決定します。
 			if (style & WS_THICKFRAME)
-				return std::make_shared<SpreadContainer>(this, dock_style);
+				return std::make_shared<SpreadContainer>(this, dock_style, dock_ex_style);
 			else
-				return std::make_shared<ScrollContainer>(this, dock_style);
+				return std::make_shared<ScrollContainer>(this, dock_style, dock_ex_style);
 		}
 
 		//
@@ -279,11 +284,16 @@ namespace apn::workspace
 			decltype(style) float_style = WS_CAPTION | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 			float_style |= style & (WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 
+			// フローティングコンテナの拡張スタイルを決定します。
+			auto ex_style = my::get_ex_style(*this);
+			decltype(ex_style) float_ex_style = WS_EX_NOPARENTNOTIFY;
+			float_ex_style |= ex_style & (WS_EX_TOOLWINDOW);
+
 			// フローティングコンテナのタイプを決定します。
 			if (style & WS_THICKFRAME)
-				return std::make_shared<SpreadContainer>(this, float_style);
+				return std::make_shared<SpreadContainer>(this, float_style, float_ex_style);
 			else
-				return std::make_shared<Container>(this, float_style);
+				return std::make_shared<Container>(this, float_style, float_ex_style);
 		}
 
 		//

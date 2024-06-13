@@ -10,8 +10,8 @@ namespace apn::workspace
 		//
 		// コンストラクタです。
 		//
-		ScrollContainer(Content* content, DWORD style)
-			: Container(content, style)
+		ScrollContainer(Content* content, DWORD style, DWORD ex_style)
+			: Container(content, style, ex_style)
 		{
 		}
 
@@ -42,15 +42,15 @@ namespace apn::workspace
 			auto rc_container = my::get_client_rect(*this);
 
 			// スクロールバーの有無によってコンテナのクライアント矩形を調整します。
-			DWORD style = my::get_style(*this);
+			auto style = my::get_style(*this);
 			if (style & WS_VSCROLL) rc_container.right += ::GetSystemMetrics(SM_CXVSCROLL);
 			if (style & WS_HSCROLL) rc_container.bottom += ::GetSystemMetrics(SM_CYHSCROLL);
 
 			// コンテナのクライアント矩形の幅と高さを算出します。
 			int container_size[2] = { my::get_width(rc_container), my::get_height(rc_container) };
 
-			constexpr int h = 0;
-			constexpr int v = 1;
+			constexpr auto h = 0;
+			constexpr auto v = 1;
 
 			if (content_size[h] > container_size[h])
 			{
@@ -91,7 +91,8 @@ namespace apn::workspace
 			}
 
 			// NC領域の変更を通知します。
-			::SetWindowPos(*this, 0, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			::SetWindowPos(*this, nullptr, 0, 0, 0, 0,
+				SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
 			return TRUE;
 		}
@@ -138,7 +139,7 @@ namespace apn::workspace
 				scroll_pos[i] = ::GetScrollPos(*this, i);
 
 			// コンテナのクライアント矩形(の左上座標)を取得します。
-			RECT rc = { 0, 0 };
+			auto rc = RECT { 0, 0 };
 
 			// クライアント矩形をウィンドウ矩形に変換します。
 			my::client_to_window(hwnd, &rc);
@@ -151,7 +152,8 @@ namespace apn::workspace
 				pos[i] -= scroll_pos[i];
 
 			// コンテンツの位置を変更します。
-			::SetWindowPos(hwnd, 0, pos[0], pos[1], 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
+			::SetWindowPos(hwnd, nullptr, pos[0], pos[1], 0, 0,
+				SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 
 			// 強制再描画でスクロールに素早く追従させます。
 			::UpdateWindow(hwnd);
@@ -284,7 +286,7 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-			LRESULT result = __super::on_wnd_proc(hwnd, message, wParam, lParam);
+			auto result = __super::on_wnd_proc(hwnd, message, wParam, lParam);
 
 			switch (message)
 			{

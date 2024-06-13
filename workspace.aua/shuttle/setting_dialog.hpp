@@ -31,8 +31,9 @@ namespace apn::workspace
 		virtual std::shared_ptr<Container> create_dock_container() override
 		{
 			DWORD dock_style = WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+			DWORD dock_ex_style = WS_EX_NOPARENTNOTIFY;
 
-			return std::make_shared<ScrollContainer>(this, dock_style);
+			return std::make_shared<ScrollContainer>(this, dock_style, dock_ex_style);
 		}
 
 		//
@@ -42,8 +43,9 @@ namespace apn::workspace
 		{
 			DWORD float_style = WS_CAPTION | WS_SYSMENU | WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 			float_style |= WS_THICKFRAME;
+			DWORD float_ex_style = WS_EX_NOPARENTNOTIFY;
 
-			return std::make_shared<ScrollContainer>(this, float_style);
+			return std::make_shared<ScrollContainer>(this, float_style, float_ex_style);
 		}
 #if 0 // この処理を有効にしてもトラックバーなどのチラツキが発生します。
 		//

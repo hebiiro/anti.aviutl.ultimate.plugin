@@ -273,7 +273,7 @@ namespace my
 			return TRUE;
 		}
 
-		BYTE* getBuffer()
+		BYTE* get_buffer()
 		{
 			return buffer;
 		}
@@ -287,8 +287,9 @@ namespace my
 		SimpleFileMappingT(DWORD desired_access, BOOL inherit_handle, LPCTSTR name) : SimpleFileMapping(desired_access, inherit_handle, name) {}
 		~SimpleFileMappingT() {}
 		BOOL init(LPCTSTR name) { return SimpleFileMapping::init(sizeof(T), name); }
-		T* getBuffer() { return (T*)SimpleFileMapping::getBuffer(); }
-		T* operator->() { return getBuffer(); }
+		T* get_buffer() { return (T*)SimpleFileMapping::get_buffer(); }
+		T* operator->() { return get_buffer(); }
+		T& operator*() { return *get_buffer(); }
 	};
 
 	struct FileMapping
