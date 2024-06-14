@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{64b59334-7936-4066-adf9-33792b994397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element">
+      <UniqueIdentifier>{c5684b43-9a1c-4a5b-b130-dbeaf8a3e0f7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hook.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="file_cache.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="item_cache.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="share.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_thread.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="ui_process_manager.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="item_wave.aua.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

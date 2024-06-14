@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8e583504-3780-4129-bcc2-ba590dbd0d0e}</ProjectGuid>
-    <RootNamespace>ultimate_auf</RootNamespace>
+    <ProjectGuid>{D6A15CA8-FD8F-4F7D-ACCC-1BCEEE80D29A}</ProjectGuid>
+    <RootNamespace>item_wave_aua</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>ultimate.auf</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -56,23 +55,19 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\ultimate.props" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\ultimate.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\ultimate.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="..\ultimate.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\ultimate.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -91,11 +86,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;AUDIOGRAPH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -103,14 +97,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -118,11 +104,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;AUDIOGRAPH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -132,24 +117,15 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;AUDIOGRAPH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -157,14 +133,6 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -172,11 +140,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;MULTIVIEWANCIENT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;AUDIOGRAPH_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <StructMemberAlignment>Default</StructMemberAlignment>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -186,24 +153,23 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <PostBuildEvent />
-    <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
-</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="app_interface.hpp" />
     <ClInclude Include="config_io.hpp" />
-    <ClInclude Include="env.hpp" />
+    <ClInclude Include="file_cache.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="hook.hpp" />
-    <ClInclude Include="addin_loader.hpp" />
+    <ClInclude Include="item_cache.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="plugin_window.hpp" />
-    <ClInclude Include="plugin.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="ui_process_manager.hpp" />
+    <ClInclude Include="share.hpp" />
+    <ClInclude Include="sub_thread.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -218,77 +184,11 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
     <None Include="main.def" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\color_code.aua\color_code.aua.vcxproj">
-      <Project>{e80e8462-911f-4eab-b83b-d4b2dfe2010d}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\dark.aua\dark.aua.vcxproj">
-      <Project>{9b59e47f-0e71-4672-8cb7-2fb03f8bc973}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\dialog_position.aua\dialog_position.aua.vcxproj">
-      <Project>{8e12812d-891a-4165-b356-a3d8e41f8396}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\dialog_size.aua\dialog_size.aua.vcxproj">
-      <Project>{04ea249d-8dd8-49c6-9606-4ba0954bf58e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\dirty_check.aua\dirty_check.aua.vcxproj">
-      <Project>{31632c10-7899-482e-938d-bc2ba81db7f6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ease_select.aua\ease_select.aua.vcxproj">
-      <Project>{17f1fbb1-12b2-47ec-b6fb-b3bd0baabbf6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\editbox_tweaker.aua\editbox_tweaker.aua.vcxproj">
-      <Project>{4864168d-b254-4632-83f9-93ca7b290000}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\exedit_tweaker.aua\exedit_tweaker.aua.vcxproj">
-      <Project>{d899aa9c-dfe3-4563-aac1-a31a0760dc7c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\filer.aua\filer.aua.vcxproj">
-      <Project>{3ccd5147-283f-4755-8637-5d58b950aa8b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\filter_copy.aua\filter_copy.aua.vcxproj">
-      <Project>{2b224387-d48d-4033-ac5a-799292e625b4}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\filter_drag.aua\filter_drag.aua.vcxproj">
-      <Project>{fa6cc467-c0c6-4e99-a543-1cb40c83671d}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\font_preview.aua\font_preview.aua.vcxproj">
-      <Project>{09227b87-09cb-43e7-8b86-8e32a3b4c6a2}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\font_select.aua\font_select.aua.vcxproj">
-      <Project>{6738ba93-5f7c-40a7-9407-fbf6525ffa04}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\image_export.aua\image_export.aua.vcxproj">
-      <Project>{b14f4a09-5ac5-4fb5-9e73-441964eb32bc}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\item_align.aua\item_align.aua.vcxproj">
-      <Project>{322f9334-7978-4341-bb56-344a9e785a62}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\item_wave.aua\item_wave.aua.vcxproj">
-      <Project>{d6a15ca8-fd8f-4f7d-accc-1bceee80d29a}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\last_frame.aua\last_frame.aua.vcxproj">
-      <Project>{4797bb8d-501f-4f13-8c75-e9e1d8a14ef5}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\namecage.aua\namecage.aua.vcxproj">
-      <Project>{49e1e1e4-073b-42b9-921f-9084508c0610}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\output_check.aua\output_check.aua.vcxproj">
-      <Project>{fe437241-1d58-452f-a97c-0ba437e9c4e7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\scene_select.aua\scene_select.aua.vcxproj">
-      <Project>{5e20f31e-26e3-4c79-a24d-dab459915e8c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\text_split.aua\text_split.aua.vcxproj">
-      <Project>{f53a67a7-245c-4d2f-9215-b77aa8429e80}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ultimate.aul\ultimate.aul.vcxproj">
-      <Project>{fedf86e4-e3f5-43ac-9210-402db95b4d86}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\workspace.aua\workspace.aua.vcxproj">
-      <Project>{55af099c-72af-490d-a7ac-99db7eae5675}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\zoom_select.aua\zoom_select.aua.vcxproj">
-      <Project>{af909173-77ca-4f05-8b83-56f2942a2ed8}</Project>
+    <ResourceCompile Include="item_wave.aua.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\item_wave_ui.exe\item_wave_ui.exe.vcxproj">
+      <Project>{a3c15d57-d356-4371-9503-cb910970938f}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

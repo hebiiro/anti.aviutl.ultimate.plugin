@@ -2,29 +2,43 @@
 
 namespace apn::item_wave::share
 {
-	struct c_prop_name {
-		inline static constexpr LPCTSTR c_window_container = _T("window_container");
-		inline static constexpr LPCTSTR c_dialog_container = _T("dialog_container");
-	};
+	namespace host_window
+	{
+		namespace prop_name
+		{
+			inline static constexpr auto c_ui_window = _T("apn::item_wave::share::host_window::ui_window");
+			inline static constexpr auto c_dark = _T("apn::item_wave::share::host_window::dark");
+		}
 
-	struct Message {
-		// client => host
-		inline static constexpr uint32_t c_init = WM_APP + 1;
-		inline static constexpr uint32_t c_cache_result = WM_APP + 2;
-		inline static constexpr uint32_t c_frame_changed = WM_APP + 3;
+		inline HWND get_ui_window(HWND host_window)
+		{
+			return (HWND)::GetProp(host_window, prop_name::c_ui_window);
+		}
 
-		// host => client
-		inline static constexpr uint32_t c_exit = WM_APP + 101;
-		inline static constexpr uint32_t c_create_cache = WM_APP + 102;
-		inline static constexpr uint32_t c_clear_caches = WM_APP + 103;
-		inline static constexpr uint32_t c_redraw_window = WM_APP + 104;
-		inline static constexpr uint32_t c_project_changed = WM_APP + 105;
-		inline static constexpr uint32_t c_audio_changed = WM_APP + 106;
-		inline static constexpr uint32_t c_mass_changed = WM_APP + 107;
+		inline HWND set_ui_window(HWND host_window, HWND ui_window)
+		{
+			return (HWND)::SetProp(host_window, prop_name::c_ui_window, ui_window);
+		}
 
-		// reader => client
-		inline static constexpr uint32_t c_receive_cache = WM_APP + 201;
-	};
+		inline BOOL get_dark(HWND host_window)
+		{
+			return (BOOL)::GetProp(host_window, prop_name::c_dark);
+		}
+
+		inline BOOL set_dark(HWND host_window, BOOL dark)
+		{
+			return (BOOL)::SetProp(host_window, prop_name::c_dark, (HANDLE)dark);
+		}
+	}
+
+	inline static constexpr struct Message {
+		inline static constexpr uint32_t c_init_process = WM_APP + 100;
+		inline static constexpr uint32_t c_exit_process = WM_APP + 101;
+		inline static constexpr uint32_t c_cache_result = WM_APP + 102;
+		inline static constexpr uint32_t c_create_cache = WM_APP + 200;
+		inline static constexpr uint32_t c_clear_caches = WM_APP + 201;
+		inline static constexpr uint32_t c_receive_cache = WM_APP + 300;
+	} c_message;
 
 	struct Volume {
 		inline static constexpr int32_t c_resolution = 30; // 時間軸方向の分解能をFPSで指定します。
@@ -42,14 +56,6 @@ namespace apn::item_wave::share
 		Volume volumes[Volume::c_max_count];
 	};
 
-	struct Project {
-		int32_t video_scale;
-		int32_t video_rate;
-		int32_t frame_number;
-		int32_t scene_index;
-		int32_t current_frame;
-	};
-
 	struct Audio {
 		uint32_t id = 0;
 		uint32_t flag = 0;
@@ -63,144 +69,42 @@ namespace apn::item_wave::share
 		uint32_t layer_flag = 0;
 	};
 
-	struct Mass {
-		BOOL show_bpm = FALSE; // BPMを表示するかどうかのフラグです。
-		struct Tempo {
-			int32_t orig = 0; // テンポの基準となるフレーム番号です。
-			int32_t bpm = 120; // 1 分あたりの四分音符の数です。テンポの速さはこの変数だけで決まります。
-			int32_t above = 4; // 楽譜に書いてある上の数字です(拍子)。テンポの速さには影響を与えません。
-			int32_t below = 4; // 楽譜に書いてある下の数字です(分)。テンポの速さには影響を与えません。
-		} tempo;
-	};
-
 	struct MainBuffer {
-		HWND gui_window_container;
-		HWND gui_dialog_container;
-		HWND gui_window;
-		HWND gui_dialog;
 		WaveRequest wave_request;
 		WaveResult wave_result;
-		Project project;
-		Audio audio;
-		Mass host_mass;
-		Mass client_mass;
 	};
 
 	struct ReaderBuffer : WaveResult {
 	};
 
-	inline struct Name
+	template <typename TYPE, std::size_t SIZE>
+	inline LPSTR copy(TYPE (&array)[SIZE], const std::string& s)
 	{
-		inline static FormatText mutex(DWORD pid)
-		{
-			return FormatText(_T("item_wave.mutex.%08X"), pid);
-		}
+		return ::lstrcpynA(array, s.c_str(), std::size(array));
+	}
 
-		inline static FormatText main_buffer(DWORD pid)
-		{
-			return FormatText(_T("item_wave.main_buffer.%08X"), pid);
-		}
-
-		inline static FormatText reader_event(DWORD tid)
-		{
-			return FormatText(_T("item_wave.reader.event.{}"), tid);
-		}
-
-		inline static FormatText reader_buffer(DWORD tid)
-		{
-			return FormatText(_T("item_wave.reader.buffer.{}"), tid);
-		}
-	} name;
-#if 0
-	struct Manager
+	inline my::tstring get_completion_event_name(HWND host_window)
 	{
-		Mutex mutex;
-		SimpleFileMappingT<MainBuffer> main_buffer;
+		return my::format(_T("item_wave.completion_event.{:#010x}"), host_window);
+	}
 
-		BOOL init(DWORD pid)
-		{
-			MY_TRACE_FUNC("{:#010x}", pid);
+	inline my::tstring get_mutex_name(HWND host_window)
+	{
+		return my::format(_T("item_wave.mutex.{:#010x}"), host_window);
+	}
 
-			mutex.init(0, FALSE, name.mutex(pid));
-			main_buffer.init(name.main_buffer(pid));
+	inline my::tstring get_main_buffer_name(HWND host_window)
+	{
+		return my::format(_T("item_wave.main_buffer.{:#010x}"), host_window);
+	}
 
-			return TRUE;
-		}
+	inline my::tstring get_reader_event_name(DWORD tid)
+	{
+		return my::format(_T("item_wave.reader.event.{:#010x}"), tid);
+	}
 
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-#if 0
-		std::shared_ptr<WaveRequest> get_wave_request()
-		{
-			MY_TRACE_FUNC("");
-
-			auto shared = wave_request.getBuffer();
-			if (!shared) return 0;
-			return std::make_shared<WaveRequest>(*shared);
-		}
-
-		std::shared_ptr<Project> get_project()
-		{
-			MY_TRACE_FUNC("");
-
-			auto shared = project.getBuffer();
-			if (!shared) return 0;
-			return std::make_shared<Project>(*shared);
-		}
-
-		std::shared_ptr<Audio> get_audio()
-		{
-			MY_TRACE_FUNC("");
-
-			auto shared = audio.getBuffer();
-			if (!shared) return 0;
-			return std::make_shared<Audio>(*shared);
-		}
-
-		std::shared_ptr<Mass> get_host_mass()
-		{
-			MY_TRACE_FUNC("");
-
-			auto shared = host_mass.getBuffer();
-			if (!shared) return 0;
-			return std::make_shared<Mass>(*shared);
-		}
-
-		BOOL set_host_mass(const Mass* mass)
-		{
-			MY_TRACE_FUNC("");
-
-			Synchronizer sync(mutex);
-			auto shared = host_mass.getBuffer();
-			if (!shared) return FALSE;
-			*shared = *mass;
-			return TRUE;
-		}
-
-		std::shared_ptr<Mass> get_client_mass()
-		{
-			MY_TRACE_FUNC("");
-
-			auto shared = client_mass.getBuffer();
-			if (!shared) return 0;
-			return std::make_shared<Mass>(*shared);
-		}
-
-		BOOL set_client_mass(const Mass* mass)
-		{
-			MY_TRACE_FUNC("");
-
-			Synchronizer sync(mutex);
-			auto shared = client_mass.getBuffer();
-			if (!shared) return FALSE;
-			*shared = *mass;
-			return TRUE;
-		}
-#endif
-	};
-#endif
+	inline my::tstring get_reader_buffer_name(DWORD tid)
+	{
+		return my::format(_T("item_wave.reader.buffer.{:#010x}"), tid);
+	}
 }
