@@ -84,9 +84,6 @@ namespace apn::item_wave
 				}
 			}
 
-			if (proc_state.is_playing)
-				return FALSE; // 再生中のときはここで処理を終了します。
-
 			// UIプロセスのウィンドウが作成済みの場合は
 			if (hive.ui_window)
 			{

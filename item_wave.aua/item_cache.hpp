@@ -42,6 +42,47 @@ namespace apn::item_wave
 		}
 
 		//
+		// キャッシュが要求されている場合はTRUEを返します。
+		//
+		inline static BOOL is_cache_required(ExEdit::Object* object, const std::shared_ptr<share::Audio>& audio)
+		{
+			if (!hive.include_layers.empty())
+			{
+				// 対象レイヤーではない場合はFALSEを返します。
+				if (!hive.include_layers.contains(object->layer_set))
+					return FALSE;
+			}
+
+			if (!hive.exclude_layers.empty())
+			{
+				// 除外レイヤーの場合はFALSEを返します。
+				if (hive.exclude_layers.contains(object->layer_set))
+					return FALSE;
+			}
+
+			std::filesystem::path path(audio->file_name);
+			if (path.is_relative())
+				path = std::filesystem::current_path() / path;
+			path = path.lexically_normal();
+
+			if (!hive.include_folder.empty())
+			{
+				// 対象フォルダではない場合はFALSEを返します。
+				if (!::StrStrIW(path.c_str(), hive.include_folder.c_str()))
+					return FALSE;
+			}
+
+			if (!hive.exclude_folder.empty())
+			{
+				// 除外フォルダの場合はFALSEを返します。
+				if (::StrStrIW(path.c_str(), hive.exclude_folder.c_str()))
+					return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		//
 		// すべてのキャッシュを消去します。
 		//
 		void clear_caches()
@@ -132,6 +173,9 @@ namespace apn::item_wave
 			// 音声を取得します。
 			auto audio = get_audio(object);
 			if (!audio) return nullptr;
+
+			// このアイテムのキャッシュが要求されているか確認します。
+			if (!is_cache_required(object, audio)) return nullptr;
 
 			// ファイルキャシュを取得します。
 			auto file_cache = file_cache_manager.get_cache(audio->file_name, send);

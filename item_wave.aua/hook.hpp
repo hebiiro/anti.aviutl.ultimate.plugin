@@ -77,7 +77,9 @@ namespace apn::item_wave
 			auto cache = item_cache_manager.get_cache(current_item);
 			if (!cache) return;
 
-			auto scale = std::max<int>(1, hive.scale);
+			auto scale = hive.scale;
+			if (hive.wave_type == hive.c_wave_type.c_center) scale /= 2;
+			scale = std::max<int>(1, scale);
 
 			auto w = rc_item->right - rc_item->left;
 			auto h = rc_item->bottom - rc_item->top;
@@ -270,7 +272,11 @@ namespace apn::item_wave
 
 				// フラグが立っている場合はテキストが見切れないように調整します。
 				if (hive.namecage)
-					x = std::max(70, x);
+				{
+					// 70は拡張編集内の定数です。
+					// それにユーザーが指定できるオフセットを加えます。
+					x = std::max<int>(70 + hive.namecage_offset, x);
+				}
 
 				// 音声アイテム以外には何もしません。
 				if (!(hook_manager.current_item->flag & ExEdit::Object::Flag::Sound))

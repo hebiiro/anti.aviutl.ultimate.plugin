@@ -20,8 +20,8 @@ namespace apn
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"dark", L"ダークモード化", TRUE, L"", std::vector<std::wstring>{ L"DarkenWindow.aul" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"workspace", L"ワークスペース化", TRUE, L"", std::vector<std::wstring>({ L"SplitWindow.aul" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"filer", L"ファイラ", TRUE, L"", std::vector<std::wstring>({ L"ObjectExplorer.auf" })));
-//			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"音声グラフ", FALSE, L"", std::vector<std::wstring>({ L"LevelMeter.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", FALSE, L"", std::vector<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
+//			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"音声グラフ", TRUE, L"", std::vector<std::wstring>({ L"LevelMeter.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", TRUE, L"", std::vector<std::wstring>{ L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" }));
 
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", std::vector<std::wstring>({ L"CopyFilter.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", std::vector<std::wstring>({ L"DragFilter.auf" })));
@@ -38,7 +38,7 @@ namespace apn
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"zoom_select", L"ズーム選択", TRUE, L"", std::vector<std::wstring>({ L"SetZoom.auf" })));
 
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dirty_check", L"終了確認", TRUE, L"", std::vector<std::wstring>({ L"auls_confirmclose.auf", L"DirtyCheck.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"namecage", L"アイテム名常時表示", TRUE, L"", std::vector<std::wstring>({ L"item_wave.aua", L"NoScrollText.auf", L"ShowWaveform.auf" })));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"namecage", L"アイテム名常時表示", FALSE, L"", std::vector<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"editbox_tweaker", L"エディットボックス微調整", TRUE, L"", std::vector<std::wstring>({ L"OptimizeEditBox.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"exedit_tweaker", L"拡張編集微調整", FALSE, L"", std::vector<std::wstring>({ L"ExEditTweaker.auf" })));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dialog_position", L"ダイアログ位置調整", TRUE, L"", std::vector<std::wstring>({ L"AdjustDialogPosition.auf" })));

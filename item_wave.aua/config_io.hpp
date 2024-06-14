@@ -69,6 +69,9 @@ namespace apn::item_wave
 
 			using namespace my::json;
 
+			std::wstring include_layers;
+			std::wstring exclude_layers;
+
 			get_int(root, "scale", hive.scale);
 			get_label(root, "wave_type", hive.wave_type, hive.c_wave_type.labels);
 			get_label(root, "update_mode", hive.update_mode, hive.c_update_mode.labels);
@@ -79,7 +82,14 @@ namespace apn::item_wave
 			get_bool(root, "show_text", hive.show_text);
 			get_bool(root, "namecage", hive.namecage);
 			get_bool(root, "behind", hive.behind);
+			get_string(root, "include_layers", include_layers);
+			get_string(root, "exclude_layers", exclude_layers);
+			get_string(root, "include_folder", hive.include_folder);
+			get_string(root, "exclude_folder", hive.exclude_folder);
 			get_window(root, "addin_window", addin_window);
+
+			hive.include_layers = string_to_layers(include_layers);
+			hive.exclude_layers = string_to_layers(exclude_layers);
 
 			return TRUE;
 		}
@@ -93,6 +103,9 @@ namespace apn::item_wave
 
 			using namespace my::json;
 
+			auto include_layers = layers_to_string(hive.include_layers);
+			auto exclude_layers = layers_to_string(hive.exclude_layers);
+
 			set_int(root, "scale", hive.scale);
 			set_label(root, "wave_type", hive.wave_type, hive.c_wave_type.labels);
 			set_label(root, "update_mode", hive.update_mode, hive.c_update_mode.labels);
@@ -103,6 +116,10 @@ namespace apn::item_wave
 			set_bool(root, "show_text", hive.show_text);
 			set_bool(root, "namecage", hive.namecage);
 			set_bool(root, "behind", hive.behind);
+			set_string(root, "include_layers", include_layers);
+			set_string(root, "exclude_layers", exclude_layers);
+			set_string(root, "include_folder", hive.include_folder);
+			set_string(root, "exclude_folder", hive.exclude_folder);
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;

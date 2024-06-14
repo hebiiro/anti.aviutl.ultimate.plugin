@@ -2,6 +2,25 @@
 
 namespace apn::item_wave
 {
+	std::wstring pick_folder(HWND owner, const std::wstring& title, const std::wstring& start_folder)
+	{
+		auto dialog = wil::CoCreateInstance<IFileOpenDialog>(__uuidof(FileOpenDialog));
+		if (FAILED(dialog->SetTitle(title.c_str()))) return {};
+		FILEOPENDIALOGOPTIONS options;
+		if (FAILED(dialog->GetOptions(&options))) return {};
+		if (FAILED(dialog->SetOptions(options | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM))) return {};
+//		if (FAILED(dialog->SetOptions(options | FOS_PATHMUSTEXIST | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM))) return {};
+		wil::com_ptr<IShellItem> start_folder_item;
+		if (FAILED(::SHCreateItemFromParsingName(start_folder.c_str(), nullptr, IID_PPV_ARGS(&start_folder_item)))) return {};
+		if (FAILED(dialog->SetFolder(start_folder_item.get()))) return {};
+		if (FAILED(dialog->Show(owner))) return {};
+		wil::com_ptr<IShellItem> result;
+		if (FAILED(dialog->GetResult(&result))) return {};
+		wil::unique_cotaskmem_string selected_item;
+		if (FAILED(result->GetDisplayName(SIGDN_FILESYSPATH, &selected_item))) return {};
+		return selected_item.get();
+	}
+ 
 	//
 	// このクラスはアドインダイアログです。
 	//
@@ -14,6 +33,9 @@ namespace apn::item_wave
 		{
 			MY_TRACE_FUNC("");
 
+			auto include_layers = layers_to_string(hive.include_layers);
+			auto exclude_layers = layers_to_string(hive.exclude_layers);
+
 			set_int(IDC_SCALE, hive.scale);
 			set_combobox_index(IDC_WAVE_TYPE, hive.wave_type);
 			set_combobox_index(IDC_UPDATE_MODE, hive.update_mode);
@@ -22,6 +44,11 @@ namespace apn::item_wave
 			set_check(IDC_SHOW_TEXT, hive.show_text);
 			set_check(IDC_NAMECAGE, hive.namecage);
 			set_check(IDC_BEHIND, hive.behind);
+			set_text(IDC_INCLUDE_LAYERS, include_layers);
+			set_text(IDC_EXCLUDE_LAYERS, exclude_layers);
+			set_text(IDC_INCLUDE_FOLDER, hive.include_folder);
+			set_text(IDC_EXCLUDE_FOLDER, hive.exclude_folder);
+			set_int(IDC_NAMECAGE_OFFSET, hive.namecage_offset);
 		}
 
 		//
@@ -31,6 +58,9 @@ namespace apn::item_wave
 		{
 			MY_TRACE_FUNC("");
 
+			my::tstring include_layers;
+			my::tstring exclude_layers;
+
 			get_int(IDC_SCALE, hive.scale);
 			get_combobox_index(IDC_WAVE_TYPE, hive.wave_type);
 			get_combobox_index(IDC_UPDATE_MODE, hive.update_mode);
@@ -39,6 +69,14 @@ namespace apn::item_wave
 			get_check(IDC_SHOW_TEXT, hive.show_text);
 			get_check(IDC_NAMECAGE, hive.namecage);
 			get_check(IDC_BEHIND, hive.behind);
+			get_text(IDC_INCLUDE_LAYERS, include_layers);
+			get_text(IDC_EXCLUDE_LAYERS, exclude_layers);
+			get_text(IDC_INCLUDE_FOLDER, hive.include_folder);
+			get_text(IDC_EXCLUDE_FOLDER, hive.exclude_folder);
+			get_int(IDC_NAMECAGE_OFFSET, hive.namecage_offset);
+
+			hive.include_layers = string_to_layers(include_layers);
+			hive.exclude_layers = string_to_layers(exclude_layers);
 
 			magi.exin.invalidate();
 		}
@@ -58,8 +96,11 @@ namespace apn::item_wave
 
 			auto margin_value = 2;
 			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
+			auto stat_margin = RECT { 0, 0, margin_value, 0 };
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
+			auto stat = std::make_shared<RelativePos>(base_size * 3);
+			auto spin = std::make_shared<RelativePos>(base_size);
 			auto rest = std::make_shared<AbsolutePos>(1, 1, 1);
 			std::shared_ptr<AbsolutePos> q[24 + 1];
 			for (auto i = 0; i < std::size(q); i++)
@@ -67,50 +108,90 @@ namespace apn::item_wave
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_UPDATE_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_UPDATE_MODE));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12]);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_UPDATE_MODE_STAT));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_UPDATE_MODE));
+				}
+
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[24]);
+					{
+						auto sub_node2 = sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCALE_STAT));
+					}
+					{
+						auto sub_node2 = sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin);
+						sub_node2->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SCALE_SPIN));
+						sub_node2->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_SCALE));
+					}
+				}
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_right, row, margin, ctrl(IDC_SCALE_SPIN));
-				node->add_pane(c_axis.c_horz, c_align.c_right, q[12], margin, ctrl(IDC_SCALE));
-				node->add_pane(c_axis.c_horz, c_align.c_right, q[24], margin, ctrl(IDC_SCALE_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12]);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_WAVE_TYPE_STAT));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_WAVE_TYPE));
+				}
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[24]);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_XOR_MODE_STAT));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_XOR_MODE));
+				}
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_WAVE_TYPE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_WAVE_TYPE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_INCLUDE_LAYERS_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_INCLUDE_LAYERS));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_XOR_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_XOR_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXCLUDE_LAYERS_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_EXCLUDE_LAYERS));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_SELECT_PEN_COLOR));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_SELECT_BRUSH_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_INCLUDE_FOLDER_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_INCLUDE_FOLDER_DIR));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_INCLUDE_FOLDER));
+				}
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_CLEAR_CACHES));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXCLUDE_FOLDER_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_EXCLUDE_FOLDER_DIR));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_EXCLUDE_FOLDER));
+				}
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_SHOW_WAVE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_SHOW_TEXT));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_NAMECAGE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SHOW_WAVE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[16], margin, ctrl(IDC_SHOW_TEXT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_BEHIND));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_NAMECAGE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[16], margin, ctrl(IDC_NAMECAGE_OFFSET_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_NAMECAGE_OFFSET));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SELECT_PEN_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[16], margin, ctrl(IDC_SELECT_BRUSH_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_CLEAR_CACHES));
 			}
 		}
 
@@ -124,13 +205,15 @@ namespace apn::item_wave
 			switch (id)
 			{
 			// エディットボックス
-			case IDC_SCALE: if (code == EN_UPDATE) update_config(); break;
-
+			case IDC_SCALE:
+			case IDC_INCLUDE_LAYERS:
+			case IDC_EXCLUDE_LAYERS:
+			case IDC_INCLUDE_FOLDER:
+			case IDC_EXCLUDE_FOLDER: if (code == EN_UPDATE) update_config(); break;
 			// コンボボックス
-			case IDC_WAVE_TYPE:
 			case IDC_UPDATE_MODE:
+			case IDC_WAVE_TYPE:
 			case IDC_XOR_MODE: if (code == CBN_SELCHANGE) update_config(); break;
-
 			// ボタン
 			case IDC_SELECT_PEN_COLOR:
 				{
@@ -144,8 +227,34 @@ namespace apn::item_wave
 						magi.exin.invalidate();
 					break;
 				}
-			case IDC_CLEAR_CACHES: app->clear_caches(); break;
+			case IDC_CLEAR_CACHES:
+					{
+						app->clear_caches();
 
+						break;
+					}
+			case IDC_INCLUDE_FOLDER_DIR:
+				{
+					auto folder = pick_folder(*this, L"対象フォルダを選択", hive.include_folder);
+					if (!folder.empty())
+					{
+						set_text(IDC_INCLUDE_FOLDER, folder);
+						update_config();
+					}
+
+					break;
+				}
+			case IDC_EXCLUDE_FOLDER_DIR:
+				{
+					auto folder = pick_folder(*this, L"除外フォルダを選択", hive.exclude_folder);
+					if (!folder.empty())
+					{
+						set_text(IDC_EXCLUDE_FOLDER, folder);
+						update_config();
+					}
+
+					break;
+				}
 			// チェックボックス
 			case IDC_SHOW_WAVE:
 			case IDC_SHOW_TEXT:

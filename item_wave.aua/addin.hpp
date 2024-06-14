@@ -30,6 +30,22 @@ namespace apn::item_wave
 		{
 			MY_TRACE_FUNC("");
 
+			{
+				// 必須プラグインが存在するか確認します。
+
+				auto path = my::get_module_file_name(nullptr);
+				path = path.parent_path() / _T("plugins") / _T("lwinput.aui");
+				if (!std::filesystem::exists(path))
+				{
+					hive.message_box(
+						L"pluginsフォルダにlwinput.auiが存在しません\n"
+						L"L-SMASH-Worksをpluginsフォルダにインストールしてください\n"
+					);
+
+					return FALSE;
+				}
+			}
+
 			if (!config_io.init()) return FALSE;
 			if (!addin_window.init()) return FALSE;
 			if (!share_manager.init()) return FALSE;

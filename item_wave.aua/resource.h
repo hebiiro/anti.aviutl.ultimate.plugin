@@ -6,6 +6,8 @@
 #define IDC_SCALE_STAT                  1001
 #define IDC_SCALE                       1002
 #define IDC_SCALE_SPIN                  1003
+#define IDC_NAMECAGE_OFFSET_STAT        1004
+#define IDC_NAMECAGE_OFFSET             1005
 #define IDC_WAVE_TYPE_STAT              1010
 #define IDC_WAVE_TYPE                   1011
 #define IDC_UPDATE_MODE_STAT            1020
@@ -19,6 +21,16 @@
 #define IDC_SHOW_TEXT                   1051
 #define IDC_NAMECAGE                    1052
 #define IDC_BEHIND                      1053
+#define IDC_INCLUDE_LAYERS_STAT         1060
+#define IDC_INCLUDE_LAYERS              1061
+#define IDC_EXCLUDE_LAYERS_STAT         1062
+#define IDC_EXCLUDE_LAYERS              1063
+#define IDC_INCLUDE_FOLDER_STAT         1070
+#define IDC_INCLUDE_FOLDER              1071
+#define IDC_INCLUDE_FOLDER_DIR          1072
+#define IDC_EXCLUDE_FOLDER_STAT         1073
+#define IDC_EXCLUDE_FOLDER              1074
+#define IDC_EXCLUDE_FOLDER_DIR          1075
 
 // Next default values for new objects
 // 

@@ -2,6 +2,26 @@
 
 namespace apn::item_wave
 {
+	inline static std::unordered_set<int32_t> string_to_layers(const std::wstring& s)
+	{
+		std::unordered_set<int32_t> layers;
+		std::wstringstream stream(s);
+		std::wstring layer;
+		while (std::getline(stream, layer, L','))
+			layers.emplace(wcstol(layer.c_str(), nullptr, 0) - 1);
+		return layers;
+	}
+
+	inline static std::wstring layers_to_string(const std::unordered_set<int32_t>& layers)
+	{
+		std::wstring s;
+		for (const auto& layer : layers) {
+			if (!s.empty()) s += L", ";
+			s += std::format(L"{}", layer + 1);
+		}
+		return s;
+	}
+
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
@@ -119,6 +139,31 @@ namespace apn::item_wave
 		// TRUEの場合は波形をアイテム名の後ろに描画します。
 		//
 		BOOL behind = TRUE;
+
+		//
+		// 波形を生成するレイヤーです。
+		//
+		std::unordered_set<int32_t> include_layers;
+
+		//
+		// 波形を生成しないレイヤーです。
+		//
+		std::unordered_set<int32_t> exclude_layers;
+
+		//
+		// 波形を生成するフォルダです。
+		//
+		std::wstring include_folder;
+
+		//
+		// 波形を生成しないフォルダです。
+		//
+		std::wstring exclude_folder;
+
+		//
+		// アイテム名の描画位置(X座標)に加算する値です。
+		//
+		int32_t namecage_offset = -6;
 
 		//
 		// メッセージボックスを表示します。
