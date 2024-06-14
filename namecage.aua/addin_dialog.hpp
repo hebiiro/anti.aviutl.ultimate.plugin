@@ -16,8 +16,7 @@ namespace apn::namecage
 
 			get_int(IDC_OFFSET, hive.offset);
 
-			auto exedit_window = magi.exin.get_exedit_window();
-			::InvalidateRect(exedit_window, 0, FALSE);
+			magi.exin.invalidate();
 		}
 
 		//

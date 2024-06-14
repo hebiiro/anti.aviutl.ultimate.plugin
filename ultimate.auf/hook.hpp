@@ -32,10 +32,10 @@ namespace apn
 			{
 				auto file_name = my::ws(_file_name);
 
-				if (auto conflict = conflicts(file_name))
+				if (auto addin = conflicts(file_name))
 				{
 					std::wcout << std::format(L"\033[31m" L"『{}』アドインと競合しているので『{}』プラグインは使用できません" L"\033[m",
-						conflict->display_name, std::filesystem::path(file_name).filename().wstring()) << std::endl;
+						addin->display_name, std::filesystem::path(file_name).filename().wstring()) << std::endl;
 
 					return nullptr;
 				}
