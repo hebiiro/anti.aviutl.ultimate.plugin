@@ -616,14 +616,27 @@ namespace apn::workspace
 			};
 		}
 
+		//
+		// 与えられた値をクランプして返します。
+		//
+		inline static auto clamp(auto a, auto b, auto c)
+		{
+			a = std::max(a, b);
+			a = std::min(a, c);
+			return a;
+		}
+
+		//
+		// ボーダーの位置をノーマライズします。
+		//
 		void normalize()
 		{
 //			MY_TRACE_FUNC("");
 
 			switch (split_mode)
 			{
-			case SplitMode::c_vert: border = std::clamp(border, 0, my::get_width(position) - border_width); break;
-			case SplitMode::c_horz: border = std::clamp(border, 0, my::get_height(position) - border_width); break;
+			case SplitMode::c_vert: border = clamp(border, 0, my::get_width(position) - border_width); break;
+			case SplitMode::c_horz: border = clamp(border, 0, my::get_height(position) - border_width); break;
 			}
 		}
 
@@ -719,6 +732,9 @@ namespace apn::workspace
 			// キャプションの高さを取得します。
 			auto caption_height = get_caption_height();
 
+			// 次のswitch文でこれらの変数にタブコントロールの位置を格納します。
+			auto x = 0, y = 0, w = 0, h = 0;
+
 			switch (tab_mode)
 			{
 			case TabMode::c_caption: // タブをキャプションに表示するなら
@@ -738,49 +754,52 @@ namespace apn::workspace
 						}
 					}
 
-					auto x = position.left;
-					auto y = position.top;
-					auto w = my::get_width(position) - cx; // 右側にあるメニューアイコンの分だけ少し狭めます。
-					auto h = cy;
+					x = position.left;
+					y = position.top;
+					w = my::get_width(position) - cx; // 右側にあるメニューアイコンの分だけ少し狭めます。
+					h = cy;
 
 					modify_style(tab, TCS_BOTTOM, 0);
-
-					// タブコントロールを表示します。
-					::DeferWindowPos(dwp, tab, HWND_TOP,
-						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 					break;
 				}
 			case TabMode::c_top: // タブを上に表示するなら
 				{
-					auto x = position.left;
-					auto y = position.top + caption_height;
-					auto w = my::get_width(position);
-					auto h = tab_height;
+					x = position.left;
+					y = position.top + caption_height;
+					w = my::get_width(position);
+					h = tab_height;
 
 					modify_style(tab, TCS_BOTTOM, 0);
-
-					// タブコントロールを表示します。
-					::DeferWindowPos(dwp, tab, HWND_TOP,
-						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 
 					break;
 				}
 			case TabMode::c_bottom: // タブを下に表示するなら
 				{
-					auto x = position.left;
-					auto y = position.bottom - tab_height;
-					auto w = my::get_width(position);
-					auto h = tab_height;
+					x = position.left;
+					y = position.bottom - tab_height;
+					w = my::get_width(position);
+					h = tab_height;
+
+					MY_TRACE("{}, {}, {}, {}\n", x, y, w, h);
 
 					modify_style(tab, 0, TCS_BOTTOM);
 
-					// タブコントロールを表示します。
-					::DeferWindowPos(dwp, tab, HWND_TOP,
-						x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
-
 					break;
 				}
+			}
+
+			if (w > 0 && h > 0)
+			{
+				// タブコントロールを表示します。
+				::DeferWindowPos(dwp, tab, HWND_TOP,
+					x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+			}
+			else
+			{
+				// タブコントロールを非表示にします。
+				::DeferWindowPos(dwp, tab, nullptr,
+					x, y, 1, 1, SWP_NOZORDER | SWP_HIDEWINDOW);
 			}
 		}
 
