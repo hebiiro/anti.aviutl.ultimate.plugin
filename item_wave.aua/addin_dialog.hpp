@@ -99,7 +99,7 @@ namespace apn::item_wave
 			auto stat_margin = RECT { 0, 0, margin_value, 0 };
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
-			auto stat = std::make_shared<RelativePos>(base_size * 3);
+			auto stat = std::make_shared<RelativePos>(base_size * 4);
 			auto spin = std::make_shared<RelativePos>(base_size);
 			auto rest = std::make_shared<AbsolutePos>(1, 1, 1);
 			std::shared_ptr<AbsolutePos> q[24 + 1];
