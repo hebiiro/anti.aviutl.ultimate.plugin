@@ -141,6 +141,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_wave_reader.exe", "ite
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_wave_ui.exe", "item_wave_ui.exe\item_wave_ui.exe.vcxproj", "{A3C15D57-D356-4371-9503-CB910970938F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "settings_browser.aua", "settings_browser.aua\settings_browser.aua.vcxproj", "{6FB0A583-304E-41BE-9E39-2644219C28DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -397,6 +399,14 @@ Global
 		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x64.Build.0 = Release|x64
 		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x86.ActiveCfg = Release|Win32
 		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x86.Build.0 = Release|Win32
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x64.ActiveCfg = Debug|x64
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x64.Build.0 = Debug|x64
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x86.ActiveCfg = Debug|Win32
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x86.Build.0 = Debug|Win32
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Release|x64.ActiveCfg = Release|x64
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Release|x64.Build.0 = Release|x64
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Release|x86.ActiveCfg = Release|Win32
+		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
