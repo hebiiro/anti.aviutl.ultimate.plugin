@@ -163,10 +163,23 @@ namespace my
 			if (auto optional = node.get_child_optional(name)) get_size(optional.value(), value);
 		}
 
+		inline void get_rect(const ptree& node, RECT& rc)
+		{
+			get_int(node, "left", rc.left);
+			get_int(node, "top", rc.top);
+			get_int(node, "right", rc.right);
+			get_int(node, "bottom", rc.bottom);
+		}
+
+		inline void get_rect(const ptree& node, const std::string& name, RECT& rc)
+		{
+			if (auto optional = node.get_child_optional(name)) get_rect(optional.value(), rc);
+		}
+
 		inline void get_color(const ptree& node, COLORREF& value)
 		{
-			std::string str = node.get_value<std::string>("");
-			size_t c = str.length();
+			auto str = node.get_value<std::string>("");
+			auto c = str.length();
 			if (c == 0) return;
 
 			if (str[0] == '#')
@@ -201,10 +214,10 @@ namespace my
 			}
 			else
 			{
-				size_t sep1 = str.find(',');
+				auto sep1 = str.find(',');
 				if (sep1 == str.npos) return;
 
-				size_t sep2 = str.find(',', sep1 + 1);
+				auto sep2 = str.find(',', sep1 + 1);
 				if (sep2 == str.npos) return;
 
 				str[sep1] = '\0';
@@ -392,6 +405,14 @@ namespace my
 		{
 			node.put(name + ".w", size.cx);
 			node.put(name + ".h", size.cy);
+		}
+
+		inline void set_rect(ptree& node, const std::string& name, const RECT& rc)
+		{
+			node.put(name + ".left", rc.left);
+			node.put(name + ".top", rc.top);
+			node.put(name + ".right", rc.right);
+			node.put(name + ".bottom", rc.bottom);
 		}
 
 		inline void set_color(ptree& node, const std::string& name, COLORREF color)
