@@ -5,6 +5,7 @@
 	processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 
+//#define MY_TRACE_ENABLED 1
 #include "common/core/include.hpp"
 using namespace my::json;
 

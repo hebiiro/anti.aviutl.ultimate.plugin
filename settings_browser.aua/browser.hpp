@@ -42,7 +42,7 @@ namespace apn::settings_browser
 				100, 100, 600, 600,
 				parent, (HMENU)IDC_BROWSER, hive.instance, nullptr))
 			{
-				MY_TRACE("ブラウザウィンドウの作成に失敗しました\n");
+				hive.message_box(L"ブラウザウィンドウの作成に失敗しました");
 
 				return FALSE;
 			}
