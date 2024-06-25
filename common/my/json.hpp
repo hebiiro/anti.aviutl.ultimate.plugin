@@ -238,27 +238,22 @@ namespace my
 
 		inline void get_window(const ptree& node, HWND hwnd, DWORD show_cmd = -1)
 		{
-			WINDOWPLACEMENT wp = { sizeof(wp) };
-			if (!::GetWindowPlacement(hwnd, &wp)) return;
-			if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
-			wp.flags = WPF_ASYNCWINDOWPLACEMENT | WPF_SETMINPOSITION;
-
 			if (show_cmd == -1)
-				get_int(node, "show_cmd", wp.showCmd);
-			else
-				wp.showCmd = show_cmd;
+				get_int(node, "show_cmd", show_cmd);
 
-			get_int(node, "left", wp.rcNormalPosition.left);
-			get_int(node, "top", wp.rcNormalPosition.top);
-			get_int(node, "right", wp.rcNormalPosition.right);
-			get_int(node, "bottom", wp.rcNormalPosition.bottom);
+			auto rc = RECT {};
+			get_int(node, "left", rc.left);
+			get_int(node, "top", rc.top);
+			get_int(node, "right", rc.right);
+			get_int(node, "bottom", rc.bottom);
 
-			get_int(node, "min_x", wp.ptMinPosition.x);
-			get_int(node, "min_y", wp.ptMinPosition.y);
-			get_int(node, "max_x", wp.ptMaxPosition.x);
-			get_int(node, "max_y", wp.ptMaxPosition.y);
+			auto x = rc.left;
+			auto y = rc.top;
+			auto w = my::get_width(rc);
+			auto h = my::get_height(rc);
+			::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
 
-			::SetWindowPlacement(hwnd, &wp);
+			::ShowWindow(hwnd, show_cmd);
 		}
 
 		inline void get_window(const ptree& node, const std::string& name, HWND hwnd, DWORD show_cmd = -1)
@@ -425,23 +420,21 @@ namespace my
 
 		inline void set_window(ptree& node, const std::string& name, HWND hwnd)
 		{
-			WINDOWPLACEMENT wp = { sizeof(wp) };
-			if (!::GetWindowPlacement(hwnd, &wp)) return;
+			auto show_cmd = SW_RESTORE;
+			if (::IsZoomed(hwnd)) show_cmd = SW_MAXIMIZE;
+			if (::IsIconic(hwnd)) show_cmd = SW_MINIMIZE;
+			if (!::IsWindowVisible(hwnd)) show_cmd = SW_HIDE;
 
-			if (::IsIconic(hwnd)) wp.showCmd = SW_SHOW;
-			if (wp.flags == WPF_RESTORETOMAXIMIZED) wp.showCmd = SW_SHOWMAXIMIZED;
-			if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
+			auto rc = my::get_window_rect(hwnd);
+			if (my::get_style(hwnd) & WS_CHILD)
+				my::map_window_points(nullptr, ::GetParent(hwnd), &rc);
 
 			ptree window_node;
-			set_int(window_node, "show_cmd", wp.showCmd);
-			set_int(window_node, "left", wp.rcNormalPosition.left);
-			set_int(window_node, "top", wp.rcNormalPosition.top);
-			set_int(window_node, "right", wp.rcNormalPosition.right);
-			set_int(window_node, "bottom", wp.rcNormalPosition.bottom);
-			set_int(window_node, "min_x", wp.ptMinPosition.x);
-			set_int(window_node, "min_y", wp.ptMinPosition.y);
-			set_int(window_node, "max_x", wp.ptMaxPosition.x);
-			set_int(window_node, "max_y", wp.ptMaxPosition.y);
+			set_int(window_node, "show_cmd", show_cmd);
+			set_int(window_node, "left", rc.left);
+			set_int(window_node, "top", rc.top);
+			set_int(window_node, "right", rc.right);
+			set_int(window_node, "bottom", rc.bottom);
 			node.add_child(name, window_node);
 		}
 
