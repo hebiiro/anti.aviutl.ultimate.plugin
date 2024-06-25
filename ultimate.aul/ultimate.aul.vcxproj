@@ -103,10 +103,10 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
+      <Command>md "$(my_base_dir)" &gt; NUL 2&gt;&amp;1
+md "$(my_debug_base_dir)" &gt; NUL 2&gt;&amp;1
+copy /Y "$(TargetPath)" "$(my_base_dir)\$(TargetName)"
+copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -131,10 +131,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
+      <Command>md "$(my_base_dir)" &gt; NUL 2&gt;&amp;1
+md "$(my_debug_base_dir)" &gt; NUL 2&gt;&amp;1
+copy /Y "$(TargetPath)" "$(my_base_dir)\$(TargetName)"
+copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -155,10 +155,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
+      <Command>md "$(my_base_dir)" &gt; NUL 2&gt;&amp;1
+md "$(my_debug_base_dir)" &gt; NUL 2&gt;&amp;1
+copy /Y "$(TargetPath)" "$(my_base_dir)\$(TargetName)"
+copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -183,10 +183,10 @@ copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>md "$(my_host_dir)" &gt; NUL 2&gt;&amp;1
-md "$(my_debug_host_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(TargetPath)" "$(my_host_dir)\$(TargetName)"
-copy /Y "$(TargetPath)" "$(my_debug_host_dir)\$(TargetName)"
+      <Command>md "$(my_base_dir)" &gt; NUL 2&gt;&amp;1
+md "$(my_debug_base_dir)" &gt; NUL 2&gt;&amp;1
+copy /Y "$(TargetPath)" "$(my_base_dir)\$(TargetName)"
+copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

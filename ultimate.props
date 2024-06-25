@@ -15,15 +15,16 @@
     <my_pack_dir>$(my_source)\pack\ultimate</my_pack_dir>
     <my_runtime_dir>$(my_pack_dir)\runtime</my_runtime_dir>
     <my_host_dir>$(my_pack_dir)\aviutl</my_host_dir>
-    <my_plugin_dir>$(my_host_dir)\plugins</my_plugin_dir>
-    <my_core_dir>$(my_host_dir)\ultimate</my_core_dir>
+    <my_base_dir>$(my_host_dir)\plugins</my_base_dir>
+    <my_core_dir>$(my_base_dir)\ultimate</my_core_dir>
     <my_module_dir>$(my_core_dir)\module</my_module_dir>
     <my_config_dir>$(my_core_dir)\config</my_config_dir>
     <my_assets_dir>$(my_core_dir)\assets</my_assets_dir>
     <my_debug_dir>$(my_source)\test</my_debug_dir>
     <my_debug_host_dir>$(my_debug_dir)\aviutl_テスト</my_debug_host_dir>
     <my_debug_host_exe>$(my_debug_host_dir)\aviutl.exe</my_debug_host_exe>
-    <my_debug_core_dir>$(my_debug_host_dir)\ultimate</my_debug_core_dir>
+    <my_debug_base_dir>$(my_debug_host_dir)\plugins</my_debug_base_dir>
+    <my_debug_core_dir>$(my_debug_base_dir)\ultimate</my_debug_core_dir>
     <my_debug_module_dir>$(my_debug_core_dir)\module</my_debug_module_dir>
     <my_debug_config_dir>$(my_debug_core_dir)\config</my_debug_config_dir>
     <my_debug_assets_dir>$(my_debug_core_dir)\assets</my_debug_assets_dir>
@@ -95,8 +96,8 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     <BuildMacro Include="my_host_dir">
       <Value>$(my_host_dir)</Value>
     </BuildMacro>
-    <BuildMacro Include="my_plugin_dir">
-      <Value>$(my_plugin_dir)</Value>
+    <BuildMacro Include="my_base_dir">
+      <Value>$(my_base_dir)</Value>
     </BuildMacro>
     <BuildMacro Include="my_core_dir">
       <Value>$(my_core_dir)</Value>
@@ -118,6 +119,9 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     </BuildMacro>
     <BuildMacro Include="my_debug_host_exe">
       <Value>$(my_debug_host_exe)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_base_dir">
+      <Value>$(my_debug_base_dir)</Value>
     </BuildMacro>
     <BuildMacro Include="my_debug_core_dir">
       <Value>$(my_debug_core_dir)</Value>

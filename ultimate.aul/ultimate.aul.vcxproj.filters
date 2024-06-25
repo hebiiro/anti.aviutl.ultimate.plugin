@@ -24,8 +24,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def">
+    <None Include="main.def">
       <Filter>framework</Filter>
-    </c_none>
+    </None>
   </ItemGroup>
 </Project>
