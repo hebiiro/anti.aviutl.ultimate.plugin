@@ -127,7 +127,7 @@ namespace my
 	template <typename... Args>
 	inline tstring format(tstring_view fmt, const Args&... args)
 	{
-        return vformat(fmt, std::make_wformat_args(FormatArg(args)()...));
+		return vformat(fmt, std::make_wformat_args(FormatArg(args)()...));
 	}
 
 	//
