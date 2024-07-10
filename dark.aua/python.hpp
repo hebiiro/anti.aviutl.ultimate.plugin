@@ -31,6 +31,9 @@ namespace apn::dark
 				auto folder_name = my::wide_to_cp(hive.assets_folder_name, CP_UTF8);
 				path.append(folder_name);
 
+				// キャッシュを作成しないようにします。
+				sys.attr("dont_write_bytecode") = !!hive.dont_write_bytecode;
+
 				// dark.pydを読み込みます。
 				dark_module = py::module::import("dark");
 				if (!dark_module)

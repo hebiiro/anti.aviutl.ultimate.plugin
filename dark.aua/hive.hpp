@@ -197,6 +197,11 @@ namespace apn::dark
 		BOOL use_layer_color_multi = FALSE;
 
 		//
+		// TRUEの場合は__pycache__フォルダを作成しません。
+		//
+		BOOL dont_write_bytecode = FALSE;
+
+		//
 		// カラーピッカーダイアログで使用するカスタムカラーの配列です。
 		//
 		COLORREF custom_colors[16] = {};

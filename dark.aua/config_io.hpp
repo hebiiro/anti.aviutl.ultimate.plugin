@@ -68,6 +68,7 @@ namespace apn::dark
 			get_label(root, "dpi_scaling_mode", hive.dpi_scaling_mode, hive.c_dpi_scaling_mode.labels);
 			get_bool(root, "use_layer_color", hive.use_layer_color);
 			get_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
+			get_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
 			get_color(root, "main_background_color.dark", hive.main_background_color.dark);
 			get_color(root, "main_background_color.light", hive.main_background_color.light);
 			get_color(root, "main_text_color.dark", hive.main_text_color.dark);
@@ -115,6 +116,7 @@ namespace apn::dark
 			set_label(root, "dpi_scaling_mode", hive.dpi_scaling_mode, hive.c_dpi_scaling_mode.labels);
 			set_bool(root, "use_layer_color", hive.use_layer_color);
 			set_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
+			set_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
 			set_color(root, "main_background_color.dark", hive.main_background_color.dark);
 			set_color(root, "main_background_color.light", hive.main_background_color.light);
 			set_color(root, "main_text_color.dark", hive.main_text_color.dark);
