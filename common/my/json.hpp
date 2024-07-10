@@ -105,6 +105,16 @@ namespace my
 			if (auto optional = node.get_child_optional(name)) get_string(optional.value(), value);
 		}
 
+		inline void get_file_name(const ptree& node, std::filesystem::path& path)
+		{
+			path = my::cp_to_wide(node.get_value<std::string>(my::wide_to_cp(path, CP_UTF8)), CP_UTF8);
+		}
+
+		inline void get_file_name(const ptree& node, const std::string& name, std::filesystem::path& path)
+		{
+			if (auto optional = node.get_child_optional(name)) get_file_name(optional.value(), path);
+		}
+
 		template <typename T>
 		inline void get_bool(const ptree& node, T& value)
 		{
@@ -370,6 +380,11 @@ namespace my
 		inline void set_string(ptree& node, const std::string& name, const std::wstring& value)
 		{
 			node.put(name, my::wide_to_cp(value, CP_UTF8));
+		}
+
+		inline void set_file_name(ptree& node, const std::string& name, const std::filesystem::path& path)
+		{
+			return set_string(node, name, path);
 		}
 
 		template <typename T>
