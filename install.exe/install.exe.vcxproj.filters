@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{e6e74335-a346-4842-9a56-7a918ca55b6e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="option_dialog.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="main_window.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="result_dialog.hpp" />
+    <ClInclude Include="review_dialog.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="install.exe.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\install.exe.ico">
+      <Filter>resource</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+</Project>
