@@ -11,6 +11,5 @@ using namespace my::json;
 
 #include <wrl.h>
 #include <wil/com.h>
-#include <WebView2/WebView2.h>
-#pragma comment(lib, "WebView2/x86/WebView2Loader.dll.lib")
+#include <webview2.h>
 using namespace Microsoft::WRL;

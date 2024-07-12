@@ -26,5 +26,6 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

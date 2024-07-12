@@ -13,8 +13,8 @@
     <pybind11>$(python)\lib\site-packages\pybind11</pybind11>
     <microsoft>$(my_packages)\microsoft</microsoft>
     <my_pack_dir>$(my_source)\pack\ultimate</my_pack_dir>
-    <my_runtime_dir>$(my_pack_dir)\runtime</my_runtime_dir>
-    <my_host_dir>$(my_pack_dir)\aviutl</my_host_dir>
+    <my_runtime_dir>$(my_pack_dir)\install\runtime</my_runtime_dir>
+    <my_host_dir>$(my_pack_dir)</my_host_dir>
     <my_base_dir>$(my_host_dir)\plugins</my_base_dir>
     <my_core_dir>$(my_base_dir)\ultimate</my_core_dir>
     <my_module_dir>$(my_core_dir)\module</my_module_dir>
@@ -28,6 +28,7 @@
     <my_debug_module_dir>$(my_debug_core_dir)\module</my_debug_module_dir>
     <my_debug_config_dir>$(my_debug_core_dir)\config</my_debug_config_dir>
     <my_debug_assets_dir>$(my_debug_core_dir)\assets</my_debug_assets_dir>
+    <Force-Enable-cpprestsdk>true</Force-Enable-cpprestsdk>
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(SolutionDir)_bin\</OutDir>
@@ -134,6 +135,9 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     </BuildMacro>
     <BuildMacro Include="my_debug_assets_dir">
       <Value>$(my_debug_assets_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="Force-Enable-cpprestsdk">
+      <Value>$(Force-Enable-cpprestsdk)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>

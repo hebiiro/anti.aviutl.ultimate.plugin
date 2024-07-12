@@ -31,5 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

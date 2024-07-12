@@ -41,4 +41,7 @@
       <Filter>framework</Filter>
     </c_none>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

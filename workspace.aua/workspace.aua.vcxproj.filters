@@ -135,6 +135,7 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="workspace.aua.rc">

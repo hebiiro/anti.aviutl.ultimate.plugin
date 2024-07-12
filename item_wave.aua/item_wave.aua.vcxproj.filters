@@ -53,6 +53,7 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="item_wave.aua.rc">
