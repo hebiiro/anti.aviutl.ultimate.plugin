@@ -92,7 +92,10 @@ namespace my
 
 		inline ptree get_child(const ptree& node, const std::string& name)
 		{
-			return node.get_child(name, ptree());
+			if (auto optional = node.get_child_optional(name))
+				return optional.value();
+			else
+				return {};
 		}
 
 		inline void get_string(const ptree& node, std::wstring& value)
