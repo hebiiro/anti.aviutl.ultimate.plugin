@@ -225,6 +225,12 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\dark.aua\dark.aua.vcxproj">
       <Project>{9b59e47f-0e71-4672-8cb7-2fb03f8bc973}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\dark.pyd\dark.pyd.vcxproj">
+      <Project>{170aa2e5-3245-4015-8b3a-f1debb982645}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DarkenWindow.aul\DarkenWindow.aul.vcxproj">
+      <Project>{d30db443-e8be-4f53-80a0-6d9851c31db5}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\dialog_position.aua\dialog_position.aua.vcxproj">
       <Project>{8e12812d-891a-4165-b356-a3d8e41f8396}</Project>
     </ProjectReference>
@@ -237,6 +243,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\ease_select.aua\ease_select.aua.vcxproj">
       <Project>{17f1fbb1-12b2-47ec-b6fb-b3bd0baabbf6}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\ease_select_ui.exe\ease_select_ui.exe.vcxproj">
+      <Project>{965d4eba-7a29-4b4f-bbf6-386184f9947a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\editbox_tweaker.aua\editbox_tweaker.aua.vcxproj">
       <Project>{4864168d-b254-4632-83f9-93ca7b290000}</Project>
     </ProjectReference>
@@ -245,6 +254,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     </ProjectReference>
     <ProjectReference Include="..\filer.aua\filer.aua.vcxproj">
       <Project>{3ccd5147-283f-4755-8637-5d58b950aa8b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\filer_ui.exe\filer_ui.exe.vcxproj">
+      <Project>{55a5179b-d41a-4908-abaa-e81e16191d3f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\filter_copy.aua\filter_copy.aua.vcxproj">
       <Project>{2b224387-d48d-4033-ac5a-799292e625b4}</Project>
@@ -261,14 +273,26 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\image_export.aua\image_export.aua.vcxproj">
       <Project>{b14f4a09-5ac5-4fb5-9e73-441964eb32bc}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\install.exe\install.exe.vcxproj">
+      <Project>{8564cfee-53d8-43e7-a7bb-fd1c772d68bc}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\item_align.aua\item_align.aua.vcxproj">
       <Project>{322f9334-7978-4341-bb56-344a9e785a62}</Project>
     </ProjectReference>
     <ProjectReference Include="..\item_wave.aua\item_wave.aua.vcxproj">
       <Project>{d6a15ca8-fd8f-4f7d-accc-1bceee80d29a}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\item_wave_reader.exe\item_wave_reader.exe.vcxproj">
+      <Project>{85aaaa80-3c9c-47e2-9fda-27210dd4487a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\item_wave_ui.exe\item_wave_ui.exe.vcxproj">
+      <Project>{a3c15d57-d356-4371-9503-cb910970938f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\last_frame.aua\last_frame.aua.vcxproj">
       <Project>{4797bb8d-501f-4f13-8c75-e9e1d8a14ef5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\local_web_app.exe\local_web_app.exe.vcxproj">
+      <Project>{2ad3b078-42e6-4d80-be2d-988e3d104a02}</Project>
     </ProjectReference>
     <ProjectReference Include="..\namecage.aua\namecage.aua.vcxproj">
       <Project>{49e1e1e4-073b-42b9-921f-9084508c0610}</Project>

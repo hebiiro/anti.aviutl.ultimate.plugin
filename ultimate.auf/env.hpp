@@ -10,16 +10,15 @@ namespace apn
 
 			MY_TRACE_STR(hive.python_file_name);
 
-			std::filesystem::path file_name = hive.python_file_name;
-			if (file_name.is_relative())
+			if (!hive.python_file_name.empty())
 			{
 				auto module_file_name = my::get_module_file_name(hive.instance);
-				file_name = module_file_name.parent_path() / hive.python_file_name;
-			}
-			MY_TRACE_STR(file_name);
+				auto file_name = module_file_name.parent_path() / hive.python_file_name;
+				MY_TRACE_STR(file_name);
 
-			auto python32 = ::LoadLibraryEx(file_name.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
-			MY_TRACE_HEX(python32);
+				auto python32 = ::LoadLibraryEx(file_name.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+				MY_TRACE_HEX(python32);
+			}
 
 			return TRUE;
 		}
