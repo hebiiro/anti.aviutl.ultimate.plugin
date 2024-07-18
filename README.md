@@ -1,18 +1,19 @@
 ﻿# 🎉アルティメットプラグイン
 
-* [AviUtl](http://spring-fragrance.mints.ne.jp/aviutl/)のプラグインです。
+* [aviutl](http://spring-fragrance.mints.ne.jp/aviutl/)のプラグインです。
 * プラグイン数上限の問題を解決するために、既存の複数のプラグインの機能を一つにまとめています。
 
 ## ⬇️ダウンロード
 
-* [最新バージョンはこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)
+* [アルティメットプラグインの最新バージョンはこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)
+* [`python実行環境`の最新バージョンはこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)
 
-## 🚀インストール
+## 🚀導入方法
 
-1. `plugins`フォルダを`AviUtlフォルダ`内にコピーします。
-1. または`install.exe`を実行します。[install.exeの使い方はこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/wiki/インストール)
-1. [Python環境](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)をダウンロードします。
-1. `python32`フォルダを`AviUtlフォルダ`内の`plugins/ultimate/assets`フォルダ内にコピーします。
+1. `plugins`フォルダを`aviutlフォルダ`内にコピーします。
+	1. または`install.exe`を実行します。[install.exeの使い方はこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/wiki/インストーラ)
+1. `python実行環境`を[こちらからダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
+	1. `plugins`フォルダを`aviutlフォルダ`内にコピーします。
 
 ## 💡使い方
 
@@ -20,6 +21,10 @@
 
 ## 🔖更新履歴
 
+* r36 🗓️2024/07/18
+	* 🚀『インストーラ』を追加
+	* 🚀『ローカルウェブアプリ』を追加
+	* ♻️`python実行環境`をダウンロードして配置する方式に変更
 * r35 - 2024/06/22 🚀『設定ブラウザ』アドインを追加
 * r34 - 2024/06/14 ⚡️『アイテム波形』波形を生成する条件を指定できる機能を追加
 * r33 - 2024/06/14 🚀 [item_wave] 『アイテム波形』アドインを追加
@@ -45,7 +50,7 @@
 * r13 - 2023/12/15 DarkとNestのバグフィックス
 * r12 - 2023/12/13 EasingSelectを追加しました
 * r11 - 2023/12/09 SceneSelectを追加しました
-* r10 - 2023/12/08 [Nest]フィルタウィンドウがAviUtlの表示状態と同じになるように修正しました
+* r10 - 2023/12/08 [Nest]フィルタウィンドウがaviutlの表示状態と同じになるように修正しました
 * r9 - 2023/12/04 DirtyCheckを追加
 * r8 - 2023/11/27 [Nest]サイズ変更をAPIフックではなくウィンドウメッセージで処理するように変更
 * r7 - 2023/11/10 Darkをリファクタリング
@@ -58,13 +63,14 @@
 
 ## ⚗️動作確認
 
-* (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版58 https://scrapbox.io/nazosauna/patch.aul
+* (必須) aviutl 1.10 & 拡張編集 0.92 https://spring-fragrance.mints.ne.jp/aviutl/
+* (共存確認) patch.aul r43 謎さうなフォーク版61 https://scrapbox.io/nazosauna/patch.aul
 
 ## 💳クレジット
 
-* Microsoft Research Detours Package https://github.com/microsoft/Detours
 * aviutl_exedit_sdk https://github.com/ePi5131/aviutl_exedit_sdk
+* Microsoft Research Detours Package https://github.com/microsoft/Detours
+* JSON for Modern C++ https://github.com/nlohmann/json
 * Boost https://www.boost.org/
 * Python https://www.python.org/
 
@@ -91,16 +97,16 @@
 ## ❓要望・不具合報告
 
 * [イシュー](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/issues)を使用してください。
-* ❗ **ただし、次のルールを守ってください。**
-	* ✏️ 一つのイシューに複数のトピックを入れない。
-	* ✏️ その問題が再現可能な**最小の**環境・手順を明記する。
+* ❗**ただし、次のルールを守ってください。**
+	* ✏️一つのイシューに複数のトピックを入れない。
+	* ✏️その問題が再現可能な**最小の**環境・手順を明記する。
 		*  再現可能な環境・手順、再現不可能な環境・手順が両方存在するならそれらすべてを明記する。
-	* ✏️ 新しいバージョンがリリースされる度に自分が投稿したイシューが解決したかどうかを報告する。
+	* ✏️新しいバージョンがリリースされる度に自分が投稿したイシューが解決したかどうかを報告する。
 		*  解決した場合は「バージョン〇〇で解決したことを確認しました。対応ありがとうございました。」のように報告してイシューを閉じる。
 		*  未解決の場合は「バージョン〇〇ではまだこの問題が発生することを確認しました。引き続き対応お願いします。」のように報告する。
-	* ✏️ ネガティブな言葉を使用しない。(開発の邪魔になるような余計な発言をしない)
+	* ✏️ネガティブな言葉を使用しない。(開発の邪魔になるような余計な発言をしない)
 		* 「この機能は不便」などと言われても嫌な気持ちになるだけで建設的なことが何もない。「こういう機能を追加してほしい」とか「こういうふうに変更してほしい」とだけ言えばよい。
-	* ✏️ 開発者の負担を減らすことを第一目的とする。
+	* ✏️開発者の負担を減らすことを第一目的とする。
 		* 開発者の負担を減らさなければならない。増やしてはならない。
 		* 負担かどうかが判断できない、または負担を強いてでも要望したい場合は「ご負担でなければお願いします」などと一言添える。
 * 例外としてイシュー本来の使い方(「このソースコードのこの部分はこのように改良できる」など)の場合は上記ルールは無視してもよい。
