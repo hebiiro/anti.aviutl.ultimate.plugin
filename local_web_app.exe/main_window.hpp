@@ -53,6 +53,22 @@ namespace apn::local_web_app
 		}
 
 		//
+		// 相対パスを絶対パスに変換して返します。
+		//
+		std::filesystem::path get_abs_path(const std::filesystem::path& rel_path)
+		{
+			// カレントパスと相対パスを結合します。
+			auto path = hive.current_file_path.parent_path() / rel_path;
+#if 1
+			// パスを正規化して返します。
+			return path.lexically_normal();
+#else
+			// パスをそのまま返します。
+			return path;
+#endif
+		}
+
+		//
 		// この仮想関数は、初期化が完了したあとに呼ばれます。
 		//
 		virtual BOOL on_post_init() override
@@ -68,8 +84,8 @@ namespace apn::local_web_app
 					L"console.log(e.dataTransfer.files[0])"
 				L"}, false);", nullptr);
 #endif
-			if (!hive.url.empty())
-				navigate(hive.url);
+			if (!hive.current_file_path.empty())
+				navigate(hive.current_file_path);
 
 			return TRUE;
 		}
@@ -94,21 +110,37 @@ namespace apn::local_web_app
 						const auto& event_node = node.value();
 
 						// 書き込み先のファイルパスを取得します。
+						// このパスは相対パスでなければなりません。
 						std::filesystem::path path = event_node["path"];
 						MY_TRACE_STR(path);
 						if (path.empty()) continue;
 
-						auto abs_path = path;
-						if (abs_path.is_relative())
-							abs_path = hive.origin_folder_path / abs_path;
+						// 絶対パスを取得します。
+						auto abs_path = get_abs_path(path);
 						MY_TRACE_STR(abs_path);
 
 						// 書き込むデータ(json)を取得します。
-						const auto data_node = event_node["data"];
+						const auto& data_node = event_node["data"];
 
 						// 指定されたデータを指定されたファイルに書き込みます。
 						std::ofstream ofs(abs_path);
 						ofs << std::setw(4) << data_node;
+
+						njson root;
+						{
+							njson event_node;
+							{
+								event_node["path"] = path;
+								event_node["abs_path"] = abs_path;
+							}
+							root["response_write_json"] = event_node;
+						}
+
+						// jsonを文字列化します。
+						auto json = my::cp_to_wide(root.dump(4), CP_UTF8);
+
+						// 文字列化したjsonをブラウザに送信します。
+						post_json(json);
 					}
 					else if (key == "request_read_json")
 					{
@@ -117,13 +149,13 @@ namespace apn::local_web_app
 						try
 						{
 							// 読み込み先のファイルパスを取得します。
+							// このパスは相対パスでなければなりません。
 							std::filesystem::path path = event_node["path"];
 							MY_TRACE_STR(path);
 							if (path.empty()) continue;
 
-							auto abs_path = path;
-							if (abs_path.is_relative())
-								abs_path = hive.origin_folder_path / abs_path;
+							// 絶対パスを取得します。
+							auto abs_path = get_abs_path(path);
 							MY_TRACE_STR(abs_path);
 
 							// 指定されたファイルを読み込みます。
@@ -135,17 +167,17 @@ namespace apn::local_web_app
 								njson event_node;
 								{
 									event_node["path"] = path;
+									event_node["abs_path"] = abs_path;
 									event_node["data"] = data;
 								}
 								root["response_read_json"] = event_node;
 							}
 
 							// jsonを文字列化します。
-							std::stringstream ss;
-							ss << root;
+							auto json = my::cp_to_wide(root.dump(4), CP_UTF8);
 
-							// 文字列化したjsonを送信します。
-							post_json(my::cp_to_wide(ss.str(), CP_UTF8));
+							// 文字列化したjsonをブラウザに送信します。
+							post_json(json);
 						}
 						catch (const std::exception& error)
 						{

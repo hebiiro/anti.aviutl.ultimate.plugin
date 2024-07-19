@@ -31,9 +31,9 @@ namespace apn::local_web_app
 		std::filesystem::path origin_folder_path;
 
 		//
-		// コンテンツのURLです。
+		// カレントコンテンツのファイルパスです。
 		//
-		std::wstring url = L"";
+		std::filesystem::path current_file_path;
 
 		//
 		// メッセージボックスを表示します。

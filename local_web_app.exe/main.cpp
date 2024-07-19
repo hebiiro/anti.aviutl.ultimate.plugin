@@ -44,18 +44,19 @@ namespace apn::local_web_app
 		// インスタンスハンドルをハイブに格納します。
 		hive.instance = instance;
 
-		// ローカルコンテンツリソースが存在するフォルダを取得します。
+		// ローカルコンテンツの起点となるフォルダを取得します。
 		hive.origin_folder_path = my::get_module_file_name(instance).parent_path().parent_path();
 
 		std::wstring orig_path, dummy_path;
 
-		// コマンドライン引数からhtmlファイルのurl(ファイルパス)を取得します。
+		// コマンドライン引数からhtmlファイルのファイルパスを取得します。
 		orig_path = cmd_line;
 		orig_path = trim(orig_path, L"\"");
 		MY_TRACE_STR(orig_path);
 
-		hive.url = orig_path;
-		if (!hive.url.empty() && std::filesystem::path(hive.url).extension() != L".html")
+		hive.current_file_path = orig_path;
+		if (!hive.current_file_path.empty() &&
+			hive.current_file_path.extension() != L".html")
 		{
 			// 元のファイルは拡張子がhtmlではないのでhtmlファイルとして開けません。
 			// なので、拡張子をhtmlに変更したダミーファイルの方をブラウザで開きます。
@@ -65,7 +66,6 @@ namespace apn::local_web_app
 				// ダミーファイルのパスを取得します。
 				dummy_path = orig_path + L".html";
 				MY_TRACE_STR(dummy_path);
-
 #if 1
 				// まず、作成先ファイルを削除します。
 				std::filesystem::remove(dummy_path);
@@ -78,7 +78,7 @@ namespace apn::local_web_app
 					std::filesystem::copy_options::overwrite_existing |
 					std::filesystem::copy_options::recursive);
 #endif
-				hive.url = dummy_path;
+				hive.current_file_path = dummy_path;
 			}
 			catch (...)
 			{

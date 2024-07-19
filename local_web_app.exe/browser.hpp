@@ -16,14 +16,6 @@ namespace apn::local_web_app
 		EventRegistrationToken web_resource_requested_token = {};
 
 		//
-		// urlを仮想化して返します。
-		//
-		std::wstring get_virtual_url(const std::wstring& url)
-		{
-			return L"https://"s + hive.c_name + L"/" + url;
-		}
-
-		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -212,6 +204,36 @@ namespace apn::local_web_app
 		}
 
 		//
+		// ファイルパスをローカル用URLに変更して返します。
+		//
+		std::wstring get_local_url(const std::filesystem::path& file_name)
+		{
+#if 1
+			// file:///スキームを使用します。
+
+			auto url = L"file:///" + file_name.wstring();
+			for (size_t i = 0; i < url.size(); i++) if (url[i] == L'\\') url[i] = L'/';
+			MY_TRACE_STR(url);
+
+			return url;
+#else
+			// 仮想URLを使用します。
+			// この方式だと、hive.origin_folder_path以下のファイルしか読み込めません。
+
+			auto rel_path = file_name;
+			if (rel_path.is_absolute())
+				rel_path = rel_path.lexically_relative(hive.origin_folder_path);
+			MY_TRACE_STR(rel_path);
+
+			auto url = rel_path.wstring();
+			for (size_t i = 0; i < url.size(); i++) if (url[i] == L'\\') url[i] = L'/';
+			MY_TRACE_STR(url);
+
+			return L"https://"s + hive.c_name + L"/" + url;
+#endif
+		}
+
+		//
 		// 指定されたhtmlファイルをブラウズします。
 		//
 		BOOL navigate(const std::wstring& file_name)
@@ -220,28 +242,14 @@ namespace apn::local_web_app
 
 			if (!webview) return FALSE;
 
-			std::filesystem::path abs_path(file_name);
-			MY_TRACE_STR(abs_path);
-
-			auto rel_path = abs_path;
-			if (rel_path.is_absolute())
-				rel_path = rel_path.lexically_relative(hive.origin_folder_path);
-			MY_TRACE_STR(rel_path);
-
-			auto url = rel_path.wstring();
-			for (size_t i = 0; i < url.size(); i++)
-				if (url[i] == L'\\') url[i] = L'/';
-			MY_TRACE_STR(url);
-
-			url = get_virtual_url(url);
-			MY_TRACE_STR(url);
-#if 0
+			auto url = get_local_url(file_name);
+#if 1
+			webview->Navigate(url.c_str());
+#elif 1
 			// 以下のように文字列として読み込むとhtmlファイル内で相対urlが使用できなくなります。
 			std::ifstream ifs(abs_path);
 			std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 			webview->NavigateToString(my::cp_to_wide(str, CP_UTF8).c_str());
-#elif 1
-			webview->Navigate(url.c_str());
 #else
 			// 以下のようにコンテンツタイプを指定しても、拡張子が.html_localの場合は
 			// プレーンテキストとして読み込まれてしまいます。
