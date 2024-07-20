@@ -53,11 +53,18 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="item_wave.aua.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
+      <Filter>framework</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>
