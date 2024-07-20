@@ -130,8 +130,8 @@ namespace apn::local_web_app
 						{
 							njson event_node;
 							{
-								event_node["path"] = path;
-								event_node["abs_path"] = abs_path;
+								event_node["path"] = my::wide_to_cp(path, CP_UTF8);
+								event_node["abs_path"] = my::wide_to_cp(abs_path, CP_UTF8);
 							}
 							root["response_write_json"] = event_node;
 						}
@@ -166,8 +166,8 @@ namespace apn::local_web_app
 							{
 								njson event_node;
 								{
-									event_node["path"] = path;
-									event_node["abs_path"] = abs_path;
+									event_node["path"] = my::wide_to_cp(path, CP_UTF8);
+									event_node["abs_path"] = my::wide_to_cp(abs_path, CP_UTF8);
 									event_node["data"] = data;
 								}
 								root["response_read_json"] = event_node;
