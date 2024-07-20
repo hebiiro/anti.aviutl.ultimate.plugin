@@ -392,6 +392,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
   </ItemGroup>
 </Project>

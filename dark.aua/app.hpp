@@ -134,6 +134,9 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
+			// コンフィグを書き込みます。
+			config_io.write();
+
 			// テーマレンダラの利用を終了します。
 			theme::client.exit();
 
