@@ -31,9 +31,9 @@
     <ClInclude Include="config_io.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def">
+    <None Include="main.def">
       <Filter>framework</Filter>
-    </c_none>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="output_check.aua.rc">

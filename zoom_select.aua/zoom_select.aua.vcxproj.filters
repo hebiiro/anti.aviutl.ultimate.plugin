@@ -34,11 +34,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def">
+    <None Include="main.def">
       <Filter>framework</Filter>
-    </c_none>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    </None>
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -179,7 +179,7 @@
     <ResourceCompile Include="color_code.aua.rc" />
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def" />
+    <None Include="main.def" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

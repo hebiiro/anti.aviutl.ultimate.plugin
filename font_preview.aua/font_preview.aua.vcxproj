@@ -180,7 +180,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def" />
+    <None Include="main.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="font_preview.aua.rc" />

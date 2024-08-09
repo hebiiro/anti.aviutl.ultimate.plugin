@@ -216,8 +216,8 @@
     <ResourceCompile Include="ease_select_ui.exe.rc" />
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def" />
-    <c_none Include="res\ease_select_ui.exe.rc2" />
+    <None Include="main.def" />
+    <None Include="res\ease_select_ui.exe.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ease_select_ui.exe.ico" />

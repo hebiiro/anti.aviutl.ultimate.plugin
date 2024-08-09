@@ -215,7 +215,7 @@
     <ResourceCompile Include="filer_ui.exe.rc" />
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def" />
+    <None Include="main.def" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\filer_ui.exe.ico" />

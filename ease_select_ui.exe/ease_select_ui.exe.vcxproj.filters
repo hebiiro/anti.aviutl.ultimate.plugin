@@ -42,9 +42,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <c_none Include="main.def">
+    <None Include="main.def">
       <Filter>framework</Filter>
-    </c_none>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ease_select_ui.exe.ico">
