@@ -312,6 +312,17 @@ namespace my
 		};
 	};
 
+	template <typename T>
+	struct SharedMemory
+	{
+		T* buffer;
+		SharedMemory(HANDLE file_mapping) : buffer((T*)::MapViewOfFile(file_mapping, FILE_MAP_WRITE, 0, 0, 0)) {}
+		~SharedMemory() { ::UnmapViewOfFile(buffer); }
+		T* get() { return buffer; }
+		operator T*() { return buffer; }
+		T* operator->() { return buffer; }
+	};
+
 	struct Sync
 	{
 		virtual ~Sync() {}
