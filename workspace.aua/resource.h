@@ -22,6 +22,7 @@
 #define IDC_SHOW_PLAYER                 1032
 #define IDC_SHOW_TAB_FORCE              1033
 #define IDC_BYPASS_KEYBOARD_MESSAGE     1034
+#define IDC_IGNORE_CTRL_KEY_UP          1035
 
 // Next default values for new objects
 // 

@@ -45,6 +45,7 @@ namespace apn::workspace
 				get_bool(node, "fullscreen_preview", hive.fullscreen_preview);
 				get_bool(node, "show_tab_force", hive.show_tab_force);
 				get_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
+				get_bool(node, "ignore_ctrl_key_up", hive.ignore_ctrl_key_up);
 				get_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
 			}
 

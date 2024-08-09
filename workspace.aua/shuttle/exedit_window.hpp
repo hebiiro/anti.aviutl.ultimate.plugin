@@ -108,6 +108,23 @@ namespace apn::workspace
 
 					break;
 				}
+			case WM_KEYUP:
+				{
+					MY_TRACE_FUNC("WM_KEYUP, {:#010x}, {:#010x}", wParam, lParam);
+
+					// ここでctrlキーを無視するとアイテムの複数選択が解除されないようになります。
+					if (hive.ignore_ctrl_key_up)
+					{
+						if (wParam == VK_CONTROL)
+						{
+							MY_TRACE("ctrlキーアップを無視します\n");
+
+							return 0;
+						}
+					}
+
+					break;
+				}
 			}
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);

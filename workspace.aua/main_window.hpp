@@ -697,6 +697,7 @@ namespace apn::workspace
 				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_preview);
 				set_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
 				set_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
+				set_check(IDC_IGNORE_CTRL_KEY_UP, hive.ignore_ctrl_key_up);
 
 				return do_modal2(parent);
 			}

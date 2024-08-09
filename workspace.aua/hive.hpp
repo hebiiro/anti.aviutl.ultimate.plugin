@@ -135,6 +135,7 @@ namespace apn::workspace
 		BOOL fullscreen_preview = FALSE;
 		BOOL show_tab_force = FALSE;
 		BOOL bypass_keyboard_message = FALSE;
+		BOOL ignore_ctrl_key_up = FALSE;
 		int32_t layout_list_mode = c_layout_list_mode.c_none;
 
 		BOOL use_fullscreen_preview = FALSE;
