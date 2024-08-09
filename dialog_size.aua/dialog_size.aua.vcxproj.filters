@@ -33,13 +33,13 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="dialog_size.aua.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

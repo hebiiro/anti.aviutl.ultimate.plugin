@@ -45,13 +45,16 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
+    <None Include="res\ease_select_ui.exe.rc2">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ease_select_ui.exe.ico">
       <Filter>resource</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>
