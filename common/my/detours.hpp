@@ -5,20 +5,20 @@ namespace my::hook
 	template <typename T>
 	LONG attach(T& hooker)
 	{
-		return DetourAttach((PVOID*)&hooker.orig_proc, hooker.hook_proc);
+		return DetourAttach(&(PVOID&)hooker.orig_proc, hooker.hook_proc);
 	}
 
 	template <typename T>
 	LONG detach(T& hooker)
 	{
-		return DetourDetach((PVOID*)&hooker.orig_proc, hooker.hook_proc);
+		return DetourDetach(&(PVOID&)hooker.orig_proc, hooker.hook_proc);
 	}
 
 	template <typename T, typename A>
 	LONG attach(T& hooker, A address)
 	{
 		hooker.orig_proc = reinterpret_cast<decltype(hooker.orig_proc)>(address);
-		return DetourAttach((PVOID*)&hooker.orig_proc, hooker.hook_proc);
+		return DetourAttach(&(PVOID&)hooker.orig_proc, hooker.hook_proc);
 	}
 
 	template <typename T, typename A>
@@ -57,10 +57,10 @@ namespace my::hook
 				if (!pszFunc) return TRUE;
 				MY_TRACE_STR(pszFunc);
 
-				Hooker* hooker = (Hooker*)pContext;
+				auto hooker = (Hooker*)pContext;
 				if (::lstrcmpA(pszFunc, hooker->func_name) != 0) return TRUE;
 
-				DWORD protect = PAGE_READWRITE;
+				auto protect = DWORD { PAGE_READWRITE };
 				auto result1 = ::VirtualProtect(ppvFunc, sizeof(*ppvFunc), protect, &protect);
 				hooker->old_func = tools::set_abs_addr((addr_t)ppvFunc, hooker->new_func);
 				auto result2 = ::VirtualProtect(ppvFunc, sizeof(*ppvFunc), protect, &protect);
