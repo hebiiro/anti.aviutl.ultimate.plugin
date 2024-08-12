@@ -71,7 +71,6 @@
 * aviutl_exedit_sdk https://github.com/ePi5131/aviutl_exedit_sdk
 * Microsoft Research Detours Package https://github.com/microsoft/Detours
 * JSON for Modern C++ https://github.com/nlohmann/json
-* Boost https://www.boost.org/
 * Python https://www.python.org/
 
 ## 👽️作成者情報
