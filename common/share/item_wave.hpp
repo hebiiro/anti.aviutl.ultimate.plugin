@@ -63,9 +63,9 @@ namespace apn::item_wave::share
 		int32_t frame_end = 0;
 		int32_t scene_set = 0;
 		char file_name[MAX_PATH] = {};
-		float volume = 1.0;
-		int32_t play_begin = 0;
-		float play_speed = 1.0;
+		float volume = 1.0f;
+		float play_begin = 0.0f;
+		float play_speed = 1.0f;
 		uint32_t layer_flag = 0;
 	};
 

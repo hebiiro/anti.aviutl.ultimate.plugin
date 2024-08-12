@@ -188,19 +188,28 @@ namespace apn::item_wave
 			// アイテムのパラメータを保存しておきます。
 			item_cache->audio = audio;
 
-			// 現在のフレームレートの1フレーム毎の音量に変換します。
-			auto scale = (double)share::Volume::c_resolution * hive.fi.video_scale / hive.fi.video_rate;
+			// 現在のフレームレートを算出します。
+			auto fps = (double)hive.fi.video_rate / hive.fi.video_scale;
+
+			// フレームレート変換倍率を算出します。
+			auto scale = share::Volume::c_resolution / fps;
+
+			// アイテムの全フレームを走査します。
 			auto range = object->frame_end - object->frame_begin;
 			for (decltype(range) i = 0; i <= range; i++)
 			{
-				auto temp1 = scale * audio->play_speed * i;
-				auto temp2 = scale * audio->play_begin;
-				auto src = (int32_t)(temp1 + temp2);
+				// アイテムの設定から音声のフレーム番号を算出します。
+				auto dst_frame = (audio->play_speed * i) + (audio->play_begin * fps);
 
-				if (src >= (int32_t)file_cache->volumes.size())
-					break;
+				// ソースフレームを算出します。
+				auto src_frame = (int32_t)(dst_frame * scale);
 
-				auto volume = file_cache->volumes[src];
+				// ソースフレームが無効の場合は
+				if (src_frame >= (int32_t)file_cache->volumes.size())
+					break; // 走査を終了します。
+
+				// 現在のフレームレートの1フレーム毎の音量に変換します。
+				auto volume = file_cache->volumes[src_frame];
 				volume.level *= audio->volume;
 				item_cache->volumes.emplace_back(volume);
 			}
@@ -209,7 +218,7 @@ namespace apn::item_wave
 		}
 
 		//
-		// 指定されたアイテムから音声アイテムパラメータを作成し、返します。
+		// 指定されたアイテムから音声アイテムパラメータを作成して返します。
 		//
 		std::shared_ptr<share::Audio> get_audio(ExEdit::Object* object)
 		{
@@ -257,8 +266,11 @@ namespace apn::item_wave
 					// 動画アイテムから拡張データを取得します。
 					auto exdata = (ExEdit::Exdata::efMovieFile*)magi.exin.get_exdata(object2, 0);
 
+					auto play_begin = (float)(object2->track_value_left[play_begin_index] - 1);
+					auto fps = (float)exdata->video_rate / exdata->video_scale;
+
 					copy_file_name(audio->file_name, sizeof(audio->file_name), exdata->file);
-					audio->play_begin = object2->track_value_left[play_begin_index];
+					audio->play_begin = play_begin / fps;
 					audio->play_speed = object2->track_value_left[play_speed_index] / 1000.0f;
 
 					break;
@@ -270,7 +282,7 @@ namespace apn::item_wave
 				auto exdata = (ExEdit::Exdata::efAudioFile*)magi.exin.get_exdata(object, 0);
 
 				copy_file_name(audio->file_name, sizeof(audio->file_name), exdata->file);
-				audio->play_begin = object->track_value_left[play_begin_index] * hive.fi.video_rate / hive.fi.video_scale / 100;
+				audio->play_begin = object->track_value_left[play_begin_index] / 100.0f;
 				audio->play_speed = object->track_value_left[play_speed_index] / 1000.0f;
 			}
 
