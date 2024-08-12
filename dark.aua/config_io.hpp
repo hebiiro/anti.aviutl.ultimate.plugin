@@ -41,7 +41,7 @@ namespace apn::dark
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -51,9 +51,31 @@ namespace apn::dark
 		}
 
 		//
+		// ペアカラーを読み込みます。
+		//
+		inline static void get_pair_color(const n_json& node, const std::string& name, share::PairColor& pair_color)
+		{
+			n_json pair_color_node;
+			get_child_node(node, name, pair_color_node);
+			get_color(pair_color_node, "dark", pair_color.dark);
+			get_color(pair_color_node, "light", pair_color.light);
+		}
+
+		//
+		// ペアカラーを書き込みます。
+		//
+		inline static void set_pair_color(n_json& node, const std::string& name, const share::PairColor& pair_color)
+		{
+			n_json pair_color_node;
+			set_color(pair_color_node, "dark", pair_color.dark);
+			set_color(pair_color_node, "light", pair_color.light);
+			set_child_node(node, name, pair_color_node);
+		}
+
+		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -69,39 +91,33 @@ namespace apn::dark
 			get_bool(root, "use_layer_color", hive.use_layer_color);
 			get_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
 			get_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
-			get_color(root, "main_background_color.dark", hive.main_background_color.dark);
-			get_color(root, "main_background_color.light", hive.main_background_color.light);
-			get_color(root, "main_text_color.dark", hive.main_text_color.dark);
-			get_color(root, "main_text_color.light", hive.main_text_color.light);
-			get_color(root, "sub_background_color.dark", hive.sub_background_color.dark);
-			get_color(root, "sub_background_color.light", hive.sub_background_color.light);
-			get_color(root, "sub_text_color.dark", hive.sub_text_color.dark);
-			get_color(root, "sub_text_color.light", hive.sub_text_color.light);
+			get_pair_color(root, "main_background_color", hive.main_background_color);
+			get_pair_color(root, "main_text_color", hive.main_text_color);
+			get_pair_color(root, "sub_background_color", hive.sub_background_color);
+			get_pair_color(root, "sub_text_color", hive.sub_text_color);
 			get_window(root, "addin_window", addin_window);
 
 			size_t i = 0;
-			if (auto custom_color_nodes_op = root.get_child_optional("custom_color"))
+			get_child_nodes(root, "custom_color",
+				[&](const n_json& custom_color_node)
 			{
-				for (const auto& pair : custom_color_nodes_op.value())
-				{
-					const auto& custom_color_node = pair.second;
+				if (i >= std::size(hive.custom_colors))
+					return FALSE;
 
-					if (i < std::size(hive.custom_colors))
-					{
-						get_int(custom_color_node, "", hive.custom_colors[i]);
+				get_int(custom_color_node, hive.custom_colors[i]);
 
-						i++;
-					}
-				}
-			}
+				i++;
+
+				return TRUE;
+			});
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -117,28 +133,19 @@ namespace apn::dark
 			set_bool(root, "use_layer_color", hive.use_layer_color);
 			set_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
 			set_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
-			set_color(root, "main_background_color.dark", hive.main_background_color.dark);
-			set_color(root, "main_background_color.light", hive.main_background_color.light);
-			set_color(root, "main_text_color.dark", hive.main_text_color.dark);
-			set_color(root, "main_text_color.light", hive.main_text_color.light);
-			set_color(root, "sub_background_color.dark", hive.sub_background_color.dark);
-			set_color(root, "sub_background_color.light", hive.sub_background_color.light);
-			set_color(root, "sub_text_color.dark", hive.sub_text_color.dark);
-			set_color(root, "sub_text_color.light", hive.sub_text_color.light);
+			set_pair_color(root, "main_background_color", hive.main_background_color);
+			set_pair_color(root, "main_text_color", hive.main_text_color);
+			set_pair_color(root, "sub_background_color", hive.sub_background_color);
+			set_pair_color(root, "sub_text_color", hive.sub_text_color);
 			set_window(root, "addin_window", addin_window);
 
-			ptree custom_color_nodes;
+			set_child_nodes(root, "custom_color", hive.custom_colors,
+				[&](n_json& custom_color_node, const auto& custom_color)
 			{
-				for (size_t i = 0; i < std::size(hive.custom_colors); i++)
-				{
-					ptree custom_color_node;
-					{
-						set_color(custom_color_node, "", hive.custom_colors[i]);
-					}
-					custom_color_nodes.push_back(std::make_pair("", custom_color_node));
-				}
-			}
-			root.put_child("custom_color", custom_color_nodes);
+				set_color(custom_color_node, custom_color);
+
+				return TRUE;
+			});
 
 			return TRUE;
 		}

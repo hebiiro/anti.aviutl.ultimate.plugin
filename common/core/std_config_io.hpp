@@ -30,7 +30,7 @@ namespace apn
 			{
 				error_handler.message_box(std::format(
 					L"{}を読込中にエラーが発生しました\n{}",
-					config_file_name, my::cp_to_wide(error.what(), CP_ACP)));
+					config_file_name, my::ws(error.what())));
 
 				return FALSE;
 			}
@@ -53,7 +53,7 @@ namespace apn
 			{
 				error_handler.message_box(std::format(
 					L"{}を保存中にエラーが発生しました\n{}",
-					config_file_name, my::cp_to_wide(error.what(), CP_ACP)));
+					config_file_name, my::ws(error.what())));
 
 				return FALSE;
 			}
@@ -71,15 +71,15 @@ namespace apn
 		//
 		virtual BOOL read_stream(std::ifstream& ifs)
 		{
-			ptree root;
-			read_json(ifs, root);
+			nlohmann::json root;
+			ifs >> root;
 			return read_node(root);
 		}
 
 		//
 		// 指定されたプロパティツリーから設定を読み込みます。
 		//
-		virtual BOOL read_node(ptree& root)
+		virtual BOOL read_node(nlohmann::json& root)
 		{
 			return TRUE;
 		}
@@ -89,16 +89,16 @@ namespace apn
 		//
 		virtual BOOL write_stream(std::ofstream& ofs)
 		{
-			ptree root;
+			nlohmann::json root;
 			write_node(root);
-			write_json(ofs, root);
+			ofs << root.dump(1, '\t');
 			return TRUE;
 		}
 
 		//
 		// 指定されたプロパティツリーに設定を保存します。
 		//
-		virtual BOOL write_node(ptree& root)
+		virtual BOOL write_node(nlohmann::json& root)
 		{
 			return TRUE;
 		}

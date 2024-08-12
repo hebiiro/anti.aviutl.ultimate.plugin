@@ -41,7 +41,7 @@ namespace apn::exedit_tweaker
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -53,59 +53,171 @@ namespace apn::exedit_tweaker
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
+			{
+				n_json gradient_fill_node;
+				get_child_node(root, "gradient_fill", gradient_fill_node);
+				get_bool(gradient_fill_node, "enabled", hive.gradient_fill.enabled);
+				{
+					n_json edge_node;
+					get_child_node(gradient_fill_node, "edge", edge_node);
+					{
+						n_json inner_node;
+						get_child_node(edge_node, "inner", inner_node);
+						get_color(inner_node, "color", hive.gradient_fill.edge.inner.color);
+						get_size(inner_node, "size", hive.gradient_fill.edge.inner.size);
+					}
+					{
+						n_json outer_node;
+						get_child_node(edge_node, "outer", outer_node);
+						get_color(outer_node, "color", hive.gradient_fill.edge.outer.color);
+						get_size(outer_node, "size", hive.gradient_fill.edge.outer.size);
+					}
+				}
+			}
 
-			get_bool(root, "gradient_fill.enabled", hive.gradient_fill.enabled);
-			get_color(root, "gradient_fill.edge.inner.color", hive.gradient_fill.edge.inner.color);
-			get_int(root, "gradient_fill.edge.inner.size.cx", hive.gradient_fill.edge.inner.size.cx);
-			get_int(root, "gradient_fill.edge.inner.size.cy", hive.gradient_fill.edge.inner.size.cy);
-			get_color(root, "gradient_fill.edge.outer.color", hive.gradient_fill.edge.outer.color);
-			get_int(root, "gradient_fill.edge.outer.size.cx", hive.gradient_fill.edge.outer.size.cx);
-			get_int(root, "gradient_fill.edge.outer.size.cy", hive.gradient_fill.edge.outer.size.cy);
+			{
+				n_json selection_node;
+				get_child_node(root, "selection", selection_node);
+				{
+					n_json fill_node;
+					get_child_node(selection_node, "fill", fill_node);
+					get_color(fill_node, "color", hive.selection.fill.color);
+				}
+				{
+					n_json stroke_node;
+					get_child_node(selection_node, "stroke", stroke_node);
+					get_color(stroke_node, "color", hive.selection.stroke.color);
+				}
+				{
+					n_json background_node;
+					get_child_node(selection_node, "background", background_node);
+					get_color(background_node, "color", hive.selection.background.color);
+				}
+			}
 
-			get_color(root, "selection.fill.color", hive.selection.fill.color);
-			get_color(root, "selection.stroke.color", hive.selection.stroke.color);
-			get_color(root, "selection.background.color", hive.selection.background.color);
-
-			get_color(root, "layer.bound.left.color", hive.layer.bound.left.color);
-			get_color(root, "layer.bound.top.color", hive.layer.bound.top.color);
-			get_color(root, "layer.bound.right.color", hive.layer.bound.right.color);
-			get_color(root, "layer.bound.bottom.color", hive.layer.bound.bottom.color);
-			get_color(root, "layer.separator.color", hive.layer.separator.color);
+			{
+				n_json layer_node;
+				get_child_node(root, "layer", layer_node);
+				{
+					n_json bound_node;
+					get_child_node(layer_node, "bound", bound_node);
+					{
+						n_json left_node;
+						get_child_node(bound_node, "left", left_node);
+						get_color(left_node, "color", hive.layer.bound.left.color);
+					}
+					{
+						n_json top_node;
+						get_child_node(bound_node, "top", top_node);
+						get_color(top_node, "color", hive.layer.bound.top.color);
+					}
+					{
+						n_json right_node;
+						get_child_node(bound_node, "right", right_node);
+						get_color(right_node, "color", hive.layer.bound.right.color);
+					}
+					{
+						n_json bottom_node;
+						get_child_node(bound_node, "bottom", bottom_node);
+						get_color(bottom_node, "color", hive.layer.bound.bottom.color);
+					}
+				}
+				{
+					n_json separator_node;
+					get_child_node(layer_node, "separator", separator_node);
+					get_color(separator_node, "color", hive.layer.separator.color);
+				}
+			}
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
+			{
+				n_json gradient_fill_node;
+				set_bool(gradient_fill_node, "enabled", hive.gradient_fill.enabled);
+				{
+					n_json edge_node;
+					{
+						n_json inner_node;
+						set_color(inner_node, "color", hive.gradient_fill.edge.inner.color);
+						set_size(inner_node, "size", hive.gradient_fill.edge.inner.size);
+						set_child_node(edge_node, "inner", inner_node);
+					}
+					{
+						n_json outer_node;
+						set_color(outer_node, "color", hive.gradient_fill.edge.outer.color);
+						set_size(outer_node, "size", hive.gradient_fill.edge.outer.size);
+						set_child_node(edge_node, "outer", outer_node);
+					}
+					set_child_node(gradient_fill_node, "edge", edge_node);
+				}
+				set_child_node(root, "gradient_fill", gradient_fill_node);
+			}
 
-			set_bool(root, "gradient_fill.enabled", hive.gradient_fill.enabled);
-			set_color(root, "gradient_fill.edge.inner.color", hive.gradient_fill.edge.inner.color);
-			set_int(root, "gradient_fill.edge.inner.size.cx", hive.gradient_fill.edge.inner.size.cx);
-			set_int(root, "gradient_fill.edge.inner.size.cy", hive.gradient_fill.edge.inner.size.cy);
-			set_color(root, "gradient_fill.edge.outer.color", hive.gradient_fill.edge.outer.color);
-			set_int(root, "gradient_fill.edge.outer.size.cx", hive.gradient_fill.edge.outer.size.cx);
-			set_int(root, "gradient_fill.edge.outer.size.cy", hive.gradient_fill.edge.outer.size.cy);
+			{
+				n_json selection_node;
+				{
+					n_json fill_node;
+					set_color(fill_node, "color", hive.selection.fill.color);
+					set_child_node(selection_node, "fill", fill_node);
+				}
+				{
+					n_json stroke_node;
+					set_color(stroke_node, "color", hive.selection.stroke.color);
+					set_child_node(selection_node, "stroke", stroke_node);
+				}
+				{
+					n_json background_node;
+					set_color(background_node, "color", hive.selection.background.color);
+					set_child_node(selection_node, "background", background_node);
+				}
+				set_child_node(root, "selection", selection_node);
+			}
 
-			set_color(root, "selection.fill.color", hive.selection.fill.color);
-			set_color(root, "selection.stroke.color", hive.selection.stroke.color);
-			set_color(root, "selection.background.color", hive.selection.background.color);
-
-			set_color(root, "layer.bound.left.color", hive.layer.bound.left.color);
-			set_color(root, "layer.bound.top.color", hive.layer.bound.top.color);
-			set_color(root, "layer.bound.right.color", hive.layer.bound.right.color);
-			set_color(root, "layer.bound.bottom.color", hive.layer.bound.bottom.color);
-			set_color(root, "layer.separator.color", hive.layer.separator.color);
+			{
+				n_json layer_node;
+				{
+					n_json bound_node;
+					{
+						n_json left_node;
+						set_color(left_node, "color", hive.layer.bound.left.color);
+						set_child_node(bound_node, "left", left_node);
+					}
+					{
+						n_json top_node;
+						set_color(top_node, "color", hive.layer.bound.top.color);
+						set_child_node(bound_node, "top", top_node);
+					}
+					{
+						n_json right_node;
+						set_color(right_node, "color", hive.layer.bound.right.color);
+						set_child_node(bound_node, "right", right_node);
+					}
+					{
+						n_json bottom_node;
+						set_color(bottom_node, "color", hive.layer.bound.bottom.color);
+						set_child_node(bound_node, "bottom", bottom_node);
+					}
+					set_child_node(layer_node, "bound", bound_node);
+				}
+				{
+					n_json separator_node;
+					set_color(separator_node, "color", hive.layer.separator.color);
+					set_child_node(layer_node, "separator", separator_node);
+				}
+				set_child_node(root, "layer", layer_node);
+			}
 
 			return TRUE;
 		}

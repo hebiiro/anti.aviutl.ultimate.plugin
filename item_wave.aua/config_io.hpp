@@ -41,7 +41,7 @@ namespace apn::item_wave
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,11 +63,9 @@ namespace apn::item_wave
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			std::wstring include_layers;
 			std::wstring exclude_layers;
@@ -95,13 +93,11 @@ namespace apn::item_wave
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			auto include_layers = layers_to_string(hive.include_layers);
 			auto exclude_layers = layers_to_string(hive.exclude_layers);

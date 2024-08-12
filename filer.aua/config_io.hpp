@@ -2,8 +2,6 @@
 
 namespace apn::filer
 {
-	using namespace my::json;
-
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
@@ -62,7 +60,7 @@ namespace apn::filer
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -74,7 +72,7 @@ namespace apn::filer
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -84,33 +82,31 @@ namespace apn::filer
 			// アドインウィンドウのウィンドウ位置を読み込みます。
 			workspace::share::get_window(root, "addin_window", addin_window);
 
-			if (auto filer_nodes_op = root.get_child_optional("filer"))
+			get_child_nodes(root, "filer",
+				[&](const n_json& filer_node)
 			{
-				for (const auto& pair : filer_nodes_op.value())
+				// ファイラの名前を読み込みます。
+				std::wstring name;
+				get_string(filer_node, "name", name);
+
+				// ファイラウィンドウを作成します。
+				auto filer_window = filer_window_manager.create_filer_window(name.c_str(), FALSE);
+				if (filer_window)
 				{
-					const auto& filer_node = pair.second;
-
-					// ファイラの名前を読み込みます。
-					std::wstring name;
-					get_string(filer_node, "name", name);
-
-					// ファイラウィンドウを作成します。
-					auto filer_window = filer_window_manager.create_filer_window(name.c_str(), FALSE);
-					if (filer_window)
-					{
-						// ファイラウィンドウのウィンドウ位置を読み込みます。
-						workspace::share::get_window(filer_node, "filer_window", *filer_window);
-					}
+					// ファイラウィンドウのウィンドウ位置を読み込みます。
+					workspace::share::get_window(filer_node, "filer_window", *filer_window);
 				}
-			}
+
+				return TRUE;
+			});
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -120,23 +116,18 @@ namespace apn::filer
 			// アドインウィンドウのウィンドウ位置を書き込みます。
 			workspace::share::set_window(root, "addin_window", addin_window);
 
-			ptree filer_nodes;
+			set_child_nodes(root, "filer", FilerWindow::collection,
+				[&](n_json& filer_node, const auto& filer_window)
 			{
-				for (auto& filer_window : FilerWindow::collection)
-				{
-					ptree filer_node;
-					{
-						// ファイラの名前を書き込みます。
-						auto name = my::get_window_text(*filer_window);
-						set_string(filer_node, "name", name);
+				// ファイラの名前を書き込みます。
+				auto name = my::get_window_text(*filer_window);
+				set_string(filer_node, "name", name);
 
-						// ファイラウィンドウのウィンドウ位置を書き込みます。
-						workspace::share::set_window(filer_node, "filer_window", *filer_window);
-					}
-					filer_nodes.push_back(std::make_pair("", filer_node));
-				}
-			}
-			root.put_child("filer", filer_nodes);
+				// ファイラウィンドウのウィンドウ位置を書き込みます。
+				workspace::share::set_window(filer_node, "filer_window", *filer_window);
+
+				return TRUE;
+			});
 
 			return TRUE;
 		}

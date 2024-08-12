@@ -43,7 +43,7 @@ namespace apn::font_preview
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -65,50 +65,99 @@ namespace apn::font_preview
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_int(root, "item_height", hive.item_height);
 			get_int(root, "font_height", hive.font_height);
 			get_size(root, "window_size", hive.window_size);
 			get_string(root, "sample", hive.sample);
 			get_bool(root, "singleline", hive.singleline);
-			get_label(root, "paint.mode", paint.mode, paint.c_mode.labels);
-			get_color(root, "paint.palette.normal.color.background", paint.palette[paint.c_style.c_normal].color.background);
-			get_color(root, "paint.palette.normal.color.sample", paint.palette[paint.c_style.c_normal].color.sample);
-			get_color(root, "paint.palette.normal.color.font_name", paint.palette[paint.c_style.c_normal].color.font_name);
-			get_color(root, "paint.palette.select.color.background", paint.palette[paint.c_style.c_select].color.background);
-			get_color(root, "paint.palette.select.color.sample", paint.palette[paint.c_style.c_select].color.sample);
-			get_color(root, "paint.palette.select.color.font_name", paint.palette[paint.c_style.c_select].color.font_name);
+
+			{
+				n_json paint_node;
+				get_child_node(root, "paint", paint_node);
+				get_label(paint_node, "mode", paint.mode, paint.c_mode.labels);
+				{
+					n_json palette_node;
+					get_child_node(paint_node, "palette", palette_node);
+					{
+						n_json normal_node;
+						get_child_node(palette_node, "normal", normal_node);
+						{
+							n_json color_node;
+							get_child_node(normal_node, "color", color_node);
+							get_color(color_node, "background", paint.palette[paint.c_style.c_normal].color.background);
+							get_color(color_node, "sample", paint.palette[paint.c_style.c_normal].color.sample);
+							get_color(color_node, "font_name", paint.palette[paint.c_style.c_normal].color.font_name);
+						}
+					}
+
+					{
+						n_json select_node;
+						get_child_node(palette_node, "select", select_node);
+						{
+							n_json color_node;
+							get_child_node(select_node, "color", color_node);
+							get_color(color_node, "background", paint.palette[paint.c_style.c_select].color.background);
+							get_color(color_node, "sample", paint.palette[paint.c_style.c_select].color.sample);
+							get_color(color_node, "font_name", paint.palette[paint.c_style.c_select].color.font_name);
+						}
+					}
+				}
+			}
+
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_int(root, "item_height", hive.item_height);
 			set_int(root, "font_height", hive.font_height);
 			set_size(root, "window_size", hive.window_size);
 			set_string(root, "sample", hive.sample);
 			set_bool(root, "singleline", hive.singleline);
-			set_label(root, "paint.mode", paint.mode, paint.c_mode.labels);
-			set_color(root, "paint.palette.normal.color.background", paint.palette[paint.c_style.c_normal].color.background);
-			set_color(root, "paint.palette.normal.color.sample", paint.palette[paint.c_style.c_normal].color.sample);
-			set_color(root, "paint.palette.normal.color.font_name", paint.palette[paint.c_style.c_normal].color.font_name);
-			set_color(root, "paint.palette.select.color.background", paint.palette[paint.c_style.c_select].color.background);
-			set_color(root, "paint.palette.select.color.sample", paint.palette[paint.c_style.c_select].color.sample);
-			set_color(root, "paint.palette.select.color.font_name", paint.palette[paint.c_style.c_select].color.font_name);
+
+			{
+				n_json paint_node;
+				set_label(paint_node, "mode", paint.mode, paint.c_mode.labels);
+				{
+					n_json palette_node;
+					{
+						n_json normal_node;
+						{
+							n_json color_node;
+							set_color(color_node, "background", paint.palette[paint.c_style.c_normal].color.background);
+							set_color(color_node, "sample", paint.palette[paint.c_style.c_normal].color.sample);
+							set_color(color_node, "font_name", paint.palette[paint.c_style.c_normal].color.font_name);
+							set_child_node(normal_node, "color", color_node);
+						}
+						set_child_node(palette_node, "normal", normal_node);
+					}
+					{
+						n_json select_node;
+						{
+							n_json color_node;
+							set_color(color_node, "background", paint.palette[paint.c_style.c_select].color.background);
+							set_color(color_node, "sample", paint.palette[paint.c_style.c_select].color.sample);
+							set_color(color_node, "font_name", paint.palette[paint.c_style.c_select].color.font_name);
+							set_child_node(select_node, "color", color_node);
+						}
+						set_child_node(palette_node, "select", select_node);
+					}
+					set_child_node(paint_node, "palette", palette_node);
+				}
+				set_child_node(root, "paint", paint_node);
+			}
+
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;

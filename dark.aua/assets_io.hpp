@@ -12,7 +12,7 @@ namespace apn::dark
 			//
 			// ノードからアセットを読み込みます。
 			//
-			virtual BOOL read_node(ptree& root) override
+			virtual BOOL read_node(n_json& root) override
 			{
 				MY_TRACE_FUNC("");
 
@@ -30,7 +30,7 @@ namespace apn::dark
 			//
 			// ノードからアセットを読み込みます。
 			//
-			virtual BOOL read_node(ptree& root) override
+			virtual BOOL read_node(n_json& root) override
 			{
 				MY_TRACE_FUNC("");
 

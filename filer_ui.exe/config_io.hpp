@@ -41,7 +41,7 @@ namespace apn::filer_ui
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -53,7 +53,7 @@ namespace apn::filer_ui
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -61,51 +61,44 @@ namespace apn::filer_ui
 			for (auto& filer_dialog : FilerDialog::collection)
 				filers[my::get_window_text(*filer_dialog)] = filer_dialog;
 
-			if (auto filer_nodes_op = root.get_child_optional("filer"))
+			get_child_nodes(root, "filer",
+				[&](const n_json& filer_node)
 			{
-				for (const auto& pair : filer_nodes_op.value())
-				{
-					const auto& filer_node = pair.second;
+				std::wstring name;
+				get_string(filer_node, "name", name);
+				MY_TRACE_STR(name);
 
-					std::wstring name;
-					get_string(filer_node, "name", name);
-					MY_TRACE_STR(name);
+				auto it = filers.find(name);
+				if (it == filers.end()) return TRUE;
 
-					auto it = filers.find(name);
-					if (it == filers.end()) continue;
+				auto& filer_dialog = it->second;
 
-					auto& filer_dialog = it->second;
+				filer_dialog->read(filer_node);
 
-					filer_dialog->read(filer_node);
-				}
-			}
+				return TRUE;
+			});
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			ptree filer_nodes;
+			set_child_nodes(root, "filer", FilerDialog::collection,
+				[&](n_json& filer_node, const auto& filer_dialog)
 			{
-				for (auto& filer_dialog : FilerDialog::collection)
-				{
-					ptree filer_node;
-					{
-						auto name = my::get_window_text(*filer_dialog);
-						set_string(filer_node, "name", name);
-						MY_TRACE_STR(name);
+				auto name = my::get_window_text(*filer_dialog);
+				set_string(filer_node, "name", name);
+				MY_TRACE_STR(name);
 
-						filer_dialog->write(filer_node);
-					}
-					filer_nodes.push_back(std::make_pair("", filer_node));
-				}
-			}
-			root.put_child("filer", filer_nodes);
+				filer_dialog->write(filer_node);
+
+				return TRUE;
+			});
 
 			return TRUE;
 		}

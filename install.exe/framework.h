@@ -29,7 +29,6 @@
 #include <afxcontrolbars.h>     // MFC におけるリボンとコントロール バーのサポート
 
 #include "common/core/include.hpp"
-using namespace my::json;
 
 #ifdef _UNICODE
 #if defined _M_IX86

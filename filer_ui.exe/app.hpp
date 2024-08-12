@@ -170,7 +170,7 @@ namespace apn::filer_ui
 			// コンフィグチェッカーを終了します。
 			client_window.KillTimer(hive.c_timer_id.c_check_config);
 
-			// コンフィグを保存します。
+			// コンフィグを書き込みます。
 			config_io.write();
 		}
 

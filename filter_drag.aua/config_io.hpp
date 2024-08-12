@@ -41,7 +41,7 @@ namespace apn::filter_drag
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -65,75 +65,95 @@ namespace apn::filter_drag
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_bool(root, "use_shift", keyboard_hook.use_shift);
 			get_bool(root, "use_ctrl", keyboard_hook.use_ctrl);
 			get_bool(root, "use_alt", keyboard_hook.use_alt);
 			get_bool(root, "use_win", keyboard_hook.use_win);
 
-			get_bool(root, "aim_src.available", aim_src.available);
-			get_int(root, "aim_src.alpha", aim_src.alpha);
-			get_color(root, "aim_src.color", aim_src.color);
+			{
+				n_json aim_src_node;
+				get_child_node(root, "aim_src", aim_src_node);
+				get_bool(aim_src_node, "available", aim_src.available);
+				get_int(aim_src_node, "alpha", aim_src.alpha);
+				get_color(aim_src_node, "color", aim_src.color);
+			}
 
-			get_bool(root, "aim_dst.available", aim_dst.available);
-			get_int(root, "aim_dst.alpha", aim_dst.alpha);
-			get_color(root, "aim_dst.color", aim_dst.color);
+			{
+				n_json aim_dst_node;
+				get_child_node(root, "aim_dst", aim_dst_node);
+				get_bool(aim_dst_node, "available", aim_dst.available);
+				get_int(aim_dst_node, "alpha", aim_dst.alpha);
+				get_color(aim_dst_node, "color", aim_dst.color);
+			}
 
-			get_bool(root, "sight.available", sight.config.available);
-			get_size(root, "sight.canvas_size", sight.config.canvas_size);
-			get_int(root, "sight.alpha", sight.config.alpha);
-			get_color(root, "sight.pen_color", sight.config.pen_color);
-			get_float(root, "sight.pen_width", sight.config.pen_width);
-			get_color(root, "sight.brush_color", sight.config.brush_color);
-			get_int(root, "sight.base", sight.config.base);
-			get_int(root, "sight.width", sight.config.width);
-			get_string(root, "sight.font_name", sight.config.font_name);
-			get_float(root, "sight.font_size", sight.config.font_size);
-			get_float(root, "sight.rotate", sight.config.rotate);
-			get_point(root, "sight.start_offset", sight.config.start_offset);
+			{
+				n_json sight_node;
+				get_child_node(root, "sight", sight_node);
+				get_bool(sight_node, "available", sight.config.available);
+				get_size(sight_node, "canvas_size", sight.config.canvas_size);
+				get_int(sight_node, "alpha", sight.config.alpha);
+				get_color(sight_node, "pen_color", sight.config.pen_color);
+				get_float(sight_node, "pen_width", sight.config.pen_width);
+				get_color(sight_node, "brush_color", sight.config.brush_color);
+				get_int(sight_node, "base", sight.config.base);
+				get_int(sight_node, "width", sight.config.width);
+				get_string(sight_node, "font_name", sight.config.font_name);
+				get_float(sight_node, "font_size", sight.config.font_size);
+				get_float(sight_node, "rotate", sight.config.rotate);
+				get_point(sight_node, "start_offset", sight.config.start_offset);
+			}
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_bool(root, "use_shift", keyboard_hook.use_shift);
 			set_bool(root, "use_ctrl", keyboard_hook.use_ctrl);
 			set_bool(root, "use_alt", keyboard_hook.use_alt);
 			set_bool(root, "use_win", keyboard_hook.use_win);
 
-			set_bool(root, "aim_src.available", aim_src.available);
-			set_int(root, "aim_src.alpha", aim_src.alpha);
-			set_color(root, "aim_src.color", aim_src.color);
+			{
+				n_json aim_src_node;
+				set_bool(aim_src_node, "available", aim_src.available);
+				set_int(aim_src_node, "alpha", aim_src.alpha);
+				set_color(aim_src_node, "color", aim_src.color);
+				set_child_node(root, "aim_src", aim_src_node);
+			}
 
-			set_bool(root, "aim_dst.available", aim_dst.available);
-			set_int(root, "aim_dst.alpha", aim_dst.alpha);
-			set_color(root, "aim_dst.color", aim_dst.color);
+			{
+				n_json aim_dst_node;
+				set_bool(aim_dst_node, "available", aim_dst.available);
+				set_int(aim_dst_node, "alpha", aim_dst.alpha);
+				set_color(aim_dst_node, "color", aim_dst.color);
+				set_child_node(root, "aim_dst", aim_dst_node);
+			}
 
-			set_bool(root, "sight.available", sight.config.available);
-			set_size(root, "sight.canvas_size", sight.config.canvas_size);
-			set_int(root, "sight.alpha", sight.config.alpha);
-			set_color(root, "sight.pen_color", sight.config.pen_color);
-			set_float(root, "sight.pen_width", sight.config.pen_width);
-			set_color(root, "sight.brush_color", sight.config.brush_color);
-			set_int(root, "sight.base", sight.config.base);
-			set_int(root, "sight.width", sight.config.width);
-			set_string(root, "sight.font_name", sight.config.font_name);
-			set_float(root, "sight.font_size", sight.config.font_size);
-			set_float(root, "sight.rotate", sight.config.rotate);
-			set_point(root, "sight.start_offset", sight.config.start_offset);
+			{
+				n_json sight_node;
+				set_bool(sight_node, "available", sight.config.available);
+				set_size(sight_node, "canvas_size", sight.config.canvas_size);
+				set_int(sight_node, "alpha", sight.config.alpha);
+				set_color(sight_node, "pen_color", sight.config.pen_color);
+				set_float(sight_node, "pen_width", sight.config.pen_width);
+				set_color(sight_node, "brush_color", sight.config.brush_color);
+				set_int(sight_node, "base", sight.config.base);
+				set_int(sight_node, "width", sight.config.width);
+				set_string(sight_node, "font_name", sight.config.font_name);
+				set_float(sight_node, "font_size", sight.config.font_size);
+				set_float(sight_node, "rotate", sight.config.rotate);
+				set_point(sight_node, "start_offset", sight.config.start_offset);
+				set_child_node(root, "sight", sight_node);
+			}
 
 			return TRUE;
 		}

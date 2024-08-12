@@ -111,7 +111,7 @@ namespace apn::filer
 		//
 		// 設定を読み込みます。
 		//
-		void load(const ptree& node)
+		void load(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -121,7 +121,7 @@ namespace apn::filer
 		//
 		// 設定を保存します。
 		//
-		void save(ptree& node)
+		void save(n_json& node)
 		{
 			MY_TRACE_FUNC("");
 

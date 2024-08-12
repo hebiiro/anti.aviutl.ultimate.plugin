@@ -1,7 +1,5 @@
 ﻿#pragma once
-//#define BOOST_ALL_DYN_LINK
 //#define MY_TRACE_ENABLED
-
 #include <tchar.h>
 #include <crtdbg.h>
 #include <locale.h>
@@ -12,6 +10,7 @@
 #include <string>
 using namespace std::string_literals;
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -24,10 +23,6 @@ using namespace std::string_literals;
 #include <regex>
 #include <format>
 #include <filesystem>
-namespace fs = std::filesystem;
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-using namespace boost::property_tree;
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -55,6 +50,7 @@ using namespace Gdiplus;
 #include <shellapi.h>
 #include <psapi.h>
 
+#include "nlohmann/json.hpp"
 #include "detours/detours.h"
 #pragma comment(lib, "detours/detours.lib")
 
@@ -82,6 +78,7 @@ using namespace Gdiplus;
 #include "common/my/label.hpp"
 #include "common/my/shortcut_key.hpp"
 #include "common/my/json.hpp"
+using namespace my::json;
 #include "common/my/file_update_checker.hpp"
 #include "common/my/aviutl/aviutl_internal.hpp"
 #include "common/my/aviutl/exedit_internal.hpp"

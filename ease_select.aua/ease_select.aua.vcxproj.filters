@@ -32,9 +32,6 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
-    <None Include="packages.config">
-      <Filter>framework</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ease_select.aua.rc">

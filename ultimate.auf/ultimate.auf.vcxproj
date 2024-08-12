@@ -216,9 +216,14 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\audio_visualizer.aua\audio_visualizer.aua.vcxproj">
+      <Project>{dd72d21c-b58c-4c6c-b68a-3d1bfc29fa24}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\audio_visualizer_ui.exe\audio_visualizer_ui.exe.vcxproj">
+      <Project>{9d0669ff-1846-4979-8b2d-ea24a39b2733}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\color_code.aua\color_code.aua.vcxproj">
       <Project>{e80e8462-911f-4eab-b83b-d4b2dfe2010d}</Project>
     </ProjectReference>
@@ -320,13 +325,5 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\packages\boost.1.85.0\build\boost.targets" Condition="Exists('..\..\packages\boost.1.85.0\build\boost.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\boost.1.85.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\boost.1.85.0\build\boost.targets'))" />
-  </Target>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

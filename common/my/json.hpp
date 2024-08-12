@@ -1,204 +1,161 @@
 ﻿#pragma once
 
-namespace my
+namespace my::json
 {
-	template <typename T>
-	constexpr std::vector<T> split(const T& str, const T& separator)
+	using n_json = nlohmann::json;
+}
+
+//
+// get
+//
+namespace my::json
+{
+	inline n_json get_child(const n_json& node, const std::string& name)
 	{
-		std::vector<T> vec;
-		size_t start = 0, end;
-		while ((end = str.find(separator, start)) != str.npos) {
-			vec.emplace_back(str.substr(start, end));
-			start = end + separator.length();
-		}
-		vec.emplace_back(str.substr(start, end));
-		return vec;
+		try { return node.at(name); } catch (...) { return {}; }
+	}
+
+	inline void get_child_node(const n_json& node, const std::string& name, n_json& child)
+	{
+		try { child = node.at(name); } catch (...) {}
+	}
+
+	inline void get_child_nodes(const n_json& node, const std::string& name, auto func)
+	{
+		for (auto child_node : get_child(node, name))
+			if (!func(child_node)) break;
+	}
+
+	inline void get_string(const n_json& node, std::wstring& value)
+	{
+		try { value = my::cp_to_wide(node.get<std::string>(), CP_UTF8); } catch (...) {}
+	}
+
+	inline void get_string(const n_json& node, const std::string& name, std::wstring& value)
+	{
+		get_string(get_child(node, name), value);
+	}
+
+	inline void get_file_name(const n_json& node, std::filesystem::path& path)
+	{
+		try { path = my::cp_to_wide(node.get<std::string>(), CP_UTF8); } catch (...) {}
+	}
+
+	inline void get_file_name(const n_json& node, const std::string& name, std::filesystem::path& path)
+	{
+		get_file_name(get_child(node, name), path);
 	}
 
 	template <typename T>
-	constexpr T join(const std::vector<T>& vec, const T& separator)
+	inline void get_bool(const n_json& node, T& value)
 	{
-		T str;
-		for (const auto& value : vec) {
-			str += value;
-			if (value != vec.back()) str += separator;
-		}
-		return str;
-	}
-
-	//
-	// str内のsrcをdstに置換します。
-	//
-	template <typename T>
-	constexpr T replace(const T& str, const T& src, const T& dst)
-	{
-		return join(split(str, src), dst);
-	}
-
-	namespace json
-	{
-		inline constexpr std::string with_eol(size_t indent, const std::string& str)
+		try
 		{
-			return std::string(indent, '\t') + str + "\n"s;
-		}
-
-		inline constexpr std::string escape(const std::string& str)
-		{
-			std::string result;
-
-			size_t start = 0, stride = 0;
-			for (size_t pos = 0; pos < str.size(); pos += stride)
-			{
-				auto lead = (char8_t)str[pos];
-
-				if (lead < 0x80)
-				{
-					stride = 1;
-
-					switch (lead)
-					{
-					case u8'/':
-					case u8'\"':
-					case u8'\b':
-					case u8'\f':
-					case u8'\n':
-					case u8'\r':
-					case u8'\t':
-						{
-							result += str.substr(start, pos) + '\\' + (char)lead;
-							start = pos + stride;
-							break;
-						}
-					}
-				}
-				else if (lead < 0xE0)
-				{
-					stride = 2;
-				}
-				else if (lead < 0xF0)
-				{
-					stride = 3;
-				}
-				else
-				{
-					stride = 4;
-				}
-			}
-
-			result += str.substr(start);
-
-			return result;
-		}
-
-		inline ptree get_child(const ptree& node, const std::string& name)
-		{
-			if (auto optional = node.get_child_optional(name))
-				return optional.value();
+			if (node.is_string())
+				value = node.get<std::string>() == "true";
 			else
-				return {};
+				value = node.get<bool>();
 		}
-
-		inline void get_string(const ptree& node, std::wstring& value)
+		catch (...)
 		{
-			value = my::cp_to_wide(node.get_value<std::string>(my::wide_to_cp(value, CP_UTF8)), CP_UTF8);
 		}
+	}
 
-		inline void get_string(const ptree& node, const std::string& name, std::wstring& value)
+	template <typename T>
+	inline void get_bool(const n_json& node, const std::string& name, T& value)
+	{
+		get_bool(get_child(node, name), value);
+	}
+
+	template <typename T>
+	inline void get_int(const n_json& node, T& value)
+	{
+		try
 		{
-			if (auto optional = node.get_child_optional(name)) get_string(optional.value(), value);
+			if (node.is_string())
+				value = (T)strtol(node.get<std::string>().c_str(), nullptr, 0);
+			else
+				value = node.get<T>();
 		}
-
-		inline void get_file_name(const ptree& node, std::filesystem::path& path)
+		catch (...)
 		{
-			path = my::cp_to_wide(node.get_value<std::string>(my::wide_to_cp(path, CP_UTF8)), CP_UTF8);
 		}
+	}
 
-		inline void get_file_name(const ptree& node, const std::string& name, std::filesystem::path& path)
+	template <typename T>
+	inline void get_int(const n_json& node, const std::string& name, T& value)
+	{
+		get_int(get_child(node, name), value);
+	}
+
+	template <typename T>
+	inline void get_float(const n_json& node, T& value)
+	{
+		try
 		{
-			if (auto optional = node.get_child_optional(name)) get_file_name(optional.value(), path);
+			if (node.is_string())
+				value = (T)strtod(node.get<std::string>().c_str(), nullptr);
+			else
+				value = node.get<T>();
 		}
-
-		template <typename T>
-		inline void get_bool(const ptree& node, T& value)
+		catch (...)
 		{
-			value = node.get_value<bool>(!!value);
 		}
+	}
 
-		template <typename T>
-		inline void get_bool(const ptree& node, const std::string& name, T& value)
-		{
-			if (auto optional = node.get_child_optional(name)) get_bool(optional.value(), value);
-		}
+	template <typename T>
+	inline void get_float(const n_json& node, const std::string& name, T& value)
+	{
+		get_float(get_child(node, name), value);
+	}
 
-		template <typename T>
-		inline void get_int(const ptree& node, T& value)
-		{
-			value = node.get_value<T>(value);
-		}
+	inline void get_point(const n_json& node, POINT& point)
+	{
+		get_int(node, "x", point.x);
+		get_int(node, "y", point.y);
+	}
 
-		template <typename T>
-		inline void get_int(const ptree& node, const std::string& name, T& value)
-		{
-			if (auto optional = node.get_child_optional(name)) get_int(optional.value(), value);
-		}
+	inline void get_point(const n_json& node, const std::string& name, POINT& point)
+	{
+		get_point(get_child(node, name), point);
+	}
 
-		template <typename T>
-		inline void get_float(const ptree& node, T& value)
-		{
-			value = node.get_value<T>(value);
-		}
+	inline void get_size(const n_json& node, SIZE& size)
+	{
+		get_int(node, "w", size.cx);
+		get_int(node, "h", size.cy);
+	}
 
-		template <typename T>
-		inline void get_float(const ptree& node, const std::string& name, T& value)
-		{
-			if (auto optional = node.get_child_optional(name)) get_float(optional.value(), value);
-		}
+	inline void get_size(const n_json& node, const std::string& name, SIZE& size)
+	{
+		get_size(get_child(node, name), size);
+	}
 
-		inline void get_point(const ptree& node, POINT& value)
-		{
-			get_int(node, "x", value.x);
-			get_int(node, "y", value.y);
-		}
+	inline void get_rect(const n_json& node, RECT& rc)
+	{
+		get_int(node, "left", rc.left);
+		get_int(node, "top", rc.top);
+		get_int(node, "right", rc.right);
+		get_int(node, "bottom", rc.bottom);
+	}
 
-		inline void get_point(const ptree& node, const std::string& name, POINT& value)
-		{
-			if (auto optional = node.get_child_optional(name)) get_point(optional.value(), value);
-		}
+	inline void get_rect(const n_json& node, const std::string& name, RECT& rc)
+	{
+		get_rect(get_child(node, name), rc);
+	}
 
-		inline void get_size(const ptree& node, SIZE& value)
+	inline void get_color(const n_json& node, COLORREF& value)
+	{
+		try
 		{
-			get_int(node, "w", value.cx);
-			get_int(node, "h", value.cy);
-		}
-
-		inline void get_size(const ptree& node, const std::string& name, SIZE& value)
-		{
-			if (auto optional = node.get_child_optional(name)) get_size(optional.value(), value);
-		}
-
-		inline void get_rect(const ptree& node, RECT& rc)
-		{
-			get_int(node, "left", rc.left);
-			get_int(node, "top", rc.top);
-			get_int(node, "right", rc.right);
-			get_int(node, "bottom", rc.bottom);
-		}
-
-		inline void get_rect(const ptree& node, const std::string& name, RECT& rc)
-		{
-			if (auto optional = node.get_child_optional(name)) get_rect(optional.value(), rc);
-		}
-
-		inline void get_color(const ptree& node, COLORREF& value)
-		{
-			auto str = node.get_value<std::string>("");
+			auto str = node.get<std::string>();
 			auto c = str.length();
 			if (c == 0) return;
 
 			if (str[0] == '#')
 			{
 				// 先頭の'#'を取り除いた残りの部分を16進数に変換します。
-				auto temp = std::stoul(&str[1], 0, 16);
+				auto temp = strtoul(&str[1], nullptr, 16);
 
 				if (c == 4)
 				{
@@ -236,277 +193,308 @@ namespace my
 				str[sep1] = '\0';
 				str[sep2] = '\0';
 
-				auto r = std::stoul(&str[0], 0, 0);
-				auto g = std::stoul(&str[sep1 + 1], 0, 0);
-				auto b = std::stoul(&str[sep2 + 1], 0, 0);
+				auto r = strtoul(&str[0], nullptr, 0);
+				auto g = strtoul(&str[sep1 + 1], nullptr, 0);
+				auto b = strtoul(&str[sep2 + 1], nullptr, 0);
 
 				value = RGB(r, g, b);
 			}
 		}
-
-		inline void get_color(const ptree& node, const std::string& name, COLORREF& value)
+		catch (...)
 		{
-			if (auto optional = node.get_child_optional(name)) get_color(optional.value(), value);
 		}
+	}
 
-		inline void get_window(const ptree& node, HWND hwnd, DWORD show_cmd = -1)
+	inline void get_color(const n_json& node, const std::string& name, COLORREF& value)
+	{
+		get_color(get_child(node, name), value);
+	}
+
+	inline void get_window(const n_json& node, HWND hwnd, UINT show_cmd = -1)
+	{
+		if (show_cmd == -1)
+			get_int(node, "show_cmd", show_cmd);
+
+		auto rc = RECT {};
+		get_int(node, "left", rc.left);
+		get_int(node, "top", rc.top);
+		get_int(node, "right", rc.right);
+		get_int(node, "bottom", rc.bottom);
+
+		auto x = rc.left;
+		auto y = rc.top;
+		auto w = my::get_width(rc);
+		auto h = my::get_height(rc);
+		::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+
+		::ShowWindow(hwnd, show_cmd);
+	}
+
+	inline void get_window(const n_json& node, const std::string& name, HWND hwnd, UINT show_cmd = -1)
+	{
+		get_window(get_child(node, name), hwnd, show_cmd);
+	}
+
+	template <typename T, typename Labels>
+	inline void get_label(const n_json& node, T& value, const Labels& labels)
+	{
+		std::wstring str; get_string(node, str);
+
+		for (const auto& label : labels)
 		{
-			if (show_cmd == -1)
-				get_int(node, "show_cmd", show_cmd);
-
-			auto rc = RECT {};
-			get_int(node, "left", rc.left);
-			get_int(node, "top", rc.top);
-			get_int(node, "right", rc.right);
-			get_int(node, "bottom", rc.bottom);
-
-			auto x = rc.left;
-			auto y = rc.top;
-			auto w = my::get_width(rc);
-			auto h = my::get_height(rc);
-			::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
-
-			::ShowWindow(hwnd, show_cmd);
-		}
-
-		inline void get_window(const ptree& node, const std::string& name, HWND hwnd, DWORD show_cmd = -1)
-		{
-			if (auto optional = node.get_child_optional(name)) get_window(optional.value(), hwnd, show_cmd);
-		}
-
-		template <typename T, typename Labels>
-		inline void get_label(const ptree& node, T& value, const Labels& labels)
-		{
-			if (auto optional = node.get_value_optional<std::string>())
+			if (str == label.text)
 			{
-				auto str = my::cp_to_wide(optional.value(), CP_UTF8);
-
-				for (const auto& label : labels)
-				{
-					if (str == label.text)
-					{
-						value = label.value;
-						return;
-					}
-				}
+				value = label.value;
+				return;
 			}
 		}
+	}
 
-		template <typename T, typename Labels>
-		inline void get_label(const ptree& node, const std::string& name, T& value, const Labels& labels)
+	template <typename T, typename Labels>
+	inline void get_label(const n_json& node, const std::string& name, T& value, const Labels& labels)
+	{
+		get_label(get_child(node, name), value, labels);
+	}
+
+	template <typename ShortcutKey>
+	inline void get_shortcut_key(const n_json& node, ShortcutKey& shortcut_key)
+	{
+		std::wstring key; get_string(node, "key", key);
+		if (!key.empty()) shortcut_key.key = shortcut_key.str_to_key(key);
+
+		std::wstring mod; get_string(node, "mod", mod);
+		if (!mod.empty()) shortcut_key.mod = shortcut_key.str_to_mod(mod);
+	}
+
+	template <typename ShortcutKey>
+	inline void get_shortcut_key(const n_json& node, const std::string& name, ShortcutKey& shortcut_key)
+	{
+		get_shortcut_key(get_child(node, name), shortcut_key);
+	}
+}
+
+//
+// set
+//
+namespace my::json
+{
+	inline void set_child(n_json& node, const std::string& name, const n_json& child)
+	{
+		node[name] = child;
+	}
+
+	inline void set_child_node(n_json& node, const std::string& name, const n_json& child)
+	{
+		node[name] = child;
+	}
+
+	inline void set_child_nodes(n_json& node, const std::string& name, const auto& collection, auto func)
+	{
+		for (const auto& value : collection)
 		{
-			if (auto optional = node.get_child_optional(name)) get_label(optional.value(), value, labels);
+			n_json child_node;
+			if (!func(child_node, value)) break;
+			node[name].emplace_back(child_node);
 		}
+	}
 
-		template <typename ShortcutKey>
-		inline void get_shortcut_key(const ptree& node, ShortcutKey& shortcut_key)
+	inline void set_string(n_json& node, const std::wstring& value)
+	{
+		node = my::wide_to_cp(value, CP_UTF8);
+	}
+
+	inline void set_string(n_json& node, const std::string& name, const std::wstring& value)
+	{
+		return set_string(node[name], value);
+	}
+
+	inline void set_file_name(n_json& node, const std::filesystem::path& path)
+	{
+		return set_string(node, path);
+	}
+
+	inline void set_file_name(n_json& node, const std::string& name, const std::filesystem::path& path)
+	{
+		return set_string(node, name, path);
+	}
+
+	template <typename T>
+	inline void set_bool(n_json& node, T value)
+	{
+		node = !!value;
+	}
+
+	template <typename T>
+	inline void set_bool(n_json& node, const std::string& name, T value)
+	{
+		return set_bool(node[name], value);
+	}
+
+	template <typename T>
+	inline void set_int(n_json& node, T value)
+	{
+		node = value;
+	}
+
+	template <typename T>
+	inline void set_int(n_json& node, const std::string& name, T value)
+	{
+		return set_int(node[name], value);
+	}
+
+	template <typename T>
+	inline void set_float(n_json& node, T value)
+	{
+		node = value;
+	}
+
+	template <typename T>
+	inline void set_float(n_json& node, const std::string& name, T value)
+	{
+		return set_float(node[name], value);
+	}
+
+	inline void set_point(n_json& node, const POINT& point)
+	{
+		node["x"] = point.x;
+		node["y"] = point.y;
+	}
+
+	inline void set_point(n_json& node, const std::string& name, const POINT& point)
+	{
+		return set_point(node[name], point);
+	}
+
+	inline void set_size(n_json& node, const SIZE& size)
+	{
+		node["w"] = size.cx;
+		node["h"] = size.cy;
+	}
+
+	inline void set_size(n_json& node, const std::string& name, const SIZE& size)
+	{
+		return set_size(node[name], size);
+	}
+
+	inline void set_rect(n_json& node, const RECT& rc)
+	{
+		node["left"] = rc.left;
+		node["top"] = rc.top;
+		node["right"] = rc.right;
+		node["bottom"] = rc.bottom;
+	}
+
+	inline void set_rect(n_json& node, const std::string& name, const RECT& rc)
+	{
+		return set_rect(node[name], rc);
+	}
+
+	inline void set_color(n_json& node, COLORREF color)
+	{
+		if (color == CLR_NONE)
+			node = "none";
+		else
+			node = std::format("{}, {}, {}", GetRValue(color), GetGValue(color), GetBValue(color));
+	}
+
+	inline void set_color(n_json& node, const std::string& name, COLORREF color)
+	{
+		return set_color(node[name], color);
+	}
+
+	inline void set_window(n_json& node, HWND hwnd)
+	{
+		auto show_cmd = SW_RESTORE;
+		if (::IsZoomed(hwnd)) show_cmd = SW_MAXIMIZE;
+		if (::IsIconic(hwnd)) show_cmd = SW_MINIMIZE;
+		if (!::IsWindowVisible(hwnd)) show_cmd = SW_HIDE;
+
+		auto rc = my::get_window_rect(hwnd);
+		if (my::get_style(hwnd) & WS_CHILD)
+			my::map_window_points(nullptr, ::GetParent(hwnd), &rc);
+
+		set_int(node, "show_cmd", show_cmd);
+		set_int(node, "left", rc.left);
+		set_int(node, "top", rc.top);
+		set_int(node, "right", rc.right);
+		set_int(node, "bottom", rc.bottom);
+	}
+
+	inline void set_window(n_json& node, const std::string& name, HWND hwnd)
+	{
+		return set_window(node[name], hwnd);
+	}
+
+	template <typename T, typename Labels>
+	inline void set_label(n_json& node, const T& value, const Labels& labels)
+	{
+		for (const auto& label : labels)
 		{
-			std::wstring key; get_string(node, "key", key);
-			if (!key.empty()) shortcut_key.key = shortcut_key.str_to_key(key);
-
-			std::wstring mod; get_string(node, "mod", mod);
-			if (!mod.empty()) shortcut_key.mod = shortcut_key.str_to_mod(mod);
+			if (label.value == value)
+				set_string(node, label.text);
 		}
+	}
 
-		template <typename ShortcutKey>
-		inline void get_shortcut_key(const ptree& node, const std::string& name, ShortcutKey& shortcut_key)
-		{
-			if (auto optional = node.get_child_optional(name)) get_shortcut_key(optional.value(), shortcut_key);
-		}
+	template <typename T, typename Labels>
+	inline void set_label(n_json& node, const std::string& name, const T& value, const Labels& labels)
+	{
+		return set_label(node[name], value, labels);
+	}
 
-		inline constexpr std::string from_string(const std::string& str)
-		{
-			return R"(")"s + escape(str) + R"(")"s;
-		}
+	template <typename ShortcutKey>
+	inline void set_shortcut_key(n_json& node, const ShortcutKey& shortcut_key)
+	{
+		set_string(node, "key", shortcut_key.key_to_str(shortcut_key.key));
+		set_string(node, "mod", shortcut_key.mod_to_str(shortcut_key.mod));
+	}
 
-		inline constexpr std::string from_string(const std::wstring& str)
-		{
-			return from_string(my::wide_to_cp(str, CP_UTF8));
-		}
+	template <typename ShortcutKey>
+	inline void set_shortcut_key(n_json& node, const std::string& name, const ShortcutKey& shortcut_key)
+	{
+		return set_shortcut_key(node[name], shortcut_key);
+	}
+}
 
-		template <typename T>
-		inline constexpr std::string from_bool(T value)
-		{
-			return value ? "true"s : "false"s;
-		}
-
-		template <typename T>
-		inline constexpr std::string from_int(T value)
-		{
-			return std::format(R"({})", value);
-		}
-
-		template <typename T>
-		inline constexpr std::string from_float(T value)
-		{
-			return std::format(R"({})", value);
-		}
-
-		inline std::string from_point(const POINT& point)
-		{
-			return std::format(R"({{ "w": {}, "h": {} }})", point.x, point.y);
-		}
-
-		inline std::string from_size(const SIZE& size)
-		{
-			return std::format(R"({{ "w": {}, "h": {} }})", size.cx, size.cy);
-		}
-
-		inline std::string from_color(COLORREF color)
-		{
-			if (color == CLR_NONE)
-				return std::format(R"("none")");
-			else
-				return std::format(R"("{}, {}, {}")", GetRValue(color), GetGValue(color), GetBValue(color));
-		}
-
-		inline std::string from_window(HWND hwnd)
-		{
-			WINDOWPLACEMENT wp = { sizeof(wp) };
-			if (!::GetWindowPlacement(hwnd, &wp)) return "";
-
-			if (::IsIconic(hwnd)) wp.showCmd = SW_SHOW;
-			if (wp.flags == WPF_RESTORETOMAXIMIZED) wp.showCmd = SW_SHOWMAXIMIZED;
-			if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
-
-			return std::format(
-				R"({{)"
-				R"( "show_cmd": {},)"
-				R"( "left": {}, "top": {}, "right": {}, "bottom": {},)"
-				R"( "min_x": {}, "min_y": {}, "max_x": {}, "max_y": {} )"
-				R"(}})",
-				wp.showCmd,
-				wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right, wp.rcNormalPosition.bottom, 
-				wp.ptMinPosition.x, wp.ptMinPosition.y, wp.ptMaxPosition.x, wp.ptMaxPosition.y);
-		}
-
-		inline void set_string(ptree& node, const std::string& name, const std::wstring& value)
-		{
-			node.put(name, my::wide_to_cp(value, CP_UTF8));
-		}
-
-		inline void set_file_name(ptree& node, const std::string& name, const std::filesystem::path& path)
-		{
-			return set_string(node, name, path);
-		}
-
-		template <typename T>
-		inline void set_bool(ptree& node, const std::string& name, T value)
-		{
-			node.put(name, !!value);
-		}
-
-		template <typename T>
-		inline void set_int(ptree& node, const std::string& name, T value)
-		{
-			node.put(name, value);
-		}
-
-		template <typename T>
-		inline void set_float(ptree& node, const std::string& name, T value)
-		{
-			node.put(name, value);
-		}
-
-		inline void set_point(ptree& node, const std::string& name, const POINT& point)
-		{
-			node.put(name + ".x", point.x);
-			node.put(name + ".y", point.y);
-		}
-
-		inline void set_size(ptree& node, const std::string& name, const SIZE& size)
-		{
-			node.put(name + ".w", size.cx);
-			node.put(name + ".h", size.cy);
-		}
-
-		inline void set_rect(ptree& node, const std::string& name, const RECT& rc)
-		{
-			node.put(name + ".left", rc.left);
-			node.put(name + ".top", rc.top);
-			node.put(name + ".right", rc.right);
-			node.put(name + ".bottom", rc.bottom);
-		}
-
-		inline void set_color(ptree& node, const std::string& name, COLORREF color)
-		{
-			if (color == CLR_NONE)
-				node.put(name, "none");
-			else
-				node.put(name, std::format(R"({}, {}, {})", GetRValue(color), GetGValue(color), GetBValue(color)));
-		}
-
-		inline void set_window(ptree& node, const std::string& name, HWND hwnd)
-		{
-			auto show_cmd = SW_RESTORE;
-			if (::IsZoomed(hwnd)) show_cmd = SW_MAXIMIZE;
-			if (::IsIconic(hwnd)) show_cmd = SW_MINIMIZE;
-			if (!::IsWindowVisible(hwnd)) show_cmd = SW_HIDE;
-
-			auto rc = my::get_window_rect(hwnd);
-			if (my::get_style(hwnd) & WS_CHILD)
-				my::map_window_points(nullptr, ::GetParent(hwnd), &rc);
-
-			ptree window_node;
-			set_int(window_node, "show_cmd", show_cmd);
-			set_int(window_node, "left", rc.left);
-			set_int(window_node, "top", rc.top);
-			set_int(window_node, "right", rc.right);
-			set_int(window_node, "bottom", rc.bottom);
-			node.add_child(name, window_node);
-		}
-
-		template <typename T, typename Labels>
-		inline void set_label(ptree& node, const std::string& name, const T& value, const Labels& labels)
-		{
-			for (const auto& label : labels)
-			{
-				if (label.value == value)
-					set_string(node, name, label.text);
-			}
-		}
-
-		template <typename ShortcutKey>
-		inline void set_shortcut_key(ptree& node, const std::string& name, const ShortcutKey& shortcut_key)
-		{
-			ptree shortcut_key_node;
-			set_string(shortcut_key_node, "key", shortcut_key.key_to_str(shortcut_key.key));
-			set_string(shortcut_key_node, "mod", shortcut_key.mod_to_str(shortcut_key.mod));
-			node.add_child(name, shortcut_key_node);
-		}
 #ifdef _GDIPLUS_H
-		inline void get_point(const ptree& node, Point& point)
-		{
-			get_int(node, "x", point.X);
-			get_int(node, "y", point.Y);
-		}
+//
+// get
+//
+namespace my::json
+{
+	inline void get_point(const n_json& node, Point& point)
+	{
+		get_int(node, "x", point.X);
+		get_int(node, "y", point.Y);
+	}
 
-		inline void get_point(const ptree& node, const std::string& name, Point& point)
-		{
-			if (auto optional = node.get_child_optional(name)) get_point(optional.value(), point);
-		}
+	inline void get_point(const n_json& node, const std::string& name, Point& point)
+	{
+		get_point(get_child(node, name), point);
+	}
 
-		inline void get_size(const ptree& node, Size& size)
-		{
-			get_int(node, "w", size.Width);
-			get_int(node, "h", size.Height);
-		}
+	inline void get_size(const n_json& node, Size& size)
+	{
+		get_int(node, "w", size.Width);
+		get_int(node, "h", size.Height);
+	}
 
-		inline void get_size(const ptree& node, const std::string& name, Size& size)
-		{
-			if (auto optional = node.get_child_optional(name)) get_size(optional.value(), size);
-		}
+	inline void get_size(const n_json& node, const std::string& name, Size& size)
+	{
+		get_size(get_child(node, name), size);
+	}
 
-		inline void get_color(const ptree& node, Color& value)
+	inline void get_color(const n_json& node, Color& value)
+	{
+		try
 		{
-			auto str = node.get_value<std::string>("");
+			auto str = node.get<std::string>();
 			auto c = str.length();
 			if (c == 0) return;
 
 			if (str[0] == '#')
 			{
 				// 先頭の'#'を取り除いた残りの部分を16進数に変換します。
-				auto temp = std::stoul(&str[1], 0, 16);
+				auto temp = strtoul(&str[1], nullptr, 16);
 
 				if (c == 4)
 				{
@@ -540,9 +528,10 @@ namespace my
 				{
 					// `rrggbbaa'の16進数の形式だと仮定します。
 
-					size_t index = 0;
-					auto rgba = std::stoul(&str[0], &index, 16);
-					if (index > 0)
+					auto src = &str[0];
+					auto end_ptr = src;
+					auto rgba = strtoul(src, &end_ptr, 16);
+					if (end_ptr != src)
 					{
 						auto r = (BYTE)(rgba >> 24);
 						auto g = (BYTE)(rgba >> 16);
@@ -566,9 +555,9 @@ namespace my
 					str[sep1] = '\0';
 					str[sep2] = '\0';
 
-					auto r = (BYTE)std::stoul(&str[0], 0, 0);
-					auto g = (BYTE)std::stoul(&str[sep1 + 1], 0, 0);
-					auto b = (BYTE)std::stoul(&str[sep2 + 1], 0, 0);
+					auto r = (BYTE)strtoul(&str[0], nullptr, 0);
+					auto g = (BYTE)strtoul(&str[sep1 + 1], nullptr, 0);
+					auto b = (BYTE)strtoul(&str[sep2 + 1], nullptr, 0);
 
 					value.SetFromCOLORREF(RGB(r, g, b));
 
@@ -581,79 +570,60 @@ namespace my
 				str[sep2] = '\0';
 				str[sep3] = '\0';
 
-				auto r = (BYTE)std::stoul(&str[0], 0, 0);
-				auto g = (BYTE)std::stoul(&str[sep1 + 1], 0, 0);
-				auto b = (BYTE)std::stoul(&str[sep2 + 1], 0, 0);
-				auto a = (BYTE)std::stoul(&str[sep3 + 1], 0, 0);
+				auto r = (BYTE)strtoul(&str[0], nullptr, 0);
+				auto g = (BYTE)strtoul(&str[sep1 + 1], nullptr, 0);
+				auto b = (BYTE)strtoul(&str[sep2 + 1], nullptr, 0);
+				auto a = (BYTE)strtoul(&str[sep3 + 1], nullptr, 0);
 
 				value.SetValue(value.MakeARGB(a, r, g, b));
 			}
 		}
-
-		inline void get_color(const ptree& node, const std::string& name, Color& value)
+		catch (...)
 		{
-			if (auto optional = node.get_child_optional(name)) get_color(optional.value(), value);
-		}
-
-		inline std::string from_point(const Point& point)
-		{
-			return std::format(R"({{ "x": {}, "y": {} }})", point.X, point.Y);
-		}
-
-		inline std::string from_size(const Size& size)
-		{
-			return std::format(R"({{ "w": {}, "h": {} }})", size.Width, size.Height);
-		}
-
-		inline std::string from_color(const Color& color)
-		{
-			return std::format(R"("{}, {}, {}, {}")", color.GetR(), color.GetG(), color.GetB(), color.GetA());
-		}
-
-		inline void set_point(ptree& node, const std::string& name, const Point& point)
-		{
-			node.put(name + ".x", point.X);
-			node.put(name + ".y", point.Y);
-		}
-
-		inline void set_size(ptree& node, const std::string& name, const Size& size)
-		{
-			node.put(name + ".w", size.Width);
-			node.put(name + ".h", size.Height);
-		}
-
-		inline void set_color(ptree& node, const std::string& name, const Color& color)
-		{
-			node.put(name, std::format(R"({}, {}, {}, {})", color.GetR(), color.GetG(), color.GetB(), color.GetA()));
-		}
-#endif
-		void get_child_nodes(const ptree& node, const std::string& name, auto func)
-		{
-			if (auto child_nodes_op = node.get_child_optional(name))
-			{
-				for (const auto& pair : child_nodes_op.value())
-				{
-					const auto& child_node = pair.second;
-
-					func(child_node);
-				}
-			}
-		}
-
-		void set_child_nodes(ptree& node, const std::string& name, const auto& collection, auto func)
-		{
-			ptree child_nodes;
-			{
-				for (const auto& value : collection)
-				{
-					ptree child_node;
-					{
-						func(child_node, value);
-					}
-					child_nodes.push_back(std::make_pair("", child_node));
-				}
-			}
-			node.put_child(name, child_nodes);
 		}
 	}
+
+	inline void get_color(const n_json& node, const std::string& name, Color& value)
+	{
+		get_color(get_child(node, name), value);
+	}
 }
+
+//
+// set
+//
+namespace my::json
+{
+	inline void set_point(n_json& node, const Point& point)
+	{
+		node["x"] = point.X;
+		node["y"] = point.Y;
+	}
+
+	inline void set_point(n_json& node, const std::string& name, const Point& point)
+	{
+		return set_point(node[name], point);
+	}
+
+	inline void set_size(n_json& node, const Size& size)
+	{
+		node["w"] = size.Width;
+		node["h"] = size.Height;
+	}
+
+	inline void set_size(n_json& node, const std::string& name, const Size& size)
+	{
+		return set_size(node[name], size);
+	}
+
+	inline void set_color(n_json& node, const Color& color)
+	{
+		node = std::format("{}, {}, {}, {}", color.GetR(), color.GetG(), color.GetB(), color.GetA());
+	}
+
+	inline void set_color(n_json& node, const std::string& name, const Color& color)
+	{
+		return set_color(node[name], color);
+	}
+}
+#endif

@@ -23,7 +23,7 @@ namespace apn::workspace
 		//
 		// ノードからプリファレンスを読み込みます。
 		//
-		virtual BOOL read_node(ptree& node) override
+		virtual BOOL read_node(n_json& node) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -67,7 +67,7 @@ namespace apn::workspace
 		//
 		// 指定された要素からシャトル名を読み込みます。
 		//
-		void get_shuttle_name(const ptree& node, const std::string& name, std::wstring& value)
+		void get_shuttle_name(const n_json& node, const std::string& name, std::wstring& value)
 		{
 			get_string(node, name, value);
 
@@ -77,7 +77,7 @@ namespace apn::workspace
 		//
 		// ペインを読み込みます。
 		//
-		void load_pane(const ptree& node, const std::shared_ptr<Pane>& pane)
+		void load_pane(const n_json& node, const std::shared_ptr<Pane>& pane)
 		{
 			MY_TRACE_FUNC("");
 
@@ -99,52 +99,49 @@ namespace apn::workspace
 			MY_TRACE_INT(current);
 
 			// ドッキングシャトルを読み込みます。
-			if (auto dock_shuttle_nodes_op = node.get_child_optional("dock_shuttle"))
+			get_child_nodes(node, "dock_shuttle",
+				[&](const n_json& dock_shuttle_node)
 			{
-				for (const auto& pair : dock_shuttle_nodes_op.value())
-				{
-					const auto& dock_node = pair.second;
+				// シャトル名を読み込みます。
+				std::wstring name;
+				get_shuttle_name(dock_shuttle_node, "name", name);
+				MY_TRACE_STR(name);
 
-					// シャトル名を読み込みます。
-					std::wstring name;
-					get_shuttle_name(dock_node, "name", name);
-					MY_TRACE_STR(name);
+				// シャトルを取得します。
+				auto shuttle = shuttle_manager.get(name);
+				if (!shuttle) return TRUE;
 
-					// シャトルを取得します。
-					auto shuttle = shuttle_manager.get(name);
-					if (!shuttle) continue;
+				//  ペインにシャトルを追加します。
+				pane->insert_shuttle(shuttle.get(), FALSE);
 
-					//  ペインにシャトルを追加します。
-					pane->insert_shuttle(shuttle.get(), FALSE);
-				}
-			}
+				return TRUE;
+			});
 
 			// ペインのカレントシャトルを設定します。
 			pane->set_current_index(current);
 
 			// 子ペインを読み込みます。
-			if (auto pane_nodes_op = node.get_child_optional("pane"))
+			size_t i = 0;
+			get_child_nodes(node, "pane",
+				[&](const n_json& pane_node)
 			{
-				size_t i = 0;
-				for (const auto& pair : pane_nodes_op.value())
-				{
-					if (i >= 2) break; // 子ペインは最大2個までです。
+				if (i >= 2) return FALSE; // 子ペインは最大2個までです。
+				if (pane_node.is_null()) return FALSE;
 
-					const auto& pane_node = pair.second;
+				pane->children[i] = std::make_shared<Pane>(pane->owner);
 
-					pane->children[i] = std::make_shared<Pane>(pane->owner);
+				load_pane(pane_node, pane->children[i]);
 
-					load_pane(pane_node, pane->children[i]);
+				i++;
 
-					i++;
-				}
-			}
+				return TRUE;
+			});
 		}
 
 		//
 		// ルートペインを読み込みます。
 		//
-		void load_root_pane(const ptree& node, HWND hwnd)
+		void load_root_pane(const n_json& node, HWND hwnd)
 		{
 			MY_TRACE_FUNC("");
 
@@ -163,20 +160,17 @@ namespace apn::workspace
 			root->reset_pane();
 
 			// ルートペインを読み込みます。
-			if (auto root_pane_nodes_op = node.get_child_optional("root_pane"))
-			{
-				const auto& root_pane_node = root_pane_nodes_op.value();
-
-				get_bool(root_pane_node, "is_solid", root->is_solid);
-				load_pane(root_pane_node, root);
-			}
+			n_json root_pane_node;
+			get_child_node(node, "root_pane", root_pane_node);
+			get_bool(root_pane_node, "is_solid", root->is_solid);
+			load_pane(root_pane_node, root);
 		}
 
 		//
 		// 事前にサブウィンドウを読み込みます。
 		// これにより、レイアウトを読み込む前に必要なすべてのサブウィンドウが存在する状態になります。
 		//
-		void pre_load_sub_window(const ptree& node)
+		void pre_load_sub_window(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -192,119 +186,111 @@ namespace apn::workspace
 			}
 
 			// サブウィンドウを読み込みます。
-			if (auto sub_window_nodes_op = node.get_child_optional("sub_window"))
+			get_child_nodes(node, "sub_window",
+				[&](const n_json& sub_window_node)
 			{
-				for (const auto& pair : sub_window_nodes_op.value())
+				// シャトル名を読み込みます。
+				std::wstring name;
+				get_shuttle_name(sub_window_node, "name", name);
+				MY_TRACE_STR(name);
+
+				// 既存のサブウィンドウが存在する場合は
+				if (auto shuttle = shuttle_manager.get(name))
 				{
-					const auto& sub_window_node = pair.second;
-
-					// シャトル名を読み込みます。
-					std::wstring name;
-					get_shuttle_name(sub_window_node, "name", name);
-					MY_TRACE_STR(name);
-
-					// 既存のサブウィンドウが存在する場合は
-					if (auto shuttle = shuttle_manager.get(name))
-					{
-						// 何もしません。
-					}
-					// 既存のサブウィンドウが存在しない場合は
-					else
-					{
-						// サブウィンドウを作成します。
-						auto sub_window = std::make_shared<SubWindow>();
-						if (sub_window->create(name, hive.main_window))
-							sub_window->init(name, *sub_window);
-					}
+					// 何もしません。
 				}
-			}
+				// 既存のサブウィンドウが存在しない場合は
+				else
+				{
+					// サブウィンドウを作成します。
+					auto sub_window = std::make_shared<SubWindow>();
+					if (sub_window->create(name, hive.main_window))
+						sub_window->init(name, *sub_window);
+				}
+
+				return TRUE;
+			});
 		}
 
 		//
 		// メインウィンドウを読み込みます。
 		//
-		void load_main_window(const ptree& node)
+		void load_main_window(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
 			// メインウィンドウを読み込みます。
-			if (auto main_window_node_op = node.get_child_optional("main_window"))
-			{
-				const auto& main_window_node = main_window_node_op.value();
+			n_json main_window_node;
+			get_child_node(node, "main_window", main_window_node);
 
-				// ウィンドウ位置を読み込みます。
-				get_window(main_window_node, "placement", hive.main_window);
+			// ウィンドウ位置を読み込みます。
+			get_window(main_window_node, "placement", hive.main_window);
 
-				// ルートペインを読み込みます。
-				load_root_pane(main_window_node, hive.main_window);
-			}
+			// ルートペインを読み込みます。
+			load_root_pane(main_window_node, hive.main_window);
 		}
 
 		//
 		// サブウィンドウを読み込みます。
 		//
-		void load_sub_window(const ptree& node)
+		void load_sub_window(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
 			// サブウィンドウを読み込みます。
-			if (auto sub_window_nodes_op = node.get_child_optional("sub_window"))
+			get_child_nodes(node, "sub_window",
+				[&](const n_json& sub_window_node)
 			{
-				for (const auto& pair : sub_window_nodes_op.value())
-				{
-					const auto& sub_window_node = pair.second;
+				// シャトル名を読み込みます。
+				std::wstring name;
+				get_shuttle_name(sub_window_node, "name", name);
+				MY_TRACE_STR(name);
 
-					// シャトル名を読み込みます。
-					std::wstring name;
-					get_shuttle_name(sub_window_node, "name", name);
-					MY_TRACE_STR(name);
+				// サブウィンドウを取得します。
+				auto shuttle = shuttle_manager.get(name);
+				if (!shuttle) return TRUE;
 
-					// サブウィンドウを取得します。
-					auto shuttle = shuttle_manager.get(name);
-					if (!shuttle) continue;
+				// ルートペインを読み込みます。
+				load_root_pane(sub_window_node, *shuttle);
 
-					// ルートペインを読み込みます。
-					load_root_pane(sub_window_node, *shuttle);
-				}
-			}
+				return TRUE;
+			});
 		}
 
 		//
 		// フローティングシャトルを読み込みます。
 		//
-		void load_float_shuttle(const ptree& node)
+		void load_float_shuttle(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
 			// フローティングシャトルを読み込みます。
-			if (auto float_shuttle_nodes_op = node.get_child_optional("float_shuttle"))
+			get_child_nodes(node, "float_shuttle",
+				[&](const n_json& float_shuttle_node)
 			{
-				for (const auto& pair : float_shuttle_nodes_op.value())
+				// シャトル名を読み込みます。
+				std::wstring name;
+				get_shuttle_name(float_shuttle_node, "name", name);
+				MY_TRACE_STR(name);
+
+				// シャトルを取得します。
+				auto shuttle = shuttle_manager.get(name);
+				if (!shuttle) return TRUE;
+
+				get_window(float_shuttle_node, "placement", *shuttle->float_container);
+
+				// フローティングコンテナが表示状態の場合は
+				if (::IsWindowVisible(*shuttle->float_container))
 				{
-					const auto& float_node = pair.second;
+					// シャトルがドッキング中かもしれないので、ドッキングを解除します。
+					shuttle->fire_release_shuttle();
 
-					// シャトル名を読み込みます。
-					std::wstring name;
-					get_shuttle_name(float_node, "name", name);
-					MY_TRACE_STR(name);
-
-					// シャトルを取得します。
-					auto shuttle = shuttle_manager.get(name);
-					if (!shuttle) continue;
-
-					get_window(float_node, "placement", *shuttle->float_container);
-
-					// フローティングコンテナが表示状態の場合は
-					if (::IsWindowVisible(*shuttle->float_container))
-					{
-						// シャトルがドッキング中かもしれないので、ドッキングを解除します。
-						shuttle->fire_release_shuttle();
-
-						// ターゲットウィンドウを表示状態にします。
-						shuttle->show_target_window();
-					}
+					// ターゲットウィンドウを表示状態にします。
+					shuttle->show_target_window();
 				}
-			}
+
+				return TRUE;
+			});
 		}
 	};
 }

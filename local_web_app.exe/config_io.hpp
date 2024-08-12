@@ -41,7 +41,7 @@ namespace apn::local_web_app
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,11 +63,9 @@ namespace apn::local_web_app
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_window(root, "main_window", hive.main_window);
 
@@ -75,13 +73,11 @@ namespace apn::local_web_app
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_window(root, "main_window", hive.main_window);
 

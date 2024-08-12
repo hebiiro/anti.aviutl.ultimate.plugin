@@ -73,9 +73,9 @@ namespace apn::filer_ui
 		}
 
 		//
-		// 設定を読み込みます。
+		// コンフィグを読み込みます。
 		//
-		void read(const ptree& node)
+		void read(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -91,17 +91,15 @@ namespace apn::filer_ui
 			folder_control.SetWindowText(path.c_str());
 
 			// ブックマークを読み込みます。
-			if (auto bookmarks_node = node.get_child_optional("bookmarks"))
+			get_child_nodes(node, "bookmarks",
+				[&](const n_json& bookmark_node)
 			{
-				for (const auto& pair : bookmarks_node.value())
-				{
-					const auto& bookmark_node = pair.second;
+				std::wstring path;
+				get_string(bookmark_node, path);
+				folder_control.AddString(path.c_str());
 
-					std::wstring path;
-					get_string(bookmark_node, "", path);
-					folder_control.AddString(path.c_str());
-				}
-			}
+				return TRUE;
+			});
 
 			// エクスプローラを作り直します。
 			exit_explorer();
@@ -109,9 +107,9 @@ namespace apn::filer_ui
 		}
 
 		//
-		// 設定を保存します。
+		// コンフィグを書き込みます。
 		//
-		void write(ptree& node)
+		void write(n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -120,23 +118,24 @@ namespace apn::filer_ui
 			set_bool(node, "nav_pane", nav_pane);
 			set_string(node, "path", hot_folder);
 
-			ptree bookmarks_node;
+			std::vector<std::wstring> bookmarks;
+			auto c = folder_control.GetCount();
+			MY_TRACE_INT(c);
+			for (decltype(c) i = 0; i < c; i++)
 			{
-				auto c = folder_control.GetCount();
-				MY_TRACE_INT(c);
-				for (decltype(c) i = 0; i < c; i++)
-				{
-					CString path; folder_control.GetLBText(i, path);
-					MY_TRACE_STR((LPCTSTR)path);
+				CString path; folder_control.GetLBText(i, path);
+				MY_TRACE_STR((LPCTSTR)path);
 
-					ptree bookmark_node;
-					{
-						set_string(bookmark_node, "", (LPCTSTR)path);
-					}
-					bookmarks_node.push_back(std::make_pair("", bookmark_node));
-				}
+				bookmarks.emplace_back((LPCTSTR)path);
 			}
-			node.put_child("bookmarks", bookmarks_node);
+
+			set_child_nodes(node, "bookmarks", bookmarks,
+				[&](n_json& bookmark_node, const auto& bookmark)
+			{
+				set_string(bookmark_node, bookmark);
+
+				return TRUE;
+			});
 		}
 
 		//

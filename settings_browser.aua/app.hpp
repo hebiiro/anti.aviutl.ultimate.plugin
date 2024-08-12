@@ -42,11 +42,11 @@ namespace apn::settings_browser
 				return FALSE;
 			}
 
-			ptree root;
+			n_json root;
 			{
-				ptree node;
+				n_json node;
 				{
-					ptree filter_nodes;
+					n_json filter_nodes;
 					{
 						for (int32_t filter_index = 0; filter_index < ExEdit::Object::MAX_FILTER; filter_index++)
 						{
@@ -54,17 +54,17 @@ namespace apn::settings_browser
 							auto filter = magi.exin.get_filter(object, filter_index);
 							if (!filter) break;
 
-							ptree filter_node;
+							n_json filter_node;
 							{
 								set_string(filter_node, "name", my::ws(filter->name));
 
-								ptree track_nodes;
+								n_json track_nodes;
 								{
 									for (int32_t track_index = 0; track_index < filter->track_n; track_index++)
 									{
 										if (filter->track_default[track_index] < 0) continue;
 
-										ptree track_node;
+										n_json track_node;
 										{
 											set_string(track_node, "name", my::ws(filter->track_name[track_index]));
 											set_int(track_node, "default", filter->track_default[track_index]);
@@ -77,47 +77,43 @@ namespace apn::settings_browser
 											if (filter->track_value_left) set_int(track_node, "value_left", filter->track_value_left[track_index]);
 											if (filter->track_value_right) set_int(track_node, "value_right", filter->track_value_right[track_index]);
 										}
-										track_nodes.push_back(std::make_pair("", track_node));
+										track_nodes.emplace_back(track_node);
 									}
 								}
-								filter_node.put_child("track", track_nodes);
+								set_child(filter_node, "track", track_nodes);
 
-								ptree check_nodes;
+								n_json check_nodes;
 								{
 									for (int32_t check_index = 0; check_index < filter->check_n; check_index++)
 									{
 										if (filter->check_default[check_index] < 0) continue;
 
-										ptree check_node;
+										n_json check_node;
 										{
 											set_string(check_node, "name", my::ws(filter->check_name[check_index]));
 											set_int(check_node, "default", filter->check_default[check_index]);
 											if (filter->check) set_int(check_node, "check", filter->check[check_index]);
 											if (filter->check_value) set_int(check_node, "value", filter->check_value[check_index]);
 										}
-										check_nodes.push_back(std::make_pair("", check_node));
+										check_nodes.emplace_back(check_node);
 									}
 								}
-								filter_node.put_child("check", check_nodes);
+								set_child(filter_node, "check", check_nodes);
 
 								// ここでexdataも解析する。
 							}
-							filter_nodes.push_back(std::make_pair("", filter_node));
+							filter_nodes.emplace_back(filter_node);
 						}
 					}
-					node.put_child("filter", filter_nodes);
+					set_child(node, "filter", filter_nodes);
 				}
-				root.put_child("show_settings", node);
+				set_child(root, "show_settings", node);
 			}
 
-			// ツリーをストリームに書き込みます。
-			std::stringstream stream;
-			write_json(stream, root);
+			// jsonを文字列に変換します。
+			hive.settings_json = my::cp_to_wide(root.dump(1, '\t'), CP_UTF8);
 
-			// ストリームから文字列を取得します。
-			hive.settings_json = my::cp_to_wide(stream.str(), CP_UTF8);
-
-			// ブラウザにjsonを送信します。
+			// ブラウザにjson文字列を送信します。
 			browser.post_json(hive.settings_json);
 
 			return TRUE;

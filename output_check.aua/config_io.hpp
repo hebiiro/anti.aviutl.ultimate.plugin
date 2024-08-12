@@ -41,7 +41,7 @@ namespace apn::output_check
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,11 +63,9 @@ namespace apn::output_check
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_bool(root, "check_range", hive.check_range);
 			get_bool(root, "check_last_frame", hive.check_last_frame);
@@ -78,13 +76,11 @@ namespace apn::output_check
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_bool(root, "check_range", hive.check_range);
 			set_bool(root, "check_last_frame", hive.check_last_frame);

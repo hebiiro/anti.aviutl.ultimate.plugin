@@ -41,7 +41,7 @@ namespace apn::dialog_size
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,28 +63,24 @@ namespace apn::dialog_size
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
-
 			size_t i = 0;
-			if (auto custom_template_nodes_op = root.get_child_optional("custom_template"))
+			get_child_nodes(root, "custom_template",
+				[&](const n_json& custom_template_node)
 			{
-				for (const auto& pair : custom_template_nodes_op.value())
-				{
-					const auto& custom_template_node = pair.second;
+				if (i >= std::size(hive.custom_templates))
+					return FALSE;
 
-					if (i < std::size(hive.custom_templates))
-					{
-						get_bool(custom_template_node, "active", hive.custom_templates[i].active);
-//						get_string(custom_template_node, "name", hive.custom_templates[i].target_display_name);
+				get_bool(custom_template_node, "active", hive.custom_templates[i].active);
+//				get_string(custom_template_node, "name", hive.custom_templates[i].target_display_name);
 
-						i++;
-					}
-				}
-			}
+				i++;
+
+				return TRUE;
+			});
 
 			get_window(root, "addin_window", addin_window);
 
@@ -92,27 +88,20 @@ namespace apn::dialog_size
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
-
-			ptree custom_template_nodes;
+			set_child_nodes(root, "custom_template", hive.custom_templates,
+				[&](n_json& custom_template_node, const auto& custom_template)
 			{
-				for (size_t i = 0; i < std::size(hive.custom_templates); i++)
-				{
-					ptree custom_template_node;
-					{
-						set_bool(custom_template_node, "active", hive.custom_templates[i].active);
-						set_string(custom_template_node, "name", hive.custom_templates[i].target_display_name);
-					}
-					custom_template_nodes.push_back(std::make_pair("", custom_template_node));
-				}
-			}
-			root.put_child("custom_template", custom_template_nodes);
+				set_bool(custom_template_node, "active", custom_template.active);
+				set_string(custom_template_node, "name", custom_template.target_display_name);
+
+				return TRUE;
+			});
 
 			set_window(root, "addin_window", addin_window);
 

@@ -2,8 +2,6 @@
 
 namespace apn::ease_select_ui
 {
-	using namespace my::json;
-
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
@@ -43,7 +41,7 @@ namespace apn::ease_select_ui
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -55,16 +53,12 @@ namespace apn::ease_select_ui
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
-
-			if (auto easing_node_op = root.get_child_optional("easing"))
 			{
-				auto& easing_node = easing_node_op.value();
-
+				n_json easing_node; get_child_node(root, "easing", easing_node);
 				get_int(easing_node, "image_version", easing_window.image_version);
 				get_bool(easing_node, "clamp", easing_window.clamp);
 				get_string(easing_node, "horz", easing_window.horz);
@@ -75,10 +69,8 @@ namespace apn::ease_select_ui
 				get_color(easing_node, "hot_color", easing_window.hot_color);
 			}
 
-			if (auto ease_node_op = root.get_child_optional("ease"))
 			{
-				auto& ease_node = ease_node_op.value();
-
+				n_json ease_node; get_child_node(root, "ease", ease_node);
 				get_bool(ease_node, "enabled", ease_window.enabled);
 				get_string(ease_node, "origin", ease_window.origin);
 				get_bool(ease_node, "clamp", ease_window.clamp);
@@ -111,18 +103,16 @@ namespace apn::ease_select_ui
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
 			if (!hive.config_loaded) return FALSE;
 
-			using namespace my::json;
-
-			ptree easing_node;
 			{
+				n_json easing_node;
 				set_int(easing_node, "image_version", easing_window.image_version);
 				set_bool(easing_node, "clamp", easing_window.clamp);
 				set_string(easing_node, "horz", easing_window.horz);
@@ -131,11 +121,11 @@ namespace apn::ease_select_ui
 				set_int(easing_node, "scale", easing_window.scale);
 				set_color(easing_node, "sel_color", easing_window.sel_color);
 				set_color(easing_node, "hot_color", easing_window.hot_color);
+				set_child_node(root, "easing", easing_node);
 			}
-			root.put_child("easing", easing_node);
 
-			ptree ease_node;
 			{
+				n_json ease_node;
 				set_bool(ease_node, "enabled", ease_window.enabled);
 				set_string(ease_node, "origin", ease_window.origin);
 				set_bool(ease_node, "clamp", ease_window.clamp);
@@ -160,8 +150,8 @@ namespace apn::ease_select_ui
 				set_color(ease_node, "point_color", ease_window.point_color);
 				set_int(ease_node, "point_radius", ease_window.point_radius);
 				set_color(ease_node, "hot_point_color", ease_window.hot_point_color);
+				set_child_node(root, "ease", ease_node);
 			}
-			root.put_child("ease", ease_node);
 
 			return TRUE;
 		}

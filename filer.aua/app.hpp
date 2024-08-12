@@ -92,7 +92,7 @@ namespace apn::filer
 		{
 			MY_TRACE_FUNC("");
 
-			// コンフィグを保存します。
+			// コンフィグを書き込みます。
 			config_io.write();
 
 			// ホストプロセスが終了することを

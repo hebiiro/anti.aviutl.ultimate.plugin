@@ -41,7 +41,7 @@ namespace apn::editbox_tweaker
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -73,39 +73,43 @@ namespace apn::editbox_tweaker
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_bool(root, "unicode_input", hive.unicode_input);
 			get_bool(root, "ctrl_a", hive.ctrl_a);
 			get_bool(root, "zoomable", hive.zoomable);
 			get_int(root, "delta", hive.delta);
-			get_string(root, "font.name", hive.font.name);
-			get_int(root, "font.height", hive.font.height);
-			get_int(root, "font.pitch", hive.font.pitch);
+			{
+				n_json font_node;
+				get_child_node(root, "font", font_node);
+				get_string(font_node, "name", hive.font.name);
+				get_int(font_node, "height", hive.font.height);
+				get_int(font_node, "pitch", hive.font.pitch);
+			}
 
 			return TRUE;
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_bool(root, "unicode_input", hive.unicode_input);
 			set_bool(root, "ctrl_a", hive.ctrl_a);
 			set_bool(root, "zoomable", hive.zoomable);
 			set_int(root, "delta", hive.delta);
-			set_string(root, "font.name", hive.font.name);
-			set_int(root, "font.height", hive.font.height);
-			set_int(root, "font.pitch", hive.font.pitch);
+			{
+				n_json font_node;
+				set_string(font_node, "name", hive.font.name);
+				set_int(font_node, "height", hive.font.height);
+				set_int(font_node, "pitch", hive.font.pitch);
+				set_child_node(root, "font", font_node);
+			}
 
 			return TRUE;
 		}

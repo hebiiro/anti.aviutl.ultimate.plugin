@@ -41,7 +41,7 @@ namespace apn::workspace
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write(uint32_t flags = hive.c_preference_flag.c_default)
 		{

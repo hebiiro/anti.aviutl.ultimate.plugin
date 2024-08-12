@@ -23,7 +23,7 @@ namespace apn::workspace
 		//
 		// ノードにプリファレンスを保存します。
 		//
-		virtual BOOL write_node(ptree& node) override
+		virtual BOOL write_node(n_json& node) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -64,7 +64,7 @@ namespace apn::workspace
 		//
 		// 指定された要素からシャトル名を読み込みます。
 		//
-		void set_shuttle_name(ptree& node, const std::string& name, const std::wstring& value)
+		void set_shuttle_name(n_json& node, const std::string& name, const std::wstring& value)
 		{
 			set_string(node, name, Shuttle::strip_name(value));
 		}
@@ -72,7 +72,7 @@ namespace apn::workspace
 		//
 		// ペインを保存します。
 		//
-		void save_pane(ptree& node, const std::shared_ptr<Pane>& pane)
+		void save_pane(n_json& node, const std::shared_ptr<Pane>& pane)
 		{
 			MY_TRACE_FUNC("");
 
@@ -85,114 +85,92 @@ namespace apn::workspace
 			set_bool(node, "is_border_locked", pane->is_border_locked);
 			set_int(node, "current", current);
 
-			ptree dock_shuttle_nodes;
+			auto c = pane->get_tab_count();
+			std::vector<Shuttle*> dock_shuttles(c);
+			for (decltype(c) i = 0; i < c; i++)
+				dock_shuttles[i] = pane->get_shuttle(i);
+
+			set_child_nodes(node, "dock_shuttle", dock_shuttles,
+				[&](n_json& dock_shuttle_node, const auto& shuttle)
 			{
-				auto c = pane->get_tab_count();
-				for (decltype(c) i = 0; i < c; i++)
-				{
-					auto shuttle = pane->get_shuttle(i);
+				set_shuttle_name(dock_shuttle_node, "name", shuttle->name);
 
-					ptree dock_shuttle_node;
-					{
-						set_shuttle_name(dock_shuttle_node, "name", shuttle->name);
-					}
-					dock_shuttle_nodes.push_back(std::make_pair("", dock_shuttle_node));
-				}
-			}
-			node.put_child("dock_shuttle", dock_shuttle_nodes);
+				return TRUE;
+			});
 
-			ptree pane_nodes;
+			set_child_nodes(node, "pane", pane->children,
+				[&](n_json& pane_node, const auto& child)
 			{
-				for (const auto& child : pane->children)
-				{
-					if (!child) continue;
+				if (!child) return FALSE;
 
-					ptree pane_node;
-					{
-						save_pane(pane_node, child);
-					}
-					pane_nodes.push_back(std::make_pair("", pane_node));
-				}
-			}
-			node.put_child("pane", pane_nodes);
+				save_pane(pane_node, child);
+
+				return TRUE;
+			});
 		}
 
 		//
 		// ルートペインを保存します。
 		//
-		void save_root_pane(ptree& node, HWND hwnd)
+		void save_root_pane(n_json& node, HWND hwnd)
 		{
 			MY_TRACE_FUNC("");
 
 			auto root = SubWindow::get_root_pane(hwnd);
 
-			ptree root_pane_node;
-			{
-				set_bool(root_pane_node, "is_solid", root->is_solid);
-				save_pane(root_pane_node, root);
-			}
-			node.put_child("root_pane", root_pane_node);
+			n_json root_pane_node;
+			set_bool(root_pane_node, "is_solid", root->is_solid);
+			save_pane(root_pane_node, root);
+			set_child_node(node, "root_pane", root_pane_node);
 		}
 
 		//
 		// メインウィンドウを保存します。
 		//
-		void save_main_window(ptree& node)
+		void save_main_window(n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
-			ptree main_window_node;
-			{
-				set_window(main_window_node, "placement", hive.main_window);
-				save_root_pane(main_window_node, hive.main_window);
-			}
-			node.put_child("main_window", main_window_node);
+			n_json main_window_node;
+			set_window(main_window_node, "placement", hive.main_window);
+			save_root_pane(main_window_node, hive.main_window);
+			set_child_node(node, "main_window", main_window_node);
 		}
 
 		//
 		// サブウィンドウを保存します。
 		//
-		void save_sub_window(ptree& node)
+		void save_sub_window(n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
-			ptree sub_window_nodes;
+			set_child_nodes(node, "sub_window", SubWindow::collection,
+				[&](n_json& sub_window_node, const auto& sub_window)
 			{
-				for (auto sub_window : SubWindow::collection)
-				{
-					ptree sub_window_node;
-					{
-						set_shuttle_name(sub_window_node, "name", sub_window->name);
-						save_root_pane(sub_window_node, *sub_window);
-					}
-					sub_window_nodes.push_back(std::make_pair("", sub_window_node));
-				}
-			}
-			node.put_child("sub_window", sub_window_nodes);
+				set_shuttle_name(sub_window_node, "name", sub_window->name);
+				save_root_pane(sub_window_node, *sub_window);
+
+				return TRUE;
+			});
 		}
 
 		//
 		// フローティングシャトルを保存します。
 		//
-		void save_float_shuttle(ptree& node)
+		void save_float_shuttle(n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
-			ptree float_shuttle_nodes;
+			set_child_nodes(node, "float_shuttle", shuttle_manager.collection,
+				[&](n_json& float_shuttle_node, const auto& x)
 			{
-				for (const auto& x : shuttle_manager.collection)
-				{
-					const auto& shuttle = x.second;
+				const auto& shuttle = x.second;
 
-					ptree float_shuttle_node;
-					{
-						set_shuttle_name(float_shuttle_node, "name", shuttle->name);
-						set_window(float_shuttle_node, "placement", *shuttle->float_container);
-					}
-					float_shuttle_nodes.push_back(std::make_pair("", float_shuttle_node));
-				}
-			}
-			node.put_child("float_shuttle", float_shuttle_nodes);
+				set_shuttle_name(float_shuttle_node, "name", shuttle->name);
+				set_window(float_shuttle_node, "placement", *shuttle->float_container);
+
+				return TRUE;
+			});
 		}
 	};
 }

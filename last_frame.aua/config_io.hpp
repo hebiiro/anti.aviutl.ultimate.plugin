@@ -41,7 +41,7 @@ namespace apn::last_frame
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,11 +63,9 @@ namespace apn::last_frame
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_bool(root, "enabled", hive.enabled);
 			get_window(root, "addin_window", addin_window);
@@ -76,13 +74,11 @@ namespace apn::last_frame
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_bool(root, "enabled", hive.enabled);
 			set_window(root, "addin_window", addin_window);

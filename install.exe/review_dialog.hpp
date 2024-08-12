@@ -153,91 +153,84 @@ public:
 		try
 		{
 			std::ifstream ifs(hive.spec_file_name);
-			ptree root;
-			read_json(ifs, root);
+			n_json root; ifs >> root;
 
 			if (hive.uninstall_old_version)
 			{
 				auto op = std::wstring(L"移動");
 
-				if (auto rename_nodes_op = root.get_child_optional("rename"))
+				get_child_nodes(root, "rename",
+					[&](const n_json& rename_node)
 				{
-					for (const auto& pair : rename_nodes_op.value())
-					{
-						const auto& rename_node = pair.second;
+					std::filesystem::path from;
+					get_file_name(rename_node, "from", from);
+					if (from.empty()) return TRUE;
 
-						std::filesystem::path from;
-						get_file_name(rename_node, "from", from);
-						if (from.empty()) continue;
+					std::filesystem::path to;
+					get_file_name(rename_node, "to", to);
+					if (to.empty()) return TRUE;
 
-						std::filesystem::path to;
-						get_file_name(rename_node, "to", to);
-						if (to.empty()) continue;
+					from = hive.aviutl_dir / from;
+					to = hive.aviutl_dir / to;
 
-						from = hive.aviutl_dir / from;
-						to = hive.aviutl_dir / to;
+					from = from.make_preferred();
+					to = to.make_preferred();
 
-						from = from.make_preferred();
-						to = to.make_preferred();
+					if (!std::filesystem::exists(from)) return TRUE;
 
-						if (!std::filesystem::exists(from)) continue;
+					insert_review(review_index++, op, from, to);
 
-						insert_review(review_index++, op, from, to);
-					}
-				}
+					return TRUE;
+				});
 
-				if (auto erase_nodes_op = root.get_child_optional("erase"))
+				get_child_nodes(root, "erase",
+					[&](const n_json& erase_node)
 				{
-					for (const auto& pair : erase_nodes_op.value())
-					{
-						const auto& erase_node = pair.second;
+					std::wstring path;
+					get_string(erase_node, "path", path);
+					if (path.empty()) return TRUE;
 
-						std::wstring path;
-						get_string(erase_node, "path", path);
-						if (path.empty()) continue;
+					auto from = hive.aviutl_dir / path;
+					auto to = hive.aviutl_dir / L"アンインストール済み" / path;
 
-						auto from = hive.aviutl_dir / path;
-						auto to = hive.aviutl_dir / L"アンインストール済み" / path;
+					from = from.make_preferred();
+					to = to.make_preferred();
 
-						from = from.make_preferred();
-						to = to.make_preferred();
+					if (!std::filesystem::exists(from)) return TRUE;
 
-						if (!std::filesystem::exists(from)) continue;
+					insert_review(review_index++, op, from, to);
 
-						insert_review(review_index++, op, from, to);
-					}
-				}
+					return TRUE;
+				});
 			}
 
 			if (hive.install_new_version)
 			{
 				auto op = std::wstring(L"コピー");
 
-				if (auto deploy_nodes_op = root.get_child_optional("deploy"))
+				get_child_nodes(root, "deploy",
+					[&](const n_json& deploy_node)
 				{
-					for (const auto& pair : deploy_nodes_op.value())
-					{
-						const auto& deploy_node = pair.second;
+					std::filesystem::path from;
+					get_file_name(deploy_node, "from", from);
+					if (from.empty()) return TRUE;
 
-						std::filesystem::path from;
-						get_file_name(deploy_node, "from", from);
-						if (from.empty()) continue;
+					std::filesystem::path to;
+					get_file_name(deploy_node, "to", to);
+					if (to.empty()) return TRUE;
 
-						std::filesystem::path to;
-						get_file_name(deploy_node, "to", to);
-						if (to.empty()) continue;
+					from = std::filesystem::current_path() / from;
+					to = hive.aviutl_dir / to;
 
-						from = std::filesystem::current_path() / from;
-						to = hive.aviutl_dir / to;
+					from = from.make_preferred();
+					to = to.make_preferred();
 
-						from = from.make_preferred();
-						to = to.make_preferred();
+					if (!std::filesystem::exists(from)) return TRUE;
 
-						if (!std::filesystem::exists(from)) continue;
+					insert_review(review_index++, op, from, to);
 
-						insert_review(review_index++, op, from, to);
-					}
-				}
+					return TRUE;
+				});
 			}
 
 			if (hive.deploy_runtime)
@@ -260,7 +253,7 @@ public:
 				L"{}を読込中にエラーが発生しました" L"\n"
 				L"{}",
 				hive.spec_file_name,
-				my::cp_to_wide(error.what(), CP_ACP)).c_str());
+				my::ws(error.what())).c_str());
 
 			return FALSE;
 		}

@@ -7,12 +7,8 @@
 
 //#define MY_TRACE_ENABLED 1
 #include "common/core/include.hpp"
-using namespace my::json;
 
 #include <wrl.h>
 #include <wil/com.h>
 #include <webview2.h>
 using namespace Microsoft::WRL;
-
-#include "nlohmann/json.hpp"
-using njson = nlohmann::json;

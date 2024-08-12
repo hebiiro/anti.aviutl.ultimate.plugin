@@ -17,7 +17,7 @@ namespace apn::settings_browser
 		// コンテンツから発行されるコンフィグの書き込みイベントで更新されます。
 		// (実際にファイルに書き込まれるのはプロセス終了時です)
 		//
-		ptree config;
+		n_json config;
 
 		//
 		// 初期化処理を実行します。
@@ -183,15 +183,19 @@ namespace apn::settings_browser
 		{
 			MY_TRACE_FUNC("");
 
-			ptree root;
-			std::stringstream stream(my::wide_to_cp(json, CP_UTF8));
-			read_json(stream, root);
-			for (const auto& it : root)
+			try
 			{
-				if (it.first == "write_config")
+				auto root = n_json::parse(my::wide_to_cp(json, CP_UTF8));
+
+				for (const auto& node : root.items())
 				{
-					config = it.second;
+					if (node.key() == "write_config")
+						config = node.value();
 				}
+			}
+			catch (const std::exception& error)
+			{
+				hive.message_box(my::ws(error.what()), *this);
 			}
 
 			return TRUE;

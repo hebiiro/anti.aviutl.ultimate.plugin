@@ -391,9 +391,4 @@
       <Filter>resource\icon</Filter>
     </Image>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <Filter>framework</Filter>
-    </None>
-  </ItemGroup>
 </Project>

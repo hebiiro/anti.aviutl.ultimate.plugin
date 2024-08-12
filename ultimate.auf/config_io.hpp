@@ -8,7 +8,7 @@ namespace apn
 	inline struct ConfigIO : StdConfigIO
 	{
 		//
-		// 初期化を実行します。
+		// 初期化処理を実行します。
 		//
 		BOOL init()
 		{
@@ -20,7 +20,7 @@ namespace apn
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"dark", L"ダークモード化", TRUE, L"", std::vector<std::wstring>{ L"DarkenWindow.aul" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"workspace", L"ワークスペース化", TRUE, L"", std::vector<std::wstring>{ L"SplitWindow.aul" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"filer", L"ファイラ", TRUE, L"", std::vector<std::wstring>{ L"ObjectExplorer.auf" }));
-//			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_graph", L"音声グラフ", TRUE, L"", std::vector<std::wstring>{ L"LevelMeter.auf" }));
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_visualizer", L"音声視覚化", TRUE, L"", std::vector<std::wstring>{ L"LevelMeter.auf" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", TRUE, L"", std::vector<std::wstring>{ L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" }));
 			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"settings_browser", L"設定ブラウザ", TRUE, L"", std::vector<std::wstring>{}));
 
@@ -51,7 +51,7 @@ namespace apn
 		}
 
 		//
-		// 後始末を実行します。
+		// 後始末処理を実行します。
 		//
 		BOOL exit()
 		{
@@ -63,73 +63,59 @@ namespace apn
 		//
 		// コンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
-
 			get_string(root, "python_file_name", hive.python_file_name);
 
-			// ファイル内のアドイン情報を読み込みます。
-			if (auto addin_nodes_op = root.get_child_optional("addin"))
+			// アドイン情報を読み込みます。
+			get_child_nodes(root, "addin",
+				[&](const n_json& addin_node)
 			{
-				for (const auto& pair : addin_nodes_op.value())
-				{
-					const auto& addin_node = pair.second;
+				// アドインの名前を取得します。
+				std::wstring name;
+				get_string(addin_node, "name", name);
+				MY_TRACE_STR(name);
 
-					// アドインの名前を取得します。
-					std::wstring name;
-					get_string(addin_node, "name", name);
-					MY_TRACE_STR(name);
+				// アドインの名前から登録されているアドインを取得します。
+				auto it = std::find_if(hive.addins.begin(), hive.addins.end(),
+					[&name](const auto& addin) { return addin->name == name; });
+				if (it == hive.addins.end()) return TRUE;
+				auto& addin = *it;
 
-					// アドインの名前から登録されているアドインを取得します。
-					auto it = std::find_if(hive.addins.begin(), hive.addins.end(),
-						[&name](const auto& addin) { return addin->name == name; });
-					if (it == hive.addins.end()) continue;
-					auto& addin = *it;
+				// アドインの状態を取得し、登録されているアドインに格納します。
+				get_bool(addin_node, "active", addin->active);
+				MY_TRACE_INT(addin->active);
 
-					// アドインの状態を取得し、登録されているアドインに格納します。
-					get_bool(addin_node, "active", addin->active);
-					MY_TRACE_INT(addin->active);
+				// アドインの引数を取得し、登録されているアドインに格納します。
+				get_string(addin_node, "args", addin->args);
+				MY_TRACE_STR(addin->args);
 
-					// アドインの引数を取得し、登録されているアドインに格納します。
-					get_string(addin_node, "args", addin->args);
-					MY_TRACE_STR(addin->args);
-				}
-			}
+				return TRUE;
+			});
 
 			return TRUE;
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
-		virtual BOOL write_stream(std::ofstream& ofs) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
+			set_string(root, "python_file_name", hive.python_file_name);
 
-			size_t indent = 0;
-
-			ofs << with_eol(indent++, R"({)"s);
+			set_child_nodes(root, "addin", hive.addins,
+				[&](n_json& addin_node, const auto& addin)
 			{
-				ofs << with_eol(indent, std::format(R"("python_file_name": "{}",)", my::wide_to_cp(hive.python_file_name, CP_UTF8)));
-				ofs << with_eol(0, "");
-				ofs << with_eol(indent++, R"("addin": [)"s);
-				for (const auto& addin : hive.addins)
-				{
-					auto str = std::format(R"({{ "active": {}, "name": {}, "args": {} }})",
-						from_bool(addin->active), from_string(addin->name), from_string(addin->args));
+				set_string(addin_node, "name", addin->name);
+				set_bool(addin_node, "active", addin->active);
+				set_string(addin_node, "args", addin->args);
 
-					auto joint = (addin != hive.addins.back()) ? ","s : ""s;
-
-					ofs << with_eol(indent, str + joint);
-				}
-				ofs << with_eol(--indent, R"(])"s);
-			}
-			ofs << with_eol(--indent, R"(})"s);
+				return TRUE;
+			});
 
 			return TRUE;
 		}

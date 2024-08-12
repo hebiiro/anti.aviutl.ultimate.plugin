@@ -41,7 +41,7 @@ namespace apn::scene_select
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -66,11 +66,9 @@ namespace apn::scene_select
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_label(root, "size_mode", hive.size_mode, hive.c_size_mode.labels);
 			get_label(root, "layout_mode", hive.layout_mode, hive.c_layout_mode.labels);
@@ -83,13 +81,11 @@ namespace apn::scene_select
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_label(root, "size_mode", hive.size_mode, hive.c_size_mode.labels);
 			set_label(root, "layout_mode", hive.layout_mode, hive.c_layout_mode.labels);

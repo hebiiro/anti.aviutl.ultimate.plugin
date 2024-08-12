@@ -99,7 +99,7 @@ namespace apn::local_web_app
 
 			try
 			{
-				auto root = njson::parse(my::wide_to_cp(json, CP_UTF8));
+				auto root = n_json::parse(my::wide_to_cp(json, CP_UTF8));
 
 				for (const auto& node : root.items())
 				{
@@ -126,9 +126,9 @@ namespace apn::local_web_app
 						std::ofstream ofs(abs_path);
 						ofs << std::setw(4) << data_node;
 
-						njson root;
+						n_json root;
 						{
-							njson event_node;
+							n_json event_node;
 							{
 								event_node["path"] = my::wide_to_cp(path, CP_UTF8);
 								event_node["abs_path"] = my::wide_to_cp(abs_path, CP_UTF8);
@@ -160,11 +160,11 @@ namespace apn::local_web_app
 
 							// 指定されたファイルを読み込みます。
 							std::ifstream ifs(abs_path);
-							auto data = njson::parse(ifs);
+							auto data = n_json::parse(ifs);
 
-							njson root;
+							n_json root;
 							{
-								njson event_node;
+								n_json event_node;
 								{
 									event_node["path"] = my::wide_to_cp(path, CP_UTF8);
 									event_node["abs_path"] = my::wide_to_cp(abs_path, CP_UTF8);

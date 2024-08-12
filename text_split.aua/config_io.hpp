@@ -41,7 +41,7 @@ namespace apn::text_split
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,11 +63,9 @@ namespace apn::text_split
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			get_label(root, "shift_mode", hive.shift_mode, hive.c_shift_mode.labels);
 			get_int(root, "shift_offset", hive.shift_offset);
@@ -82,13 +80,11 @@ namespace apn::text_split
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			using namespace my::json;
 
 			set_label(root, "shift_mode", hive.shift_mode, hive.c_shift_mode.labels);
 			set_int(root, "shift_offset", hive.shift_offset);

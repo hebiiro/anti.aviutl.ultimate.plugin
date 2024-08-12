@@ -41,7 +41,7 @@ namespace apn::zoom_select
 		}
 
 		//
-		// コンフィグを保存します。
+		// コンフィグを書き込みます。
 		//
 		BOOL write()
 		{
@@ -63,27 +63,23 @@ namespace apn::zoom_select
 		//
 		// ノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(ptree& root) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
-
 			size_t i = 0;
-			if (auto zoom_value_nodes_op = root.get_child_optional("zoom_value"))
+			get_child_nodes(root, "zoom_value",
+				[&](const n_json& zoom_value_node)
 			{
-				for (const auto& pair : zoom_value_nodes_op.value())
-				{
-					const auto& zoom_value_node = pair.second;
+				if (i >= std::size(hive.zoom_values))
+					return FALSE;
 
-					if (i < std::size(hive.zoom_values))
-					{
-						get_int(zoom_value_node, "", hive.zoom_values[i]);
+				get_int(zoom_value_node, hive.zoom_values[i]);
 
-						i++;
-					}
-				}
-			}
+				i++;
+
+				return TRUE;
+			});
 
 			get_window(root, "addin_window", addin_window);
 
@@ -91,26 +87,19 @@ namespace apn::zoom_select
 		}
 
 		//
-		// ノードにコンフィグを保存します。
+		// ノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(ptree& root) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
 
-			using namespace my::json;
-
-			ptree zoom_value_nodes;
+			set_child_nodes(root, "zoom_value", hive.zoom_values,
+				[&](n_json& zoom_value_node, const auto& zoom_value)
 			{
-				for (size_t i = 0; i < std::size(hive.zoom_values); i++)
-				{
-					ptree zoom_value_node;
-					{
-						set_int(zoom_value_node, "", hive.zoom_values[i]);
-					}
-					zoom_value_nodes.push_back(std::make_pair("", zoom_value_node));
-				}
-			}
-			root.put_child("zoom_value", zoom_value_nodes);
+				set_int(zoom_value_node, zoom_value);
+
+				return TRUE;
+			});
 
 			set_window(root, "addin_window", addin_window);
 

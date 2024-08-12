@@ -51,8 +51,7 @@ public:
 		try
 		{
 			std::ifstream ifs(hive.config_file_name);
-			ptree root;
-			read_json(ifs, root);
+			n_json root; ifs >> root;
 
 			get_file_name(root, "aviutl_file_name", hive.aviutl_file_name);
 			get_bool(root, "install_new_version", hive.install_new_version);
@@ -81,7 +80,7 @@ public:
 	{
 		try
 		{
-			ptree root;
+			n_json root;
 
 			set_file_name(root, "aviutl_file_name", hive.aviutl_file_name);
 			set_bool(root, "install_new_version", hive.install_new_version);
@@ -90,7 +89,7 @@ public:
 			set_bool(root, "create_dark_exe", hive.create_dark_exe);
 
 			std::ofstream ofs(hive.config_file_name);
-			write_json(ofs, root);
+			ofs << root.dump(1, '\t');
 
 			return TRUE;
 		}

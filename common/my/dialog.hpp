@@ -216,9 +216,10 @@ namespace my
 			return ::SetDlgItemInt(*this, id, value, FALSE);
 		}
 
-		BOOL set_float(UINT id, float value)
+		template <typename T>
+		BOOL set_float(UINT id, T value, LPCTSTR format = _T("{}"))
 		{
-			return set_text(id, std::format(_T("{}"), value).c_str());
+			return set_text(id, my::format(format, value).c_str());
 		}
 
 		void set_check(UINT id, BOOL value)

@@ -48,9 +48,6 @@
     <None Include="res\ease_select_ui.exe.rc2">
       <Filter>resource</Filter>
     </None>
-    <None Include="packages.config">
-      <Filter>framework</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ease_select_ui.exe.ico">
