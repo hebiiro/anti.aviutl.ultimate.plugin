@@ -42,7 +42,7 @@ namespace apn::audio_visualizer::ui
 					return FALSE;
 				}
 
-				return __super::init();
+				return __super::init(hive.instance);
 			}
 
 			//

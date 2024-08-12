@@ -4,7 +4,6 @@
 #include "utils.hpp"
 #include "host_process_checker.hpp"
 #include "config_file_checker.hpp"
-#include "prototypic_browser.hpp"
 #include "browser.hpp"
 #include "visual_editor.hpp"
 #include "visual.hpp"

@@ -176,7 +176,6 @@
     </ClInclude>
     <ClInclude Include="host_process_checker.hpp" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="prototypic_browser.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="main_window.hpp" />
   </ItemGroup>

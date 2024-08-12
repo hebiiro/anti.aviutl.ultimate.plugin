@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::audio_visualizer::ui
+namespace apn
 {
 	//
 	// このクラスはブラウザのプロトタイプです。
@@ -18,12 +18,13 @@ namespace apn::audio_visualizer::ui
 		//
 		// 初期化処理を実行します。
 		//
-		BOOL init()
+		BOOL init(HINSTANCE instance)
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("{:#010x}", instance);
 
 			// ユーザーデータを保存するフォルダです。
-			auto user_data_folder = my::get_module_file_name(hive.instance).parent_path() / L"wv2";
+			auto user_data_folder = my::get_module_file_name(instance).parent_path() / L"wv2";
+			MY_TRACE_STR(user_data_folder);
 
 			// 親ウィンドウ内に単一のWebViewを作成します。
 			// ブラウザを見つけて、WebViewの環境をセットアップします。
