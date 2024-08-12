@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{0BBEBC9E-687F-444A-9B8A-2FF6B83C740B}"
 	ProjectSection(SolutionItems) = preProject
+		common\share\audio_visualizer.hpp = common\share\audio_visualizer.hpp
 		common\share\dark.hpp = common\share\dark.hpp
 		common\share\dark_api.hpp = common\share\dark_api.hpp
 		common\share\ease_select.hpp = common\share\ease_select.hpp
@@ -64,7 +65,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "my", "my", "{00F74984-FDAF-
 		common\my\label.hpp = common\my\label.hpp
 		common\my\layout.hpp = common\my\layout.hpp
 		common\my\mfc.hpp = common\my\mfc.hpp
-		common\my\nanovg.hpp = common\my\nanovg.hpp
 		common\my\shortcut_key.hpp = common\my\shortcut_key.hpp
 		common\my\str_utils.hpp = common\my\str_utils.hpp
 		common\my\tools.hpp = common\my\tools.hpp
@@ -146,6 +146,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "install.exe", "install.exe\install.exe.vcxproj", "{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "local_web_app.exe", "local_web_app.exe\local_web_app.exe.vcxproj", "{2AD3B078-42E6-4D80-BE2D-988E3D104A02}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio_visualizer.aua", "audio_visualizer.aua\audio_visualizer.aua.vcxproj", "{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "audio_visualizer_ui.exe", "audio_visualizer_ui.exe\audio_visualizer_ui.exe.vcxproj", "{9D0669FF-1846-4979-8B2D-EA24A39B2733}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -427,6 +431,22 @@ Global
 		{2AD3B078-42E6-4D80-BE2D-988E3D104A02}.Release|x64.Build.0 = Release|x64
 		{2AD3B078-42E6-4D80-BE2D-988E3D104A02}.Release|x86.ActiveCfg = Release|Win32
 		{2AD3B078-42E6-4D80-BE2D-988E3D104A02}.Release|x86.Build.0 = Release|Win32
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Debug|x64.ActiveCfg = Debug|x64
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Debug|x64.Build.0 = Debug|x64
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Debug|x86.ActiveCfg = Debug|Win32
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Debug|x86.Build.0 = Debug|Win32
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Release|x64.ActiveCfg = Release|x64
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Release|x64.Build.0 = Release|x64
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Release|x86.ActiveCfg = Release|Win32
+		{DD72D21C-B58C-4C6C-B68A-3D1BFC29FA24}.Release|x86.Build.0 = Release|Win32
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Debug|x64.ActiveCfg = Debug|x64
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Debug|x64.Build.0 = Debug|x64
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Debug|x86.ActiveCfg = Debug|Win32
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Debug|x86.Build.0 = Debug|Win32
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Release|x64.ActiveCfg = Release|x64
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Release|x64.Build.0 = Release|x64
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Release|x86.ActiveCfg = Release|Win32
+		{9D0669FF-1846-4979-8B2D-EA24A39B2733}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
