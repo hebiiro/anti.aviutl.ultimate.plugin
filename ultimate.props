@@ -6,12 +6,8 @@
     <my_packages>$(my_source)\packages</my_packages>
     <aviutl_exedit_sdk>$(my_packages)\aviutl_exedit_sdk</aviutl_exedit_sdk>
     <detours>$(my_packages)\detours.4.0.1</detours>
-    <boost>$(my_packages)\boost.1.84.0</boost>
-    <glad>$(my_packages)\glad.2.0.4</glad>
-    <nanovg>$(my_packages)\nanovg.rgb2hsv</nanovg>
     <python>$(my_packages)\Python\Python312-32</python>
     <pybind11>$(python)\lib\site-packages\pybind11</pybind11>
-    <microsoft>$(my_packages)\microsoft</microsoft>
     <my_pack_dir>$(my_source)\pack\ultimate</my_pack_dir>
     <my_runtime_dir>$(my_pack_dir)\install\runtime</my_runtime_dir>
     <my_host_dir>$(my_pack_dir)</my_host_dir>
@@ -70,23 +66,11 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     <BuildMacro Include="detours">
       <Value>$(detours)</Value>
     </BuildMacro>
-    <BuildMacro Include="boost">
-      <Value>$(boost)</Value>
-    </BuildMacro>
-    <BuildMacro Include="glad">
-      <Value>$(glad)</Value>
-    </BuildMacro>
-    <BuildMacro Include="nanovg">
-      <Value>$(nanovg)</Value>
-    </BuildMacro>
     <BuildMacro Include="python">
       <Value>$(python)</Value>
     </BuildMacro>
     <BuildMacro Include="pybind11">
       <Value>$(pybind11)</Value>
-    </BuildMacro>
-    <BuildMacro Include="microsoft">
-      <Value>$(microsoft)</Value>
     </BuildMacro>
     <BuildMacro Include="my_pack_dir">
       <Value>$(my_pack_dir)</Value>
