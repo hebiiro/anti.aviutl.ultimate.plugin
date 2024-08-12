@@ -17,6 +17,8 @@
 #define IDC_FIT_WIDTH_STAT              1011
 #define IDC_FIT_WIDTH                   1012
 #define IDC_ERASE_ORIG_ITEM             1013
+#define IDC_SHIFT_STAT                  1014
+#define IDC_FIT_STAT                    1015
 
 // Next default values for new objects
 // 

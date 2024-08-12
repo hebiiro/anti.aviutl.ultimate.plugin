@@ -99,46 +99,33 @@ namespace apn::item_wave
 			auto stat_margin = RECT { 0, 0, margin_value, 0 };
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
-			auto stat = std::make_shared<RelativePos>(base_size * 4);
+			auto stat = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
+			auto stat2 = std::make_shared<RelativePos>(base_size * 6);
 			auto spin = std::make_shared<RelativePos>(base_size);
+			auto button = std::make_shared<RelativePos>(base_size * 5);
+			auto editbox = std::make_shared<RelativePos>(base_size * 3);
+			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
+			auto combobox = std::make_shared<RelativePos>(base_size * 6);
 			auto rest = std::make_shared<AbsolutePos>(1, 1, 1);
-			std::shared_ptr<AbsolutePos> q[24 + 1];
-			for (auto i = 0; i < std::size(q); i++)
-				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_UPDATE_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_UPDATE_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCALE_STAT));
 				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12]);
-					sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_UPDATE_MODE_STAT));
-					sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_UPDATE_MODE));
-				}
-
-				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[24]);
-					{
-						auto sub_node2 = sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCALE_STAT));
-					}
-					{
-						auto sub_node2 = sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin);
-						sub_node2->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SCALE_SPIN));
-						sub_node2->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_SCALE));
-					}
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SCALE_SPIN));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_SCALE));
 				}
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12]);
-					sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_WAVE_TYPE_STAT));
-					sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_WAVE_TYPE));
-				}
-				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[24]);
-					sub_node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_XOR_MODE_STAT));
-					sub_node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_XOR_MODE));
-				}
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_WAVE_TYPE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_WAVE_TYPE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_XOR_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_XOR_MODE));
 			}
 
 			{
@@ -175,23 +162,27 @@ namespace apn::item_wave
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SHOW_WAVE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[16], margin, ctrl(IDC_SHOW_TEXT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_BEHIND));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SHOW_WAVE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SHOW_TEXT));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_NAMECAGE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[16], margin, ctrl(IDC_NAMECAGE_OFFSET_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_NAMECAGE_OFFSET));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_BEHIND));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_NAMECAGE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SELECT_PEN_COLOR));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[16], margin, ctrl(IDC_SELECT_BRUSH_COLOR));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[24], margin, ctrl(IDC_CLEAR_CACHES));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_NAMECAGE_OFFSET_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_NAMECAGE_OFFSET));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_SELECT_PEN_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_SELECT_BRUSH_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_CLEAR_CACHES));
 			}
 		}
 

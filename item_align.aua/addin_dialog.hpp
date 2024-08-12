@@ -101,19 +101,18 @@ namespace apn::item_align
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
 			auto stat = std::make_shared<RelativePos>(base_size * 4);
-			auto arrow = std::make_shared<RelativePos>(base_size * 2);
+			auto arrow = std::make_shared<RelativePos>(base_size + margin_value * 2);
 			auto stat2 = std::make_shared<RelativePos>(base_size * 2);
 			auto time = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
 			auto time2 = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
+			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
+			auto combobox = std::make_shared<RelativePos>(base_size * 4);
 			auto rest = std::make_shared<AbsolutePos>(1, 1, 1);
-			std::shared_ptr<AbsolutePos> q[24 + 1];
-			for (auto i = 0; i < std::size(q); i++)
-				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_USE_CURRENT_FRAME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_SUB_TIME_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_CURRENT_FRAME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SUB_TIME_MODE));
 			}
 
 			{

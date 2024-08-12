@@ -59,6 +59,7 @@ namespace apn::image_export
 			auto row_size = base_size + margin_value * 2;
 			auto fixed_size = base_size * 3 + margin_value * 2;
 			auto row = std::make_shared<RelativePos>(row_size);
+			auto stat = std::make_shared<RelativePos>(fixed_size * 2);
 			auto fixed = std::make_shared<RelativePos>(fixed_size);
 			auto quarter = std::make_shared<AbsolutePos>(1, 4);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
@@ -70,14 +71,14 @@ namespace apn::image_export
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_FRAME_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXPORT_FRAME_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_FRAME_RGBA));
 				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_FRAME_RGB));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_ITEM_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXPORT_ITEM_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_ITEM_RGBA));
 				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_ITEM_RGB));
 			}
@@ -98,18 +99,10 @@ namespace apn::image_export
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-
-				{
-					auto node2 = node->add_pane(c_axis.c_horz, c_align.c_left, half);
-					node2->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_INDEX_STAT));
-					node2->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_INDEX));
-				}
-
-				{
-					auto node2 = node->add_pane(c_axis.c_horz, c_align.c_left, full);
-					node2->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_NUMBER_WIDTH_STAT));
-					node2->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_NUMBER_WIDTH));
-				}
+				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_INDEX_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_INDEX));
+				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_NUMBER_WIDTH_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_NUMBER_WIDTH));
 			}
 
 			{

@@ -80,37 +80,48 @@ namespace apn::dark
 
 			auto margin_value = 2;
 			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
-			auto row = std::make_shared<RelativePos>(get_base_size() + margin_value * 2);
+			auto base_size = get_base_size();
+			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
+			auto stat = std::make_shared<RelativePos>(base_size * 2 + margin_value * 2);
+			auto editbox = std::make_shared<RelativePos>(base_size * 2);
+			auto checkbox = std::make_shared<RelativePos>(base_size * 7);
+			auto combobox = std::make_shared<RelativePos>(base_size * 7);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
-			std::shared_ptr<AbsolutePos> q[9];
-			for (auto i = 0; i < std::size(q); i++)
-				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
 			auto rc = my::get_client_rect(ctrl(IDC_ELLIPSE_SPIN));
 			auto spin_w = my::get_width(rc);
 			auto spin = std::make_shared<RelativePos>(spin_w);
-
+#if 0
+			auto drop_width = base_size * 10;
+			::SendDlgItemMessage(*this, IDC_SKIN, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_SCHEME, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_SHADOW_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_CORNER_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_STATIC_EDGE_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_DPI_SCALING_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_FILE_DIALOG_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+#endif
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[1], margin, ctrl(IDC_SKIN_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_SKIN));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[5], margin, ctrl(IDC_SCHEME_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_SCHEME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SKIN_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SKIN));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCHEME_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SCHEME));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[1], margin, ctrl(IDC_ELLIPSE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ELLIPSE_STAT));
 				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[2], margin, nullptr);
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, nullptr);
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_ELLIPSE_SPIN));
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, full, {}, ctrl(IDC_ELLIPSE));
 				}
 
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[3], margin, ctrl(IDC_BORDER_WIDTH_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_BORDER_WIDTH_STAT));
 				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, nullptr);
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, nullptr);
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_BORDER_WIDTH_SPIN));
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, full, {}, ctrl(IDC_BORDER_WIDTH));
 				}
@@ -118,26 +129,30 @@ namespace apn::dark
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[1], margin, ctrl(IDC_SHADOW_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_SHADOW_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[5], margin, ctrl(IDC_CORNER_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_CORNER_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SHADOW_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SHADOW_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_CORNER_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_CORNER_MODE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[1], margin, ctrl(IDC_STATIC_EDGE_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_STATIC_EDGE_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[5], margin, ctrl(IDC_FILE_DIALOG_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_FILE_DIALOG_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_STATIC_EDGE_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_STATIC_EDGE_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_FILE_DIALOG_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_FILE_DIALOG_MODE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[1], margin, ctrl(IDC_DPI_SCALING_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(IDC_DPI_SCALING_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_USE_LAYER_COLOR));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[8], margin, ctrl(IDC_USE_LAYER_COLOR_MULTI));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_DPI_SCALING_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_DPI_SCALING_MODE));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR_MULTI));
 			}
 		}
 
