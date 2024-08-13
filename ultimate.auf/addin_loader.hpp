@@ -20,7 +20,7 @@ namespace apn
 				// 非アクティブなアドインは読み込みません。
 				if (!addin->active)
 				{
-					std::wcout << std::format(L"\033[34m" L"{}は非アクティブなので読み込みませんでした" L"\033[m", addin->name) << std::endl;
+//					std::wcout << std::format(L"\033[34m" L"{}は非アクティブなので読み込みませんでした" L"\033[m", addin->name) << std::endl;
 
 					continue;
 				}

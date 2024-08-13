@@ -30,6 +30,9 @@ namespace apn
 
 			inline static HMODULE WINAPI hook_proc(LPCSTR _file_name)
 			{
+				if (!_file_name)
+					return orig_proc(_file_name);
+
 				auto file_name = my::ws(_file_name);
 
 				if (auto addin = conflicts(file_name))

@@ -37,7 +37,7 @@ namespace apn
 			hive.target = ::LoadLibraryW(file_name.c_str());
 			MY_TRACE_HEX(hive.target);
 
-			BOOL (WINAPI* init)(HINSTANCE instance) = 0;
+			BOOL (WINAPI* init)(HINSTANCE instance) = nullptr;
 			my::tools::get_proc(hive.target, "core_init", init);
 			if (init) init(hive.target);
 
@@ -51,7 +51,7 @@ namespace apn
 		{
 			MY_TRACE_FUNC("");
 
-			BOOL (WINAPI* exit)() = 0;
+			BOOL (WINAPI* exit)() = nullptr;
 			my::tools::get_proc(hive.target, "core_exit", exit);
 			if (exit) exit();
 
@@ -68,6 +68,10 @@ namespace apn
 			// このモジュールが開放される場合は
 			if (instance == hive.instance)
 			{
+				// すでにターゲットがロードされている場合は
+				// 何もせずにデフォルト処理をスキップします。
+				if (hive.target) return TRUE;
+
 				// ターゲットをロードします。
 				// さらにデフォルト処理をスキップして
 				// このモジュールが開放されるのを防ぎます。
