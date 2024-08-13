@@ -113,8 +113,8 @@ namespace apn::settings_browser
 			// jsonを文字列に変換します。
 			hive.settings_json = my::cp_to_wide(root.dump(1, '\t'), CP_UTF8);
 
-			// ブラウザにjson文字列を送信します。
-			browser.post_json(hive.settings_json);
+			// スクリプトにjson文字列を送信します。
+			browser.post_web_message_as_json(hive.settings_json);
 
 			return TRUE;
 		}

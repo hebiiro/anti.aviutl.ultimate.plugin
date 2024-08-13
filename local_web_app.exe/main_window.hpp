@@ -21,7 +21,7 @@ namespace apn::local_web_app
 			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.hIcon = ::LoadIcon(hive.instance, MAKEINTRESOURCE(IDI_64x64));
 			wc.hIconSm = ::LoadIcon(hive.instance, MAKEINTRESOURCE(IDI_64x64));
-			wc.lpszClassName = _T("local_web_app.main_window");
+			wc.lpszClassName = L"local_web_app.main_window";
 			::RegisterClassExW(&wc);
 
 			if (!__super::create(
@@ -37,7 +37,7 @@ namespace apn::local_web_app
 				return FALSE;
 			}
 
-			return __super::init();
+			return __super::init(hive.instance);
 		}
 
 		//
@@ -91,98 +91,83 @@ namespace apn::local_web_app
 		}
 
 		//
-		// この仮想関数は、コンテンツからイベントが発行されたときに呼ばれます。
+		// コンテンツから送られてきたメッセージ(json)を処理します。
 		//
-		virtual BOOL on_content_event(const std::wstring& json) override
+		virtual BOOL on_web_message_as_json(const std::string& key, const n_json& node) override
 		{
-			MY_TRACE_FUNC("{}", json);
-
 			try
 			{
-				auto root = n_json::parse(my::wide_to_cp(json, CP_UTF8));
-
-				for (const auto& node : root.items())
+				if (key == "request_write_json")
 				{
-					const auto& key = node.key();
+					// 書き込み先のファイルパスを取得します。
+					// このパスは相対パスでなければなりません。
+					std::filesystem::path path = node["path"];
+					MY_TRACE_STR(path);
+					if (path.empty()) return FALSE;
 
-					if (key == "request_write_json")
+					// 絶対パスに変換します。
+					auto abs_path = get_abs_path(path);
+					MY_TRACE_STR(abs_path);
+
+					// 書き込むデータ(json)を取得します。
+					const auto& data_node = node["data"];
+
+					// 指定されたデータを指定されたファイルに書き込みます。
+					std::ofstream ofs(abs_path);
+					ofs << data_node.dump(1, '\t');
+
+					n_json root = {
+						{
+							"response_write_json", {
+								{ "path", my::wide_to_cp(path, CP_UTF8) },
+								{ "abs_path", my::wide_to_cp(abs_path, CP_UTF8) },
+							},
+						},
+					};
+
+					// jsonを文字列化します。
+					auto json = my::cp_to_wide(root.dump(1, '\t'), CP_UTF8);
+
+					// 文字列化したjsonをブラウザに送信します。
+					post_web_message_as_json(json);
+				}
+				else if (key == "request_read_json")
+				{
+					try
 					{
-						const auto& event_node = node.value();
-
-						// 書き込み先のファイルパスを取得します。
+						// 読み込み先のファイルパスを取得します。
 						// このパスは相対パスでなければなりません。
-						std::filesystem::path path = event_node["path"];
+						std::filesystem::path path = node["path"];
 						MY_TRACE_STR(path);
-						if (path.empty()) continue;
+						if (path.empty()) return FALSE;
 
-						// 絶対パスを取得します。
+						// 絶対パスに変換します。
 						auto abs_path = get_abs_path(path);
 						MY_TRACE_STR(abs_path);
 
-						// 書き込むデータ(json)を取得します。
-						const auto& data_node = event_node["data"];
+						// 指定されたファイルを読み込みます。
+						std::ifstream ifs(abs_path);
+						auto data = n_json::parse(ifs);
 
-						// 指定されたデータを指定されたファイルに書き込みます。
-						std::ofstream ofs(abs_path);
-						ofs << std::setw(4) << data_node;
-
-						n_json root;
-						{
-							n_json event_node;
+						n_json root = {
 							{
-								event_node["path"] = my::wide_to_cp(path, CP_UTF8);
-								event_node["abs_path"] = my::wide_to_cp(abs_path, CP_UTF8);
-							}
-							root["response_write_json"] = event_node;
-						}
+								"response_read_json", {
+									{ "path", my::wide_to_cp(path, CP_UTF8) },
+									{ "abs_path", my::wide_to_cp(abs_path, CP_UTF8) },
+									{ "data", data },
+								},
+							},
+						};
 
 						// jsonを文字列化します。
-						auto json = my::cp_to_wide(root.dump(4), CP_UTF8);
+						auto json = my::cp_to_wide(root.dump(1, '\t'), CP_UTF8);
 
 						// 文字列化したjsonをブラウザに送信します。
-						post_json(json);
+						post_web_message_as_json(json);
 					}
-					else if (key == "request_read_json")
+					catch (const std::exception& error)
 					{
-						const auto& event_node = node.value();
-
-						try
-						{
-							// 読み込み先のファイルパスを取得します。
-							// このパスは相対パスでなければなりません。
-							std::filesystem::path path = event_node["path"];
-							MY_TRACE_STR(path);
-							if (path.empty()) continue;
-
-							// 絶対パスを取得します。
-							auto abs_path = get_abs_path(path);
-							MY_TRACE_STR(abs_path);
-
-							// 指定されたファイルを読み込みます。
-							std::ifstream ifs(abs_path);
-							auto data = n_json::parse(ifs);
-
-							n_json root;
-							{
-								n_json event_node;
-								{
-									event_node["path"] = my::wide_to_cp(path, CP_UTF8);
-									event_node["abs_path"] = my::wide_to_cp(abs_path, CP_UTF8);
-									event_node["data"] = data;
-								}
-								root["response_read_json"] = event_node;
-							}
-
-							// jsonを文字列化します。
-							auto json = my::cp_to_wide(root.dump(4), CP_UTF8);
-
-							// 文字列化したjsonをブラウザに送信します。
-							post_json(json);
-						}
-						catch (const std::exception& error)
-						{
-							(void)error;
-						}
+						(void)error;
 					}
 				}
 			}

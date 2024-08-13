@@ -5,13 +5,8 @@ namespace apn::settings_browser
 	//
 	// このクラスはアイテムの設定をブラウザで表示します。
 	//
-	inline struct Browser : my::Window
+	inline struct Browser : apn::Browser
 	{
-		wil::com_ptr<ICoreWebView2Controller> controller;
-		wil::com_ptr<ICoreWebView2_3> webview;
-		EventRegistrationToken navigation_completed_token = {};
-		EventRegistrationToken web_message_received_token = {};
-
 		//
 		// コンテンツのコンフィグです。
 		// コンテンツから発行されるコンフィグの書き込みイベントで更新されます。
@@ -31,7 +26,7 @@ namespace apn::settings_browser
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
 			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
-			wc.lpszClassName = _T("settings_browser.browser");
+			wc.lpszClassName = L"settings_browser.browser";
 			::RegisterClassExW(&wc);
 
 			if (!__super::create(
@@ -47,84 +42,7 @@ namespace apn::settings_browser
 				return FALSE;
 			}
 
-			// 親ウィンドウ内に単一のWebViewを作成します。
-			// ブラウザを見つけて、WebViewの環境をセットアップします。
-			CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
-				Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-				[&](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
-			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", result, env);
-
-				env->CreateCoreWebView2Controller(*this,
-					Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-					[&](HRESULT result, ICoreWebView2Controller* _controller) -> HRESULT
-				{
-					MY_TRACE_FUNC("{:#010x}, {:#010x}", result, _controller);
-
-					controller = _controller;
-					MY_TRACE_HEX(controller.get());
-					if (!controller) return E_FAIL;
-
-					wil::com_ptr<ICoreWebView2> _webview;
-					controller->get_CoreWebView2(&_webview);
-					MY_TRACE_HEX(_webview.get());
-					if (!_webview) return E_FAIL;
-
-					webview = _webview.try_query<ICoreWebView2_3>();
-					MY_TRACE_HEX(webview.get());
-					if (!webview) return E_FAIL;
-
-					{
-						wil::com_ptr<ICoreWebView2Settings> settings;
-						webview->get_Settings(&settings);
-						MY_TRACE_HEX(settings.get());
-						if (!settings) return E_FAIL;
-						settings->put_IsScriptEnabled(TRUE);
-						settings->put_AreDefaultScriptDialogsEnabled(TRUE);
-						settings->put_IsWebMessageEnabled(TRUE);
-					}
-
-					resize_controller();
-
-					webview->SetVirtualHostNameToFolderMapping(hive.c_name,
-						hive.assets_folder_name.c_str(), COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY_CORS);
-
-					webview->add_WebMessageReceived(
-						Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-						[&](ICoreWebView2* webview, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-					{
-						MY_TRACE_FUNC("{:#010x}, {:#010x}", webview, args);
-
-						{
-							wil::unique_cotaskmem_string s;
-							if (SUCCEEDED(args->TryGetWebMessageAsString(&s)))
-							{
-								if (::lstrcmpW(s.get(), L"fire_show_settings") == 0)
-								{
-									if (!hive.settings_json.empty())
-										post_json(hive.settings_json);
-
-									return S_OK;
-								}
-							}
-						}
-
-						{
-							wil::unique_cotaskmem_string json;
-							if(SUCCEEDED(args->get_WebMessageAsJson(&json)))
-								on_content_event(json.get());
-						}
-
-						return S_OK;
-					}).Get(), &web_message_received_token);
-
-					return S_OK;
-				}).Get());
-
-				return S_OK;
-			}).Get());
-
-			return TRUE;
+			return __super::init(hive.instance);
 		}
 
 		//
@@ -134,105 +52,63 @@ namespace apn::settings_browser
 		{
 			MY_TRACE_FUNC("");
 
-			webview.reset();
-			controller.reset();
-
-			return TRUE;
+			return __super::exit();
 		}
 
 		//
-		// 指定されたhtmlファイルをブラウズします。
+		// コンテンツファイルをセットしてからナビゲートします。
 		//
 		BOOL navigate(const std::wstring& file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			contents_file_name = file_name;
+			if (contents_file_name.is_relative())
+				contents_file_name = hive.assets_folder_name / contents_file_name;
+			MY_TRACE_STR(contents_file_name);
 
-			if (!webview) return FALSE;
+			return __super::navigate();
+		}
 
-			std::filesystem::path path(file_name);
-			MY_TRACE_STR(path);
-			if (path.is_absolute())
-				path = path.lexically_relative(hive.assets_folder_name);
-			MY_TRACE_STR(path);
-			auto url = L"https://"s + hive.c_name + L"/" + path.wstring();
-			MY_TRACE_STR(url);
+		//
+		// コンテンツから送られてきたメッセージ(文字列)を処理します。
+		//
+		virtual BOOL on_web_message_as_string(const std::wstring& s) override
+		{
+			MY_TRACE_FUNC("{}", s);
 
-			webview->Navigate(url.c_str());
+			if (s == L"fire_show_settings")
+			{
+				if (!hive.settings_json.empty())
+					post_web_message_as_json(hive.settings_json);
+			}
 
 			return TRUE;
 		}
 
 		//
-		// コンテンツにイベントを発行します。
+		// コンテンツから送られてきたメッセージ(json)を処理します。
 		//
-		BOOL post_json(const std::wstring& json)
+		virtual BOOL on_web_message_as_json(const std::string& key, const n_json& json) override
 		{
-			MY_TRACE_FUNC("");
-
-			if (!webview) return FALSE;
-
-			webview->PostWebMessageAsJson(json.c_str());
-
-			return TRUE;
-		}
-
-		//
-		// コンテンツから発行されたイベントを処理します。
-		//
-		BOOL on_content_event(const std::wstring& json)
-		{
-			MY_TRACE_FUNC("");
-
 			try
 			{
-				auto root = n_json::parse(my::wide_to_cp(json, CP_UTF8));
-
-				for (const auto& node : root.items())
+				if (key == "write_config")
 				{
-					if (node.key() == "write_config")
-						config = node.value();
+					config = json;
 				}
 			}
-			catch (const std::exception& error)
+			catch (...)
 			{
-				hive.message_box(my::ws(error.what()), *this);
 			}
 
 			return TRUE;
 		}
 
 		//
-		// コントローラをリサイズします。
+		// この仮想関数は、エラーが発生したときに呼ばれます。
 		//
-		BOOL resize_controller()
+		virtual BOOL on_error(const std::wstring& what) override
 		{
-			MY_TRACE_FUNC("");
-
-			if (!controller) return FALSE;
-			auto rc = my::get_client_rect(hwnd);
-			controller->put_Bounds(rc);
-			return TRUE;
-		}
-
-		//
-		// ウィンドウプロシージャです。
-		//
-		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
-		{
-			switch (message)
-			{
-			case WM_SIZE:
-				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
-
-					// コントローラをリサイズします。
-					resize_controller();
-
-					break;
-				}
-			}
-
-			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
+			return hive.message_box(what, *this);
 		}
 	} browser;
 }
