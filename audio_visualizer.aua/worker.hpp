@@ -548,13 +548,20 @@ namespace apn::audio_visualizer
 			//
 			double get_band_amplitude(const std::vector<double>& amplitude, const Band& band, size_t N, size_t audio_rate)
 			{
+				auto limit = N / 2 - 1;
 				auto range = Range<double> { band.start * N / audio_rate, band.end * N / audio_rate };
 				auto index_range = Range<size_t> { (size_t)range.start, (size_t)range.end };
 
-				if (index_range.end > N / 2)
+				if (index_range.start > limit)
 				{
-					range.end = N / 2;
-					index_range.end = N / 2;
+					range.start = limit;
+					index_range.start = limit;
+				}
+
+				if (index_range.end > limit)
+				{
+					range.end = limit;
+					index_range.end = limit;
 				}
 
 				if (index_range.start == index_range.end)
