@@ -201,6 +201,16 @@ namespace apn::audio_visualizer::ui
 					return S_OK;
 				}).Get(), &context_menu_requested_token);
 
+				MY_TRACE_STR(hive.config_file_name);
+				MY_TRACE_INT(!std::filesystem::exists(hive.config_file_name));
+
+				// コンフィグファイルが存在しない場合は
+				if (!std::filesystem::exists(hive.config_file_name))
+				{
+					// デフォルトのコンフィグを適用します。
+					visual.apply_default_config();
+				}
+
 				// デフォルト処理を実行します。
 				return __super::on_post_init();
 			}
@@ -398,7 +408,7 @@ namespace apn::audio_visualizer::ui
 			MY_TRACE_STR(scheme_file_name);
 
 			// プリファレンスを初期値に戻します。
-			browser.visual.editor.preference = {};
+			editor.preference = {};
 
 			// 選択されたスキームを読み込みます。
 			return read_scheme();
@@ -422,6 +432,43 @@ namespace apn::audio_visualizer::ui
 				x, y, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
 
 			return TRUE;
+		}
+
+		//
+		// 既定のコンフィグを適用します。
+		//
+		BOOL apply_default_config()
+		{
+			MY_TRACE_FUNC("");
+
+			auto assets_folder_name = std::filesystem::path(magi.get_assets_file_name(hive.c_name));
+			MY_TRACE_STR(assets_folder_name);
+
+			auto name = my::get_window_text(::GetParent(*this));
+
+			if (name == L"左右Lv")
+			{
+				scheme_file_name = assets_folder_name / L"simple_bar.json";
+				editor.preference = { { "channel_mode", "both" } };
+			}
+			else if (name == L"左Lv")
+			{
+				scheme_file_name = assets_folder_name / L"simple_bar.json";
+				editor.preference = { { "channel_mode", "left" } };
+			}
+			else if (name == L"右Lv")
+			{
+				scheme_file_name = assets_folder_name / L"simple_bar.json";
+				editor.preference = { { "channel_mode", "right" } };
+			}
+			else if (name == L"パワースペクトル")
+			{
+				scheme_file_name = assets_folder_name / L"simple_spectre.json";
+				editor.preference = { { "channel_mode", "both" } };
+			}
+
+			// スキームを読み込みます。
+			return read_scheme();
 		}
 
 		//

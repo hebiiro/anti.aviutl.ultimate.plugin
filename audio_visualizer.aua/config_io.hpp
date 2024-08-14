@@ -37,7 +37,32 @@ namespace apn::audio_visualizer
 		{
 			MY_TRACE_FUNC("");
 
-			return read_file(hive.config_file_name, hive);
+			// コンフィグファイルが存在しない場合は
+			if (!std::filesystem::exists(hive.config_file_name))
+			{
+				// デフォルトのコウィンドウを作成します。
+
+				std::wstring names[] = {
+					L"左右Lv",
+					L"左Lv",
+					L"右Lv",
+					L"パワースペクトル",
+				};
+
+				for (const auto& name : names)
+				{
+					// コウィンドウを作成します。
+					auto co_window = co_window_manager.create_co_window(name);
+
+					::ShowWindow(*co_window, SW_SHOW);
+				}
+
+				return TRUE;
+			}
+			else
+			{
+				return read_file(hive.config_file_name, hive);
+			}
 		}
 
 		//
@@ -61,14 +86,11 @@ namespace apn::audio_visualizer
 		}
 
 		//
-		// ストリームからコンフィグを読み込みます。
+		// コンフィグを読み込みます。
 		//
-		virtual BOOL read_stream(std::ifstream& ifs) override
+		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			n_json root;
-			ifs >> root;
 
 			// グローバル設定を読み込みます。
 			get_label(root, "mode", hive.mode, hive.c_mode.labels);
@@ -101,13 +123,11 @@ namespace apn::audio_visualizer
 		}
 
 		//
-		// ストリームにコンフィグを書き込みます。
+		// コンフィグを書き込みます。
 		//
-		virtual BOOL write_stream(std::ofstream& ofs) override
+		virtual BOOL write_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			n_json root;
 
 			// グローバル設定を書き込みます。
 			set_label(root, "mode", hive.mode, hive.c_mode.labels);
@@ -131,8 +151,6 @@ namespace apn::audio_visualizer
 
 				return TRUE;
 			});
-
-			ofs << root.dump(1, '\t');
 
 			return TRUE;
 		}
