@@ -211,17 +211,15 @@ namespace apn::audio_visualizer
 			auto control = std::make_shared<RelativePos>(base_size * 4);
 			auto edit = std::make_shared<RelativePos>(base_size * 2);
 			auto spin = std::make_shared<RelativePos>(base_size * 2);
+			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
 			auto rest = std::make_shared<AbsolutePos>(1, 1, 1);
-			std::shared_ptr<AbsolutePos> q[12 + 1];
-			for (auto i = 0; i < std::size(q); i++)
-				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
 
 			::SendDlgItemMessage(*this, IDC_MODE, CB_SETDROPPEDWIDTH, base_size * 6, 0);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_bottom, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_SPECTRE_RMS_SCALING));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_SPECTRE_LOG_FREQ));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SPECTRE_RMS_SCALING));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SPECTRE_LOG_FREQ));
 			}
 
 			{
