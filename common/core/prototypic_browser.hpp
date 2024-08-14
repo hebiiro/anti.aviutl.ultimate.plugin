@@ -22,8 +22,11 @@ namespace apn
 		{
 			MY_TRACE_FUNC("{:#010x}", instance);
 
-			// ユーザーデータを保存するフォルダです。
-			auto user_data_folder = my::get_module_file_name(instance).parent_path() / L"wv2";
+			// モジュールのファイルパスを取得します。
+			auto module_file_name = my::get_module_file_name(instance);
+
+			// ユーザーデータを保存するフォルダのパスを取得します。
+			auto user_data_folder = module_file_name.parent_path() / L"wv2" / module_file_name.stem();
 			MY_TRACE_STR(user_data_folder);
 
 			// 親ウィンドウ内に単一のWebViewを作成します。
