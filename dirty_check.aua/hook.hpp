@@ -213,8 +213,7 @@ namespace apn::dirty_check
 		if (!dirty_flag.get()) return FALSE;
 
 		// タイトルにダーティーマークを付けます。
-		std::char_traits<char>::copy(title,
-			std::format("* {}", title).c_str(), max_title);
+		strcpy_s(title, max_title, std::format("* {}", title).c_str());
 
 		return TRUE;
 	}
