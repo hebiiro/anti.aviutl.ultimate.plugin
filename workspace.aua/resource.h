@@ -4,6 +4,7 @@
 //
 #define IDD_CONFIG                      101
 #define IDD_RENAME_SHUTTLE              102
+#define IDD_PANE_CONFIG                 103
 #define IDC_NEW_NAME                    1000
 #define IDC_FILL_COLOR                  1018
 #define IDC_BORDER_COLOR                1019
@@ -23,6 +24,22 @@
 #define IDC_SHOW_TAB_FORCE              1033
 #define IDC_BYPASS_KEYBOARD_MESSAGE     1034
 #define IDC_IGNORE_CTRL_KEY_UP          1035
+#define IDC_PANE_X_STAT                 2000
+#define IDC_PANE_X                      2001
+#define IDC_PANE_Y_STAT                 2002
+#define IDC_PANE_Y                      2003
+#define IDC_PANE_W_STAT                 2004
+#define IDC_PANE_W                      2005
+#define IDC_PANE_H_STAT                 2006
+#define IDC_PANE_H                      2007
+#define IDC_PANE_ORIGIN_STAT            2008
+#define IDC_PANE_ORIGIN                 2009
+#define IDC_PANE_BORDER_POS_STAT        2010
+#define IDC_PANE_BORDER_POS             2011
+#define IDC_PANE_TOP_LEFT_STAT          2012
+#define IDC_PANE_TOP_LEFT               2013
+#define IDC_PANE_BOTTOM_RIGHT_STAT      2014
+#define IDC_PANE_BOTTOM_RIGHT           2015
 
 // Next default values for new objects
 // 
@@ -31,7 +48,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1031
+#define _APS_NEXT_CONTROL_VALUE         3003
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

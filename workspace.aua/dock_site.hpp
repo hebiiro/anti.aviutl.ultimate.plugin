@@ -30,6 +30,7 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_move_to_right = 1103;
 			inline static constexpr uint32_t c_undock = 1104;
 			inline static constexpr uint32_t c_is_solid = 1105;
+			inline static constexpr uint32_t c_pane_config = 1106;
 			inline static constexpr struct Shuttle {
 				inline static constexpr uint32_t c_begin = 2000;
 				inline static constexpr uint32_t c_end = 3000;
@@ -377,6 +378,7 @@ namespace apn::workspace
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_is_solid, _T("レイアウトを固定化"));
 			if (root->is_solid)
 				::CheckMenuItem(menu.get(), c_command_id.c_is_solid, MF_CHECKED);
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_pane_config, _T("ペインの設定"));
 			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_undock, _T("ドッキングを解除"));
 			if (c == 0) // ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
@@ -427,6 +429,14 @@ namespace apn::workspace
 						if (shuttle) // ドッキングしているシャトルが存在する場合は
 							pane->release_shuttle(shuttle); // ドッキングを解除します。
 					}
+
+					break;
+				}
+			case c_command_id.c_pane_config:
+				{
+					PaneConfigDialog dialog(pane, dock_site);
+
+					dialog.do_modal();
 
 					break;
 				}
@@ -875,7 +885,7 @@ namespace apn::workspace
 
 					auto delta = (short)HIWORD(wParam);
 					auto point = my::lp_to_pt(lParam);
-					::MapWindowPoints(nullptr, hwnd, &point, 1);
+					my::map_window_points(nullptr, hwnd, &point);
 					auto child = ::ChildWindowFromPointEx(hwnd, point,
 						CWP_SKIPDISABLED | CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT);
 
@@ -909,5 +919,120 @@ namespace apn::workspace
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
+
+		//
+		// このクラスはペインの設定を変更するためのダイアログです。
+		//
+		struct PaneConfigDialog : my::Dialog
+		{
+			//
+			// 編集対象のペインです。
+			//
+			std::shared_ptr<Pane> pane;
+
+			//
+			// コンストラクタです。
+			//
+			PaneConfigDialog(const std::shared_ptr<Pane>& pane, HWND parent)
+				: pane(pane)
+			{
+				create(hive.instance, MAKEINTRESOURCE(IDD_PANE_CONFIG), parent);
+			}
+
+			//
+			// ペインのサイズ(エディットボックス)を更新します。
+			//
+			void update_pane_size_editbox()
+			{
+				auto origin = get_combobox_index(IDC_PANE_ORIGIN);
+				auto border_pos = get_int(IDC_PANE_BORDER_POS);
+
+				auto top_left = int32_t {};
+				auto bottom_right = int32_t {};
+
+				auto w = (pane->split_mode == pane->c_split_mode.c_vert) ?
+					my::get_width(pane->position) : my::get_height(pane->position);
+
+				if (origin == pane->c_origin.c_top_left)
+				{
+					top_left = border_pos;
+					bottom_right = w - (border_pos + pane->border_width);
+				}
+				else
+				{
+					top_left = w - (border_pos - pane->border_width);
+					bottom_right = border_pos;
+				}
+
+				set_int(IDC_PANE_TOP_LEFT, top_left);
+				set_int(IDC_PANE_BOTTOM_RIGHT, bottom_right);
+			}
+
+			//
+			// ダイアログを表示します。
+			//
+			int do_modal()
+			{
+				auto x = pane->position.left;
+				auto y = pane->position.top;
+				auto w = my::get_width(pane->position);
+				auto h = my::get_height(pane->position);
+
+				init_combobox(IDC_PANE_ORIGIN, _T("左上"), _T("右下"));
+
+				set_int(IDC_PANE_X, x);
+				set_int(IDC_PANE_Y, y);
+				set_int(IDC_PANE_W, w);
+				set_int(IDC_PANE_H, h);
+				set_combobox_index(IDC_PANE_ORIGIN, pane->origin);
+				set_int(IDC_PANE_BORDER_POS, pane->border);
+
+				auto result = __super::do_modal();
+				if (result != IDOK) return result;
+
+				get_combobox_index(IDC_PANE_ORIGIN, pane->origin);
+				get_int(IDC_PANE_BORDER_POS, pane->border);
+
+				return result;
+			}
+
+			//
+			// ダイアログプロシージャです。
+			//
+			virtual INT_PTR on_dlg_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+			{
+				switch (message)
+				{
+				case WM_COMMAND:
+					{
+						auto id = LOWORD(wParam);
+						auto code = HIWORD(wParam);
+						auto control = (HWND)lParam;
+
+						switch (id)
+						{
+						case IDC_PANE_ORIGIN:
+							{
+								if (code == CBN_SELCHANGE)
+									update_pane_size_editbox();
+
+								break;
+							}
+						case IDC_PANE_BORDER_POS:
+							{
+								if (code == EN_CHANGE)
+									update_pane_size_editbox();
+
+								break;
+							}
+						}
+
+						break;
+					}
+				}
+
+				return __super::on_dlg_proc(hwnd, message, wParam, lParam);
+			}
+		};
 	};
 }

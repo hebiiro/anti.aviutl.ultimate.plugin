@@ -480,10 +480,10 @@ namespace apn::workspace
 			return caption_height;
 		}
 
-		inline static int32_t clamp(int32_t x, int32_t minValue, int32_t maxValue)
+		inline static int32_t clamp(int32_t x, int32_t min_value, int32_t max_value)
 		{
-			if (x < minValue) return minValue;
-			if (x > maxValue) return maxValue;
+			if (x < min_value) return min_value;
+			if (x > max_value) return max_value;
 			return x;
 		}
 
