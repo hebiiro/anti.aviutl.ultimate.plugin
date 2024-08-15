@@ -227,7 +227,8 @@ namespace my::json
 		auto h = my::get_height(rc);
 		::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
 
-		::ShowWindow(hwnd, show_cmd);
+		if (show_cmd != -1)
+			::ShowWindow(hwnd, show_cmd);
 	}
 
 	inline void get_window(const n_json& node, const std::string& name, HWND hwnd, UINT show_cmd = -1)
