@@ -23,7 +23,7 @@ namespace apn::audio_visualizer
 				WS_EX_NOPARENTNOTIFY,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				100, 100, 500, 500);
+				100, 100, 400, 400);
 		}
 
 		//
