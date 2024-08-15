@@ -177,7 +177,6 @@ namespace apn::audio_visualizer::ui
 
 						return S_OK;
 					}).Get(), nullptr);
-
 					items->InsertValueAtIndex(item_count++, select_contents_file_menu_item.get());
 
 					wil::com_ptr<ICoreWebView2ContextMenuItem> show_visual_editor_menu_item;
@@ -191,11 +190,11 @@ namespace apn::audio_visualizer::ui
 						Callback<ICoreWebView2CustomItemSelectedEventHandler>(
 						[this](ICoreWebView2ContextMenuItem* sender, IUnknown* args) -> HRESULT
 					{
+
 						::PostMessage(visual, hive.c_message.c_show_visual_editor, 0, 0);
 
 						return S_OK;
 					}).Get(), nullptr);
-
 					items->InsertValueAtIndex(item_count++, show_visual_editor_menu_item.get());
 
 					return S_OK;
@@ -426,6 +425,13 @@ namespace apn::audio_visualizer::ui
 			auto visual_rc = my::get_window_rect(*this);
 			auto x = my::get_center_x(visual_rc) - editor_w / 2;
 			auto y = my::get_center_y(visual_rc) - editor_h / 2;
+
+			// 表示位置をモニタの表示範囲内にクランプします。
+			auto monitor_rc = my::get_monitor_rect(*this);
+			if (x < monitor_rc.left) x = monitor_rc.left;
+			if (y < monitor_rc.top) y = monitor_rc.top;
+			if (x + editor_w > monitor_rc.right) x = monitor_rc.right - editor_w;
+			if (y + editor_h > monitor_rc.bottom) y = monitor_rc.bottom - editor_h;
 
 			// ビジュアルエディタを表示します。
 			::SetWindowPos(editor, HWND_TOP,
