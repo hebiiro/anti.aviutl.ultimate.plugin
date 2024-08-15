@@ -53,8 +53,6 @@ namespace apn::audio_visualizer
 				{
 					// コウィンドウを作成します。
 					auto co_window = co_window_manager.create_co_window(name);
-
-					::ShowWindow(*co_window, SW_SHOW);
 				}
 
 				return TRUE;
