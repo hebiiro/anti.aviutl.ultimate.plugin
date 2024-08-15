@@ -81,11 +81,21 @@ namespace my
 		return monitor_info.rcWork;
 	}
 
+	inline auto map_window_points(HWND from, HWND to, LPPOINT pt)
+	{
+		return ::MapWindowPoints(from, to, pt, 1);
+	}
+
+	inline auto map_window_points(HWND from, HWND to, LPRECT rc)
+	{
+		return ::MapWindowPoints(from, to, (LPPOINT)rc, 2);
+	}
+
 	inline void client_to_window(HWND hwnd, LPRECT rc)
 	{
 		auto window_rc = get_window_rect(hwnd);
 		auto client_rc = get_client_rect(hwnd);
-		::MapWindowPoints(hwnd, 0, (LPPOINT)&client_rc, 2);
+		map_window_points(hwnd, nullptr, &client_rc);
 
 		rc->left += window_rc.left - client_rc.left;
 		rc->top += window_rc.top - client_rc.top;
@@ -97,7 +107,7 @@ namespace my
 	{
 		auto window_rc = get_window_rect(hwnd);
 		auto client_rc = get_client_rect(hwnd);
-		::MapWindowPoints(hwnd, 0, (LPPOINT)&client_rc, 2);
+		map_window_points(hwnd, nullptr, &client_rc);
 
 		rc->left -= window_rc.left - client_rc.left;
 		rc->top -= window_rc.top - client_rc.top;
@@ -112,17 +122,7 @@ namespace my
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		return ::SetWindowPos(hwnd, 0, x, y, w, h, SWP_NOZORDER | flags);
-	}
-
-	inline auto map_window_points(HWND from, HWND to, LPPOINT pt)
-	{
-		return ::MapWindowPoints(from, to, pt, 1);
-	}
-
-	inline auto map_window_points(HWND from, HWND to, LPRECT rc)
-	{
-		return ::MapWindowPoints(from, to, (LPPOINT)rc, 2);
+		return ::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | flags);
 	}
 
 	//
@@ -183,21 +183,21 @@ namespace my
 
 	inline HANDLE create_file_for_read(LPCTSTR file_name)
 	{
-		return ::CreateFile(file_name, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+		return ::CreateFile(file_name, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 	}
 
 	inline HANDLE create_file_for_write(LPCTSTR file_name)
 	{
-		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr);
 	}
 
 	inline HANDLE create_file_for_edit(LPCTSTR file_name)
 	{
-		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_ALWAYS, 0, 0);
+		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, 0, nullptr);
 	}
 
 	inline HANDLE create_file_for_read_write(LPCTSTR file_name)
 	{
-		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
 	}
 }
