@@ -204,6 +204,7 @@ namespace apn::dark
 
 			hive_module.attr("skin_name") = &hive.skin_name;
 			hive_module.attr("scheme_name") = &hive.scheme_name;
+			hive_module.attr("dark_mode") = &hive.dark_mode;
 			hive_module.attr("ellipse") = &hive.ellipse;
 			hive_module.attr("border_width") = &hive.border_width;
 

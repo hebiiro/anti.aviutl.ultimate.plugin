@@ -81,6 +81,7 @@ namespace apn::dark
 
 			get_string(root, "skin_name", hive.skin_name);
 			get_string(root, "scheme_name", hive.scheme_name);
+			get_bool(root, "dark_mode", hive.dark_mode);
 			get_int(root, "ellipse", hive.ellipse);
 			get_int(root, "border_width", hive.border_width);
 			get_label(root, "shadow_mode", hive.shadow_mode, hive.c_shadow_mode.labels);
@@ -123,6 +124,7 @@ namespace apn::dark
 
 			set_string(root, "skin_name", hive.skin_name);
 			set_string(root, "scheme_name", hive.scheme_name);
+			set_bool(root, "dark_mode", hive.dark_mode);
 			set_int(root, "ellipse", hive.ellipse);
 			set_int(root, "border_width", hive.border_width);
 			set_label(root, "shadow_mode", hive.shadow_mode, hive.c_shadow_mode.labels);

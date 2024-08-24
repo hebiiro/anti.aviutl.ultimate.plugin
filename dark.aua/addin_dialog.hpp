@@ -16,6 +16,7 @@ namespace apn::dark
 
 			get_combobox_string(IDC_SKIN, hive.skin_name);
 			get_combobox_string(IDC_SCHEME, hive.scheme_name);
+			get_check(IDC_DARK_MODE, hive.dark_mode);
 			get_int(IDC_ELLIPSE, hive.ellipse);
 			get_int(IDC_BORDER_WIDTH, hive.border_width);
 			get_combobox_index(IDC_SHADOW_MODE, hive.shadow_mode);
@@ -25,6 +26,7 @@ namespace apn::dark
 			get_combobox_index(IDC_DPI_SCALING_MODE, hive.dpi_scaling_mode);
 			get_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			get_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
+			get_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
 		}
 
 		//
@@ -36,6 +38,7 @@ namespace apn::dark
 
 			set_combobox_string(IDC_SKIN, hive.skin_name);
 			set_combobox_string(IDC_SCHEME, hive.scheme_name);
+			set_check(IDC_DARK_MODE, hive.dark_mode);
 			set_int(IDC_ELLIPSE, hive.ellipse);
 			set_int(IDC_BORDER_WIDTH, hive.border_width);
 			set_combobox_index(IDC_SHADOW_MODE, hive.shadow_mode);
@@ -45,6 +48,7 @@ namespace apn::dark
 			set_combobox_index(IDC_DPI_SCALING_MODE, hive.dpi_scaling_mode);
 			set_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			set_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
+			set_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
 		}
 
 		//
@@ -112,6 +116,8 @@ namespace apn::dark
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, nullptr);
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DARK_MODE));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ELLIPSE_STAT));
 				{
 					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, nullptr);
@@ -153,6 +159,7 @@ namespace apn::dark
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR));
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR_MULTI));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DONT_WRITE_BYTECODE));
 			}
 		}
 
@@ -189,6 +196,7 @@ namespace apn::dark
 					break;
 				}
 			// その他のコントロールが変更されたときの処理です。
+			case IDC_DARK_MODE:
 			case IDC_USE_LAYER_COLOR:
 			case IDC_USE_LAYER_COLOR_MULTI:
 				{

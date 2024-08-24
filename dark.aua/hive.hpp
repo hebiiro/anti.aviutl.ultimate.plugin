@@ -144,6 +144,12 @@ namespace apn::dark
 		std::wstring scheme_name;
 
 		//
+		// TRUEの場合はダークモードにします。
+		// FALSEの場合はライトモードにします。
+		//
+		bool dark_mode = true;
+
+		//
 		// スキンの丸みです。
 		//
 		int32_t ellipse = 5;
