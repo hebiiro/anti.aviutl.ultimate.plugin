@@ -12,6 +12,7 @@ namespace apn::scene_select
 
 		inline static constexpr struct CommandID {
 			inline static constexpr uint32_t c_config = 2024;
+			inline static constexpr uint32_t c_scene_config = 2025;
 		} c_command_id;
 
 		inline static constexpr struct SizeMode {

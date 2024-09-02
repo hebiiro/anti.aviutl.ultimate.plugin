@@ -299,16 +299,25 @@ namespace apn::scene_select
 
 			my::menu::unique_ptr<> menu(::CreatePopupMenu());
 
-			::AppendMenu(menu.get(), MF_STRING, hive.c_command_id.c_config, _T("設定"));
+			::AppendMenu(menu.get(), MF_STRING, hive.c_command_id.c_scene_config, _T("シーンの設定"));
+			::AppendMenu(menu.get(), MF_SEPARATOR, 0, nullptr);
+			::AppendMenu(menu.get(), MF_STRING, hive.c_command_id.c_config, _T("シーン選択の設定"));
 
-			auto pt = my::get_cursor_pos();
-			auto id = ::TrackPopupMenu(menu.get(), TPM_NONOTIFY | TPM_RETURNCMD, pt.x, pt.y, 0, hwnd, 0);
+			auto point = my::get_cursor_pos();
+			auto id = ::TrackPopupMenuEx(menu.get(),
+				TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, hwnd, nullptr);
 
 			switch (id)
 			{
 			case hive.c_command_id.c_config:
 				{
-					on_config(hwnd);
+					on_config();
+
+					break;
+				}
+			case hive.c_command_id.c_scene_config:
+				{
+					on_scene_config(point);
 
 					break;
 				}
@@ -318,7 +327,7 @@ namespace apn::scene_select
 		//
 		// コンフィグダイアログを表示します。
 		//
-		void on_config(HWND hwnd)
+		void on_config()
 		{
 			MY_TRACE_FUNC("");
 
@@ -328,6 +337,95 @@ namespace apn::scene_select
 
 			calc_layout();
 			redraw();
+		}
+
+		//
+		// シーン設定ダイアログを表示します。
+		//
+		void on_scene_config(POINT point)
+		{
+			MY_TRACE_FUNC("");
+
+			// マウスカーソルの座標をクライアント座標に変換します。
+			my::map_window_points(nullptr, *this, &point);
+
+			// マウス座標にあるボタンを取得します。
+			auto button = hittest(*this, point);
+
+			// マウス座標にあるボタンと現在のシーンが同じ場合は
+			if (magi.exin.get_current_scene_index() == button)
+			{
+				// デフォルトのシーン設定ダイアログを表示します。
+				::SendMessage(magi.exin.get_exedit_window(), WM_COMMAND, 0x00000448, 0x00000000);
+
+				// ウィンドウを再描画します。
+				redraw();
+			}
+			// マウス座標にあるボタンと現在のシーンが異なる場合は
+			else
+			{
+				constexpr auto c_name = 171;
+				constexpr auto c_width = 172;
+				constexpr auto c_height = 173;
+				constexpr auto c_has_alpha = 201;
+
+				// シーン設定を取得します。
+				auto scene_index = button;
+				auto scene_setting = magi.exin.get_scene_setting(scene_index);
+
+				// シーン設定ダイアログを作成します。
+				my::Dialog dialog;
+				dialog.create((HINSTANCE)magi.exin.exedit, _T("SCENE_CONFIG"), *this);
+
+				// ダイアログコントロールの値を設定します。
+				if (scene_setting->name)
+				{
+					dialog.set_text(c_name, my::ts(scene_setting->name));
+					::SendDlgItemMessage(dialog, c_name, EM_SETSEL, 0, -1);
+				}
+				if (scene_setting->width)
+					dialog.set_int(c_width, scene_setting->width);
+				if (scene_setting->height)
+					dialog.set_int(c_height, scene_setting->height);
+				if (!!(scene_setting->flag & ExEdit::SceneSetting::Flag::Alpha))
+					dialog.set_check(c_has_alpha, TRUE);
+
+				// ダイアログを表示します。
+				if (IDOK != dialog.do_modal()) return;
+
+				// ダイアログコントロールの値を取得します。
+				auto name = dialog.get_text(c_name).substr(0, 0x40); // 文字列の長さを0x40に制限します。
+				auto width = dialog.get_int(c_width);
+				auto height = dialog.get_int(c_height);
+				auto has_alpha = dialog.get_check(c_has_alpha);
+
+				// 拡張編集の変数と関数を取得します。
+				auto u2 = *(uint32_t*)(magi.exin.exedit + 0x001A5328);
+				auto func = (LPCSTR (*)(LPCSTR, uint32_t))(magi.exin.exedit + 0x0002B880);
+
+				// シーン設定を変更します。
+				if (name.empty())
+					scene_setting->name = nullptr;
+				else
+					scene_setting->name = (*func)(my::hs(name).c_str(), u2);
+				if (width && height)
+				{
+					scene_setting->width = width;
+					scene_setting->height = height;
+				}
+				else
+				{
+					scene_setting->width = 0;
+					scene_setting->height = 0;
+				}
+				if (has_alpha)
+					scene_setting->flag |= ExEdit::SceneSetting::Flag::Alpha;
+				else
+					scene_setting->flag &= ~ExEdit::SceneSetting::Flag::Alpha;
+
+				// ウィンドウを再描画します。
+				redraw();
+			}
 		}
 
 		//
