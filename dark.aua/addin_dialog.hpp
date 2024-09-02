@@ -88,7 +88,7 @@ namespace apn::dark
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
 			auto stat = std::make_shared<RelativePos>(base_size * 2 + margin_value * 2);
 			auto editbox = std::make_shared<RelativePos>(base_size * 2);
-			auto checkbox = std::make_shared<RelativePos>(base_size * 7);
+			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
 			auto combobox = std::make_shared<RelativePos>(base_size * 7);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
