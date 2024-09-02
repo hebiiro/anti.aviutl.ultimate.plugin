@@ -548,6 +548,7 @@ namespace apn::scene_select
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
 
+					// マウスドラッグ中の場合は
 					if (::GetCapture() == hwnd)
 					{
 						// マウス座標にあるボタンを取得します。
@@ -567,6 +568,7 @@ namespace apn::scene_select
 							redraw();
 						}
 					}
+					// マウスドラッグ中ではない場合は
 					else
 					{
 						// マウス座標にあるシーンを取得します。
@@ -590,6 +592,25 @@ namespace apn::scene_select
 
 							// ウィンドウを再描画します。
 							redraw();
+
+							// ウィンドウタイトルを変更します。
+							if (hot_button <= 0)
+							{
+								::SetWindowText(hwnd, hive.c_display_name);
+							}
+							else
+							{
+								auto scene_setting = magi.exin.get_scene_setting(hot_button);
+								auto name = scene_setting->name;
+								auto width = scene_setting->width;
+								auto height = scene_setting->height;
+								auto has_alpha = !!(scene_setting->flag & ExEdit::SceneSetting::Flag::Alpha);
+								auto name_string = name ? my::format(_T("\"{}\""), name) : my::format(_T("Scene {}"), hot_button);
+								auto size_string = (width && height) ? my::format(_T("{} x {}"), width, height) : my::format(_T("デフォルトサイズ"));
+								auto has_alpha_string = has_alpha ? _T("アルファあり") : _T("アルファなし");
+								::SetWindowText(hwnd, my::format(_T("{} {} - {} - {}"),
+									hive.c_display_name, name_string, size_string, has_alpha_string).c_str());
+							}
 						}
 					}
 
