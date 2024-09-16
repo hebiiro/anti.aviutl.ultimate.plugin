@@ -60,6 +60,7 @@ namespace apn::dark::gdi
 			auto it = generators.find(class_name);
 			if (it == generators.end())
 			{
+				// (?) ↓はテスト用コードだったのかもしれない。
 				if (my::contains(class_name, normalize(_T("WindowsForms10.") TRACKBAR_CLASS)))
 					it = generators.find(normalize(TRACKBAR_CLASS));
 
@@ -129,9 +130,9 @@ namespace apn::dark::gdi
 		//
 		// オリジナルのウィンドウプロシージャを呼び出します。
 		//
-		inline static LRESULT CALLBACK orig_proc(MessageState* current_state)
+		inline static LRESULT CALLBACK orig_wnd_proc(MessageState* current_state)
 		{
-			return hive.orig.CallWindowProcInternal(current_state->wnd_proc, current_state->hwnd, current_state->message, current_state->wParam, current_state->lParam);
+			return Renderer::orig_wnd_proc(current_state);
 		}
 
 		//
@@ -152,11 +153,17 @@ namespace apn::dark::gdi
 				client.exit_renderer(hwnd);
 			}
 
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", wnd_proc, hwnd, message, wParam, lParam);
+			if (0) // テスト用のコードです。
+			{
+				auto class_name = my::get_class_name(hwnd);
+
+				MY_TRACE_FUNC("{}, {:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}",
+					class_name, wnd_proc, hwnd, message, wParam, lParam);
+			}
 
 			// レンダラーの使用が抑制されている場合はデフォルト処理のみ行います。
 			if (hive.renderer_locked)
-				return orig_proc(&current_state);
+				return orig_wnd_proc(&current_state);
 
 			switch (message)
 			{
@@ -182,29 +189,28 @@ namespace apn::dark::gdi
 
 					auto dc = (HDC)wParam;
 					auto control = (HWND)lParam;
-					auto brush = (HBRUSH)orig_proc(&current_state);
+					auto brush = (HBRUSH)orig_wnd_proc(&current_state);
 
 					MY_TRACE_HWND(control);
 
 					// レンダラーを取得します。
-					auto renderer = Renderer::from_handle(control);
-					if (!renderer) return (LRESULT)brush;
-
-					return (LRESULT)renderer->on_ctl_color(hwnd, message, dc, control, brush);
+					if (auto renderer = Renderer::from_handle(control))
+						return (LRESULT)renderer->on_ctl_color(hwnd, message, dc, control, brush);
+					else
+						return (LRESULT)brush;
 				}
 			case WM_NOTIFY:
 				{
 					auto nm = (NMHDR*)lParam;
 
 					if (my::get_class_name(nm->hwndFrom) == WC_BUTTON)
-						return 0; // ボタンの場合は何もしない。
+						return 0; // ボタンの場合は何もしません。
 
 					switch (nm->code)
 					{
 					case NM_CUSTOMDRAW:
 						{
-							auto renderer = Renderer::from_handle(nm->hwndFrom);
-							if (renderer)
+							if (auto renderer = Renderer::from_handle(nm->hwndFrom))
 								return renderer->on_custom_draw(&current_state);
 
 							break;
@@ -218,11 +224,10 @@ namespace apn::dark::gdi
 			auto result = LRESULT {};
 			auto old_state = manager.get_current_state();
 			manager.set_current_state(current_state);
-			auto renderer = Renderer::from_handle(hwnd);
-			if (renderer)
+			if (auto renderer = Renderer::from_handle(hwnd))
 				result = renderer->on_subclass_proc(&current_state);
 			else
-				result = orig_proc(&current_state);
+				result = orig_wnd_proc(&current_state);
 			manager.set_current_state(old_state);
 			return result;
 		}
