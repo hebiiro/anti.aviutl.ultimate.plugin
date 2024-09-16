@@ -29,6 +29,14 @@ namespace apn::dark
 		}
 	};
 
+	//
+	// リターンアドレスを返します。
+	//
+	inline constexpr auto ret_addr(auto* arg1)
+	{
+		return reinterpret_cast<my::addr_t*>(arg1)[-1];
+	}
+
 	inline std::string safe_string(LPCSTR name)
 	{
 		if ((ULONG_PTR)name > 0x0000FFFF)

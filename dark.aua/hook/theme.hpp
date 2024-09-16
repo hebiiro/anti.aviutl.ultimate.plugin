@@ -67,8 +67,8 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HWND hwnd, HDC dc, LPCRECT rc)
 			{
-				auto from = *((my::addr_t*)&hwnd - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, ({})", from, hwnd, dc, safe_string(rc));
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, ({})",
+					ret_addr(&hwnd), hwnd, dc, safe_string(rc));
 
 				MY_TRACE_HWND(hwnd);
 
@@ -83,12 +83,12 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, LPCRECT rc_clip)
 			{
-				auto renderer = theme::manager.get_renderer(theme);
-				if (renderer)
+				hive.current_processing_vs.set(theme, part_id, state_id);
+				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_background(theme, dc, part_id, state_id, rc, rc_clip);
 
-				auto from = *((my::addr_t*)&theme - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), ({})", from, theme, part_id, state_id, safe_string(rc), safe_string(rc_clip));
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), ({})",
+					ret_addr(&theme), theme, part_id, state_id, safe_string(rc), safe_string(rc_clip));
 
 				return orig_proc(theme, dc, part_id, state_id, rc, rc_clip);
 			}
@@ -101,12 +101,12 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, const DTBGOPTS* options)
 			{
-				auto renderer = theme::manager.get_renderer(theme);
-				if (renderer)
+				hive.current_processing_vs.set(theme, part_id, state_id);
+				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_background_ex(theme, dc, part_id, state_id, rc, options);
 
-				auto from = *((my::addr_t*)&theme - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}", from, theme, part_id, state_id, safe_string(rc), options);
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}",
+					ret_addr(&theme), theme, part_id, state_id, safe_string(rc), options);
 
 				return orig_proc(theme, dc, part_id, state_id, rc, options);
 			}
@@ -119,12 +119,12 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, DWORD text_flags2, LPCRECT rc)
 			{
-				auto renderer = theme::manager.get_renderer(theme);
-				if (renderer)
+				hive.current_processing_vs.set(theme, part_id, state_id);
+				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_text(theme, dc, part_id, state_id, text, c, text_flags, text_flags2, rc);
 
-				auto from = *((my::addr_t*)&theme - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, ({})", from, theme, part_id, state_id, safe_string(text, c), text_flags, text_flags2, safe_string(rc));
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, ({})",
+					ret_addr(&theme), theme, part_id, state_id, safe_string(text, c), text_flags, text_flags2, safe_string(rc));
 
 				return orig_proc(theme, dc, part_id, state_id, text, c, text_flags, text_flags2, rc);
 			}
@@ -137,12 +137,12 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, LPRECT rc, const DTTOPTS* options)
 			{
-				auto renderer = theme::manager.get_renderer(theme);
-				if (renderer)
+				hive.current_processing_vs.set(theme, part_id, state_id);
+				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_text_ex(theme, dc, part_id, state_id, text, c, text_flags, rc, options);
 
-				auto from = *((my::addr_t*)&theme - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, ({}), {:#010x}", from, theme, part_id, state_id, safe_string(text, c), text_flags, safe_string(rc), options);
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, ({}), {:#010x}",
+					ret_addr(&theme), theme, part_id, state_id, safe_string(text, c), text_flags, safe_string(rc), options);
 
 				return orig_proc(theme, dc, part_id, state_id, text, c, text_flags, rc, options);
 			}
@@ -155,12 +155,12 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, HIMAGELIST image_list, int image_index)
 			{
-				auto renderer = theme::manager.get_renderer(theme);
-				if (renderer)
+				hive.current_processing_vs.set(theme, part_id, state_id);
+				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_icon(theme, dc, part_id, state_id, rc, image_list, image_index);
 
-				auto from = *((my::addr_t*)&theme - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}, {}", from, theme, part_id, state_id, safe_string(rc), image_list, image_index);
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}, {}",
+					ret_addr(&theme), theme, part_id, state_id, safe_string(rc), image_list, image_index);
 
 				return orig_proc(theme, dc, part_id, state_id, rc, image_list, image_index);
 			}
@@ -173,12 +173,12 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT dest_rect, UINT edge, UINT flags, LPRECT content_rect)
 			{
-				auto renderer = theme::manager.get_renderer(theme);
-				if (renderer)
+				hive.current_processing_vs.set(theme, part_id, state_id);
+				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_edge(theme, dc, part_id, state_id, dest_rect, edge, flags, content_rect);
 
-				auto from = *((my::addr_t*)&theme - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}, {:#010x}", from, theme, part_id, state_id, safe_string(dest_rect), edge, flags);
+				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}, {:#010x}",
+					ret_addr(&theme), theme, part_id, state_id, safe_string(dest_rect), edge, flags);
 
 				return orig_proc(theme, dc, part_id, state_id, dest_rect, edge, flags, content_rect);
 			}
