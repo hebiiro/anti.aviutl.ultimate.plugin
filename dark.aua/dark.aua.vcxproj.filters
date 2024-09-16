@@ -246,6 +246,7 @@
     <ClInclude Include="gdi\element\header.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
+    <ClInclude Include="app_interface.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

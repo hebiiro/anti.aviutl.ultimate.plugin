@@ -13,7 +13,7 @@ namespace apn::dark
 	//
 	// このクラスはHive::Appの実装です。
 	//
-	inline struct App : Hive::App, my::FileUpdateChecker2::Handler
+	inline struct App : AppInterface, my::FileUpdateChecker2::Handler
 	{
 		//
 		// 現在のスキンIDです。
@@ -33,12 +33,7 @@ namespace apn::dark
 		//
 		// コンストラクタです。
 		//
-		App()
-		{
-			MY_TRACE_FUNC("");
-
-			hive.app = this;
-		}
+		App() { app = this; }
 
 		//
 		// このアドインの初期化処理を実行します。
@@ -86,6 +81,8 @@ namespace apn::dark
 				::CreateThread(nullptr, 0,
 					[](LPVOID param) -> DWORD
 					{
+						auto app = (App*)param;
+
 						auto folder_name = hive.assets_folder_name;
 						std::vector<BYTE> buffer(1024);
 						DWORD returned = 0;
@@ -115,12 +112,12 @@ namespace apn::dark
 							auto length = fni->FileNameLength / sizeof(WCHAR);
 							std::wstring file_name(fni->FileName, length);
 							if (file_name.find(L"__pycache__") == file_name.npos)
-								app.post_change_assets();
+								app->post_change_assets();
 						}
 
 						return 0;
 					},
-					nullptr, 0, &tid);
+					this, 0, &tid);
 				MY_TRACE_INT(tid);
 			}
 
@@ -256,7 +253,7 @@ namespace apn::dark
 					::KillTimer(hwnd, timer_id);
 
 					// アセットの更新を適用します。
-					hive.app->on_change_assets();
+					app->on_change_assets();
 				});
 
 			return TRUE;
@@ -519,11 +516,19 @@ namespace apn::dark
 		}
 
 		//
+		// 与えられたテーマが同一のレンダラーを使用する場合はTRUEを返します。
+		//
+		virtual BOOL equal(HTHEME theme1, HTHEME theme2) override
+		{
+			return theme::manager.get_renderer(theme1) == theme::manager.get_renderer(theme2);
+		}
+
+		//
 		// この仮想関数はコンフィグファイルが変更されたときに呼び出されます。
 		//
 		virtual void on_file_update(my::FileUpdateChecker2* checker) override
 		{
 			on_change_config();
 		}
-	} app;
+	} app_impl;
 }

@@ -77,7 +77,7 @@ namespace apn::dark::hook
 				else
 				{
 					// 黒窓の設定ファイルを構築します。
-					hive.app->deploy_darken_window_settings();
+					app->deploy_darken_window_settings();
 				}
 
 				return result;

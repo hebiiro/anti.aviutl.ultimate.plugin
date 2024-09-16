@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "resource.h"
+#include "app_interface.hpp"
 #include "utils.hpp"
 #include "hive.hpp"
 #include "act_ctx.hpp"
@@ -86,14 +87,26 @@ namespace apn::dark
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
 #if defined(_DEBUG) && 1
-		// カスタムロガーを設定します。
-		static struct Logger : my::Tracer::Logger {
-			virtual void output(LPCTSTR raw, LPCTSTR text) override {
-				::OutputDebugString(text);
-//				if (::GetKeyState(VK_F1) < 0) ::OutputDebugString(text);
-			}
-		} logger;
-		my::Tracer::logger = &logger;
+		if (my::contains(args, L"f1"))
+		{
+			// カスタムロガーを設定します。
+			static struct Logger : my::Tracer::Logger {
+				virtual void output(LPCTSTR raw, LPCTSTR text) override {
+					if (::GetKeyState(VK_F1) < 0) ::OutputDebugString(text);
+				}
+			} logger;
+			my::Tracer::logger = &logger;
+		}
+		else if (my::contains(args, L"shift"))
+		{
+			// カスタムロガーを設定します。
+			static struct Logger : my::Tracer::Logger {
+				virtual void output(LPCTSTR raw, LPCTSTR text) override {
+					if (::GetKeyState(VK_SHIFT) < 0) ::OutputDebugString(text);
+				}
+			} logger;
+			my::Tracer::logger = &logger;
+		}
 #endif
 		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
 
@@ -167,7 +180,7 @@ namespace apn::dark
 		hive.main_window = hwnd;
 		hive.theme_window = hwnd;
 
-		return hive.app->init();
+		return app->init();
 	}
 
 	//
@@ -190,7 +203,7 @@ namespace apn::dark
 	//
 	UINT WINAPI dark_get_current_id()
 	{
-		return app.current_skin_id;
+		return app_impl.current_skin_id;
 	}
 
 	//

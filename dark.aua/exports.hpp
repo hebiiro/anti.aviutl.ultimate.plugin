@@ -7,7 +7,7 @@ namespace apn::dark
 	//
 	inline struct Exports {
 		struct Skin : share::Exports::Skin {
-			virtual BOOL init() { return hive.app->init_skin(); }
+			virtual BOOL init() { return app->init_skin(); }
 		} *skin = nullptr;
 
 		struct ThemeManager : share::Exports::ThemeManager {

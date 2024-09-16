@@ -45,7 +45,7 @@ namespace apn::dark
 
 			hive.theme_window = magi.exin.get_aviutl_window();
 
-			hive.app->init();
+			app->init();
 
 			return FALSE;
 		}
@@ -57,7 +57,7 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
-			hive.app->exit();
+			app->exit();
 
 			addin_window.exit();
 			hook_manager.on_exit();

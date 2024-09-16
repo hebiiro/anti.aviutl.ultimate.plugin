@@ -64,7 +64,7 @@ namespace apn::dark::hook
 				if (hive.file_dialog_mode == hive.c_file_dialog_mode.c_omit)
 				{
 					hive.renderer_locked = FALSE;
-					hive.app->redraw();
+					app->redraw();
 				}
 			}
 		};
