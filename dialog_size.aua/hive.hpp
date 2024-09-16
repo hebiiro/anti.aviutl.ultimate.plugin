@@ -13,7 +13,7 @@ namespace apn::dialog_size
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -23,7 +23,7 @@ namespace apn::dialog_size
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// カスタムテンプレートの配列です。
@@ -46,7 +46,7 @@ namespace apn::dialog_size
 		//
 		// メッセージボックスを表示します。
 		//
-		int32_t message_box(const std::wstring& text, HWND hwnd = 0, int32_t type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

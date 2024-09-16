@@ -49,35 +49,35 @@ namespace my
 			//
 			struct Variable
 			{
-				HWND* aviutl_window = 0;
-				HWND* exedit_window = 0;
-				HWND* setting_dialog = 0;
-				ExEdit::Object** object_table = 0;
-				ExEdit::Object** sorted_object_table = 0;
-				ExEdit::Filter** filter_table = 0;
-				int32_t* current_scene_index = 0;
-				int32_t* current_object_index = 0;
-				int32_t* current_filter_index = 0;
-				int32_t* object_count = 0;
-				int32_t* current_scene_object_count = 0;
-				uint8_t** exdata_table = 0;
-				int32_t* next_object_table = 0;
-				int32_t* object_slection_table = 0;
-				int32_t* object_selection_count = 0;
-				ExEdit::SceneSetting* scene_setting_table = 0;
-				AviUtl::EditHandle** editp = 0;
-				int32_t* layer_width = 0;
-				int32_t* layer_height = 0;
-				int32_t* layer_visible_count = 0;
-				ExEdit::LayerSetting** layer_setting_table = 0;
-				int32_t* aviutl_frame_number = 0;
-				int32_t* exedit_frame_number = 0;
-				int32_t* exedit_current_frame = 0;
+				HWND* aviutl_window = nullptr;
+				HWND* exedit_window = nullptr;
+				HWND* setting_dialog = nullptr;
+				ExEdit::Object** object_table = nullptr;
+				ExEdit::Object** sorted_object_table = nullptr;
+				ExEdit::Filter** filter_table = nullptr;
+				int32_t* current_scene_index = nullptr;
+				int32_t* current_object_index = nullptr;
+				int32_t* current_filter_index = nullptr;
+				int32_t* object_count = nullptr;
+				int32_t* current_scene_object_count = nullptr;
+				uint8_t** exdata_table = nullptr;
+				int32_t* next_object_table = nullptr;
+				int32_t* object_slection_table = nullptr;
+				int32_t* object_selection_count = nullptr;
+				ExEdit::SceneSetting* scene_setting_table = nullptr;
+				AviUtl::EditHandle** editp = nullptr;
+				int32_t* layer_width = nullptr;
+				int32_t* layer_height = nullptr;
+				int32_t* layer_visible_count = nullptr;
+				ExEdit::LayerSetting** layer_setting_table = nullptr;
+				int32_t* aviutl_frame_number = nullptr;
+				int32_t* exedit_frame_number = nullptr;
+				int32_t* exedit_current_frame = nullptr;
 				HMENU* setting_dialog_menus[5] = {};
-				int32_t* selection_visual_count = 0;
-				SelectionVisual* selection_visual = 0;
-				HWND* font_combobox = 0;
-				int32_t* bpm = 0;
+				int32_t* selection_visual_count = nullptr;
+				SelectionVisual* selection_visual = nullptr;
+				HWND* font_combobox = nullptr;
+				int32_t* bpm = nullptr;
 			} variable;
 
 			//
@@ -85,27 +85,27 @@ namespace my
 			//
 			struct Function
 			{
-				int32_t (CDECL *show_color_dialog)(uint32_t u1, COLORREF* color, uint32_t u3) = 0;
-				int64_t (CDECL *frame_to_x)(int32_t frame) = 0;
-				void (CDECL* push_undo)() = 0;
-				void (CDECL* create_undo)(int32_t object_index, uint32_t flags) = 0;
-				void (CDECL* hide_controls)() = 0;
-				BOOL (CDECL* show_controls)(int32_t object_index) = 0;
-				void (CDECL* erase_filter)(int32_t object_index, int32_t filter_index) = 0;
-				void (CDECL* swap_filter)(int32_t object_index, int32_t filter_index, int32_t relative_index) = 0;
-				void (CDECL* unknown1)(int32_t object_index, int32_t filter_index) = 0;
-				LPCSTR (CDECL* get_alias_file_name)(int32_t alias_id) = 0;
-				int32_t (CDECL* add_alias)(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index) = 0;
-				BOOL (CDECL* save_filter_alias)(int32_t object_index, int32_t filter_index, LPCSTR file_name) = 0;
-				BOOL (CDECL* load_exo)(LPCSTR file_name, int32_t frame, int32_t layer, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) = 0;
-				BOOL (CDECL* save_exo)(LPCSTR file_name) = 0;
-				BOOL (CDECL* set_scene)(int32_t scene_index, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) = 0;
-				void (CDECL* redraw_layer)(int32_t layer_index) = 0;
-				void (CDECL* redraw_layers)(int32_t flags[]) = 0;
-				int32_t (CDECL* erase_midpt)(int32_t object_index, int32_t frame) = 0;
-				void (CDECL* draw_item)(HDC dc, int32_t object_index) = 0;
-				void (CDECL* redraw_setting_dialog)(int32_t object_index) = 0;
-				int32_t (CDECL* update_object_table)() = 0;
+				int32_t (CDECL *show_color_dialog)(uint32_t u1, COLORREF* color, uint32_t u3) = nullptr;
+				int64_t (CDECL *frame_to_x)(int32_t frame) = nullptr;
+				void (CDECL* push_undo)() = nullptr;
+				void (CDECL* create_undo)(int32_t object_index, uint32_t flags) = nullptr;
+				void (CDECL* hide_controls)() = nullptr;
+				BOOL (CDECL* show_controls)(int32_t object_index) = nullptr;
+				void (CDECL* erase_filter)(int32_t object_index, int32_t filter_index) = nullptr;
+				void (CDECL* swap_filter)(int32_t object_index, int32_t filter_index, int32_t relative_index) = nullptr;
+				void (CDECL* unknown1)(int32_t object_index, int32_t filter_index) = nullptr;
+				LPCSTR (CDECL* get_alias_file_name)(int32_t alias_id) = nullptr;
+				int32_t (CDECL* add_alias)(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index) = nullptr;
+				BOOL (CDECL* save_filter_alias)(int32_t object_index, int32_t filter_index, LPCSTR file_name) = nullptr;
+				BOOL (CDECL* load_exo)(LPCSTR file_name, int32_t frame, int32_t layer, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) = nullptr;
+				BOOL (CDECL* save_exo)(LPCSTR file_name) = nullptr;
+				BOOL (CDECL* set_scene)(int32_t scene_index, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) = nullptr;
+				void (CDECL* redraw_layer)(int32_t layer_index) = nullptr;
+				void (CDECL* redraw_layers)(int32_t flags[]) = nullptr;
+				int32_t (CDECL* erase_midpt)(int32_t object_index, int32_t frame) = nullptr;
+				void (CDECL* draw_item)(HDC dc, int32_t object_index) = nullptr;
+				void (CDECL* redraw_setting_dialog)(int32_t object_index) = nullptr;
+				int32_t (CDECL* update_object_table)() = nullptr;
 			} function;
 		} address;
 

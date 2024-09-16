@@ -3,7 +3,7 @@
 #define MY_TRACE_FILTER_HOLDER(filter) \
 do { \
 	MY_TRACE(#filter _T(" = {}\n"), filter.get_filter_index()); \
-} while (0)
+} while (false)
 
 namespace apn
 {
@@ -11,7 +11,7 @@ namespace apn
 	{
 		ObjectHolder object;
 		int32_t filter_index = -1;
-		ExEdit::Filter* filter = 0;
+		ExEdit::Filter* filter = nullptr;
 
 		FilterHolder()
 		{

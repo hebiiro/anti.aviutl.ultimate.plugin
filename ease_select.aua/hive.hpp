@@ -33,7 +33,7 @@ namespace apn::ease_select
 		//
 		// メッセージボックスを表示します。
 		//
-		int32_t message_box(const std::wstring& text, HWND hwnd = 0, int32_t type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

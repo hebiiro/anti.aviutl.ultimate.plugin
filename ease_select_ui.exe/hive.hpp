@@ -13,12 +13,12 @@ namespace apn::ease_select_ui
 		struct App {
 			virtual BOOL read_config() = 0;
 			virtual BOOL write_config() = 0;
-		} *app = 0;
+		} *app = nullptr;
 
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -28,7 +28,7 @@ namespace apn::ease_select_ui
 		//
 		// このモジュールのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// ホストプロセス(AviUtlプロセス)のIDです。
@@ -38,7 +38,7 @@ namespace apn::ease_select_ui
 		//
 		// AviUtlプロセス内に存在するホストウィンドウです。
 		//
-		HWND host_window = 0;
+		HWND host_window = nullptr;
 
 		//
 		// TRUEの場合はすでにコンフィグが読み込まれています。
@@ -48,7 +48,7 @@ namespace apn::ease_select_ui
 		//
 		// メッセージボックスを表示します。
 		//
-		int32_t message_box(const std::wstring& text, HWND hwnd = 0, int32_t type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

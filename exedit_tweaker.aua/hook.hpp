@@ -102,7 +102,7 @@ namespace apn::exedit_tweaker
 				hive.gradient_fill.edge.outer.deflate_rect(&rc_frame);
 				hive.gradient_fill.edge.inner.draw(dc, &rc_frame);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} gradient_fill;
 
 		struct {
@@ -114,7 +114,7 @@ namespace apn::exedit_tweaker
 
 						hive.layer.bound.left.draw(dc, mx, my, 1, ly - my, pen);
 					}
-					inline static decltype(&hook_proc) orig_proc = 0;
+					inline static decltype(&hook_proc) orig_proc = nullptr;
 				} left;
 
 				struct {
@@ -124,7 +124,7 @@ namespace apn::exedit_tweaker
 
 						hive.layer.bound.top.draw(dc, mx, my, lx - mx, 1, pen);
 					}
-					inline static decltype(&hook_proc) orig_proc = 0;
+					inline static decltype(&hook_proc) orig_proc = nullptr;
 				} top;
 
 				struct {
@@ -134,7 +134,7 @@ namespace apn::exedit_tweaker
 
 						hive.layer.bound.right.draw(dc, mx, my, 1, ly - my, pen);
 					}
-					inline static decltype(&hook_proc) orig_proc = 0;
+					inline static decltype(&hook_proc) orig_proc = nullptr;
 				} right;
 
 				struct {
@@ -144,7 +144,7 @@ namespace apn::exedit_tweaker
 
 						hive.layer.bound.bottom.draw(dc, mx, my, lx - mx, 1, pen);
 					}
-					inline static decltype(&hook_proc) orig_proc = 0;
+					inline static decltype(&hook_proc) orig_proc = nullptr;
 				} bottom;
 			} bound;
 
@@ -155,7 +155,7 @@ namespace apn::exedit_tweaker
 
 					hive.layer.separator.draw(dc, mx, my, 1, ly - my, pen);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} separator;
 		} layer;
 	} hook_manager;

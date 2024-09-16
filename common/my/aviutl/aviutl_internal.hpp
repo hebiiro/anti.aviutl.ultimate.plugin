@@ -27,7 +27,7 @@ namespace my
 			//
 			struct Variable
 			{
-				AviUtl::ExFunc* exfunc = 0;
+				AviUtl::ExFunc* exfunc = nullptr;
 			} variable;
 
 			//
@@ -35,7 +35,7 @@ namespace my
 			//
 			struct Function
 			{
-				BOOL (CDECL* get_sys_info)(AviUtl::EditHandle* editp, AviUtl::SysInfo* sip) = 0;
+				BOOL (CDECL* get_sys_info)(AviUtl::EditHandle* editp, AviUtl::SysInfo* sip) = nullptr;
 			} function;
 		} address;
 
@@ -44,7 +44,7 @@ namespace my
 		//
 		BOOL init()
 		{
-			aviutl = (addr_t)::GetModuleHandle(0);
+			aviutl = (addr_t)::GetModuleHandle(nullptr);
 			if (!aviutl) return FALSE;
 
 			tools::assign(address.variable.exfunc, aviutl + 0x000A8C78);
@@ -90,7 +90,7 @@ namespace my
 		static int32_t get_filter_plugin_count(AviUtl::FilterPlugin* fp)
 		{
 			AviUtl::SysInfo si;
-			fp->exfunc->get_sys_info(0, &si);
+			fp->exfunc->get_sys_info(nullptr, &si);
 			return si.filter_n;
 		}
 
@@ -112,7 +112,7 @@ namespace my
 				if (!strcmp(filter_plugin->name, name)) return filter_plugin;
 			}
 
-			return 0;
+			return nullptr;
 		}
 	};
 }

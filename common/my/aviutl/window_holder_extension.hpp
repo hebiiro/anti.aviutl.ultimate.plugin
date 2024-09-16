@@ -10,7 +10,7 @@ namespace my::aviutl
 		//
 		// ターゲットウィンドウです。
 		//
-		HWND target = 0;
+		HWND target = nullptr;
 
 		//
 		// ターゲットウィンドウを返します。
@@ -39,7 +39,7 @@ namespace my::aviutl
 			auto flags = SWP_NOZORDER | SWP_ASYNCWINDOWPOS;
 			if (::IsWindowVisible(hwnd)) flags |= SWP_SHOWWINDOW;
 
-			::SetWindowPos(target, 0, x, y, w, h, flags);
+			::SetWindowPos(target, nullptr, x, y, w, h, flags);
 		}
 
 		//

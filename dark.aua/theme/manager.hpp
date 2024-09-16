@@ -14,11 +14,11 @@ namespace apn::dark::theme
 
 		Renderer* get_renderer(HTHEME theme) const
 		{
-			// レンダラの使用が抑制されている場合は0を返します。
-			if (hive.renderer_locked) return 0;
+			// レンダラの使用が抑制されている場合はnullptrを返します。
+			if (hive.renderer_locked) return nullptr;
 
 			auto it = collection.find(theme);
-			if (it == collection.end()) return 0;
+			if (it == collection.end()) return nullptr;
 			return it->second;
 		}
 

@@ -99,7 +99,8 @@ namespace apn
 		//
 		// メッセージボックスを表示します。
 		//
-		int message_box(const std::wstring& text, const std::wstring& title, HWND hwnd = 0, int type = MB_OK | MB_ICONWARNING)
+		int32_t message_box(const std::wstring& text, const std::wstring& title,
+			HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING)
 		{
 			if (!hwnd && magi.fp) hwnd = magi.fp->hwnd;
 

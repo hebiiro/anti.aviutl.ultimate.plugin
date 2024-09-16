@@ -46,7 +46,7 @@ namespace apn::filer_ui
 		//
 		// メッセージボックスを表示します。
 		//
-		int message_box(const std::wstring& text, int type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text.c_str(), c_name, host_window, type);
 		}
 	} hive;

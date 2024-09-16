@@ -19,7 +19,7 @@ namespace apn::dirty_check
 
 	inline struct DirtyFlag
 	{
-		const int* g_undo_id_ptr = 0;
+		const int* g_undo_id_ptr = nullptr;
 		int  g_undo_id_prev = 0;
 		bool g_dirty_flag = false;
 

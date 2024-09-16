@@ -13,7 +13,7 @@ namespace apn::color_code
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -23,11 +23,11 @@ namespace apn::color_code
 		//
 		// 拡張編集の「色の選択」ダイアログ関連の値です。
 		//
-		HWND dialog = 0;
-		BOOL* unlock = 0;
-		int32_t* r = 0;
-		int32_t* g = 0;
-		int32_t* b = 0;
+		HWND dialog = nullptr;
+		BOOL* unlock = nullptr;
+		int32_t* r = nullptr;
+		int32_t* g = nullptr;
+		int32_t* b = nullptr;
 
 		//
 		// カラーサークルを動かす量です。
@@ -37,7 +37,7 @@ namespace apn::color_code
 		//
 		// メッセージボックスを表示します。
 		//
-		int32_t message_box(const std::wstring& text, HWND hwnd = 0, int32_t type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

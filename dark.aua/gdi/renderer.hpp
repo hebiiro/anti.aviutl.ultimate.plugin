@@ -7,8 +7,8 @@ namespace apn::dark::gdi
 	//
 	struct MessageState
 	{
-		WNDPROC wnd_proc = 0;
-		HWND hwnd = 0;
+		WNDPROC wnd_proc = nullptr;
+		HWND hwnd = nullptr;
 		UINT message = 0;
 		WPARAM wParam = 0;
 		LPARAM lParam = 0;

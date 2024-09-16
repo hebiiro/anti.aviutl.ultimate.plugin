@@ -21,14 +21,14 @@ namespace my::aviutl
 		{
 			MY_TRACE_FUNC("");
 
-			constexpr LPCTSTR class_name = _T("AviUtl");
+			constexpr auto class_name = _T("AviUtl");
 
 			WNDCLASS wc = {};
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = instance;
 			wc.lpszClassName = class_name;
 			wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			::RegisterClass(&wc);
 
 			return window.create(
@@ -37,7 +37,7 @@ namespace my::aviutl
 				name,
 				style,
 				x, y, w, h,
-				parent, 0, instance, 0);
+				parent, nullptr, instance, nullptr);
 		}
 
 		//
