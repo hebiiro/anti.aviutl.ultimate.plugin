@@ -7,9 +7,9 @@ namespace apn::dark::hook
 	//
 	inline struct ExEdit
 	{
-		inline static HFONT* font = 0;
+		inline static HFONT* font = nullptr;
 		inline static int drawing_layer_index = 0;
-		inline static int (*ShowColorDialog)(DWORD u1, COLORREF* color, DWORD u3) = 0;
+		inline static int (*ShowColorDialog)(DWORD u1, COLORREF* color, DWORD u3) = nullptr;
 
 		//
 		// 指定されたレイヤー名からレイヤーカラーを取り出して返します。
@@ -18,16 +18,16 @@ namespace apn::dark::hook
 		{
 			auto sep = name.find(L'#');
 			if (sep == name.npos) return CLR_NONE;
-			auto color = wcstoul(name.substr(sep + 1).c_str(), 0, 16);
+			auto color = wcstoul(name.substr(sep + 1).c_str(), nullptr, 16);
 			return RGB(GetBValue(color), GetGValue(color), GetRValue(color));
 		}
 
 		//
 		// 指定されたレイヤーからレイヤーカラーを取り出して返します。
 		//
-		inline static COLORREF get_color_from_layer_index(int index)
+		inline static COLORREF get_color_from_layer_index(int32_t index)
 		{
-			for (int i = index; i >= 0; i--)
+			for (int32_t i = index; i >= 0; i--)
 			{
 				auto layer = magi.exin.get_layer_setting(i);
 				if (!layer) continue; // レイヤーが無効でした。
@@ -40,7 +40,7 @@ namespace apn::dark::hook
 
 				if (!sep[1]) return CLR_NONE; // セパレータ以降が空文字列ならデフォルトカラーを使用します。
 
-				auto color = strtoul(sep + 1, 0, 16);
+				auto color = strtoul(sep + 1, nullptr, 16);
 				return RGB(GetBValue(color), GetGValue(color), GetRValue(color));
 			}
 
@@ -96,7 +96,7 @@ namespace apn::dark::hook
 		//
 		// 描画中のレイヤーのブレンド回数を返します。
 		//
-		inline static int get_blend_count(HDC dc)
+		inline static int32_t get_blend_count(HDC dc)
 		{
 			switch (::GetDCBrushColor(dc))
 			{
@@ -124,6 +124,23 @@ namespace apn::dark::hook
 			auto b = (BYTE)(GetBValue(color1) * omega + GetBValue(color2) * alpha);
 
 			return RGB(r, g, b);
+		}
+
+		//
+		// タイムライン内の矩形を塗りつぶします。
+		//
+		inline static BOOL fill_timeline_rect(HDC dc, LPCRECT rc, HBRUSH brush)
+		{
+			if (hive.timeline_border_mode == hive.c_timeline_border_mode.c_omit)
+			{
+				auto rc_inflate = *rc;
+				::InflateRect(&rc_inflate, 0, 1);
+				return hive.orig.FillRect(dc, &rc_inflate, brush);
+			}
+			else
+			{
+				return hive.orig.FillRect(dc, rc, brush);
+			}
 		}
 
 		//
@@ -331,7 +348,7 @@ namespace apn::dark::hook
 					}
 				}
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_timeline_primary_scale;
 
 		//
@@ -352,7 +369,7 @@ namespace apn::dark::hook
 					}
 				}
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_timeline_secondary_scale;
 
 		//
@@ -375,7 +392,7 @@ namespace apn::dark::hook
 
 					auto str = my::ws(text);
 #if 1
-					UINT options = 0;
+					auto options = UINT {};
 					if (rc.left > 0) options |= ETO_CLIPPED;
 
 					if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
@@ -388,7 +405,7 @@ namespace apn::dark::hook
 
 				return orig_proc(dc, text, x, y, w, h, scroll_x);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_timeline_time;
 
 		//
@@ -426,13 +443,7 @@ namespace apn::dark::hook
 					}
 				}
 #endif
-
-#if 1
-				auto rc_temp = *rc; ::InflateRect(&rc_temp, 0, 1);
-				return hive.orig.FillRect(dc, &rc_temp, (HBRUSH)::GetStockObject(DC_BRUSH));
-#else
-				return hive.orig.FillRect(dc, rc, (HBRUSH)::GetStockObject(DC_BRUSH));
-#endif
+				return fill_timeline_rect(dc, rc, (HBRUSH)::GetStockObject(DC_BRUSH));
 			}
 			inline static decltype(&hook_proc) orig_proc = ::FillRect;
 		} fill_layer_background;
@@ -459,12 +470,8 @@ namespace apn::dark::hook
 					// ブレンドしたカラーを適用します。
 					::SetDCBrushColor(dc, color);
 				}
-#if 1
-				auto rc_temp = *rc; ::InflateRect(&rc_temp, 0, 1);
-				return hive.orig.FillRect(dc, &rc_temp, brush);
-#else
-				return hive.orig.FillRect(dc, rc, brush);
-#endif
+
+				return fill_timeline_rect(dc, rc, brush);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::FillRect;
 		} fill_group_background;
@@ -492,7 +499,7 @@ namespace apn::dark::hook
 
 				return draw_line(dc, pen, EES_LAYER_LINE_LEFT, mx, my, 1, ly - my);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_layer_left;
 
 		inline static struct {
@@ -502,7 +509,7 @@ namespace apn::dark::hook
 
 				return draw_line(dc, pen, EES_LAYER_LINE_RIGHT, mx, my, 1, ly - my);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_layer_right;
 
 		inline static struct {
@@ -512,7 +519,7 @@ namespace apn::dark::hook
 
 				return draw_line(dc, pen, EES_LAYER_LINE_TOP, mx, my, lx - mx, 1);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_layer_top;
 
 		inline static struct {
@@ -522,7 +529,7 @@ namespace apn::dark::hook
 
 				return draw_line(dc, pen, EES_LAYER_LINE_BOTTOM, mx, my, lx - mx, 1);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_layer_bottom;
 
 		inline static struct {
@@ -532,7 +539,7 @@ namespace apn::dark::hook
 
 				return draw_line(dc, pen, EES_LAYER_LINE_SEPARATOR, mx, my, 1, ly - my);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_layer_separator;
 
 		inline static struct {
@@ -557,7 +564,7 @@ namespace apn::dark::hook
 
 				orig_proc(dc, layer_index, a3, a4, a5, a6, a7);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_layer_background;
 
 		inline static struct {
@@ -604,7 +611,7 @@ namespace apn::dark::hook
 
 				return orig_proc(hdlg, message, wParam, lParam);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} layer_name_dialog_proc;
 
 		inline static struct {
@@ -623,7 +630,7 @@ namespace apn::dark::hook
 
 				return orig_proc(instance, template_name, parent, dlg_proc);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} show_layer_name_dialog;
 
 		inline static struct {

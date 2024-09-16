@@ -42,6 +42,15 @@ namespace apn::dark
 			};
 		} c_static_edge_mode;
 
+		inline static constexpr struct TimelineBorderMode {
+			inline static constexpr int32_t c_normal = 0;
+			inline static constexpr int32_t c_omit = 1;
+			inline static constexpr my::Label labels[] = {
+				{ c_normal, L"normal" },
+				{ c_omit, L"omit" },
+			};
+		} c_timeline_border_mode;
+
 		inline static constexpr struct FileDialogMode {
 			inline static constexpr int32_t c_normal = 0;
 			inline static constexpr int32_t c_omit = 1;
@@ -69,19 +78,6 @@ namespace apn::dark
 			std::wstring module_name;
 			std::wstring display_name;
 		};
-
-		struct App {
-			virtual BOOL init() = 0;
-			virtual BOOL exit() = 0;
-			virtual BOOL init_skin() = 0;
-			virtual BOOL update_skin() = 0;
-			virtual BOOL on_change_controls() = 0;
-			virtual BOOL on_change_config() = 0;
-			virtual BOOL on_change_assets() = 0;
-			virtual uint32_t get_current_skin_id() = 0;
-			virtual BOOL redraw() = 0;
-			virtual BOOL deploy_darken_window_settings() = 0;
-		} *app = 0;
 
 		//
 		// このアドインです。
@@ -183,6 +179,11 @@ namespace apn::dark
 		int32_t static_edge_mode = c_static_edge_mode.c_omit;
 
 		//
+		// タイムラインボーダーの扱いに関するモードです。
+		//
+		int32_t timeline_border_mode = c_timeline_border_mode.c_omit;
+
+		//
 		// ファイル選択ダイアログの扱いに関するモードです。
 		//
 		int32_t file_dialog_mode = c_file_dialog_mode.c_omit;
@@ -219,28 +220,42 @@ namespace apn::dark
 		thread_local inline static BOOL renderer_locked = FALSE;
 
 		//
+		// 現在処理中のビジュアルスタイルです。
+		//
+		thread_local inline static struct {
+			HTHEME theme;
+			int part_id;
+			int state_id;
+			inline void set(HTHEME theme, int part_id, int state_id) {
+				this->theme = theme;
+				this->part_id = part_id;
+				this->state_id = state_id;
+			}
+		} current_processing_vs = { nullptr, 0, 0 };
+
+		//
 		// このクラスはフックする前のオリジナルのAPIを保持します。
 		//
 		struct {
-			LRESULT (WINAPI *CallWindowProcInternal)(WNDPROC wnd_proc, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
-			BOOL (WINAPI *Rectangle)(HDC dc, int left, int top, int right, int bottom) = 0;
-			BOOL (WINAPI *FillRect)(HDC dc, LPCRECT rc, HBRUSH brush) = 0;
-			BOOL (WINAPI *DrawFrame)(HDC dc, LPRECT rc, UINT width, UINT type) = 0;
-			BOOL (WINAPI *DrawFrameControl)(HDC dc, LPRECT rc, UINT type, UINT state) = 0;
-			BOOL (WINAPI *FrameRect)(HDC dc, LPCRECT rc, HBRUSH brush) = 0;
-			BOOL (WINAPI *DrawEdge)(HDC dc, LPRECT rc, UINT edge, UINT flags) = 0;
-			BOOL (WINAPI *DrawFocusRect)(HDC dc, LPCRECT rc) = 0;
-			BOOL (WINAPI *DrawStateW)(HDC dc, HBRUSH fore, DRAWSTATEPROC cb, LPARAM lData, WPARAM wData, int x, int y, int cx, int cy, UINT flags) = 0;
-			BOOL (WINAPI *ExtTextOutW)(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx) = 0;
-			BOOL (WINAPI *PatBlt)(HDC dc, int x, int y, int w, int h, DWORD rop) = 0;
+			LRESULT (WINAPI *CallWindowProcInternal)(WNDPROC wnd_proc, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) = nullptr;
+			BOOL (WINAPI *Rectangle)(HDC dc, int left, int top, int right, int bottom) = nullptr;
+			BOOL (WINAPI *FillRect)(HDC dc, LPCRECT rc, HBRUSH brush) = nullptr;
+			BOOL (WINAPI *DrawFrame)(HDC dc, LPRECT rc, UINT width, UINT type) = nullptr;
+			BOOL (WINAPI *DrawFrameControl)(HDC dc, LPRECT rc, UINT type, UINT state) = nullptr;
+			BOOL (WINAPI *FrameRect)(HDC dc, LPCRECT rc, HBRUSH brush) = nullptr;
+			BOOL (WINAPI *DrawEdge)(HDC dc, LPRECT rc, UINT edge, UINT flags) = nullptr;
+			BOOL (WINAPI *DrawFocusRect)(HDC dc, LPCRECT rc) = nullptr;
+			BOOL (WINAPI *DrawStateW)(HDC dc, HBRUSH fore, DRAWSTATEPROC cb, LPARAM lData, WPARAM wData, int x, int y, int cx, int cy, UINT flags) = nullptr;
+			BOOL (WINAPI *ExtTextOutW)(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx) = nullptr;
+			BOOL (WINAPI *PatBlt)(HDC dc, int x, int y, int w, int h, DWORD rop) = nullptr;
 
-			HRESULT (WINAPI *DrawThemeParentBackground)(HWND hwnd, HDC dc, LPCRECT rc) = 0;
-			HRESULT (WINAPI *DrawThemeBackground)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, LPCRECT rc_clip) = 0;
-			HRESULT (WINAPI *DrawThemeBackgroundEx)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, const DTBGOPTS* options) = 0;
-			HRESULT (WINAPI *DrawThemeText)(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, DWORD text_flags2, LPCRECT rc) = 0;
-			HRESULT (WINAPI *DrawThemeTextEx)(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, LPRECT rc, const DTTOPTS* options) = 0;
-			HRESULT (WINAPI *DrawThemeIcon)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, HIMAGELIST image_list, int iImageIndex) = 0;
-			HRESULT (WINAPI *DrawThemeEdge)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT dest_rect, UINT edge, UINT flags, LPRECT content_rect) = 0;
+			HRESULT (WINAPI *DrawThemeParentBackground)(HWND hwnd, HDC dc, LPCRECT rc) = nullptr;
+			HRESULT (WINAPI *DrawThemeBackground)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, LPCRECT rc_clip) = nullptr;
+			HRESULT (WINAPI *DrawThemeBackgroundEx)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, const DTBGOPTS* options) = nullptr;
+			HRESULT (WINAPI *DrawThemeText)(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, DWORD text_flags2, LPCRECT rc) = nullptr;
+			HRESULT (WINAPI *DrawThemeTextEx)(HTHEME theme, HDC dc, int part_id, int state_id, LPCWSTR text, int c, DWORD text_flags, LPRECT rc, const DTTOPTS* options) = nullptr;
+			HRESULT (WINAPI *DrawThemeIcon)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, HIMAGELIST image_list, int iImageIndex) = nullptr;
+			HRESULT (WINAPI *DrawThemeEdge)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT dest_rect, UINT edge, UINT flags, LPRECT content_rect) = nullptr;
 		} orig;
 
 		//
@@ -254,7 +269,7 @@ namespace apn::dark
 		//
 		// メッセージボックスを表示します。
 		//
-		int32_t message_box(const std::wstring& text, HWND hwnd = 0, int32_t type = MB_OK | MB_ICONWARNING) {
+		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
 			return magi.message_box(text, c_name, hwnd, type);
 		}
 	} hive;

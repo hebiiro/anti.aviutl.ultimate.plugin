@@ -22,6 +22,7 @@ namespace apn::dark
 			get_combobox_index(IDC_SHADOW_MODE, hive.shadow_mode);
 			get_combobox_index(IDC_CORNER_MODE, hive.round_mode);
 			get_combobox_index(IDC_STATIC_EDGE_MODE, hive.static_edge_mode);
+			get_combobox_index(IDC_TIMELINE_BORDER_MODE, hive.timeline_border_mode);
 			get_combobox_index(IDC_FILE_DIALOG_MODE, hive.file_dialog_mode);
 			get_combobox_index(IDC_DPI_SCALING_MODE, hive.dpi_scaling_mode);
 			get_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
@@ -44,6 +45,7 @@ namespace apn::dark
 			set_combobox_index(IDC_SHADOW_MODE, hive.shadow_mode);
 			set_combobox_index(IDC_CORNER_MODE, hive.round_mode);
 			set_combobox_index(IDC_STATIC_EDGE_MODE, hive.static_edge_mode);
+			set_combobox_index(IDC_TIMELINE_BORDER_MODE, hive.timeline_border_mode);
 			set_combobox_index(IDC_FILE_DIALOG_MODE, hive.file_dialog_mode);
 			set_combobox_index(IDC_DPI_SCALING_MODE, hive.dpi_scaling_mode);
 			set_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
@@ -77,6 +79,7 @@ namespace apn::dark
 			init_combobox(IDC_SHADOW_MODE, _T("影を付ける"), _T("影を省略する"));
 			init_combobox(IDC_CORNER_MODE, _T("角を丸くする"), _T("丸角を省略する"));
 			init_combobox(IDC_STATIC_EDGE_MODE, _T("通常"), _T("エッジを省略する"));
+			init_combobox(IDC_TIMELINE_BORDER_MODE, _T("通常"), _T("タイムライン内の縁を省略する"));
 			init_combobox(IDC_FILE_DIALOG_MODE, _T("通常"), _T("ファイル選択ダイアログを除外する"));
 			init_combobox(IDC_DPI_SCALING_MODE, _T("通常"), _T("補正する"));
 
@@ -102,8 +105,9 @@ namespace apn::dark
 			::SendDlgItemMessage(*this, IDC_SHADOW_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
 			::SendDlgItemMessage(*this, IDC_CORNER_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
 			::SendDlgItemMessage(*this, IDC_STATIC_EDGE_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_DPI_SCALING_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_TIMELINE_BORDER_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
 			::SendDlgItemMessage(*this, IDC_FILE_DIALOG_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
+			::SendDlgItemMessage(*this, IDC_DPI_SCALING_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
 #endif
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
@@ -117,7 +121,7 @@ namespace apn::dark
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, nullptr);
-				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DARK_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_DARK_MODE));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ELLIPSE_STAT));
 				{
 					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, nullptr);
@@ -145,12 +149,14 @@ namespace apn::dark
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_STATIC_EDGE_MODE_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_STATIC_EDGE_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_FILE_DIALOG_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_FILE_DIALOG_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_TIMELINE_BORDER_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_TIMELINE_BORDER_MODE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_FILE_DIALOG_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_FILE_DIALOG_MODE));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_DPI_SCALING_MODE_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_DPI_SCALING_MODE));
 			}
@@ -178,11 +184,12 @@ namespace apn::dark
 			case IDC_SHADOW_MODE:
 			case IDC_CORNER_MODE:
 			case IDC_STATIC_EDGE_MODE:
+			case IDC_TIMELINE_BORDER_MODE:
 			case IDC_FILE_DIALOG_MODE:
 			case IDC_DPI_SCALING_MODE:
 				{
 					if (code == CBN_SELCHANGE)
-						hive.app->on_change_controls();
+						app->on_change_controls();
 
 					break;
 				}
@@ -191,7 +198,7 @@ namespace apn::dark
 			case IDC_BORDER_WIDTH:
 				{
 					if (code == EN_UPDATE)
-						hive.app->on_change_controls();
+						app->on_change_controls();
 
 					break;
 				}
@@ -200,7 +207,7 @@ namespace apn::dark
 			case IDC_USE_LAYER_COLOR:
 			case IDC_USE_LAYER_COLOR_MULTI:
 				{
-					hive.app->on_change_controls();
+					app->on_change_controls();
 
 					break;
 				}
@@ -226,9 +233,9 @@ namespace apn::dark
 					color = cc.rgbResult;
 
 					set_uint(id, color);
-					::InvalidateRect(control, 0, FALSE);
+					::InvalidateRect(control, nullptr, FALSE);
 
-					hive.app->update_skin();
+					app->update_skin();
 
 					break;
 				}
@@ -247,10 +254,10 @@ namespace apn::dark
 					set_uint(dark_id, light);
 					set_uint(light_id, dark);
 
-					::InvalidateRect(::GetDlgItem(*this, dark_id), nullptr, FALSE);
-					::InvalidateRect(::GetDlgItem(*this, light_id), nullptr, FALSE);
+					::InvalidateRect(ctrl(dark_id), nullptr, FALSE);
+					::InvalidateRect(ctrl(light_id), nullptr, FALSE);
 
-					hive.app->update_skin();
+					app->update_skin();
 
 					break;
 				}
@@ -291,6 +298,30 @@ namespace apn::dark
 					}
 
 					break;
+				}
+			case WM_NOTIFY:
+				{
+					auto header = (NMHDR*)lParam;
+					if (header->code == UDN_DELTAPOS)
+					{
+						auto nm = (NMUPDOWN*)header;
+						auto edit_id = header->idFrom - 1;
+
+						switch (edit_id)
+						{
+						case IDC_ELLIPSE:
+						case IDC_BORDER_WIDTH:
+							{
+								auto value = get_int(edit_id);
+								value += (nm->iDelta > 0) ? -1 : +1;
+								value = std::clamp(value, 0, +100);
+								set_int(edit_id, value);
+								break;
+							}
+						}
+					}
+
+					return FALSE;
 				}
 			}
 

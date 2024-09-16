@@ -87,6 +87,7 @@ namespace apn::dark
 			get_label(root, "shadow_mode", hive.shadow_mode, hive.c_shadow_mode.labels);
 			get_label(root, "round_mode", hive.round_mode, hive.c_round_mode.labels);
 			get_label(root, "static_edge_mode", hive.static_edge_mode, hive.c_static_edge_mode.labels);
+			get_label(root, "timeline_border_mode", hive.timeline_border_mode, hive.c_timeline_border_mode.labels);
 			get_label(root, "file_dialog_mode", hive.file_dialog_mode, hive.c_file_dialog_mode.labels);
 			get_label(root, "dpi_scaling_mode", hive.dpi_scaling_mode, hive.c_dpi_scaling_mode.labels);
 			get_bool(root, "use_layer_color", hive.use_layer_color);
@@ -130,6 +131,7 @@ namespace apn::dark
 			set_label(root, "shadow_mode", hive.shadow_mode, hive.c_shadow_mode.labels);
 			set_label(root, "round_mode", hive.round_mode, hive.c_round_mode.labels);
 			set_label(root, "static_edge_mode", hive.static_edge_mode, hive.c_static_edge_mode.labels);
+			set_label(root, "timeline_border_mode", hive.timeline_border_mode, hive.c_timeline_border_mode.labels);
 			set_label(root, "file_dialog_mode", hive.file_dialog_mode, hive.c_file_dialog_mode.labels);
 			set_label(root, "dpi_scaling_mode", hive.dpi_scaling_mode, hive.c_dpi_scaling_mode.labels);
 			set_bool(root, "use_layer_color", hive.use_layer_color);
