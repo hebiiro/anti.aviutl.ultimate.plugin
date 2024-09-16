@@ -159,7 +159,7 @@ namespace apn::dark
 	//
 	inline auto draw_text_fill_with_shadow(const DrawTextArgs& args, const share::Stuff& stuff)
 	{
-		return exports.painter->stuff_draw_text_fill_with_shadow(args.dc, args.text, args.c, args.rc, args.text_flags, FALSE, &stuff);
+		return exports.painter->stuff_draw_text_fill_with_shadow(args.dc, args.text, args.c, args.rc, args.text_flags, TRUE, &stuff);
 	}
 
 	//
@@ -173,15 +173,15 @@ namespace apn::dark
 	//
 	// 影付きの文字列を描画します。
 	//
-	inline auto RECT_draw_text_fill_with_shadow(const DrawTextArgs& args, const share::Stuff& stuff, LPCRECT rc)
+	inline auto RECT_draw_text_fill_with_shadow(const DrawTextArgs& args, LPCRECT rc, const share::Stuff& stuff)
 	{
-		return exports.painter->stuff_draw_text_fill_with_shadow(args.dc, args.text, args.c, rc, args.text_flags, FALSE, &stuff);
+		return exports.painter->stuff_draw_text_fill_with_shadow(args.dc, args.text, args.c, rc, args.text_flags, TRUE, &stuff);
 	}
 
 	//
 	// 影付きの文字列を出力します。
 	//
-	inline auto RECT_text_out_fill_with_shadow(const TextOutArgs& args, const share::Stuff& stuff, LPCRECT rc)
+	inline auto RECT_text_out_fill_with_shadow(const TextOutArgs& args, LPCRECT rc, const share::Stuff& stuff)
 	{
 		return exports.painter->stuff_text_out_fill_with_shadow(args.dc, args.x, args.y, args.options, rc, args.text, args.c, args.dx, &stuff);
 	}
