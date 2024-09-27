@@ -73,8 +73,8 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
-			read_list(L"skin", skin_io, hive.skin_list, hive.skin_name);
-			read_list(L"scheme", scheme_io, hive.scheme_list, hive.scheme_name);
+			read_list(L"user/skin", skin_io, hive.skin_list, hive.skin_name);
+			read_list(L"user/scheme", scheme_io, hive.scheme_list, hive.scheme_name);
 
 			return TRUE;
 		}
@@ -86,32 +86,43 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
-			// まず、一旦リストを消去します。
-			list.clear();
-
-			// フォルダ名を取得します。
-			auto folder_name = std::filesystem::path(hive.assets_folder_name) / stem;
-			MY_TRACE_STR(folder_name);
-
-			for (const auto& path : std::filesystem::directory_iterator(folder_name))
+			try
 			{
-				auto file_name = path.path().wstring();
+				// まず、一旦リストを消去します。
+				list.clear();
 
-				if (file_name.ends_with(L".json"))
-					io.read_file(file_name, hive);
+				// フォルダ名を取得します。
+				auto folder_name = std::filesystem::path(hive.assets_folder_name) / stem;
+				MY_TRACE_STR(folder_name);
+
+				for (const auto& path : std::filesystem::directory_iterator(folder_name))
+				{
+					auto file_name = path.path().wstring();
+
+					if (file_name.ends_with(L".json"))
+						io.read_file(file_name, hive);
+				}
+
+				// 表示名順に並べ替えます。
+				std::sort(list.begin(), list.end(),
+					[](const auto& a, const auto& b)
+					{ return a->display_name < b->display_name; });
+
+				// 選択が存在しない場合は
+				// リストの一番先頭のモジュールを選択します。
+				if (name.empty() && !list.empty())
+					name = list.front()->module_name;
+
+				return TRUE;
 			}
+			catch (const std::exception& error)
+			{
+				MY_TRACE_STR(error.what());
 
-			// 表示名順に並べ替えます。
-			std::sort(list.begin(), list.end(),
-				[](const auto& a, const auto& b)
-				{ return a->display_name < b->display_name; });
+				hive.message_box(my::format(L"{}の読み込みに失敗しました\n{}", stem, error.what()));
 
-			// 選択が存在しない場合は
-			// リストの一番先頭のモジュールを選択します。
-			if (name.empty() && !list.empty())
-				name = list.front()->module_name;
-
-			return TRUE;
+				return FALSE;
+			}
 		}
 	} assets_io;
 }
