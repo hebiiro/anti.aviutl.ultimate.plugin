@@ -430,8 +430,8 @@ namespace apn::dark
 				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
 				ofs << L"\r\n"s << std::format(LR"(<Settings skin="{}" shadowMode="{}" roundMode="{}" />)",
 					skin_relative_path.c_str(),
-					hive.shadow_mode == hive.c_shadow_mode.c_normal ? L"ON" : L"OFF",
-					hive.round_mode == hive.c_round_mode.c_normal ? L"ON" : L"OFF");
+					hive.draw_shadow ? L"ON" : L"OFF",
+					hive.as_round ? L"ON" : L"OFF");
 			}
 
 			// スキンファイルを作成します。

@@ -364,26 +364,24 @@ namespace apn::dark
 			.def_readwrite("state_id", &VisualStyle::state_id)
 		;
 
-		// PairColorを登録します。
-		py::class_<PairColor>(mod, "PairColor")
-			.def_readwrite("dark", &PairColor::dark)
-			.def_readwrite("light", &PairColor::light)
+		// ColorSetを登録します。
+		py::class_<ColorSet>(mod, "ColorSet")
+			.def_readwrite("primary_fill", &ColorSet::primary_fill)
+			.def_readwrite("primary_border", &ColorSet::primary_border)
+			.def_readwrite("primary_text", &ColorSet::primary_text)
+			.def_readwrite("secondary_fill", &ColorSet::secondary_fill)
+			.def_readwrite("secondary_border", &ColorSet::secondary_border)
+			.def_readwrite("secondary_text", &ColorSet::secondary_text)
 		;
 
 		// InitArgsを登録します。
 		py::class_<InitArgs>(mod, "InitArgs")
-			.def_readwrite("main_background", &InitArgs::main_background)
-			.def_readwrite("main_text", &InitArgs::main_text)
-			.def_readwrite("sub_background", &InitArgs::sub_background)
-			.def_readwrite("sub_text", &InitArgs::sub_text)
+			.def_readwrite("color_set", &InitArgs::color_set)
 		;
 
 		// UpdateArgsを登録します。
 		py::class_<UpdateArgs>(mod, "UpdateArgs")
-			.def_readwrite("main_background", &UpdateArgs::main_background)
-			.def_readwrite("main_text", &UpdateArgs::main_text)
-			.def_readwrite("sub_background", &UpdateArgs::sub_background)
-			.def_readwrite("sub_text", &UpdateArgs::sub_text)
+			.def_readwrite("color_set", &UpdateArgs::color_set)
 		;
 
 		// DrawFigureArgsを登録します。

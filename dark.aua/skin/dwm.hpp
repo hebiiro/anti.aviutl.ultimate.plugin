@@ -116,14 +116,14 @@ namespace apn::dark::skin
 
 			if (dark_mode != -1) ::DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE , &dark_mode, sizeof(dark_mode));
 
-			if (hive.round_mode == hive.c_round_mode.c_omit)
+			if (hive.as_round)
 			{
-				auto corner_mode = DWMWCP_DONOTROUND;
-				::DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner_mode, sizeof(corner_mode));
+				if (corner_mode != -1) ::DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE , &corner_mode, sizeof(corner_mode));
 			}
 			else
 			{
-				if (corner_mode != -1) ::DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE , &corner_mode, sizeof(corner_mode));
+				auto corner_mode = DWMWCP_DONOTROUND;
+				::DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner_mode, sizeof(corner_mode));
 			}
 		}
 	} dwm;

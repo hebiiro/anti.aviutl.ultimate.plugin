@@ -12,6 +12,17 @@ namespace apn::dark::hook
 		inline static int (*ShowColorDialog)(DWORD u1, COLORREF* color, DWORD u3) = nullptr;
 
 		//
+		// 指定されたステートを縞模様用のステートに変更して返します。
+		//
+		inline static int32_t as_zebra(int32_t state_id)
+		{
+			if (hive.as_zebra)
+				return state_id + drawing_layer_index % 2;
+			else
+				return state_id;
+		}
+
+		//
 		// 指定されたレイヤー名からレイヤーカラーを取り出して返します。
 		//
 		inline static COLORREF get_color_from_layer_name(const std::wstring& name)
@@ -79,7 +90,7 @@ namespace apn::dark::hook
 					state_id = EES_EVEN_LAYER_BACKGROUND_INACTIVE;
 				}
 
-				state_id += drawing_layer_index % 2;
+				state_id = as_zebra(state_id);
 
 				// テーマカラーがあればそれを使用します。
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
@@ -131,7 +142,7 @@ namespace apn::dark::hook
 		//
 		inline static BOOL fill_timeline_rect(HDC dc, LPCRECT rc, HBRUSH brush)
 		{
-			if (hive.timeline_border_mode == hive.c_timeline_border_mode.c_omit)
+			if (!hive.draw_border)
 			{
 				auto rc_inflate = *rc;
 				::InflateRect(&rc_inflate, 0, 1);
@@ -283,7 +294,7 @@ namespace apn::dark::hook
 
 					if (state_id != 0)
 					{
-						state_id += drawing_layer_index % 2;
+						state_id = as_zebra(state_id);
 
 						auto str = my::ws(std::string(text, c));
 						str = str.substr(0, str.find(L'#')); // 記号より前にある文字列を取り出します。
@@ -319,7 +330,7 @@ namespace apn::dark::hook
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
-					auto state_id = EES_EVEN_LAYER_BUTTON_EDGE + drawing_layer_index % 2;
+					auto state_id = as_zebra(EES_EVEN_LAYER_BUTTON_EDGE);
 
 					if (python.call_draw_figure(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, state_id, rc))
 						return TRUE;
@@ -436,7 +447,7 @@ namespace apn::dark::hook
 
 					if (state_id != 0)
 					{
-						state_id += drawing_layer_index % 2;
+						state_id = as_zebra(state_id);
 
 						if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_EXEDIT, state_id, rc))
 							return TRUE;

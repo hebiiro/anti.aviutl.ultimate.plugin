@@ -403,19 +403,24 @@ namespace apn::dark::share
 	};
 
 	//
-	// このクラスはペアカラーです。
+	// このクラスはカラーセットです。
 	//
-	struct PairColor { COLORREF dark, light; };
+	struct ColorSet
+	{
+		COLORREF primary_fill;
+		COLORREF primary_border;
+		COLORREF primary_text;
+		COLORREF secondary_fill;
+		COLORREF secondary_border;
+		COLORREF secondary_text;
+	};
 
 	//
 	// このクラスは初期化関数の引数です。
 	//
 	struct InitArgs
 	{
-		PairColor main_background;
-		PairColor main_text;
-		PairColor sub_background;
-		PairColor sub_text;
+		ColorSet color_set;
 	};
 
 	//
@@ -423,10 +428,7 @@ namespace apn::dark::share
 	//
 	struct UpdateArgs
 	{
-		PairColor main_background;
-		PairColor main_text;
-		PairColor sub_background;
-		PairColor sub_text;
+		ColorSet color_set;
 	};
 
 	//

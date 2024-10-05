@@ -16,38 +16,44 @@
 #define IDC_BORDER_WIDTH_STAT           1010
 #define IDC_BORDER_WIDTH                1011
 #define IDC_BORDER_WIDTH_SPIN           1012
-#define IDC_SHADOW_MODE_STAT            1020
-#define IDC_SHADOW_MODE                 1021
-#define IDC_CORNER_MODE_STAT            1022
-#define IDC_CORNER_MODE                 1023
-#define IDC_STATIC_EDGE_MODE_STAT       1024
-#define IDC_STATIC_EDGE_MODE            1025
-#define IDC_TIMELINE_BORDER_MODE_STAT   1026
-#define IDC_TIMELINE_BORDER_MODE        1027
-#define IDC_STATIC_EDGE_MODE2           1027
-#define IDC_FILE_DIALOG_MODE_STAT       1028
-#define IDC_FILE_DIALOG_MODE            1029
-#define IDC_DPI_SCALING_MODE_STAT       1030
-#define IDC_DPI_SCALING_MODE            1031
+#define IDC_DRAW_SHADOW                 1020
+#define IDC_AS_ROUND                    1021
+#define IDC_DRAW_BUTTON_EDGE            1022
+#define IDC_DRAW_BORDER                 1023
+#define IDC_AS_ZEBRA                    1024
+#define IDC_APPLY_FILE_DIALOG           1025
+#define IDC_FIX_DPI_SCALING             1026
 #define IDC_USE_LAYER_COLOR             1032
 #define IDC_USE_LAYER_COLOR_MULTI       1033
 #define IDC_DONT_WRITE_BYTECODE         1034
-#define IDC_MAIN_BACKGROUND_STAT        1040
-#define IDC_MAIN_BACKGROUND_DARK        1041
-#define IDC_MAIN_BACKGROUND_LIGHT       1042
-#define IDC_MAIN_BACKGROUND_SWAP        1043
-#define IDC_MAIN_TEXT_STAT              1050
-#define IDC_MAIN_TEXT_DARK              1051
-#define IDC_MAIN_TEXT_LIGHT             1052
-#define IDC_MAIN_TEXT_SWAP              1053
-#define IDC_SUB_BACKGROUND_STAT         1060
-#define IDC_SUB_BACKGROUND_DARK         1061
-#define IDC_SUB_BACKGROUND_LIGHT        1062
-#define IDC_SUB_BACKGROUND_SWAP         1063
-#define IDC_SUB_TEXT_STAT               1070
-#define IDC_SUB_TEXT_DARK               1071
-#define IDC_SUB_TEXT_LIGHT              1072
-#define IDC_SUB_TEXT_SWAP               1073
+
+#define IDC_DARK_PRIMARY_FILL_STAT      1040
+#define IDC_DARK_PRIMARY_FILL           1041
+#define IDC_DARK_PRIMARY_BORDER_STAT    1042
+#define IDC_DARK_PRIMARY_BORDER         1043
+#define IDC_DARK_PRIMARY_TEXT_STAT      1044
+#define IDC_DARK_PRIMARY_TEXT           1045
+
+#define IDC_DARK_SECONDARY_FILL_STAT      1050
+#define IDC_DARK_SECONDARY_FILL           1051
+#define IDC_DARK_SECONDARY_BORDER_STAT    1052
+#define IDC_DARK_SECONDARY_BORDER         1053
+#define IDC_DARK_SECONDARY_TEXT_STAT      1054
+#define IDC_DARK_SECONDARY_TEXT           1055
+
+#define IDC_LIGHT_PRIMARY_FILL_STAT      1060
+#define IDC_LIGHT_PRIMARY_FILL           1061
+#define IDC_LIGHT_PRIMARY_BORDER_STAT    1062
+#define IDC_LIGHT_PRIMARY_BORDER         1063
+#define IDC_LIGHT_PRIMARY_TEXT_STAT      1064
+#define IDC_LIGHT_PRIMARY_TEXT           1065
+
+#define IDC_LIGHT_SECONDARY_FILL_STAT      1070
+#define IDC_LIGHT_SECONDARY_FILL           1071
+#define IDC_LIGHT_SECONDARY_BORDER_STAT    1072
+#define IDC_LIGHT_SECONDARY_BORDER         1073
+#define IDC_LIGHT_SECONDARY_TEXT_STAT      1074
+#define IDC_LIGHT_SECONDARY_TEXT           1075
 
 // Next default values for new objects
 // 

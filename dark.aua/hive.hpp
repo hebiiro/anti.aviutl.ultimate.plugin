@@ -10,65 +10,6 @@ namespace apn::dark
 		inline static constexpr auto c_name = L"dark";
 		inline static constexpr auto c_display_name = L"ダークモード化";
 
-		inline static constexpr struct Message {
-		} c_message;
-
-		inline static constexpr struct ShadowMode {
-			inline static constexpr int32_t c_normal = 0;
-			inline static constexpr int32_t c_omit = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_normal, L"normal" },
-				{ c_omit, L"omit" },
-			};
-		} c_shadow_mode;
-
-		inline static constexpr struct RoundMode {
-			inline static constexpr int32_t c_normal = 0;
-			inline static constexpr int32_t c_omit = 1;
-			inline static constexpr int32_t c_half = 2;
-			inline static constexpr my::Label labels[] = {
-				{ c_normal, L"normal" },
-				{ c_omit, L"omit" },
-				{ c_half, L"half" },
-			};
-		} c_round_mode;
-
-		inline static constexpr struct StaticEdgeMode {
-			inline static constexpr int32_t c_normal = 0;
-			inline static constexpr int32_t c_omit = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_normal, L"normal" },
-				{ c_omit, L"omit" },
-			};
-		} c_static_edge_mode;
-
-		inline static constexpr struct TimelineBorderMode {
-			inline static constexpr int32_t c_normal = 0;
-			inline static constexpr int32_t c_omit = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_normal, L"normal" },
-				{ c_omit, L"omit" },
-			};
-		} c_timeline_border_mode;
-
-		inline static constexpr struct FileDialogMode {
-			inline static constexpr int32_t c_normal = 0;
-			inline static constexpr int32_t c_omit = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_normal, L"normal" },
-				{ c_omit, L"omit" },
-			};
-		} c_file_dialog_mode;
-
-		inline static constexpr struct DpiScalingMode {
-			inline static constexpr int32_t c_normal = 0;
-			inline static constexpr int32_t c_fix = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_normal, L"normal" },
-				{ c_fix, L"fix" },
-			};
-		} c_dpi_scaling_mode;
-
 		struct Skin {
 			std::wstring module_name;
 			std::wstring display_name;
@@ -156,42 +97,55 @@ namespace apn::dark
 		int32_t border_width = 1;
 
 		//
-		// スキンの配色です。
+		// ユーザースキン用のカラーセットです。
 		//
-		share::PairColor main_background_color = { RGB(10, 10, 10), RGB(250, 250, 250) };
-		share::PairColor main_text_color = { RGB(10, 10, 10), RGB(250, 250, 250) };
-		share::PairColor sub_background_color = { RGB(50, 30, 30), RGB(250, 50, 70) };
-		share::PairColor sub_text_color = { RGB(10, 10, 10), RGB(250, 250, 250) };
+		struct {
+			share::ColorSet dark =
+			{
+				RGB(10, 10, 10), RGB(10, 10, 10), RGB(10, 10, 10),
+				RGB(50, 30, 30), RGB(10, 10, 10), RGB(10, 10, 10),
+			};
+			share::ColorSet light =
+			{
+				RGB(250, 250, 250), RGB(250, 250, 250), RGB(250, 250, 250),
+				RGB(250, 50, 70), RGB(250, 250, 250), RGB(250, 250, 250),
+			};
+		} color_set;
 
 		//
-		// テキストの影に関するモードです。
+		// TRUEの場合はテキストの影を描画します。
 		//
-		int32_t shadow_mode = c_shadow_mode.c_normal;
+		BOOL draw_shadow = FALSE;
 
 		//
-		// 図形の角に関するモードです。
+		// TRUEの場合は矩形の角を丸めます。
 		//
-		int32_t round_mode = c_round_mode.c_normal;
+		BOOL as_round = FALSE;
 
 		//
-		// スタティックエッジの扱いに関するモードです。
+		// TRUEの場合はボタンの縁を描画します。
 		//
-		int32_t static_edge_mode = c_static_edge_mode.c_omit;
+		BOOL draw_button_edge = TRUE;
 
 		//
-		// タイムラインボーダーの扱いに関するモードです。
+		// TRUEの場合はタイムラインの境界線を描画します。
 		//
-		int32_t timeline_border_mode = c_timeline_border_mode.c_omit;
+		BOOL draw_border = FALSE;
 
 		//
-		// ファイル選択ダイアログの扱いに関するモードです。
+		// TRUEの場合はタイムラインを縞模様に描画します。
 		//
-		int32_t file_dialog_mode = c_file_dialog_mode.c_omit;
+		BOOL as_zebra = FALSE;
 
 		//
-		// DPIスケーリングモードです。
+		// TRUEの場合はファイル選択ダイアログもダークモード化します。
 		//
-		int32_t dpi_scaling_mode = c_dpi_scaling_mode.c_normal;
+		BOOL apply_file_dialog = TRUE;
+
+		//
+		// TRUEの場合はDPIスケーリングを補正します。
+		//
+		BOOL fix_dpi_scaling = TRUE;
 
 		//
 		// TRUEの場合はユーザー指定のレイヤーカラーを使用します。

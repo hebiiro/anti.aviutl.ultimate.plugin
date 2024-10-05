@@ -59,7 +59,7 @@ namespace apn::dark::hook
 				if (!result) return FALSE;
 
 				// ファイル選択ダイアログ以降を除外する場合は
-				if (hive.file_dialog_mode == hive.c_file_dialog_mode.c_omit)
+				if (!hive.apply_file_dialog)
 				{
 					auto c = *cb_needed / sizeof(HMODULE);
 					for (decltype(c) i = 0; i < c; i++)

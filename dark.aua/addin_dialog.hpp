@@ -19,12 +19,13 @@ namespace apn::dark
 			get_check(IDC_DARK_MODE, hive.dark_mode);
 			get_int(IDC_ELLIPSE, hive.ellipse);
 			get_int(IDC_BORDER_WIDTH, hive.border_width);
-			get_combobox_index(IDC_SHADOW_MODE, hive.shadow_mode);
-			get_combobox_index(IDC_CORNER_MODE, hive.round_mode);
-			get_combobox_index(IDC_STATIC_EDGE_MODE, hive.static_edge_mode);
-			get_combobox_index(IDC_TIMELINE_BORDER_MODE, hive.timeline_border_mode);
-			get_combobox_index(IDC_FILE_DIALOG_MODE, hive.file_dialog_mode);
-			get_combobox_index(IDC_DPI_SCALING_MODE, hive.dpi_scaling_mode);
+			get_check(IDC_DRAW_SHADOW, hive.draw_shadow);
+			get_check(IDC_AS_ROUND, hive.as_round);
+			get_check(IDC_DRAW_BUTTON_EDGE, hive.draw_button_edge);
+			get_check(IDC_DRAW_BORDER, hive.draw_border);
+			get_check(IDC_AS_ZEBRA, hive.as_zebra);
+			get_check(IDC_APPLY_FILE_DIALOG, hive.apply_file_dialog);
+			get_check(IDC_FIX_DPI_SCALING, hive.fix_dpi_scaling);
 			get_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			get_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
 			get_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
@@ -42,12 +43,13 @@ namespace apn::dark
 			set_check(IDC_DARK_MODE, hive.dark_mode);
 			set_int(IDC_ELLIPSE, hive.ellipse);
 			set_int(IDC_BORDER_WIDTH, hive.border_width);
-			set_combobox_index(IDC_SHADOW_MODE, hive.shadow_mode);
-			set_combobox_index(IDC_CORNER_MODE, hive.round_mode);
-			set_combobox_index(IDC_STATIC_EDGE_MODE, hive.static_edge_mode);
-			set_combobox_index(IDC_TIMELINE_BORDER_MODE, hive.timeline_border_mode);
-			set_combobox_index(IDC_FILE_DIALOG_MODE, hive.file_dialog_mode);
-			set_combobox_index(IDC_DPI_SCALING_MODE, hive.dpi_scaling_mode);
+			set_check(IDC_DRAW_SHADOW, hive.draw_shadow);
+			set_check(IDC_AS_ROUND, hive.as_round);
+			set_check(IDC_DRAW_BUTTON_EDGE, hive.draw_button_edge);
+			set_check(IDC_DRAW_BORDER, hive.draw_border);
+			set_check(IDC_AS_ZEBRA, hive.as_zebra);
+			set_check(IDC_APPLY_FILE_DIALOG, hive.apply_file_dialog);
+			set_check(IDC_FIX_DPI_SCALING, hive.fix_dpi_scaling);
 			set_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			set_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
 			set_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
@@ -76,13 +78,6 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
-			init_combobox(IDC_SHADOW_MODE, _T("影を付ける"), _T("影を省略する"));
-			init_combobox(IDC_CORNER_MODE, _T("角を丸くする"), _T("丸角を省略する"));
-			init_combobox(IDC_STATIC_EDGE_MODE, _T("通常"), _T("エッジを省略する"));
-			init_combobox(IDC_TIMELINE_BORDER_MODE, _T("通常"), _T("タイムライン内の縁を省略する"));
-			init_combobox(IDC_FILE_DIALOG_MODE, _T("通常"), _T("ファイル選択ダイアログを除外する"));
-			init_combobox(IDC_DPI_SCALING_MODE, _T("通常"), _T("補正する"));
-
 			using namespace my::layout;
 
 			auto margin_value = 2;
@@ -91,7 +86,7 @@ namespace apn::dark
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
 			auto stat = std::make_shared<RelativePos>(base_size * 2 + margin_value * 2);
 			auto editbox = std::make_shared<RelativePos>(base_size * 2);
-			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
+			auto checkbox = std::make_shared<RelativePos>(base_size * 7);
 			auto combobox = std::make_shared<RelativePos>(base_size * 7);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
@@ -102,12 +97,6 @@ namespace apn::dark
 			auto drop_width = base_size * 10;
 			::SendDlgItemMessage(*this, IDC_SKIN, CB_SETDROPPEDWIDTH, drop_width, 0);
 			::SendDlgItemMessage(*this, IDC_SCHEME, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_SHADOW_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_CORNER_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_STATIC_EDGE_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_TIMELINE_BORDER_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_FILE_DIALOG_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
-			::SendDlgItemMessage(*this, IDC_DPI_SCALING_MODE, CB_SETDROPPEDWIDTH, drop_width, 0);
 #endif
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
@@ -120,8 +109,6 @@ namespace apn::dark
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, nullptr);
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_DARK_MODE));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ELLIPSE_STAT));
 				{
 					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, nullptr);
@@ -139,26 +126,22 @@ namespace apn::dark
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SHADOW_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SHADOW_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_CORNER_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_CORNER_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DARK_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DRAW_SHADOW));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_AS_ROUND));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_STATIC_EDGE_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_STATIC_EDGE_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_TIMELINE_BORDER_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_TIMELINE_BORDER_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DRAW_BUTTON_EDGE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DRAW_BORDER));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_AS_ZEBRA));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_FILE_DIALOG_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_FILE_DIALOG_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_DPI_SCALING_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_DPI_SCALING_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_APPLY_FILE_DIALOG));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_FIX_DPI_SCALING));
 			}
 
 			{
@@ -181,12 +164,6 @@ namespace apn::dark
 			// コンボボックスが変更されたときの処理です。
 			case IDC_SKIN:
 			case IDC_SCHEME:
-			case IDC_SHADOW_MODE:
-			case IDC_CORNER_MODE:
-			case IDC_STATIC_EDGE_MODE:
-			case IDC_TIMELINE_BORDER_MODE:
-			case IDC_FILE_DIALOG_MODE:
-			case IDC_DPI_SCALING_MODE:
 				{
 					if (code == CBN_SELCHANGE)
 						app->on_change_controls();
@@ -204,6 +181,13 @@ namespace apn::dark
 				}
 			// その他のコントロールが変更されたときの処理です。
 			case IDC_DARK_MODE:
+			case IDC_DRAW_SHADOW:
+			case IDC_AS_ROUND:
+			case IDC_DRAW_BUTTON_EDGE:
+			case IDC_DRAW_BORDER:
+			case IDC_AS_ZEBRA:
+			case IDC_APPLY_FILE_DIALOG:
+			case IDC_FIX_DPI_SCALING:
 			case IDC_USE_LAYER_COLOR:
 			case IDC_USE_LAYER_COLOR_MULTI:
 				{
@@ -212,14 +196,18 @@ namespace apn::dark
 					break;
 				}
 			// カラーピッカーボタンが押されたときの処理です。
-			case IDC_MAIN_BACKGROUND_DARK:
-			case IDC_MAIN_BACKGROUND_LIGHT:
-			case IDC_MAIN_TEXT_DARK:
-			case IDC_MAIN_TEXT_LIGHT:
-			case IDC_SUB_BACKGROUND_DARK:
-			case IDC_SUB_BACKGROUND_LIGHT:
-			case IDC_SUB_TEXT_DARK:
-			case IDC_SUB_TEXT_LIGHT:
+			case IDC_DARK_PRIMARY_FILL:
+			case IDC_DARK_PRIMARY_BORDER:
+			case IDC_DARK_PRIMARY_TEXT:
+			case IDC_DARK_SECONDARY_FILL:
+			case IDC_DARK_SECONDARY_BORDER:
+			case IDC_DARK_SECONDARY_TEXT:
+			case IDC_LIGHT_PRIMARY_FILL:
+			case IDC_LIGHT_PRIMARY_BORDER:
+			case IDC_LIGHT_PRIMARY_TEXT:
+			case IDC_LIGHT_SECONDARY_FILL:
+			case IDC_LIGHT_SECONDARY_BORDER:
+			case IDC_LIGHT_SECONDARY_TEXT:
 				{
 					auto color = get_uint(id);
 
@@ -234,28 +222,6 @@ namespace apn::dark
 
 					set_uint(id, color);
 					::InvalidateRect(control, nullptr, FALSE);
-
-					app->update_skin();
-
-					break;
-				}
-			// 「入れ替える」ボタンが押されたときの処理です。
-			case IDC_MAIN_BACKGROUND_SWAP:
-			case IDC_MAIN_TEXT_SWAP:
-			case IDC_SUB_BACKGROUND_SWAP:
-			case IDC_SUB_TEXT_SWAP:
-				{
-					auto dark_id = id - 2;
-					auto light_id = id - 1;
-
-					auto dark = get_uint(dark_id);
-					auto light = get_uint(light_id);
-
-					set_uint(dark_id, light);
-					set_uint(light_id, dark);
-
-					::InvalidateRect(ctrl(dark_id), nullptr, FALSE);
-					::InvalidateRect(ctrl(light_id), nullptr, FALSE);
 
 					app->update_skin();
 
@@ -278,14 +244,18 @@ namespace apn::dark
 					switch (id)
 					{
 					// カラーピッカーボタンを描画します。
-					case IDC_MAIN_BACKGROUND_DARK:
-					case IDC_MAIN_BACKGROUND_LIGHT:
-					case IDC_MAIN_TEXT_DARK:
-					case IDC_MAIN_TEXT_LIGHT:
-					case IDC_SUB_BACKGROUND_DARK:
-					case IDC_SUB_BACKGROUND_LIGHT:
-					case IDC_SUB_TEXT_DARK:
-					case IDC_SUB_TEXT_LIGHT:
+					case IDC_DARK_PRIMARY_FILL:
+					case IDC_DARK_PRIMARY_BORDER:
+					case IDC_DARK_PRIMARY_TEXT:
+					case IDC_DARK_SECONDARY_FILL:
+					case IDC_DARK_SECONDARY_BORDER:
+					case IDC_DARK_SECONDARY_TEXT:
+					case IDC_LIGHT_PRIMARY_FILL:
+					case IDC_LIGHT_PRIMARY_BORDER:
+					case IDC_LIGHT_PRIMARY_TEXT:
+					case IDC_LIGHT_SECONDARY_FILL:
+					case IDC_LIGHT_SECONDARY_BORDER:
+					case IDC_LIGHT_SECONDARY_TEXT:
 						{
 							auto dis = (DRAWITEMSTRUCT*)lParam;
 							auto color = get_uint(id);

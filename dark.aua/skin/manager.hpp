@@ -42,15 +42,15 @@ namespace apn::dark::skin
 
 			auto exedit = (my::addr_t)::GetModuleHandle(_T("exedit.auf"));
 
-			if (hive.static_edge_mode == hive.c_static_edge_mode.c_omit)
+			if (hive.draw_button_edge)
 			{
 				for (auto button : hive.static_edge_buttons)
-					my::modify_ex_style(button, WS_EX_STATICEDGE, 0);
+					my::modify_ex_style(button, 0, WS_EX_STATICEDGE);
 			}
 			else
 			{
 				for (auto button : hive.static_edge_buttons)
-					my::modify_ex_style(button, 0, WS_EX_STATICEDGE);
+					my::modify_ex_style(button, WS_EX_STATICEDGE, 0);
 			}
 
 			{

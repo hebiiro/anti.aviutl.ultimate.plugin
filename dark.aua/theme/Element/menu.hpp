@@ -60,7 +60,7 @@ namespace apn::dark::theme
 				if (auto hwnd = get_menu_window(dc))
 				{
 					// この処理でポップアップメニューのボーダーの形状を変えられます。
-					if (hive.round_mode == hive.c_round_mode.c_omit)
+					if (!hive.as_round)
 					{
 						auto popup_menu_corner_mode = DWMWCP_DONOTROUND;
 						::DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE,

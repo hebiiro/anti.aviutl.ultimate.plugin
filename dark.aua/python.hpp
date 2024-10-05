@@ -299,10 +299,7 @@ namespace apn::dark
 			{
 				return skin_module && skin_module.attr("dark_init")(
 					share::InitArgs {
-						hive.main_background_color,
-						hive.main_text_color,
-						hive.sub_background_color,
-						hive.sub_text_color,
+						hive.dark_mode ? hive.color_set.dark : hive.color_set.light,
 					}
 				).cast<BOOL>();
 			}
@@ -346,10 +343,7 @@ namespace apn::dark
 			return call_python_func(
 				"dark_update",
 				share::UpdateArgs {
-					hive.main_background_color,
-					hive.main_text_color,
-					hive.sub_background_color,
-					hive.sub_text_color,
+					hive.dark_mode ? hive.color_set.dark : hive.color_set.light,
 				});
 		}
 

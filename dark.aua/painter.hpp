@@ -282,7 +282,7 @@ namespace apn::dark::painter
 	//
 	inline void draw_text_with_shadow(HDC dc, LPCWSTR text, int length, LPCRECT rc, UINT format, BOOL opaque, COLORREF fill_color, COLORREF text_color, COLORREF text_shadow_color)
 	{
-		if (hive.shadow_mode == hive.c_shadow_mode.c_omit)
+		if (!hive.draw_shadow)
 			return draw_text(dc, text, length, rc, format, opaque, fill_color, text_color);
 
 		auto old_bk_mode = ::SetBkMode(dc, TRANSPARENT);
@@ -317,7 +317,7 @@ namespace apn::dark::painter
 	//
 	inline void text_out_with_shadow(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx, COLORREF fill_color, COLORREF text_color, COLORREF text_shadow_color)
 	{
-		if (hive.shadow_mode == hive.c_shadow_mode.c_omit)
+		if (!hive.draw_shadow)
 			return text_out(dc, x, y, options, rc, text, c, dx, fill_color, text_color);
 
 		auto old_bk_mode = ::GetBkMode(dc);
@@ -557,8 +557,8 @@ namespace apn::dark::painter
 		template <typename T>
 		inline void draw_round_figure(HDC dc, LPCRECT rc, const PaintArgs& args, T create_path)
 		{
-			auto ellipse_enabled = hive.round_mode == hive.c_round_mode.c_normal;
-			auto fix_enabled = hive.dpi_scaling_mode == hive.c_dpi_scaling_mode.c_fix;
+			auto ellipse_enabled = hive.as_round;
+			auto fix_enabled = hive.fix_dpi_scaling;
 
 			MyGraphics graphics(dc);
 			auto rc_base = *rc;

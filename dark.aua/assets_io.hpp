@@ -73,8 +73,8 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
-			read_list(L"user/skin", skin_io, hive.skin_list, hive.skin_name);
-			read_list(L"user/scheme", scheme_io, hive.scheme_list, hive.scheme_name);
+			read_list(L"skin", skin_io, hive.skin_list, hive.skin_name);
+			read_list(L"scheme", scheme_io, hive.scheme_list, hive.scheme_name);
 
 			return TRUE;
 		}

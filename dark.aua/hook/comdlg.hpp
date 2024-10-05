@@ -52,7 +52,7 @@ namespace apn::dark::hook
 		{
 			RendererLocker()
 			{
-				if (hive.file_dialog_mode == hive.c_file_dialog_mode.c_omit)
+				if (!hive.apply_file_dialog)
 				{
 					hive.renderer_locked = TRUE;
 //					skin::manager.redraw();
@@ -61,7 +61,7 @@ namespace apn::dark::hook
 
 			~RendererLocker()
 			{
-				if (hive.file_dialog_mode == hive.c_file_dialog_mode.c_omit)
+				if (!hive.apply_file_dialog)
 				{
 					hive.renderer_locked = FALSE;
 					app->redraw();
