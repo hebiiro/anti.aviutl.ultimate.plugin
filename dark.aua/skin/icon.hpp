@@ -112,7 +112,8 @@ namespace apn::dark::skin
 		void change_color(LPCWSTR icon_name, COLORREF src, COLORREF dst)
 		{
 			// ノードを作成し、コレクションに追加します。
-			auto node = collection[icon_name] = std::make_shared<Node>();
+			auto& node = collection[icon_name];
+			if (!node) node = std::make_shared<Node>();
 
 			if (src != CLR_NONE && dst != CLR_NONE)
 				node->collection.push_back({ src, dst });
