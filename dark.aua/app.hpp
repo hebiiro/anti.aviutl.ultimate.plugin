@@ -45,6 +45,9 @@ namespace apn::dark
 			if (is_initialized) return FALSE;
 			is_initialized = TRUE;
 
+			// コンフィグを読み込みます。
+			config_io.read();
+
 			// Pyhtonの使用を開始します。
 			if (!python.init()) return FALSE;
 
@@ -56,9 +59,6 @@ namespace apn::dark
 
 			// コンフィグの監視を開始します。
 			config_checker.init(hive.config_file_name.c_str(), hive.main_window, this);
-
-			// コンフィグを読み込みます。
-			config_io.read();
 
 			// アセットを読み込みます。
 			assets_io.read();

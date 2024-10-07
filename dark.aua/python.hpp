@@ -8,6 +8,7 @@ namespace apn::dark
 	inline struct Python
 	{
 		std::unique_ptr<py::scoped_interpreter> interpreter;
+		py::module sys_module;
 		py::module dark_module;
 		py::module hive_module;
 		py::module boot_module;
@@ -25,14 +26,16 @@ namespace apn::dark
 			{
 				interpreter = std::make_unique<py::scoped_interpreter>();
 
+				// システムモジュールを読み込みます。
+				sys_module = py::module::import("sys");
+
 				// 読み込むパスを設定します。
-				auto sys = py::module::import("sys");
-				auto path = sys.attr("path").cast<py::list>();
+				auto path = sys_module.attr("path").cast<py::list>();
 				auto folder_name = my::wide_to_cp(hive.assets_folder_name, CP_UTF8);
 				path.append(folder_name);
 
 				// キャッシュを作成しないようにします。
-				sys.attr("dont_write_bytecode") = !!hive.dont_write_bytecode;
+				update_dont_write_bytecode();
 
 				// dark.pydを読み込みます。
 				dark_module = py::module::import("dark");
@@ -80,6 +83,7 @@ namespace apn::dark
 				boot_module.release();
 				hive_module.release();
 				dark_module.release();
+				sys_module.release();
 
 				interpreter.reset();
 			}
@@ -89,6 +93,19 @@ namespace apn::dark
 
 				return FALSE;
 			}
+
+			return TRUE;
+		}
+
+		//
+		// pythonのdont_write_bytecodeフラグを更新します。
+		//
+		BOOL update_dont_write_bytecode()
+		{
+			if (!sys_module) return FALSE;
+
+			// この値がFALSEの場合、__pycache__フォルダが生成されなくなります。
+			sys_module.attr("dont_write_bytecode") = !!hive.dont_write_bytecode;
 
 			return TRUE;
 		}
@@ -139,8 +156,7 @@ namespace apn::dark
 
 				std::vector<std::string> unload_modules;
 
-				auto sys = py::module::import("sys");
-				auto modules = py::cast<py::dict>(sys.attr("modules"));
+				auto modules = py::cast<py::dict>(sys_module.attr("modules"));
 				for (auto pair : modules)
 				{
 					try
@@ -217,6 +233,9 @@ namespace apn::dark
 		BOOL import_modules(const std::wstring& skin_module_name, const std::wstring& scheme_module_name)
 		{
 			MY_TRACE_FUNC("{}, {}", skin_module_name, scheme_module_name);
+
+			// キャッシュを作成しないようにします。
+			update_dont_write_bytecode();
 
 			unload_modules();
 			update_hive_module();

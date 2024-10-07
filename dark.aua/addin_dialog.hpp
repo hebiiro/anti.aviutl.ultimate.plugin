@@ -190,6 +190,7 @@ namespace apn::dark
 			case IDC_FIX_DPI_SCALING:
 			case IDC_USE_LAYER_COLOR:
 			case IDC_USE_LAYER_COLOR_MULTI:
+			case IDC_DONT_WRITE_BYTECODE:
 				{
 					app->on_change_controls();
 
