@@ -470,14 +470,14 @@ namespace apn::dark
 				ofs << L"\r\n\t\t\t"s << to_string(L"border_inactive", VSCLASS_WINDOW, WP_SEPARATOR, CS_INACTIVE);
 				ofs << L"\r\n\t\t\t"s << to_string(L"border_disabled", VSCLASS_WINDOW, WP_SEPARATOR, CS_DISABLED);
 
-				ofs << L"\r\n\t\t\t"s << to_string(L"dialog", VSCLASS_WINDOW, WP_DIALOG, ETS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"dialog", VSCLASS_WINDOW, WP_DIALOG, PBS_NORMAL);
 
 				ofs << L"\r\n\t\t\t"s << to_string(L"c1_normal", VSCLASS_EDIT, EP_EDITTEXT, ETS_NORMAL);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c1_hot", VSCLASS_EDIT, EP_EDITTEXT, ETS_HOT);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c1_selected", VSCLASS_EDIT, EP_EDITTEXT, ETS_SELECTED);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c1_disabled", VSCLASS_EDIT, EP_EDITTEXT, ETS_DISABLED);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c1_readonly", VSCLASS_EDIT, EP_EDITTEXT, ETS_READONLY);
-				ofs << L"\r\n\t\t\t"s << to_string(L"c1_statictext", VSCLASS_STATIC, STAT_TEXT, ETS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c1_statictext", VSCLASS_STATIC, STAT_TEXT, PBS_NORMAL);
 
 				ofs << L"\r\n\t\t\t"s << to_string(L"c2_normal", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_NORMAL);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c2_hot", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_HOT);
@@ -501,10 +501,10 @@ namespace apn::dark
 				ofs << L"\r\n\t\t\t"s << to_string(L"c4_gutter", VSCLASS_MENU, MENU_POPUPGUTTER, 0);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c4_separator", VSCLASS_MENU, MENU_POPUPSEPARATOR, 0);
 
-				ofs << L"\r\n\t\t\t"s << to_string(L"c5_normal", VSCLASS_STATIC, STAT_TEXT, ETS_NORMAL);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_normal", VSCLASS_STATIC, STAT_TEXT, PBS_NORMAL);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c5_hot", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_HOT);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c5_selected", VSCLASS_BUTTON, BP_PUSHBUTTON, PBS_PRESSED);
-				ofs << L"\r\n\t\t\t"s << to_string(L"c5_disabled", VSCLASS_STATIC, STAT_TEXT, ETS_DISABLED);
+				ofs << L"\r\n\t\t\t"s << to_string(L"c5_disabled", VSCLASS_STATIC, STAT_TEXT, PBS_DISABLED);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c5_checked", VSCLASS_BUTTON, BP_CHECKBOX, CBS_CHECKEDNORMAL);
 
 				ofs << L"\r\n\t\t"s << std::format(LR"(</NamedColors>)");

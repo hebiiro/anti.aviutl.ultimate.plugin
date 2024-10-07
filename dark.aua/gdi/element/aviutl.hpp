@@ -12,7 +12,7 @@ namespace apn::dark::gdi
 			{
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 				{
-					if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, ETS_NORMAL, rc))
+					if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, PBS_NORMAL, rc))
 						return TRUE;
 				}
 			}
@@ -51,7 +51,7 @@ namespace apn::dark::gdi
 
 				if (flags & BF_MIDDLE)
 				{
-					if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, ETS_NORMAL, rc))
+					if (python.call_draw_figure(current_state->hwnd, theme, dc, WP_DIALOG, PBS_NORMAL, rc))
 						result |= TRUE;
 				}
 

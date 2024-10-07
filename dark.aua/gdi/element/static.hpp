@@ -20,7 +20,7 @@ namespace apn::dark::gdi
 				if (my::get_style(control) & SS_SUNKEN && ::GetWindowTextLength(control) == 0)
 					return __super::on_ctl_color(hwnd, message, dc, control, brush);
 
-				return skin::theme::manager.get_fill_brush(dc, brush, theme, STAT_TEXT, ETS_NORMAL);
+				return skin::theme::manager.get_fill_brush(dc, brush, theme, STAT_TEXT, PBS_NORMAL);
 			}
 
 			return __super::on_ctl_color(hwnd, message, dc, control, brush);
