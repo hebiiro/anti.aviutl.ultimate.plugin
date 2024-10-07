@@ -603,9 +603,9 @@ namespace apn::dark::share
 			virtual void text_out_with_shadow(share::HDC dc, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, my::addr_t dx, COLORREF fill_color, COLORREF text_color, COLORREF text_shadow_color) = 0;
 			virtual void stuff_fill_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_frame_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
-			virtual void stuff_draw_round_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_rect_with_alpha(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
+			virtual void stuff_draw_round_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_round_rect_with_alpha(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_light_edge(share::HDC dc, LPCRECT rc, const ConfigManager::Edges::Edge* edge) = 0;
 			virtual void stuff_draw_edge(share::HDC dc, LPCRECT rc, const ConfigManager::Edges::DoubleEdge* edge) = 0;
@@ -620,6 +620,9 @@ namespace apn::dark::share
 		} *painter = nullptr;
 
 		struct Gdiplus {
+			virtual void fill_rect(share::HDC dc, LPCRECT rc, COLORREF fill_color, int alpha) = 0;
+			virtual void frame_rect(share::HDC dc, LPCRECT rc, COLORREF border_color, REAL border_width, int alpha) = 0;
+			virtual void draw_rect(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) = 0;
 			virtual void draw_round_left(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) = 0;
 			virtual void draw_round_right(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) = 0;
 			virtual void draw_round_top(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) = 0;
@@ -628,6 +631,9 @@ namespace apn::dark::share
 			virtual void draw_round_vert(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) = 0;
 			virtual void draw_round_all(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, REAL ellipse, int alpha) = 0;
 			virtual void draw_ellipse(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) = 0;
+			virtual void stuff_fill_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
+			virtual void stuff_frame_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
+			virtual void stuff_draw_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_round_left(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_round_right(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;
 			virtual void stuff_draw_round_top(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) = 0;

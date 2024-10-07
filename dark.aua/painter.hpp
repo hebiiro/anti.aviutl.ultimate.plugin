@@ -375,7 +375,9 @@ namespace apn::dark::painter
 		//
 		struct MyGraphics : Graphics
 		{
-			MyGraphics(HDC dc)
+			MyRectF rc;
+
+			MyGraphics(HDC dc, LPCRECT rc, BOOL fix_enabled)
 				: Graphics(dc)
 			{
 				SetSmoothingMode(SmoothingModeAntiAlias);
@@ -385,6 +387,22 @@ namespace apn::dark::painter
 //				SetTextRenderingHint(TextRenderingHintClearTypeGridFit);
 //				SetInterpolationMode(InterpolationModeHighQualityBicubic);
 //				TranslateTransform(-0.5f, -0.5f);
+
+				auto rc_base = *rc;
+
+				// GDI+のバグ対策用の処理です。
+				if (fix_enabled)
+				{
+					auto window_org = POINT {};
+					::GetWindowOrgEx(dc, &window_org);
+					::OffsetRect(&rc_base, -window_org.x, -window_org.y);
+				}
+
+				this->rc = rc_base;
+
+				// このままだと少しはみ出してしまうので、矩形を少し縮めます。
+				this->rc.Width -= 1.0f;
+				this->rc.Height -= 1.0f;
 			}
 		};
 
@@ -552,6 +570,40 @@ namespace apn::dark::painter
 		}
 
 		//
+		// 指定された色で指定された矩形を塗りつぶします。
+		//
+		inline void fill_rect(HDC dc, LPCRECT rc, const PaintArgs& _args)
+		{
+			MyGraphics graphics(dc, rc, FALSE);
+
+			PaintArgs args = _args;
+			args.border.color = CLR_NONE; // 縁を無効化します。
+			draw_rect(graphics, graphics.rc, args);
+		}
+
+		//
+		// 指定された色と幅で指定された矩形の縁を描画します。
+		//
+		inline void frame_rect(HDC dc, LPCRECT rc, const PaintArgs& _args)
+		{
+			MyGraphics graphics(dc, rc, FALSE);
+
+			PaintArgs args = _args;
+			args.fill.color = CLR_NONE; // 塗り潰しを無効化します。
+			draw_rect(graphics, graphics.rc, args);
+		}
+
+		//
+		// 矩形を描画します。
+		//
+		inline void draw_rect(HDC dc, LPCRECT rc, const PaintArgs& args)
+		{
+			MyGraphics graphics(dc, rc, FALSE);
+
+			draw_rect(graphics, graphics.rc, args);
+		}
+
+		//
 		// 角丸矩形を描画します。
 		//
 		template <typename T>
@@ -560,49 +612,33 @@ namespace apn::dark::painter
 			auto ellipse_enabled = hive.as_round;
 			auto fix_enabled = hive.fix_dpi_scaling;
 
-			MyGraphics graphics(dc);
-			auto rc_base = *rc;
-
-			// GDI+のバグ対策用の処理です。
-			if (fix_enabled)
-			{
-				auto window_org = POINT {};
-				::GetWindowOrgEx(dc, &window_org);
-				::OffsetRect(&rc_base, -window_org.x, -window_org.y);
-			}
+			MyGraphics graphics(dc, rc, fix_enabled);
 
 			if (ellipse_enabled)
 			{
+				auto left = graphics.rc.X;
+				auto top = graphics.rc.Y;
+				auto right = graphics.rc.X + graphics.rc.Width;
+				auto bottom = graphics.rc.Y + graphics.rc.Height;
 				auto fix = 0.0f;
 //				auto fix = fix_enabled ? 0.5f : 0.0f;
 
-				MyRectF rc(rc_base);
-
-				// このままだと少しはみ出してしまうので、矩形を少し縮めます。
-				rc.Width -= 1.0f;
-				rc.Height -= 1.0f;
-
-				auto left = rc.X;
-				auto top = rc.Y;
-				auto right = rc.X + rc.Width;
-				auto bottom = rc.Y + rc.Height;
-
 				GraphicsPath path;
-				create_path(path, rc, left, top, right, bottom, fix);
+				create_path(path, graphics.rc, left, top, right, bottom, fix);
 
 				if (args.fill.is_enabled())
 				{
-					fill_path(graphics, path, rc, args);
+					fill_path(graphics, path, graphics.rc, args);
 				}
 
 				if (args.border.is_enabled())
 				{
-					frame_path(graphics, path, rc, args);
+					frame_path(graphics, path, graphics.rc, args);
 				}
 			}
 			else
 			{
-				draw_rect(graphics, MyRectF(rc_base), args);
+				draw_rect(graphics, graphics.rc, args);
 			}
 		}
 

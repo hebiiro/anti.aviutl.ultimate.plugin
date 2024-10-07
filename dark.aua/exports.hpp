@@ -265,6 +265,9 @@ namespace apn::dark
 				}
 			};
 
+			virtual void fill_rect(share::HDC dc, LPCRECT rc, COLORREF fill_color, int alpha) override { return painter::gdiplus::fill_rect((HDC)dc, rc, Stuff(fill_color, CLR_NONE, 0, 0.0f, alpha)); }
+			virtual void frame_rect(share::HDC dc, LPCRECT rc, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::frame_rect((HDC)dc, rc, Stuff(CLR_NONE, border_color, border_width, 0.0f, alpha)); }
+			virtual void draw_rect(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::draw_rect((HDC)dc, rc, Stuff(fill_color, border_color, border_width, 0.0f, alpha)); }
 			virtual void draw_round_left(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::draw_round_left((HDC)dc, rc, Stuff(fill_color, border_color, border_width, 0.0f, alpha)); }
 			virtual void draw_round_right(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::draw_round_right((HDC)dc, rc, Stuff(fill_color, border_color, border_width, 0.0f, alpha)); }
 			virtual void draw_round_top(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::draw_round_top((HDC)dc, rc, Stuff(fill_color, border_color, border_width, 0.0f, alpha)); }
@@ -273,6 +276,9 @@ namespace apn::dark
 			virtual void draw_round_vert(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::draw_round_vert((HDC)dc, rc, Stuff(fill_color, border_color, border_width, 0.0f, alpha)); }
 			virtual void draw_round_all(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, REAL ellipse, int alpha) override { return painter::gdiplus::draw_round_all((HDC)dc, rc, Stuff(fill_color, border_color, border_width, ellipse, alpha)); }
 			virtual void draw_ellipse(share::HDC dc, LPCRECT rc, COLORREF fill_color, COLORREF border_color, REAL border_width, int alpha) override { return painter::gdiplus::draw_ellipse((HDC)dc, rc, Stuff(fill_color, border_color, border_width, 0.0f, alpha)); }
+			virtual void stuff_fill_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) override { if (stuff) return painter::gdiplus::fill_rect((HDC)dc, rc, *stuff); }
+			virtual void stuff_frame_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) override { if (stuff) return painter::gdiplus::frame_rect((HDC)dc, rc, *stuff); }
+			virtual void stuff_draw_rect(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) override { if (stuff) return painter::gdiplus::draw_rect((HDC)dc, rc, *stuff); }
 			virtual void stuff_draw_round_left(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) override { if (stuff) return painter::gdiplus::draw_round_left((HDC)dc, rc, *stuff); }
 			virtual void stuff_draw_round_right(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) override { if (stuff) return painter::gdiplus::draw_round_right((HDC)dc, rc, *stuff); }
 			virtual void stuff_draw_round_top(share::HDC dc, LPCRECT rc, const share::Stuff* stuff) override { if (stuff) return painter::gdiplus::draw_round_top((HDC)dc, rc, *stuff); }

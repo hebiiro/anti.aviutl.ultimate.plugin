@@ -643,6 +643,9 @@ namespace apn::dark
 
 			// Gdiplusを登録します。
 			auto gdiplus = py::class_<Exports::Gdiplus>(exports, "Gdiplus")
+				.def("fill_rect", &Exports::Gdiplus::fill_rect)
+				.def("frame_rect", &Exports::Gdiplus::frame_rect)
+				.def("draw_rect", &Exports::Gdiplus::draw_rect)
 				.def("draw_round_left", &Exports::Gdiplus::draw_round_left, "dc"_a, "rc"_a, "fill_color"_a = CLR_NONE, "border_color"_a = CLR_NONE, "border_width"_a = 0, "alpha"_a = 255)
 				.def("draw_round_right", &Exports::Gdiplus::draw_round_right, "dc"_a, "rc"_a, "fill_color"_a = CLR_NONE, "border_color"_a = CLR_NONE, "border_width"_a = 0, "alpha"_a = 255)
 				.def("draw_round_top", &Exports::Gdiplus::draw_round_top, "dc"_a, "rc"_a, "fill_color"_a = CLR_NONE, "border_color"_a = CLR_NONE, "border_width"_a = 0, "alpha"_a = 255)
@@ -651,6 +654,9 @@ namespace apn::dark
 				.def("draw_round_vert", &Exports::Gdiplus::draw_round_vert, "dc"_a, "rc"_a, "fill_color"_a = CLR_NONE, "border_color"_a = CLR_NONE, "border_width"_a = 0, "alpha"_a = 255)
 				.def("draw_round_all", &Exports::Gdiplus::draw_round_all, "dc"_a, "rc"_a, "fill_color"_a = CLR_NONE, "border_color"_a = CLR_NONE, "border_width"_a = 0, "ellipse"_a = 0, "alpha"_a = 255)
 				.def("draw_ellipse", &Exports::Gdiplus::draw_ellipse, "dc"_a, "rc"_a, "fill_color"_a = CLR_NONE, "border_color"_a = CLR_NONE, "border_width"_a = 0, "alpha"_a = 255)
+				.def("fill_rect", &Exports::Gdiplus::stuff_fill_rect)
+				.def("frame_rect", &Exports::Gdiplus::stuff_frame_rect)
+				.def("draw_rect", &Exports::Gdiplus::stuff_draw_rect)
 				.def("draw_round_left", &Exports::Gdiplus::stuff_draw_round_left)
 				.def("draw_round_right", &Exports::Gdiplus::stuff_draw_round_right)
 				.def("draw_round_top", &Exports::Gdiplus::stuff_draw_round_top)
