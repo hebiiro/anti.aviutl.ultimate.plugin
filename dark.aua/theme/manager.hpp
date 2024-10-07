@@ -12,6 +12,9 @@ namespace apn::dark::theme
 		//
 		std::unordered_map<HTHEME, Renderer*> collection;
 
+		//
+		// 指定されたテーマに関連付けられているテーマレンダラを返します。
+		//
 		Renderer* get_renderer(HTHEME theme) const
 		{
 			// レンダラの使用が抑制されている場合はnullptrを返します。
