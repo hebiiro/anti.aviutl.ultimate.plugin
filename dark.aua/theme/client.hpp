@@ -13,7 +13,7 @@ namespace apn::dark::theme
 		BOOL init()
 		{
 			MY_TRACE_FUNC("");
-	
+
 			auto hwnd = hive.main_window;
 			MY_TRACE_HWND(hwnd);
 
@@ -63,11 +63,16 @@ namespace apn::dark::theme
 			manager.add_renderer(hwnd, L"Placesbar::" VSCLASS_TOOLBAR, &toolbar_renderer);
 			manager.add_renderer(hwnd, L"AddressComposited::" VSCLASS_COMBOBOX, &combobox_renderer);
 			manager.add_renderer_nc(hwnd, L"CommandModule", &command_module_renderer);
+//			manager.add_renderer_nc(hwnd, L"ItemsView::CommandModule", &command_module_renderer);
 			manager.add_renderer_nc(hwnd, L"PreviewPane", &preview_pane_renderer);
 //			manager.add_renderer_nc(hwnd, L"NavbarComposited::" L"PreviewPane", &preview_pane_renderer);
 //			manager.add_renderer_nc(hwnd, L"InactiveNavbarComposited::" L"PreviewPane", &preview_pane_renderer);
 			manager.add_renderer_nc(hwnd, L"CommonItemsDialog", &common_items_dialog_renderer);
 //			manager.add_renderer(hwnd, L"ImmersiveStart::" VSCLASS_MENU, &menu_renderer);
+//			manager.add_renderer(hwnd, L"BBComposited::" VSCLASS_TOOLBAR, &toolbar_renderer);
+//			manager.add_renderer(hwnd, L"Rebar", &rebar_renderer);
+//			manager.add_renderer(hwnd, L"Navigation", &navigation_renderer);
+//			manager.add_renderer(hwnd, L"AddressBand", &address_band_renderer);
 #endif
 			return TRUE;
 		}
