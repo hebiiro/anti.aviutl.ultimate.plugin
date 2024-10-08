@@ -66,9 +66,10 @@ namespace apn::dark::gdi
 
 		virtual BOOL on_draw_focus_rect(MessageState* current_state, HDC dc, LPCRECT rc) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, ({})", dc, safe_string(rc));
+			MY_TRACE_FUNC("{:#010x}, ({})", dc, safe_string(rc));
 
-			return hive.orig.DrawFocusRect( dc, rc);
+			return TRUE; // フォーカス矩形を描画しないようにします。
+//			return hive.orig.DrawFocusRect( dc, rc);
 		}
 
 		virtual BOOL on_draw_state_w(MessageState* current_state, HDC dc, HBRUSH fore, DRAWSTATEPROC cb, LPARAM lData, WPARAM wData, int x, int y, int cx, int cy, UINT flags) override
@@ -84,52 +85,35 @@ namespace apn::dark::gdi
 #if 1
 //			if (!(options & ETO_IGNORELANGUAGE))
 			{
-				auto header_theme = skin::theme::manager.get_theme(VSCLASS_HEADER);
-
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_LISTVIEW))
 				{
-					if (!app->equal(header_theme, hive.current_processing_vs.theme))
+					if (options == ETO_OPAQUE)
 					{
-						if (options == ETO_OPAQUE)
+						// セパレータのカラーを指定します。
+
+						auto state = skin::theme::manager.get_state(theme, LVP_LISTITEM, 0);
+
+						if (state && state->stuff.fill.color != CLR_NONE)
 						{
-							// セパレータのカラーを指定します。
+							::SetBkColor(dc, state->stuff.fill.color);
 
-							auto state = skin::theme::manager.get_state(theme, LVP_LISTITEM, 0);
-
-							if (state && state->stuff.fill.color != CLR_NONE)
-							{
-								::SetBkColor(dc, state->stuff.fill.color);
-
-								return hive.orig.ExtTextOutW(dc, x, y, options, rc, text, c, dx);
-							}
+							return hive.orig.ExtTextOutW(dc, x, y, options, rc, text, c, dx);
 						}
-
-						auto color = ::GetPixel(dc, x, y);
-						auto part_id = LVP_LISTITEM;
-						auto state_id = LISS_NORMAL;
-						if (auto state = skin::theme::manager.get_state(theme, part_id, state_id))
-						{
-							if (color != state->stuff.fill.color)
-								state_id = LISS_HOT;
-						}
-
-						MY_TRACE("color = {:#010x}, part_id = {}, state_id = {}\n", color, (int)part_id, (int)state_id);
-
-						if (python.call_text_out(current_state->hwnd, theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
-							return TRUE;
 					}
-				}
 
-				if (auto theme = header_theme)
-				{
-					if (app->equal(theme, hive.current_processing_vs.theme))
+					auto color = ::GetPixel(dc, x, y);
+					auto part_id = LVP_LISTITEM;
+					auto state_id = LISS_NORMAL;
+					if (auto state = skin::theme::manager.get_state(theme, part_id, state_id))
 					{
-						auto part_id = hive.current_processing_vs.part_id;
-						auto state_id = hive.current_processing_vs.state_id;
-						MY_TRACE("part_id = {}, state_id = {}\n", part_id, state_id);
-						if (python.call_text_out(current_state->hwnd, theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
-							return TRUE;
+						if (color != state->stuff.fill.color)
+							state_id = LISS_HOT;
 					}
+
+					MY_TRACE("color = {:#010x}, part_id = {}, state_id = {}\n", color, (int)part_id, (int)state_id);
+
+					if (python.call_text_out(current_state->hwnd, theme, dc, part_id, state_id, x, y, options, rc, text, c, dx))
+						return TRUE;
 				}
 			}
 #endif

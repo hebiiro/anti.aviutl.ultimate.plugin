@@ -247,6 +247,12 @@
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
     <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="gdi\element\shell_header.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
+    <ClInclude Include="gdi\element\shell_listview.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

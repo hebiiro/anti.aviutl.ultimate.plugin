@@ -37,6 +37,8 @@
 #include "gdi/element/aviutl.hpp"
 #include "gdi/element/aviutl_button.hpp"
 #include "gdi/element/setting_dialog.hpp"
+#include "gdi/element/shell_header.hpp"
+#include "gdi/element/shell_listview.hpp"
 #include "gdi/client.hpp"
 #include "theme/renderer.hpp"
 #include "theme/manager.hpp"

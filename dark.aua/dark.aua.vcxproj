@@ -179,6 +179,8 @@
     <ClInclude Include="gdi\element\listbox.hpp" />
     <ClInclude Include="gdi\element\listview.hpp" />
     <ClInclude Include="gdi\element\setting_dialog.hpp" />
+    <ClInclude Include="gdi\element\shell_header.hpp" />
+    <ClInclude Include="gdi\element\shell_listview.hpp" />
     <ClInclude Include="gdi\element\spin.hpp" />
     <ClInclude Include="gdi\element\static.hpp" />
     <ClInclude Include="gdi\element\tab.hpp" />

@@ -7,87 +7,91 @@ namespace apn::dark::gdi
 	//
 	inline struct Client
 	{
-		inline static constexpr LPCTSTR c_prop_name = _T("apn::dark::gdi::client");
-
-		using Generator = std::shared_ptr<Renderer> (*)();
-		std::unordered_map<my::tstring, Generator> generators;
+		inline static constexpr auto c_prop_name = _T("apn::dark::gdi::client");
 
 		//
-		// コンストラクタです。
+		// このクラスはウィンドウのクラス名です。
 		//
-		Client()
+		struct ClassName : my::tstring {
+			ClassName(const my::tstring& class_name) : my::tstring(class_name) {}
+			bool operator==(LPCTSTR b) const { return ::lstrcmpi(c_str(), b) == 0; }
+		};
+
+		//
+		// 指定された条件に合致するGDIレンダラを返します。
+		//
+		std::shared_ptr<Renderer> find_renderer(HWND hwnd, const ClassName& class_name)
 		{
-			generators[normalize(_T("#32770"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<DialogRenderer>(); };
-			generators[normalize(WC_STATIC)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<StaticRenderer>(); };
-			generators[normalize(WC_BUTTON)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ButtonRenderer>(); };
-			generators[normalize(WC_EDIT)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<EditBoxRenderer>(); };
-			generators[normalize(WC_LISTBOX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
-			generators[normalize(_T("ListviewPopup"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
-			generators[normalize(_T("ComboLBox"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
-			generators[normalize(WC_COMBOBOX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ComboBoxRenderer>(); };
-//			generators[normalize(WC_COMBOBOXEX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListBoxRenderer>(); };
-			generators[normalize(WC_COMBOBOXEX)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ComboBoxExRenderer>(); };
-			generators[normalize(TOOLTIPS_CLASS)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ToolTipRenderer>(); };
-			generators[normalize(TRACKBAR_CLASS)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TrackBarRenderer>(); };
-			generators[normalize(UPDOWN_CLASS)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<SpinRenderer>(); };
-			generators[normalize(WC_HEADER)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<HeaderRenderer>(); };
-			generators[normalize(WC_LISTVIEW)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListViewRenderer>(); };
-			generators[normalize(_T("DirectUIHWND"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ListViewRenderer>(); };
-			generators[normalize(WC_TREEVIEW)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TreeViewRenderer>(); };
-			generators[normalize(TOOLBARCLASSNAME)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<ToolBarRenderer>(); };
-			generators[normalize(WC_TABCONTROL)] = []() -> std::shared_ptr<Renderer> { return std::make_shared<TabRenderer>(); };
-			generators[normalize(_T("AviUtl"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlRenderer>(); };
-			generators[normalize(_T("AviUtlButton"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<AviUtlButtonRenderer>(); };
-			generators[normalize(_T("ExtendedFilterClass"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<SettingDialogRenderer>(); };
-			generators[normalize(_T("apn::workspace::container"))] = []() -> std::shared_ptr<Renderer> { return std::make_shared<RendererNc>(); };
-		}
+			if (class_name == _T("#32770")) return std::make_shared<DialogRenderer>();
+			if (class_name == WC_STATIC) return std::make_shared<StaticRenderer>();
+			if (class_name == WC_BUTTON) return std::make_shared<ButtonRenderer>();
+			if (class_name == WC_EDIT) return std::make_shared<EditBoxRenderer>();
+			if (class_name == WC_LISTBOX) return std::make_shared<ListBoxRenderer>();
+			if (class_name == _T("ListviewPopup")) return std::make_shared<ListBoxRenderer>();
+			if (class_name == _T("ComboLBox")) return std::make_shared<ListBoxRenderer>();
+			if (class_name == WC_COMBOBOX) return std::make_shared<ComboBoxRenderer>();
+//			if (class_name == WC_COMBOBOXEX) return std::make_shared<ListBoxRenderer>();
+			if (class_name == WC_COMBOBOXEX) return std::make_shared<ComboBoxExRenderer>();
+			if (class_name == TOOLTIPS_CLASS) return std::make_shared<ToolTipRenderer>();
+			if (class_name == TRACKBAR_CLASS) return std::make_shared<TrackBarRenderer>();
+			if (class_name == UPDOWN_CLASS) return std::make_shared<SpinRenderer>();
+			if (class_name == WC_HEADER)
+			{
+				auto instance = (HINSTANCE)::GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+				if (instance == ::GetModuleHandle(_T("shell32.dll")))
+					return std::make_shared<ShellHeaderRenderer>();
 
-		//
-		// 与えられたクラス名をノーマライズして返します。
-		//
-		inline static my::tstring normalize(const my::tstring& class_name)
-		{
-			return my::to_upper(class_name);
+				return std::make_shared<HeaderRenderer>();
+			}
+			if (class_name == WC_LISTVIEW)
+			{
+				auto instance = (HINSTANCE)::GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+				if (instance == ::GetModuleHandle(_T("shell32.dll")))
+					return std::make_shared<ShellListViewRenderer>();
+
+				return std::make_shared<ListViewRenderer>();
+			}
+			if (class_name == _T("DirectUIHWND")) return std::make_shared<ShellListViewRenderer>();
+			if (class_name == WC_TREEVIEW) return std::make_shared<TreeViewRenderer>();
+			if (class_name == TOOLBARCLASSNAME) return std::make_shared<ToolBarRenderer>();
+			if (class_name == WC_TABCONTROL) return std::make_shared<TabRenderer>();
+			if (class_name == _T("AviUtl")) return std::make_shared<AviUtlRenderer>();
+			if (class_name == _T("AviUtlButton")) return std::make_shared<AviUtlButtonRenderer>();
+			if (class_name == _T("ExtendedFilterClass")) return std::make_shared<SettingDialogRenderer>();
+			if (class_name == _T("apn::workspace::container")) return std::make_shared<RendererNc>();
+
+			return nullptr;
 		}
 
 		//
 		// GDIレンダラをウィンドウにアタッチします。
 		//
-		void attach_renderer(HWND hwnd, const my::tstring& class_name)
+		void attach_renderer(HWND hwnd, const ClassName& class_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name);
+			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name.c_str());
 
-			auto it = generators.find(class_name);
-			if (it == generators.end())
-			{
-				// (?) ↓はテスト用コードだったのかもしれない。
-				if (my::contains(class_name, normalize(_T("WindowsForms10.") TRACKBAR_CLASS)))
-					it = generators.find(normalize(TRACKBAR_CLASS));
-
-				if (it == generators.end())
-					return;
-			}
-			Renderer::attach(hwnd, (*it->second)());
+			if (auto renderer = find_renderer(hwnd, class_name))
+				Renderer::attach(hwnd, renderer);
 		}
 
 		//
 		// ウィンドウを微調整します。
 		//
-		void tweak_window(HWND hwnd, const my::tstring& class_name)
+		void tweak_window(HWND hwnd, const ClassName& class_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name);
+			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name.c_str());
 
 			if (my::get_style(hwnd) & WS_CAPTION)
 			{
 				if (!hive.renderer_locked)
 					skin::dwm.set_window_attribute(hwnd, FALSE);
 			}
-			else if (class_name == normalize(WC_BUTTON))
+			else if (class_name == WC_BUTTON)
 			{
 				if (my::get_ex_style(hwnd) & WS_EX_STATICEDGE)
 					hive.static_edge_buttons.emplace_back(hwnd);
 			}
-			else if (class_name == normalize(WC_STATIC))
+			else if (class_name == WC_STATIC)
 			{
 				// ラウドネスメーター(全体)のスタティックテキストを微調整します。
 
@@ -107,8 +111,8 @@ namespace apn::dark::gdi
 			MY_TRACE_FUNC("{:#010x}", hwnd);
 
 			// ウィンドウのクラス名を取得します。
-			auto class_name = normalize(my::get_class_name(hwnd));
-			MY_TRACE_STR(class_name);
+			auto class_name = ClassName(my::get_class_name(hwnd));
+			MY_TRACE_STR(class_name.c_str());
 
 			// GDIレンダラーをアタッチします。
 			attach_renderer(hwnd, class_name);
@@ -159,6 +163,19 @@ namespace apn::dark::gdi
 
 				MY_TRACE_FUNC("{}, {:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}",
 					class_name, wnd_proc, hwnd, message, wParam, lParam);
+
+				if (0)
+				{
+					auto window_dpi = ::GetDpiForWindow(hwnd);
+					auto system_dpi = ::GetDpiForSystem();
+					auto dpi1 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
+					auto dpi2 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
+					auto dpi3 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+					auto dpi4 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+					auto dpi5 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+
+					MY_TRACE("{}, {}, {}, {}, {}, {}, {}\n", window_dpi, system_dpi, dpi1, dpi2, dpi3, dpi4, dpi5);
+				}
 			}
 
 			// レンダラーの使用が抑制されている場合はデフォルト処理のみ行います。

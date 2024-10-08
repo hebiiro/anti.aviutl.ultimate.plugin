@@ -2,7 +2,7 @@
 
 namespace apn::dark::gdi
 {
-	struct HeaderRenderer : Renderer
+	struct ShellHeaderRenderer : Renderer
 	{
 		virtual HBRUSH on_ctl_color(HWND hwnd, UINT message, HDC dc, HWND control, HBRUSH brush) override
 		{
@@ -65,20 +65,17 @@ namespace apn::dark::gdi
 		{
 			MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, {:#010x}", dc, x, y, options, safe_string(rc), text, c, dx, ::GetBkColor(dc), ::GetTextColor(dc));
 
-			if (!text && options == ETO_OPAQUE)
+			if (auto theme = skin::theme::manager.get_theme(VSCLASS_TOOLTIP))
 			{
-				if (auto theme = skin::theme::manager.get_theme(VSCLASS_HEADER))
+				if (my::get_style(current_state->hwnd) & TTS_BALLOON)
 				{
-					// 背景色を指定します。
-
-					auto state = skin::theme::manager.get_state(theme, 0, 1);
-
-					if (state && state->stuff.fill.color != CLR_NONE)
-					{
-						::SetBkColor(dc, state->stuff.fill.color);
-
-						return hive.orig.ExtTextOutW(dc, x, y, options, rc, text, c, dx);
-					}
+					if (python.call_text_out(current_state->hwnd, theme, dc, TTP_BALLOON, TTBS_NORMAL, x, y, options, rc, text, c, dx))
+						return TRUE;
+				}
+				else
+				{
+					if (python.call_text_out(current_state->hwnd, theme, dc, TTP_STANDARD, TTSS_NORMAL, x, y, options, rc, text, c, dx))
+						return TRUE;
 				}
 			}
 
