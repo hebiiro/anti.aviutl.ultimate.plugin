@@ -4,27 +4,6 @@ namespace apn::dark::theme
 {
 	inline struct HeaderRenderer : Renderer
 	{
-		//
-		// このクラスは指定されたフラグを一時的に変更します。
-		//
-		struct FlagChanger
-		{
-			BOOL* flag;
-			BOOL old_value;
-
-			FlagChanger(BOOL* flag, BOOL new_value)
-				: flag(flag)
-				, old_value(*flag)
-			{
-				*flag = new_value;
-			}
-
-			~FlagChanger()
-			{
-				*flag = old_value;
-			}
-		};
-
 		HRESULT on_draw_theme_parent_background(HWND hwnd, HDC dc, LPCRECT rc) override
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, ({})", hwnd, dc, safe_string(rc));
@@ -37,9 +16,6 @@ namespace apn::dark::theme
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), ({})", theme, dc, part_id, state_id, safe_string(rc), safe_string(rc_clip));
 
 			{
-				// DPIスケーリング補正を一時的に無効化します。
-				FlagChanger flag_changer(&hive.fix_dpi_scaling, FALSE);
-
 				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
 			}
@@ -52,9 +28,6 @@ namespace apn::dark::theme
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}", theme, dc, part_id, state_id, safe_string(rc), options);
 
 			{
-				// DPIスケーリング補正を一時的に無効化します。
-				FlagChanger flag_changer(&hive.fix_dpi_scaling, FALSE);
-
 				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
 			}
@@ -77,9 +50,6 @@ namespace apn::dark::theme
 				return hive.orig.DrawThemeTextEx(theme, dc, part_id, state_id, text, c, text_flags, rc, options);
 
 			{
-				// DPIスケーリング補正を一時的に無効化します。
-				FlagChanger flag_changer(&hive.fix_dpi_scaling, FALSE);
-
 				if (python.call_draw_text(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, text, c, text_flags, rc))
 					return S_OK;
 			}

@@ -366,6 +366,33 @@ namespace apn::dark::painter
 	namespace gdiplus
 	{
 		//
+		// 原点を補正するかどうかのフラグです。
+		//
+		thread_local inline static BOOL fix_org = FALSE;
+
+		//
+		// このクラスは原点を補正するフラグを管理します。
+		//
+		struct FixOrg
+		{
+			//
+			// コンストラクタです。
+			//
+			FixOrg(BOOL new_value)
+			{
+				fix_org = new_value;
+			}
+
+			//
+			// デストラクタです。
+			//
+			~FixOrg()
+			{
+				fix_org = FALSE;
+			}
+		};
+
+		//
 		// このクラスは描画関数の引数です。
 		//
 		using PaintArgs = Dark::Stuff;
@@ -377,7 +404,7 @@ namespace apn::dark::painter
 		{
 			MyRectF rc;
 
-			MyGraphics(HDC dc, LPCRECT rc, BOOL fix_enabled)
+			MyGraphics(HDC dc, LPCRECT rc)
 				: Graphics(dc)
 			{
 				SetSmoothingMode(SmoothingModeAntiAlias);
@@ -391,7 +418,9 @@ namespace apn::dark::painter
 				auto rc_base = *rc;
 
 				// GDI+のバグ対策用の処理です。
-				if (fix_enabled)
+				// GDI+はDPIスケーリングがされたウィンドウDCに対して
+				// 原点を正しく設定しないので手動で補正します。
+				if (fix_org)
 				{
 					auto window_org = POINT {};
 					::GetWindowOrgEx(dc, &window_org);
@@ -574,7 +603,7 @@ namespace apn::dark::painter
 		//
 		inline void fill_rect(HDC dc, LPCRECT rc, const PaintArgs& _args)
 		{
-			MyGraphics graphics(dc, rc, FALSE);
+			MyGraphics graphics(dc, rc);
 
 			PaintArgs args = _args;
 			args.border.color = CLR_NONE; // 縁を無効化します。
@@ -586,7 +615,7 @@ namespace apn::dark::painter
 		//
 		inline void frame_rect(HDC dc, LPCRECT rc, const PaintArgs& _args)
 		{
-			MyGraphics graphics(dc, rc, FALSE);
+			MyGraphics graphics(dc, rc);
 
 			PaintArgs args = _args;
 			args.fill.color = CLR_NONE; // 塗り潰しを無効化します。
@@ -598,7 +627,7 @@ namespace apn::dark::painter
 		//
 		inline void draw_rect(HDC dc, LPCRECT rc, const PaintArgs& args)
 		{
-			MyGraphics graphics(dc, rc, FALSE);
+			MyGraphics graphics(dc, rc);
 
 			draw_rect(graphics, graphics.rc, args);
 		}
@@ -610,9 +639,8 @@ namespace apn::dark::painter
 		inline void draw_round_figure(HDC dc, LPCRECT rc, const PaintArgs& args, T create_path)
 		{
 			auto ellipse_enabled = hive.as_round;
-			auto fix_enabled = hive.fix_dpi_scaling;
 
-			MyGraphics graphics(dc, rc, fix_enabled);
+			MyGraphics graphics(dc, rc);
 
 			if (ellipse_enabled)
 			{
@@ -621,7 +649,7 @@ namespace apn::dark::painter
 				auto right = graphics.rc.X + graphics.rc.Width;
 				auto bottom = graphics.rc.Y + graphics.rc.Height;
 				auto fix = 0.0f;
-//				auto fix = fix_enabled ? 0.5f : 0.0f;
+//				auto fix = hive.fix_dpi_scaling ? 0.5f : 0.0f;
 
 				GraphicsPath path;
 				create_path(path, graphics.rc, left, top, right, bottom, fix);
