@@ -46,7 +46,7 @@ namespace apn::dark::hook
 //			my::hook::attach(DrawFrameControl);
 //			my::hook::attach(FrameRect);
 			my::hook::attach(DrawEdge);
-//			my::hook::attach(DrawFocusRect);
+			my::hook::attach(DrawFocusRect);
 //			my::hook::attach(DrawStateW);
 			my::hook::attach(ExtTextOutW);
 //			my::hook::attach(PatBlt);

@@ -92,7 +92,7 @@ namespace apn::dark::gdi
 
 		virtual BOOL on_draw_focus_rect(MessageState* current_state, HDC dc, LPCRECT rc) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, ({})", dc, safe_string(rc));
+			MY_TRACE_FUNC("{:#010x}, ({})", dc, safe_string(rc));
 
 			return hive.orig.DrawFocusRect( dc, rc);
 		}
