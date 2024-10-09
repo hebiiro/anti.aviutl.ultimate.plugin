@@ -44,6 +44,12 @@ RGB三原色をモチーフにして作成しています。
 ## old.sky
 RGB三原色をモチーフにして作成しています。
 
+## old.mina
+みなロジさんのスキンを元に作成しています。
+> https://x.com/minaLogi<br>
+> https://x.com/minaLogi/status/1540533799666479105<br>
+> https://x.com/minaLogi/status/1548472857537449987<br>
+
 ## vs
 MicrosoftのVisual Studio 2022の配色を元に作成しています。
 > https://visualstudio.microsoft.com/ja/vs/
