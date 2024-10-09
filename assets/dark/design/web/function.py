@@ -17,6 +17,7 @@ def draw_underline(args, stuff, rc = None):
 	else:
 		rc = dark.RECT(rc)
 	rc.top = rc.bottom - dark.hive.border_width
+	dark.offset(rc, 0, -1)
 	dark.exports.painter.fill_rect(args.dc, rc, stuff.text.color)
 	return True
 
