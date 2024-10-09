@@ -29,14 +29,12 @@ class ExEdit(base.ExEdit):
 				if (hasattr(args, 'options')):
 					if (args.options & win32con.ETO_OPAQUE):
 						args.options &= ~win32con.ETO_OPAQUE
-					rc = dark.RECT(args.rc)
-					rc.inflate(1, 1)
-					dark.exports.painter.fill_rect(args.dc, rc, self.get_stuff(STUFF_EXEDIT_DUMMY))
-					rc.deflate(0, 1)
-					rc.left += 1
-					# フラットに見えるように描画します。
-					dark.exports.painter.draw_edge(args.dc, rc, dark.exports.config_manager.edges.etched)
+				rc = dark.RECT(args.rc)
+				rc.inflate(1, 1)
+				dark.exports.painter.fill_rect(args.dc, rc, self.get_stuff(STUFF_EXEDIT_DUMMY))
+				rc.deflate(0, 1)
+				rc.left += 1
+				# フラットに見えるように描画します。
+				#dark.exports.painter.draw_edge(args.dc, rc, dark.exports.config_manager.edges.etched)
 				dark.draw_str(args, stuff)
-			else:
-				pass
 		return True
