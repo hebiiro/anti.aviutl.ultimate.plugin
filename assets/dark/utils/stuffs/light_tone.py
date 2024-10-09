@@ -184,7 +184,7 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	## メニューのセパレータ
 	stuff = utils.create_stuff("menu_separator")
 	if (stuff):
-		stuff.fill.color = primary_fill(0.4)
+		stuff.fill.color = primary_border(0.2)
 
 	# エディットボックス
 

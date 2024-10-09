@@ -95,6 +95,12 @@ if (stuff):
 	stuff.text.color = CLR(255, 255, 255)
 	stuff.text.shadow_color = CLR(0, 0, 0)
 
+# エディットボックスのセパレータ
+# (リストボックス・リストビューで使用されます)
+stuff = utils.create_stuff("edit_separator")
+if (stuff):
+	stuff.fill.color = CLR(32, 34, 37)
+
 # スクロールバー
 
 stuff = utils.create_stuff("scrollbar_background")
