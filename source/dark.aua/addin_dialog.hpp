@@ -88,6 +88,8 @@ namespace apn::dark
 			auto editbox = std::make_shared<RelativePos>(base_size * 2);
 			auto checkbox = std::make_shared<RelativePos>(base_size * 7);
 			auto combobox = std::make_shared<RelativePos>(base_size * 7);
+			auto combobox_short = std::make_shared<RelativePos>(base_size * 6);
+			auto combobox_long = std::make_shared<RelativePos>(base_size * 11);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
 			auto rc = my::get_client_rect(ctrl(IDC_ELLIPSE_SPIN));
@@ -101,9 +103,9 @@ namespace apn::dark
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SKIN_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SKIN));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox_short, margin, ctrl(IDC_SKIN));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCHEME_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SCHEME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox_long, margin, ctrl(IDC_SCHEME));
 			}
 
 			{
