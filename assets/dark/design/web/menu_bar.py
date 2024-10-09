@@ -5,30 +5,18 @@ import win32ui
 import win32con
 import dark
 import core
-from .const import *
-from .function import *
-from .menu import *
+from .include import *
 
 #
 # このクラスはメニューバーを描画します。
 #
-class MenuBar(Menu):
+class MenuBar(base.MenuBar):
 	#
 	# コンストラクタです。
 	#
 	def __init__(self):
 		# スーパークラスのコンストラクタを呼び出します。
-		super(MenuBar, self).__init__("BAR")
-
-		# 描画関数を追加します。
-		self.add_handler(core.MENU_BARBACKGROUND, core.MB_ACTIVE, self.draw_background, STUFF_ACTIVE)
-		self.add_handler(core.MENU_BARBACKGROUND, core.MB_INACTIVE, self.draw_background, STUFF_INACTIVE)
-		self.add_handler(core.MENU_BARITEM, core.MBI_NORMAL, self.draw_item, None, STUFF_NORMAL)
-		self.add_handler(core.MENU_BARITEM, core.MBI_DISABLED, self.draw_item, None, STUFF_DISABLED)
-		self.add_handler(core.MENU_BARITEM, core.MBI_HOT, self.draw_item, STUFF_HOT)
-		self.add_handler(core.MENU_BARITEM, core.MBI_DISABLEDHOT, self.draw_item, None, STUFF_DISABLED)
-		self.add_handler(core.MENU_BARITEM, core.MBI_PUSHED, self.draw_item, STUFF_PUSHED)
-		self.add_handler(core.MENU_BARITEM, core.MBI_DISABLEDPUSHED, self.draw_item, None, STUFF_DISABLED)
+		super(MenuBar, self).__init__()
 
 	#
 	# メニューバーの背景を描画します。
@@ -39,6 +27,7 @@ class MenuBar(Menu):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
 			rc.bottom += 1
+			# 模様を描画します。
 			dark.exports.painter.fill_rect(args.dc, rc, stuff)
 			draw_pattern(args, stuff)
 		return True
@@ -53,5 +42,6 @@ class MenuBar(Menu):
 			if (hasattr(args, 'text')):
 				dark.draw_str(args, stuff)
 			else:
+				# 下線を描画します。
 				draw_underline(args, stuff)
 		return True
