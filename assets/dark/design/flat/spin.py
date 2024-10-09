@@ -5,40 +5,18 @@ import win32ui
 import win32con
 import dark
 import core
-from .const import *
+from .include import *
 
 #
 # このクラスはスピンボタンを描画します。
 #
-class Spin(core.Control):
+class Spin(base.Spin):
 	#
 	# コンストラクタです。
 	#
 	def __init__(self):
 		# スーパークラスのコンストラクタを呼び出します。
-		super(Spin, self).__init__(core.VSCLASS_SPIN)
-
-		# テーマを追加します。
-		self.add_theme(core.VSCLASS_SPIN)
-		self.add_theme(core.VSCLASS_EXPLORER_SPIN)
-
-		# 描画関数を追加します。
-		self.add_handler(core.SPNP_UP, core.UPS_NORMAL, self.draw_spin_button, STUFF_NORMAL, font_name='Webdings', icon_text='\u0035', pressed=False)
-		self.add_handler(core.SPNP_UP, core.UPS_DISABLED, self.draw_spin_button, STUFF_DISABLED, font_name='Webdings', icon_text='\u0035', pressed=False)
-		self.add_handler(core.SPNP_UP, core.UPS_HOT, self.draw_spin_button, STUFF_HOT, font_name='Webdings', icon_text='\u0035', pressed=False)
-		self.add_handler(core.SPNP_UP, core.UPS_PRESSED, self.draw_spin_button, STUFF_PRESSED, font_name='Webdings', icon_text='\u0035', pressed=True)
-		self.add_handler(core.SPNP_DOWN, core.DNS_NORMAL, self.draw_spin_button, STUFF_NORMAL, font_name='Webdings', icon_text='\u0036', pressed=False)
-		self.add_handler(core.SPNP_DOWN, core.DNS_DISABLED, self.draw_spin_button, STUFF_DISABLED, font_name='Webdings', icon_text='\u0036', pressed=False)
-		self.add_handler(core.SPNP_DOWN, core.DNS_HOT, self.draw_spin_button, STUFF_HOT, font_name='Webdings', icon_text='\u0036', pressed=False)
-		self.add_handler(core.SPNP_DOWN, core.DNS_PRESSED, self.draw_spin_button, STUFF_PRESSED, font_name='Webdings', icon_text='\u0036', pressed=True)
-		self.add_handler(core.SPNP_UPHORZ, core.UPHZS_NORMAL, self.draw_spin_button, STUFF_NORMAL, font_name='Webdings', icon_text='\u0034', pressed=False)
-		self.add_handler(core.SPNP_UPHORZ, core.UPHZS_DISABLED, self.draw_spin_button, STUFF_DISABLED, font_name='Webdings', icon_text='\u0034', pressed=False)
-		self.add_handler(core.SPNP_UPHORZ, core.UPHZS_HOT, self.draw_spin_button, STUFF_HOT, font_name='Webdings', icon_text='\u0034', pressed=False)
-		self.add_handler(core.SPNP_UPHORZ, core.UPHZS_PRESSED, self.draw_spin_button, STUFF_PRESSED, font_name='Webdings', icon_text='\u0034', pressed=True)
-		self.add_handler(core.SPNP_DOWNHORZ, core.DNHZS_NORMAL, self.draw_spin_button, STUFF_NORMAL, font_name='Webdings', icon_text='\u0033', pressed=False)
-		self.add_handler(core.SPNP_DOWNHORZ, core.DNHZS_DISABLED, self.draw_spin_button, STUFF_DISABLED, font_name='Webdings', icon_text='\u0033', pressed=False)
-		self.add_handler(core.SPNP_DOWNHORZ, core.DNHZS_HOT, self.draw_spin_button, STUFF_HOT, font_name='Webdings', icon_text='\u0033', pressed=False)
-		self.add_handler(core.SPNP_DOWNHORZ, core.DNHZS_PRESSED, self.draw_spin_button, STUFF_PRESSED, font_name='Webdings', icon_text='\u0033', pressed=True)
+		super(Spin, self).__init__()
 
 	#
 	# スピンボタンを描画します。
@@ -48,6 +26,7 @@ class Spin(core.Control):
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
+			# フラットに見えるように描画します。
 			dark.exports.painter.fill_rect(args.dc, rc, self.get_stuff(STUFF_BACKGROUND))
 			if (attrs.pressed):
 				dark.exports.painter.draw_edge(args.dc, args.rc, dark.exports.config_manager.edges.sunken)
