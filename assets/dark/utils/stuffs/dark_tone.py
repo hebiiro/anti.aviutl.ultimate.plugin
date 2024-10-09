@@ -79,7 +79,7 @@ def create_dark_tone_stuffs(fill_tones, border_tones, text_tones):
 	## ウィンドウキャプションのアクティブ状態
 	stuff = utils.create_stuff("window_caption_active")
 	if (stuff):
-		stuff.fill.color = secondary_fill(-0.8)
+		stuff.fill.color = secondary_fill(-0.2)
 		stuff.text.color = secondary_text(0.8)
 		stuff.border.color = secondary_border(-0.6)
 		stuff.border.width = 1
