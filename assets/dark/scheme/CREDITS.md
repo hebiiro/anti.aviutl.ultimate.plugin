@@ -1,0 +1,61 @@
+﻿# 各スキームについて
+
+## cobalt
+Visual Studio CodeのCobalt2 Theme Officialをモチーフにして作成しています。
+> https://marketplace.visualstudio.com/items?itemName=wesbos.theme-cobalt2
+
+## kotonoha_akane
+A.I.VOICEの琴葉茜ちゃんをモチーフにして作成しています。
+> https://aivoice.jp/character/kotonoha/
+
+## kotonoha_aoi
+A.I.VOICEの琴葉葵ちゃんをモチーフにして作成しています。
+> https://aivoice.jp/character/kotonoha/
+
+## maou_2chica
+ニチカ・バーチさんをモチーフにして作成しています。
+> https://x.com/maou_2chica
+
+## miku
+クリプトンの初音ミクをモチーフにして作成しています。
+> https://blog.piapro.net/
+
+## mrojii
+Mr-Ojiiさんのスキンを元に作成しています。
+> https://x.com/Mr_Ojii/status/1803376330291261922
+
+## old.adobe
+Nsywさんのスキンを元に作成しています。<br>
+Adobeのアプリの配色を元に作成されていると思われます。
+
+## old.discord
+DiscordのDiscordの配色を元に作成しています。
+> https://discord.com/
+
+## old.lime
+RGB三原色をモチーフにして作成しています。<br>
+あきぞらԾさんのスキンを元に作成しています。
+> https://x.com/Akizora_chihiro<br>
+> https://github.com/AkizoraChihiro/RoundLightGreen
+
+## old.pink
+RGB三原色をモチーフにして作成しています。
+
+## old.sky
+RGB三原色をモチーフにして作成しています。
+
+## vs
+MicrosoftのVisual Studio 2022の配色を元に作成しています。
+> https://visualstudio.microsoft.com/ja/vs/
+
+## yuzukizu_akari
+VOCALOMAKETSの紲星あかりさんをモチーフにして作成しています。
+> https://vocalomakets.com/
+
+## yuzukizu_yukari
+VOCALOMAKETSの結月ゆかりさんをモチーフにして作成しています。
+> https://vocalomakets.com/
+
+## zundamon
+東北ずん子・ずんだもんプロジェクトのずんだもんをモチーフにして作成しています。
+> https://zunko.jp/
