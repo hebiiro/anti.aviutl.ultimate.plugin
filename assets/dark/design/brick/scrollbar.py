@@ -36,40 +36,54 @@ class ScrollBar(base.ScrollBar):
 			dark.exports.painter.draw_edge(args.dc, args.rc, dark.exports.config_manager.edges.raised)
 			# 矩形が正方形になるように調整します。
 			rc = dark.RECT(args.rc)
-			w = dark.get_width(rc)
-			h = dark.get_height(rc)
-			size = min(w, h)
+			size = min(rc.width, rc.height)
 			rc.left = int((rc.left + rc.right - size) / 2)
 			rc.top = int((rc.top + rc.bottom - size) / 2)
 			rc.right = rc.left + size
 			rc.bottom = rc.top + size
+			rc.offset(0, -1)
 			# 矢印マークを描画します。
-			core.draw_icon(args, stuff, 'Webdings', arrow, rc)
+			core.draw_icon(args, stuff, 'Meiryo', arrow, rc, font_weight=900)
 		return True
 
 	#
 	# 左矢印を描画します。
 	#
 	def draw_left(self, args, stuff_name, attrs):
-		return self.draw_arrow(args, stuff_name, attrs, '\u0033')
+		return self.draw_arrow(args, stuff_name, attrs, '\uE012')
 
 	#
 	# 右矢印を描画します。
 	#
 	def draw_right(self, args, stuff_name, attrs):
-		return self.draw_arrow(args, stuff_name, attrs, '\u0034')
+		return self.draw_arrow(args, stuff_name, attrs, '\uE013')
 
 	#
 	# 上矢印を描画します。
 	#
 	def draw_up(self, args, stuff_name, attrs):
-		return self.draw_arrow(args, stuff_name, attrs, '\u0035')
+		return self.draw_arrow(args, stuff_name, attrs, '\uE014')
 
 	#
 	# 下矢印を描画します。
 	#
 	def draw_down(self, args, stuff_name, attrs):
-		return self.draw_arrow(args, stuff_name, attrs, '\u0036')
+		return self.draw_arrow(args, stuff_name, attrs, '\uE015')
+
+	#
+	# つまみにマークを描画します。
+	#
+	def draw_thumb_mark(self, args, stuff, icon):
+		# 矩形が正方形になるように調整します。
+		rc = dark.RECT(args.rc)
+		size = min(rc.width, rc.height)
+		rc.left = int((rc.left + rc.right - size) / 2)
+		rc.top = int((rc.top + rc.bottom - size) / 2)
+		rc.right = rc.left + size
+		rc.bottom = rc.top + size
+		# 矢印マークを描画します。
+		rc.inflate(7, 0)
+		core.draw_icon2(args, stuff, 'Meiryo', icon, rc)
 
 	#
 	# 水平方向のつまみを描画します。
@@ -81,6 +95,7 @@ class ScrollBar(base.ScrollBar):
 			# ブロック状に見えるように描画します。
 			dark.exports.painter.fill_rect(args.dc, args.rc, stuff)
 			dark.exports.painter.draw_edge(args.dc, args.rc, dark.exports.config_manager.edges.raised)
+			self.draw_thumb_mark(args, stuff, '⚡')
 		return True
 
 	#
@@ -93,4 +108,5 @@ class ScrollBar(base.ScrollBar):
 			# ブロック状に見えるように描画します。
 			dark.exports.painter.fill_rect(args.dc, args.rc, stuff)
 			dark.exports.painter.draw_edge(args.dc, args.rc, dark.exports.config_manager.edges.raised)
+			self.draw_thumb_mark(args, stuff, '⚡')
 		return True
