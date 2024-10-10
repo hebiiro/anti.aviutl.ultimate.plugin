@@ -34,15 +34,18 @@ DiscordのDiscordの配色を元に作成しています。
 
 ## old.lime
 RGB三原色をモチーフにして作成しています。<br>
-あきぞらԾさんのスキンを元に作成しています。
+あきぞらԾさんのスキンを元に作成しています。<br>
 > https://x.com/Akizora_chihiro<br>
-> https://github.com/AkizoraChihiro/RoundLightGreen
+> https://github.com/AkizoraChihiro/RoundLightGreen<br>
 
 ## old.pink
-RGB三原色をモチーフにして作成しています。
+RGB三原色をモチーフにして作成しています。<br>
 
 ## old.sky
-RGB三原色をモチーフにして作成しています。
+RGB三原色をモチーフにして作成しています。<br>
+
+## old.darken_window
+黒窓(DarkenWindow)のデフォルトスキンを元に作成しています。<br>
 
 ## old.mina
 みなロジさんのスキンを元に作成しています。
