@@ -5,7 +5,7 @@ from core import CLR_NONE
 from utils import CLR
 from utils import add_color as ADD
 
-# 『[旧形式] mina』のダークモードの設定です。
+# 『[旧形式 みなロジ] mina』のダークモードの設定です。
 
 #
 # 文字の影の色を算出して返します。
@@ -53,7 +53,7 @@ if (stuff):
 ## ウィンドウキャプションのアクティブ状態
 stuff = utils.create_stuff("window_caption_active")
 if (stuff):
-	stuff.fill.color = CLR("#333")
+	stuff.fill.color = CLR("#222")
 	stuff.text.color = CLR("#fff")
 	stuff.border.color = CLR("#000")
 	stuff.border.width = 1
@@ -79,11 +79,7 @@ if (stuff):
 	stuff.text.shadow_color = text_shadow(stuff)
 
 ## ペインキャプションの非アクティブ状態
-stuff = utils.create_stuff("pane_caption_inactive")
-if (stuff):
-	stuff.fill.color = CLR("#333")
-	stuff.text.color = CLR("#999")
-	stuff.text.shadow_color = text_shadow(stuff)
+stuff = utils.create_stuff("pane_caption_inactive", "pane_caption_active")
 
 ## ペインキャプションの無効状態
 stuff = utils.create_stuff("pane_caption_disabled", "pane_caption_inactive")
@@ -117,6 +113,8 @@ if (stuff):
 
 ## メニューのアクティブ状態
 stuff = utils.create_stuff("menu_active", "menu_background")
+if (stuff):
+	stuff.fill.color = CLR("#222")
 
 ## メニューの非アクティブ状態
 stuff = utils.create_stuff("menu_inactive", "menu_background")
@@ -228,14 +226,14 @@ stuff = utils.create_stuff("trackbar_background", "dialog_background")
 ## トラックバーのトラック
 stuff = utils.create_stuff("trackbar_track")
 if (stuff):
-	stuff.fill.color = CLR("#666")
-	stuff.border.color = CLR("#000")
+	stuff.fill.color = CLR("#111")
+	stuff.border.color = CLR("#444")
 	stuff.border.width = 1
 
 ## トラックバーの選択部分
 stuff = utils.create_stuff("trackbar_selected")
 if (stuff):
-	stuff.fill.color = CLR("#555")
+	stuff.fill.color = CLR("#666")
 
 ## トラックバーの通常状態
 stuff = utils.create_stuff("trackbar_normal", "scrollbar_normal")
@@ -257,6 +255,7 @@ if (stuff):
 	stuff.fill.color = CLR("#222")
 	stuff.text.color = CLR("#ccc")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンの無効状態
 stuff = utils.create_stuff("button_disabled")
@@ -264,6 +263,7 @@ if (stuff):
 	stuff.fill.color = CLR("#444")
 	stuff.text.color = CLR("#999")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンのホット状態
 stuff = utils.create_stuff("button_hot")
@@ -271,6 +271,7 @@ if (stuff):
 	stuff.fill.color = CLR("#444")
 	stuff.text.color = CLR("#fff")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンのプレス状態
 stuff = utils.create_stuff("button_pressed")
@@ -278,6 +279,7 @@ if (stuff):
 	stuff.fill.color = CLR("#444")
 	stuff.text.color = CLR("#fff")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンのチェック状態
 stuff = utils.create_stuff("button_checked", "button_normal")
@@ -314,6 +316,19 @@ if (stuff):
 stuff = utils.create_stuff("exedit_odd_layer_background_inactive")
 if (stuff):
 	stuff.fill.color = CLR("#444")
+
+## 拡張編集の背景
+stuff = utils.create_stuff("exedit_background")
+if (stuff):
+	stuff.fill.color = CLR("#222222")
+
+## 拡張編集のシーン選択ボタン
+stuff = utils.create_stuff("exedit_scene_button")
+if (stuff):
+	stuff.fill.color = CLR("#222")
+	stuff.text.color = CLR("#eee")
+	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## 拡張編集の選択範囲
 stuff = utils.new_stuff("exedit_selection_fill")

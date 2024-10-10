@@ -5,7 +5,7 @@ from core import CLR_NONE
 from utils import CLR
 from utils import add_color as ADD
 
-# 『[旧形式] mina』のライトモードの設定です。
+# 『[旧形式 みなロジ] mina』のライトモードの設定です。
 
 #
 # 文字の影の色を算出して返します。
@@ -53,17 +53,17 @@ if (stuff):
 ## ウィンドウキャプションのアクティブ状態
 stuff = utils.create_stuff("window_caption_active")
 if (stuff):
-	stuff.fill.color = CLR("#eee")
+	stuff.fill.color = CLR("#e9e9f4")
 	stuff.text.color = CLR("#222")
-	stuff.border.color = CLR("#ccc")
+	stuff.border.color = CLR("#aac")
 	stuff.border.width = 1
 
 ## ウィンドウキャプションの非アクティブ状態
 stuff = utils.create_stuff("window_caption_inactive")
 if (stuff):
-	stuff.fill.color = CLR("#e9e9f4")
+	stuff.fill.color = CLR("#eee")
 	stuff.text.color = CLR("#777")
-	stuff.border.color = CLR("#aac")
+	stuff.border.color = CLR("#e9e9f4")
 	stuff.border.width = 1
 
 ## ウィンドウキャプションの無効状態
@@ -74,7 +74,7 @@ stuff = utils.create_stuff("window_caption_disabled", "window_caption_inactive")
 ## ペインキャプションのアクティブ状態
 stuff = utils.create_stuff("pane_caption_active")
 if (stuff):
-	stuff.fill.color = CLR("#eee")
+	stuff.fill.color = CLR("#e9e9f4")
 	stuff.text.color = CLR("#222")
 	stuff.text.shadow_color = text_shadow(stuff)
 
@@ -117,11 +117,13 @@ if (stuff):
 
 ## メニューのアクティブ状態
 stuff = utils.create_stuff("menu_active", "menu_background")
+if (stuff):
+	stuff.fill.color = CLR("#e9e9f4")
 
 ## メニューの非アクティブ状態
 stuff = utils.create_stuff("menu_inactive", "menu_background")
 if (stuff):
-	stuff.fill.color = CLR("#e9e9f4")
+	stuff.fill.color = CLR("#eee")
 
 ## メニューの通常状態
 stuff = utils.create_stuff("menu_normal", "menu_background")
@@ -257,6 +259,7 @@ if (stuff):
 	stuff.fill.color = CLR("#e9e9f4")
 	stuff.text.color = CLR("#222")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンの無効状態
 stuff = utils.create_stuff("button_disabled")
@@ -264,6 +267,7 @@ if (stuff):
 	stuff.fill.color = CLR("#eeeeee")
 	stuff.text.color = CLR("#777")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンのホット状態
 stuff = utils.create_stuff("button_hot")
@@ -271,6 +275,7 @@ if (stuff):
 	stuff.fill.color = CLR("#ddddff")
 	stuff.text.color = CLR("#000")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンのプレス状態
 stuff = utils.create_stuff("button_pressed")
@@ -278,6 +283,7 @@ if (stuff):
 	stuff.fill.color = CLR("#eeeeff")
 	stuff.text.color = CLR("#000")
 	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## ボタンのチェック状態
 stuff = utils.create_stuff("button_checked", "button_normal")
@@ -314,6 +320,19 @@ if (stuff):
 stuff = utils.create_stuff("exedit_odd_layer_background_inactive")
 if (stuff):
 	stuff.fill.color = CLR("#ccc")
+
+## 拡張編集の背景
+stuff = utils.create_stuff("exedit_background")
+if (stuff):
+	stuff.fill.color = CLR("#e9e9f4")
+
+## 拡張編集のシーン選択ボタン
+stuff = utils.create_stuff("exedit_scene_button")
+if (stuff):
+	stuff.fill.color = CLR("#e9e9f4")
+	stuff.text.color = CLR("#222")
+	stuff.text.shadow_color = text_shadow(stuff)
+	stuff.etc.ellipse = ellipse
 
 ## 拡張編集の主目盛り
 stuff = utils.new_stuff("exedit_scale_primary")
