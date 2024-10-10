@@ -46,11 +46,27 @@ def create_solid_brush(stuff):
 #
 # アイコンを描画します。
 #
-def draw_icon(args, stuff, font_name, icon_text, rc = None, font_weight = 0):
+def draw_icon(args, stuff, font_name, icon_text, rc = None, font_weight = 0, escapement = 0):
 	if (not rc): rc = args.rc
 	font_height = rc.bottom - rc.top
 	dc = win32ui.CreateDCFromHandle(args.dc)
-	font_data = { "name": font_name, "height": font_height, "weight": font_weight }
+	font_data = { "name": font_name, "height": font_height, "weight": font_weight, "escapement": escapement }
+	font = win32ui.CreateFont(font_data)
+	old_font = dc.SelectObject(font)
+	dark.exports.painter.draw_text_with_shadow(args.dc, icon_text, 1, rc,
+		win32con.DT_CENTER | win32con.DT_VCENTER | win32con.DT_SINGLELINE, False, stuff)
+	dc.SelectObject(old_font)
+	return True
+
+#
+# アイコンを描画します。
+#
+def draw_icon2(args, stuff, font_name, icon_text, rc = None, font_weight = 0, escapement = 0):
+	if (not rc): rc = args.rc
+	dc = win32ui.CreateDCFromHandle(args.dc)
+	font_data = { "name": font_name,
+		"width": rc.width, "height": rc.height,
+		"weight": font_weight, "escapement": escapement }
 	font = win32ui.CreateFont(font_data)
 	old_font = dc.SelectObject(font)
 	dark.exports.painter.draw_text_with_shadow(args.dc, icon_text, 1, rc,
