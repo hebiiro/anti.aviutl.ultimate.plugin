@@ -59,6 +59,12 @@ RGB三原色をモチーフにして作成しています。<br>
 > https://x.com/nihsukah/status/1552494534655102978<br>
 > https://x.com/nihsukah/status/1549298349509320704<br>
 
+# old.cherry
+はくしんさんのCherryDarkスキンとSushiLightスキンを元に作成しています。<br>
+> https://x.com/nihsukah<br>
+> https://x.com/nihsukah/status/1539156546105790464<br>
+> https://x.com/nihsukah/status/1555903249588568064<br>
+
 ## vs
 MicrosoftのVisual Studio 2022の配色を元に作成しています。
 > https://visualstudio.microsoft.com/ja/vs/
