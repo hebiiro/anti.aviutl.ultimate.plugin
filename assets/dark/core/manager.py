@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import dark
 from core.const import *
 from core.function import *
@@ -75,7 +75,7 @@ class Manager():
 	# 図形を描画します。
 	#
 	def dark_draw_figure(self, args):
-		debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}(theme = {args.vs.theme:#010x}, part_id = {args.vs.part_id}, state_id = {args.vs.state_id}, {dark.str(args)})')
+		if (debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}(theme = {args.vs.theme:#010x}, part_id = {args.vs.part_id}, state_id = {args.vs.state_id}, {dark.str(args)})')
 		handler = self.draw_figure_handlers.get(args.vs, None)
 		if handler: return handler.func(args, handler.stuff_name, dict_to_class(handler.attrs))
 		return False
@@ -84,7 +84,7 @@ class Manager():
 	# 文字列を描画します。
 	#
 	def dark_draw_text(self, args):
-		debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}(theme = {args.vs.theme:#010x}, part_id = {args.vs.part_id}, state_id = {args.vs.state_id}, {dark.str(args)})')
+		if (debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}(theme = {args.vs.theme:#010x}, part_id = {args.vs.part_id}, state_id = {args.vs.state_id}, {dark.str(args)})')
 		handler = self.draw_text_handlers.get(args.vs, None)
 		if handler: return handler.func(args, handler.stuff_name, dict_to_class(handler.attrs))
 		return False
@@ -93,7 +93,7 @@ class Manager():
 	# 文字列を出力します。
 	#
 	def dark_text_out(self, args):
-		debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}(theme = {args.vs.theme:#010x}, part_id = {args.vs.part_id}, state_id = {args.vs.state_id}, {dark.str(args)})')
+		if (debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}(theme = {args.vs.theme:#010x}, part_id = {args.vs.part_id}, state_id = {args.vs.state_id}, {dark.str(args)})')
 		if (args.dx == None): args.dx = 0
 		handler = self.text_out_handlers.get(args.vs, None)
 		if handler: return handler.func(args, handler.stuff_name, dict_to_class(handler.attrs))

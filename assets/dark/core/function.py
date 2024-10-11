@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import win32gui
 import win32api
 import win32ui
@@ -7,10 +7,9 @@ import dark
 from core.const import *
 
 #
-# デバッグ用のprint()です。
+# デバッグ用のフラグです。
 #
-def debug_print(s): pass
-#def debug_print(s): return print(s)
+debug = False
 
 #
 # RGBからCOLORREFを作成して返します。

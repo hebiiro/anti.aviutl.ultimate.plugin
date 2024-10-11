@@ -37,7 +37,7 @@ class MenuPopup(Menu):
 	# ポップアップメニューの背景を描画します。
 	#
 	def draw_background(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			dark.exports.painter.fill_rect(args.dc, args.rc, stuff)
@@ -47,7 +47,7 @@ class MenuPopup(Menu):
 	# ポップアップメニューのボーダーを描画します。
 	#
 	def draw_borders(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			dark.exports.painter.draw_round_rect(args.dc, args.rc, stuff)
@@ -57,7 +57,7 @@ class MenuPopup(Menu):
 	# ポップアップメニューの背景左側を描画します。
 	#
 	def draw_gutter(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
@@ -69,7 +69,7 @@ class MenuPopup(Menu):
 	# ポップアップメニューのセパレータを描画します。
 	#
 	def draw_separator(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
@@ -81,7 +81,7 @@ class MenuPopup(Menu):
 	# ポップアップメニューアイテムを描画します。
 	#
 	def draw_item(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (hasattr(args, 'text')):
 			if (stuff_name):
 				stuff = self.get_stuff(stuff_name)

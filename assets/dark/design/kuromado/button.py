@@ -57,7 +57,7 @@ class Button(core.Control):
 	# プッシュボタンを描画します。
 	#
 	def draw_push_button(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
@@ -73,7 +73,7 @@ class Button(core.Control):
 	# ラジオボタンを描画します。
 	#
 	def draw_radio_button(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
@@ -91,7 +91,7 @@ class Button(core.Control):
 	# チェックボックスを描画します。
 	#
 	def draw_checkbox(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
@@ -117,7 +117,7 @@ class Button(core.Control):
 	# グループボックスを描画します。
 	#
 	def draw_groupbox(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = dark.Stuff(self.get_stuff(stuff_name))
 			if (hasattr(args, 'text')):

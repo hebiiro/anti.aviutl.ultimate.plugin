@@ -36,7 +36,7 @@ class WindowFace(Window):
 	# ウィンドウフェイスを描画します。
 	#
 	def draw_window_face(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			if (hasattr(args, 'text')):
@@ -49,7 +49,7 @@ class WindowFace(Window):
 	# ボーダーを描画します。
 	#
 	def draw_border(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			dark.exports.painter.frame_rect(args.dc, args.rc, stuff)
@@ -59,6 +59,6 @@ class WindowFace(Window):
 	# エッジを描画します。
 	#
 	def draw_edge(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		dark.exports.painter.draw_edge(args.dc, args.rc, attrs.edge)
 		return True

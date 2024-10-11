@@ -46,7 +46,7 @@ class TrackBar(core.Control):
 	# 水平方向のトラックを描画します。
 	#
 	def draw_horz_track(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			if (1):
@@ -77,7 +77,7 @@ class TrackBar(core.Control):
 	# 水平方向のつまみを描画します。
 	#
 	def draw_horz_thumb(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		#if (stuff_name): dark.exports.painter.draw_round_rect(args.dc, args.rc, self.get_stuff(stuff_name))
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
@@ -91,7 +91,7 @@ class TrackBar(core.Control):
 	# 垂直方向のトラックを描画します。
 	#
 	def draw_vert_track(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			dark.exports.painter.draw_rect(args.dc, args.rc, stuff)
@@ -102,7 +102,7 @@ class TrackBar(core.Control):
 	# 垂直方向のつまみを描画します。
 	#
 	def draw_vert_thumb(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		#if (stuff_name): dark.exports.painter.draw_round_rect(args.dc, args.rc, self.get_stuff(stuff_name))
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)

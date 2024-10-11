@@ -39,7 +39,7 @@ class MenuIcon(Menu):
 	# チェックマークを描画します。
 	#
 	def draw_checkmark(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		#return core.draw_icon(args, stuff, 'Webdings', '\u0061')
 		#return core.draw_icon(args, stuff, 'メイリオ', '✔️')
@@ -50,7 +50,7 @@ class MenuIcon(Menu):
 	# ラジオボタンを描画します。
 	#
 	def draw_bullet(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		#return core.draw_icon(args, stuff, 'Webdings', '\u003D')
 		#return core.draw_icon(args, stuff, 'メイリオ', '⭕')
@@ -74,7 +74,7 @@ class MenuIcon(Menu):
 	# サブメニューマークを描画します。
 	#
 	def draw_sub_menu(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		#return core.draw_icon(args, stuff, 'Webdings', '\u0034')
 		#return core.draw_icon(args, stuff, 'メイリオ', '>')
@@ -91,7 +91,7 @@ class MenuIcon(Menu):
 	# 閉じるマークを描画します。
 	#
 	def draw_close(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		return core.draw_icon(args, stuff, 'Webdings', '\u0072')
 
@@ -99,7 +99,7 @@ class MenuIcon(Menu):
 	# 最大化マークを描画します。
 	#
 	def draw_maximize(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		return core.draw_icon(args, stuff, 'Webdings', '\u0031')
 
@@ -107,7 +107,7 @@ class MenuIcon(Menu):
 	# 最小化マークを描画します。
 	#
 	def draw_minimize(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		return core.draw_icon(args, stuff, 'Webdings', '\u0030')
 
@@ -115,6 +115,6 @@ class MenuIcon(Menu):
 	# 元のサイズに戻すマークを描画します。
 	#
 	def draw_restore(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		stuff = self.get_stuff(stuff_name)
 		return core.draw_icon(args, stuff, 'Webdings', '\u0032')

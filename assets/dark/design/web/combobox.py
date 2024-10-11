@@ -22,7 +22,7 @@ class ComboBox(base.ComboBox):
 	# コンボボックスを描画します。
 	#
 	def draw_combobox(self, args, stuff_name, attrs):
-		core.debug_print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			if (hasattr(args, 'text')):
