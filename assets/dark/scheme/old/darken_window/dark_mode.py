@@ -11,7 +11,10 @@ from utils import add_color as ADD
 # 文字の影の色を算出して返します。
 #
 def text_shadow(stuff, ratio = 0.9):
-	return utils.lerp_color(stuff.text.color, stuff.fill.color, ratio)
+	text_color = stuff.text.color
+	fill_color = utils.lerp_color(stuff.fill.color, CLR(0, 0, 0), 0.5)
+	shadow_color = utils.lerp_color(stuff.text.color, fill_color, ratio)
+	return shadow_color
 
 # ダークモジュールの設定値を取得します。
 ellipse = dark.hive.ellipse
