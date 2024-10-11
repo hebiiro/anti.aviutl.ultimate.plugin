@@ -120,9 +120,10 @@ md "$(my_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_assets_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(SolutionDir)\README.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\CREDITS.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\LICENSE" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
+xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(VC_CppRuntimeFilesPath_x86)\Microsoft.VC143.CRT\*" "$(my_runtime_dir)"
@@ -159,9 +160,10 @@ md "$(my_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_assets_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(SolutionDir)\README.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\CREDITS.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\LICENSE" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
+xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(VC_CppRuntimeFilesPath_x86)\Microsoft.VC143.CRT\*" "$(my_runtime_dir)"
@@ -202,9 +204,10 @@ md "$(my_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_assets_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(SolutionDir)\README.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\CREDITS.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\LICENSE" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
+xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(VC_CppRuntimeFilesPath_x86)\Microsoft.VC143.CRT\*" "$(my_runtime_dir)"
@@ -245,9 +248,10 @@ md "$(my_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_assets_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_config_dir)" &gt; NUL 2&gt;&amp;1
 md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
-copy /Y "$(SolutionDir)\README.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\CREDITS.md" "$(my_pack_dir)"
-copy /Y "$(SolutionDir)\LICENSE" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
+copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
+xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(VC_CppRuntimeFilesPath_x86)\Microsoft.VC143.CRT\*" "$(my_runtime_dir)"

@@ -24,6 +24,7 @@
     <my_debug_module_dir>$(my_debug_core_dir)\module</my_debug_module_dir>
     <my_debug_config_dir>$(my_debug_core_dir)\config</my_debug_config_dir>
     <my_debug_assets_dir>$(my_debug_core_dir)\assets</my_debug_assets_dir>
+    <my_root_dir>$(SolutionDir)\..</my_root_dir>
     <Force-Enable-cpprestsdk>true</Force-Enable-cpprestsdk>
   </PropertyGroup>
   <PropertyGroup>
@@ -119,6 +120,9 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     </BuildMacro>
     <BuildMacro Include="my_debug_assets_dir">
       <Value>$(my_debug_assets_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_root_dir">
+      <Value>$(my_root_dir)</Value>
     </BuildMacro>
     <BuildMacro Include="Force-Enable-cpprestsdk">
       <Value>$(Force-Enable-cpprestsdk)</Value>
