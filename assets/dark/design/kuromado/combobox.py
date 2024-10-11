@@ -60,9 +60,10 @@ class ComboBox(core.Control):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
 			width = rc.width
-			rc.top = int((rc.top + rc.bottom - width) / 2)
+			rc.top = int((rc.top + rc.bottom - width) / 2) - 1
 			rc.bottom = rc.top + width
-			return core.draw_icon(args, stuff, 'Webdings', '\u0036', rc)
-			#return core.draw_icon(args, stuff, 'メイリオ', '🔽')
-			#return core.draw_icon(args, stuff, 'メイリオ', '⏬')
+			return core.draw_icon(args, stuff, 'Meiryo', '\uE015', rc, font_weight=900)
+			#return core.draw_icon(args, stuff, 'Webdings', '\u0036', rc)
+			#return core.draw_icon(args, stuff, 'Meiryo', '🔽')
+			#return core.draw_icon(args, stuff, 'Meiryo', '⏬')
 

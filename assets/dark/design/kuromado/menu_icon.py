@@ -79,9 +79,13 @@ class MenuIcon(Menu):
 		#return core.draw_icon(args, stuff, 'Webdings', '\u0034')
 		#return core.draw_icon(args, stuff, 'メイリオ', '>')
 		#return core.draw_icon(args, stuff, 'メイリオ', '﹥')
-		return core.draw_icon(args, stuff, 'メイリオ', '＞')
+		#return core.draw_icon(args, stuff, 'メイリオ', '＞')
 		#return core.draw_icon(args, stuff, 'メイリオ', '≫')
 		#return core.draw_icon(args, stuff, 'メイリオ', '▶')
+		rc = dark.RECT(args.rc)
+		rc.inflate(6, 6)
+		rc.offset(0, -2)
+		return core.draw_icon(args, stuff, 'Meiryo', '\uE013', rc)
 
 	#
 	# 閉じるマークを描画します。

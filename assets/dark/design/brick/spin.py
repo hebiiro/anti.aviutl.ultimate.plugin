@@ -33,5 +33,5 @@ class Spin(base.Spin):
 				rc.offset(1, 1)
 			else:
 				dark.exports.painter.draw_edge(args.dc, args.rc, dark.exports.config_manager.edges.raised)
-			core.draw_icon(args, stuff, attrs.font_name, attrs.icon_text, rc)
+			self.draw_icon(args, stuff, attrs, rc)
 		return True

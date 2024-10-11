@@ -33,5 +33,5 @@ class Spin(base.Spin):
 			else:
 				# 模様を描画します。
 				draw_pattern(args, stuff)
-			core.draw_icon(args, stuff, attrs.font_name, attrs.icon_text, rc)
+			self.draw_icon(args, stuff, attrs, rc)
 		return True
