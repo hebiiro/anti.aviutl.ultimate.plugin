@@ -45,7 +45,7 @@ RGB三原色をモチーフにして作成しています。<br>
 RGB三原色をモチーフにして作成しています。<br>
 
 ## old.darken_window
-黒窓(DarkenWindow)のデフォルトスキンを元に作成しています。<br>
+『黒窓(DarkenWindow)』のデフォルトスキンを元に作成しています。<br>
 
 ## old.mina
 みなロジさんのスキンを元に作成しています。
@@ -54,16 +54,22 @@ RGB三原色をモチーフにして作成しています。<br>
 > https://x.com/minaLogi/status/1548472857537449987<br>
 
 ## old.astro
-はくしんさんのAstroDarkスキンとVivid Lightスキンを元に作成しています。<br>
+はくしんさんの『AstroDark』と『Vivid Light』を元に作成しています。<br>
 > https://x.com/nihsukah<br>
 > https://x.com/nihsukah/status/1552494534655102978<br>
 > https://x.com/nihsukah/status/1549298349509320704<br>
 
 # old.cherry
-はくしんさんのCherryDarkスキンとSushiLightスキンを元に作成しています。<br>
+はくしんさんの『CherryDark』と『SushiLight』を元に作成しています。<br>
 > https://x.com/nihsukah<br>
 > https://x.com/nihsukah/status/1539156546105790464<br>
 > https://x.com/nihsukah/status/1555903249588568064<br>
+
+# old.future
+はくしんさんの『FutureDark』と『ClassicStyle』を元に作成しています。<br>
+> https://x.com/nihsukah<br>
+> https://x.com/nihsukah/status/1553546818352726016<br>
+> https://x.com/nihsukah/status/1552912647942991872<br>
 
 ## vs
 MicrosoftのVisual Studio 2022の配色を元に作成しています。
