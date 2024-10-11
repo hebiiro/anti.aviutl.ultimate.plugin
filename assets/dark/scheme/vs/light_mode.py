@@ -188,9 +188,13 @@ if (stuff):
 
 ## メニューのアクティブ状態
 stuff = utils.create_stuff("menu_active", "menu_background")
+if (stuff):
+	stuff.fill.color = CLR(204, 213, 240)
 
 ## メニューの非アクティブ状態
 stuff = utils.create_stuff("menu_inactive", "menu_background")
+if (stuff):
+	stuff.fill.color = CLR(204, 213, 240)
 
 ## メニューの通常状態
 stuff = utils.create_stuff("menu_normal", "menu_background")
