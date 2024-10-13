@@ -26,34 +26,37 @@
 #define IDC_USE_LAYER_COLOR             1032
 #define IDC_USE_LAYER_COLOR_MULTI       1033
 #define IDC_DONT_WRITE_BYTECODE         1034
-
-#define IDC_DARK_PRIMARY_FILL_STAT      1040
-#define IDC_DARK_PRIMARY_FILL           1041
-#define IDC_DARK_PRIMARY_BORDER_STAT    1042
-#define IDC_DARK_PRIMARY_BORDER         1043
-#define IDC_DARK_PRIMARY_TEXT_STAT      1044
-#define IDC_DARK_PRIMARY_TEXT           1045
-
-#define IDC_DARK_SECONDARY_FILL_STAT      1050
-#define IDC_DARK_SECONDARY_FILL           1051
-#define IDC_DARK_SECONDARY_BORDER_STAT    1052
-#define IDC_DARK_SECONDARY_BORDER         1053
-#define IDC_DARK_SECONDARY_TEXT_STAT      1054
-#define IDC_DARK_SECONDARY_TEXT           1055
-
-#define IDC_LIGHT_PRIMARY_FILL_STAT      1060
-#define IDC_LIGHT_PRIMARY_FILL           1061
-#define IDC_LIGHT_PRIMARY_BORDER_STAT    1062
-#define IDC_LIGHT_PRIMARY_BORDER         1063
-#define IDC_LIGHT_PRIMARY_TEXT_STAT      1064
-#define IDC_LIGHT_PRIMARY_TEXT           1065
-
-#define IDC_LIGHT_SECONDARY_FILL_STAT      1070
-#define IDC_LIGHT_SECONDARY_FILL           1071
-#define IDC_LIGHT_SECONDARY_BORDER_STAT    1072
-#define IDC_LIGHT_SECONDARY_BORDER         1073
-#define IDC_LIGHT_SECONDARY_TEXT_STAT      1074
-#define IDC_LIGHT_SECONDARY_TEXT           1075
+#define IDC_GRADATION                   1035
+#define IDC_FILL_COLOR_STAT             1041
+#define IDC_BORDER_COLOR_STAT           1042
+#define IDC_TEXT_COLOR_STAT             1043
+#define IDC_PICK_DARK_COLOR_FROM_SCHEME 1044
+#define IDC_PICK_LIGHT_COLOR_FROM_SCHEME 1045
+#define IDC_DARK_1_STAT                 1051
+#define IDC_DARK_2_STAT                 1052
+#define IDC_DARK_3_STAT                 1053
+#define IDC_DARK_1_FILL_COLOR           1061
+#define IDC_DARK_2_FILL_COLOR           1062
+#define IDC_DARK_3_FILL_COLOR           1063
+#define IDC_DARK_1_BORDER_COLOR         1071
+#define IDC_DARK_2_BORDER_COLOR         1072
+#define IDC_DARK_3_BORDER_COLOR         1073
+#define IDC_DARK_1_TEXT_COLOR           1081
+#define IDC_DARK_2_TEXT_COLOR           1082
+#define IDC_DARK_3_TEXT_COLOR           1083
+#define IDC_LIGHT_1_STAT                1091
+#define IDC_LIGHT_2_STAT                1092
+#define IDC_LIGHT_3_STAT                1093
+#define IDC_LIGHT_1_FILL_COLOR          1101
+#define IDC_LIGHT_2_FILL_COLOR          1102
+#define IDC_LIGHT_3_FILL_COLOR          1103
+#define IDC_LIGHT_1_BORDER_COLOR        1111
+#define IDC_LIGHT_2_BORDER_COLOR        1112
+#define IDC_LIGHT_3_BORDER_COLOR        1113
+#define IDC_LIGHT_1_TEXT_COLOR          1121
+#define IDC_LIGHT_2_TEXT_COLOR          1122
+#define IDC_LIGHT_3_TEXT_COLOR          1123
+#define IDC_BUTTON1                     1200
 
 // Next default values for new objects
 // 
@@ -61,7 +64,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        102
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1080
+#define _APS_NEXT_CONTROL_VALUE         1201
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

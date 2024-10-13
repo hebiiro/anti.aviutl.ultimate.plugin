@@ -1,4 +1,4 @@
-import dark
+﻿import dark
 import core
 import utils
 from core import CLR_NONE
@@ -9,6 +9,11 @@ from utils import add_color as ADD
 # ライトトーンスタッフを作成します。
 #
 def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
+	# トーンを登録しておきます。
+	utils.set_tone_array("fill", fill_tones)
+	utils.set_tone_array("border", border_tones)
+	utils.set_tone_array("text", text_tones)
+
 	#
 	# トーンから色を算出して返します。
 	#

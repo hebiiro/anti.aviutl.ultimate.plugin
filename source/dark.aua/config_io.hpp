@@ -53,31 +53,89 @@ namespace apn::dark
 		//
 		// カラーセットを読み込みます。
 		//
-		inline static void get_color_set(const n_json& node, const std::string& name, share::ColorSet& color_set)
+		inline static void get_color_set(const n_json& color_set_node, share::ColorSet& color_set)
 		{
-			n_json color_set_node;
-			get_child_node(node, name, color_set_node);
-			get_color(color_set_node, "primary_fill", color_set.primary_fill);
-			get_color(color_set_node, "primary_border", color_set.primary_border);
-			get_color(color_set_node, "primary_text", color_set.primary_text);
-			get_color(color_set_node, "secondary_fill", color_set.secondary_fill);
-			get_color(color_set_node, "secondary_border", color_set.secondary_border);
-			get_color(color_set_node, "secondary_text", color_set.secondary_text);
+			get_color(color_set_node, "fill", color_set.fill);
+			get_color(color_set_node, "border", color_set.border);
+			get_color(color_set_node, "text", color_set.text);
 		}
 
 		//
 		// カラーセットを書き込みます。
 		//
-		inline static void set_color_set(n_json& node, const std::string& name, const share::ColorSet& color_set)
+		inline static void set_color_set(n_json& color_set_node, const share::ColorSet& color_set)
 		{
-			n_json color_set_node;
-			set_color(color_set_node, "primary_fill", color_set.primary_fill);
-			set_color(color_set_node, "primary_border", color_set.primary_border);
-			set_color(color_set_node, "primary_text", color_set.primary_text);
-			set_color(color_set_node, "secondary_fill", color_set.secondary_fill);
-			set_color(color_set_node, "secondary_border", color_set.secondary_border);
-			set_color(color_set_node, "secondary_text", color_set.secondary_text);
-			set_child_node(node, name, color_set_node);
+			set_color(color_set_node, "fill", color_set.fill);
+			set_color(color_set_node, "border", color_set.border);
+			set_color(color_set_node, "text", color_set.text);
+		}
+
+		//
+		// カラーセット配列を読み込みます。
+		//
+		inline static void get_color_set_array(const n_json& node, const std::string& name, auto& color_set_array)
+		{
+			size_t i = 0;
+			get_child_nodes(node, name,
+				[&](const n_json& color_set_node)
+			{
+				if (i >= std::size(color_set_array))
+					return FALSE;
+
+				get_color_set(color_set_node, color_set_array[i]);
+
+				i++;
+
+				return TRUE;
+			});
+		}
+
+		//
+		// カラーセット配列を書き込みます。
+		//
+		inline static void set_color_set_array(n_json& node, const std::string& name, const auto& color_set_array)
+		{
+			set_child_nodes(node, name, color_set_array,
+				[&](n_json& color_set_node, const auto& color_set)
+			{
+				set_color_set(color_set_node, color_set);
+
+				return TRUE;
+			});
+		}
+
+		//
+		// カラー配列を読み込みます。
+		//
+		inline static void get_color_array(const n_json& node, const std::string& name, auto& color_array)
+		{
+			size_t i = 0;
+			get_child_nodes(node, name,
+				[&](const n_json& color_node)
+			{
+				if (i >= std::size(color_array))
+					return FALSE;
+
+				get_color(color_node, color_array[i]);
+
+				i++;
+
+				return TRUE;
+			});
+		}
+
+		//
+		// カラー配列を書き込みます。
+		//
+		inline static void set_color_array(n_json& node, const std::string& name, const auto& color_array)
+		{
+			set_child_nodes(node, name, color_array,
+				[&](n_json& color_node, const auto& color)
+			{
+				set_color(color_node, color);
+
+				return TRUE;
+			});
 		}
 
 		//
@@ -102,23 +160,10 @@ namespace apn::dark
 			get_bool(root, "use_layer_color", hive.use_layer_color);
 			get_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
 			get_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
-			get_color_set(root, "color_set_dark", hive.color_set.dark);
-			get_color_set(root, "color_set_light", hive.color_set.light);
+			get_color_set_array(root, "dark_color", hive.dark_color);
+			get_color_set_array(root, "light_color", hive.light_color);
+			get_color_array(root, "custom_color", hive.custom_colors);
 			get_window(root, "addin_window", addin_window);
-
-			size_t i = 0;
-			get_child_nodes(root, "custom_color",
-				[&](const n_json& custom_color_node)
-			{
-				if (i >= std::size(hive.custom_colors))
-					return FALSE;
-
-				get_int(custom_color_node, hive.custom_colors[i]);
-
-				i++;
-
-				return TRUE;
-			});
 
 			return TRUE;
 		}
@@ -145,17 +190,10 @@ namespace apn::dark
 			set_bool(root, "use_layer_color", hive.use_layer_color);
 			set_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
 			set_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
-			set_color_set(root, "color_set_dark", hive.color_set.dark);
-			set_color_set(root, "color_set_light", hive.color_set.light);
+			set_color_set_array(root, "dark_color", hive.dark_color);
+			set_color_set_array(root, "light_color", hive.light_color);
+			set_color_array(root, "custom_color", hive.custom_colors);
 			set_window(root, "addin_window", addin_window);
-
-			set_child_nodes(root, "custom_color", hive.custom_colors,
-				[&](n_json& custom_color_node, const auto& custom_color)
-			{
-				set_color(custom_color_node, custom_color);
-
-				return TRUE;
-			});
 
 			return TRUE;
 		}

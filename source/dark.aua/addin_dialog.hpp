@@ -29,6 +29,17 @@ namespace apn::dark
 			get_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			get_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
 			get_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
+
+			for (size_t i = 0; i < 3; i++)
+			{
+				get_int(IDC_DARK_1_FILL_COLOR + i, hive.dark_color[i].fill);
+				get_int(IDC_DARK_1_BORDER_COLOR + i, hive.dark_color[i].border);
+				get_int(IDC_DARK_1_TEXT_COLOR + i, hive.dark_color[i].text);
+
+				get_int(IDC_LIGHT_1_FILL_COLOR + i, hive.light_color[i].fill);
+				get_int(IDC_LIGHT_1_BORDER_COLOR + i, hive.light_color[i].border);
+				get_int(IDC_LIGHT_1_TEXT_COLOR + i, hive.light_color[i].text);
+			}
 		}
 
 		//
@@ -53,6 +64,17 @@ namespace apn::dark
 			set_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			set_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
 			set_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
+
+			for (size_t i = 0; i < std::size(hive.dark_color); i++)
+			{
+				set_int(IDC_DARK_1_FILL_COLOR + i, hive.dark_color[i].fill);
+				set_int(IDC_DARK_1_BORDER_COLOR + i, hive.dark_color[i].border);
+				set_int(IDC_DARK_1_TEXT_COLOR + i, hive.dark_color[i].text);
+
+				set_int(IDC_LIGHT_1_FILL_COLOR + i, hive.light_color[i].fill);
+				set_int(IDC_LIGHT_1_BORDER_COLOR + i, hive.light_color[i].border);
+				set_int(IDC_LIGHT_1_TEXT_COLOR + i, hive.light_color[i].text);
+			}
 		}
 
 		//
@@ -72,6 +94,56 @@ namespace apn::dark
 		}
 
 		//
+		// pythonから配色を取得します。
+		//
+		BOOL pick_color(uint32_t fill_id, uint32_t border_id, uint32_t text_id)
+		{
+			try
+			{
+				// pythonにアクセスするための準備をします。
+				auto utils = py::module::import("utils");
+				auto pick_color = [utils](LPCSTR name, size_t index) {
+					return utils.attr("get_tone_color")(name, index).cast<COLORREF>();
+				};
+
+				// pythonから配色を取得します。
+				share::ColorSet color[std::size(hive.dark_color)] = {};
+				for (size_t i = 0; i < std::size(color); i++)
+				{
+					color[i].fill = pick_color("fill", i);
+					color[i].border = pick_color("border", i);
+					color[i].text = pick_color("text", i);
+				}
+
+				// 取得した配色をコントロールに適用します。
+				for (size_t i = 0; i < std::size(color); i++)
+				{
+					set_uint(fill_id + i, color[i].fill);
+					set_uint(border_id + i, color[i].border);
+					set_uint(text_id + i, color[i].text);
+
+					::InvalidateRect(ctrl(fill_id + i), nullptr, FALSE);
+					::InvalidateRect(ctrl(border_id + i), nullptr, FALSE);
+					::InvalidateRect(ctrl(text_id + i), nullptr, FALSE);
+				}
+
+				// コントロールが変更されたことをアプリに通知します。
+				return app->on_change_controls();
+			}
+			catch (const std::exception& error)
+			{
+				auto what = python.convert_what(error);
+				MY_TRACE_STR(what);
+
+				// pythonでエラーが発生したので
+				// メッセージボックスでエラーメッセージを表示します。
+				hive.message_box(std::format(L"配色の取得に失敗しました\n\n{}", what));
+			}
+
+			return FALSE;
+		}
+
+		//
 		// ダイアログの初期化処理です。
 		//
 		virtual void on_init_dialog() override
@@ -85,6 +157,7 @@ namespace apn::dark
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
 			auto stat = std::make_shared<RelativePos>(base_size * 2 + margin_value * 2);
+			auto button = std::make_shared<RelativePos>(base_size * 4);
 			auto editbox = std::make_shared<RelativePos>(base_size * 2);
 			auto checkbox = std::make_shared<RelativePos>(base_size * 7);
 			auto combobox = std::make_shared<RelativePos>(base_size * 7);
@@ -152,6 +225,64 @@ namespace apn::dark
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR_MULTI));
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DONT_WRITE_BYTECODE));
 			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, nullptr);
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_FILL_COLOR_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_BORDER_COLOR_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_TEXT_COLOR_STAT));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_DARK_1_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_1_FILL_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_1_BORDER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_1_TEXT_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_PICK_DARK_COLOR_FROM_SCHEME));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_DARK_2_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_2_FILL_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_2_BORDER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_2_TEXT_COLOR));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_DARK_3_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_3_FILL_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_3_BORDER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DARK_3_TEXT_COLOR));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LIGHT_1_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_1_FILL_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_1_BORDER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_1_TEXT_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_PICK_LIGHT_COLOR_FROM_SCHEME));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LIGHT_2_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_2_FILL_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_2_BORDER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_2_TEXT_COLOR));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LIGHT_3_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_3_FILL_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_3_BORDER_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LIGHT_3_TEXT_COLOR));
+			}
 		}
 
 		//
@@ -199,34 +330,58 @@ namespace apn::dark
 					break;
 				}
 			// カラーピッカーボタンが押されたときの処理です。
-			case IDC_DARK_PRIMARY_FILL:
-			case IDC_DARK_PRIMARY_BORDER:
-			case IDC_DARK_PRIMARY_TEXT:
-			case IDC_DARK_SECONDARY_FILL:
-			case IDC_DARK_SECONDARY_BORDER:
-			case IDC_DARK_SECONDARY_TEXT:
-			case IDC_LIGHT_PRIMARY_FILL:
-			case IDC_LIGHT_PRIMARY_BORDER:
-			case IDC_LIGHT_PRIMARY_TEXT:
-			case IDC_LIGHT_SECONDARY_FILL:
-			case IDC_LIGHT_SECONDARY_BORDER:
-			case IDC_LIGHT_SECONDARY_TEXT:
+			case IDC_DARK_1_FILL_COLOR:
+			case IDC_DARK_1_BORDER_COLOR:
+			case IDC_DARK_1_TEXT_COLOR:
+			case IDC_DARK_2_FILL_COLOR:
+			case IDC_DARK_2_BORDER_COLOR:
+			case IDC_DARK_2_TEXT_COLOR:
+			case IDC_DARK_3_FILL_COLOR:
+			case IDC_DARK_3_BORDER_COLOR:
+			case IDC_DARK_3_TEXT_COLOR:
+			case IDC_LIGHT_1_FILL_COLOR:
+			case IDC_LIGHT_1_BORDER_COLOR:
+			case IDC_LIGHT_1_TEXT_COLOR:
+			case IDC_LIGHT_2_FILL_COLOR:
+			case IDC_LIGHT_2_BORDER_COLOR:
+			case IDC_LIGHT_2_TEXT_COLOR:
+			case IDC_LIGHT_3_FILL_COLOR:
+			case IDC_LIGHT_3_BORDER_COLOR:
+			case IDC_LIGHT_3_TEXT_COLOR:
 				{
-					auto color = get_uint(id);
-
+					// 色選択ダイアログを表示します。
 					CHOOSECOLOR cc { sizeof(cc) };
 					cc.hwndOwner = hwnd;
 					cc.lpCustColors = hive.custom_colors;
-					cc.rgbResult = color;
+					cc.rgbResult = get_uint(id);
 					cc.Flags = CC_RGBINIT | CC_FULLOPEN;
 					if (!::ChooseColor(&cc)) break;
 
-					color = cc.rgbResult;
-
-					set_uint(id, color);
+					// 取得した色をコントロールに適用します。
+					set_uint(id, cc.rgbResult);
 					::InvalidateRect(control, nullptr, FALSE);
 
-					app->update_skin();
+					// コントロールが変更されたことをアプリに通知します。
+					app->on_change_controls();
+//					app->update_skin();
+
+					break;
+				}
+			case IDC_PICK_DARK_COLOR_FROM_SCHEME:
+				{
+					pick_color(
+						IDC_DARK_1_FILL_COLOR,
+						IDC_DARK_1_BORDER_COLOR,
+						IDC_DARK_1_TEXT_COLOR);
+
+					break;
+				}
+			case IDC_PICK_LIGHT_COLOR_FROM_SCHEME:
+				{
+					pick_color(
+						IDC_LIGHT_1_FILL_COLOR,
+						IDC_LIGHT_1_BORDER_COLOR,
+						IDC_LIGHT_1_TEXT_COLOR);
 
 					break;
 				}
@@ -247,24 +402,64 @@ namespace apn::dark
 					switch (id)
 					{
 					// カラーピッカーボタンを描画します。
-					case IDC_DARK_PRIMARY_FILL:
-					case IDC_DARK_PRIMARY_BORDER:
-					case IDC_DARK_PRIMARY_TEXT:
-					case IDC_DARK_SECONDARY_FILL:
-					case IDC_DARK_SECONDARY_BORDER:
-					case IDC_DARK_SECONDARY_TEXT:
-					case IDC_LIGHT_PRIMARY_FILL:
-					case IDC_LIGHT_PRIMARY_BORDER:
-					case IDC_LIGHT_PRIMARY_TEXT:
-					case IDC_LIGHT_SECONDARY_FILL:
-					case IDC_LIGHT_SECONDARY_BORDER:
-					case IDC_LIGHT_SECONDARY_TEXT:
+					case IDC_DARK_1_FILL_COLOR:
+					case IDC_DARK_1_BORDER_COLOR:
+					case IDC_DARK_1_TEXT_COLOR:
+					case IDC_DARK_2_FILL_COLOR:
+					case IDC_DARK_2_BORDER_COLOR:
+					case IDC_DARK_2_TEXT_COLOR:
+					case IDC_DARK_3_FILL_COLOR:
+					case IDC_DARK_3_BORDER_COLOR:
+					case IDC_DARK_3_TEXT_COLOR:
+					case IDC_LIGHT_1_FILL_COLOR:
+					case IDC_LIGHT_1_BORDER_COLOR:
+					case IDC_LIGHT_1_TEXT_COLOR:
+					case IDC_LIGHT_2_FILL_COLOR:
+					case IDC_LIGHT_2_BORDER_COLOR:
+					case IDC_LIGHT_2_TEXT_COLOR:
+					case IDC_LIGHT_3_FILL_COLOR:
+					case IDC_LIGHT_3_BORDER_COLOR:
+					case IDC_LIGHT_3_TEXT_COLOR:
 						{
 							auto dis = (DRAWITEMSTRUCT*)lParam;
+							auto dc = dis->hDC;
+							auto rc = dis->rcItem;
 							auto color = get_uint(id);
 
-							::FillRect(dis->hDC, &dis->rcItem,
-								my::gdi::unique_ptr<HBRUSH>(::CreateSolidBrush(color)).get());
+							// 背景を描画します。
+							::FillRect(dc, &rc, my::gdi::unique_ptr<HBRUSH>(::CreateSolidBrush(color)).get());
+
+							// 縁を描画します。
+							::DrawEdge(dc, &rc, EDGE_RAISED, BF_RECT);
+
+							// 補色を算出します。
+							auto r = GetRValue(color);
+							auto g = GetGValue(color);
+							auto b = GetBValue(color);
+							auto min = std::min(std::min(r, g), b);
+							auto max = std::max(std::max(r, g), b);
+							auto base = min + max;
+							constexpr auto threshold = 40;
+							constexpr auto add = 120;
+							if (max - min < threshold) // 最小値と最大値の差が閾値内の場合は
+							{
+								if (max < 128)
+									base += add; // 暗い色の場合は
+								else
+									base -= add; // 明るい色の場合は
+							}
+							auto toning_r = base - r;
+							auto toning_g = base - g;
+							auto toning_b = base - b;
+							auto toning_color = RGB(toning_r, toning_g, toning_b);
+
+							// 文字を描画します。
+							auto old_text_color = ::SetTextColor(dc, toning_color);
+							auto old_bk_mode = ::SetBkMode(dc, TRANSPARENT);
+							auto s = std::format(_T("{}, {}, {}"), r, g, b);
+							::DrawText(dc, s.c_str(), -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+							::SetTextColor(dc, old_text_color);
+							::SetBkMode(dc, old_bk_mode);
 
 							return TRUE;
 						}

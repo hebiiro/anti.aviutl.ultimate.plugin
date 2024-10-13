@@ -16,6 +16,30 @@ namespace apn::dark
 		py::module skin_module;
 
 		//
+		// python文字列(UTF-8)をワイド文字列に変換して返します。
+		//
+		inline static std::wstring ws(const std::string& s)
+		{
+			return my::cp_to_wide(s, CP_UTF8);
+		}
+
+		//
+		// ワイド文字列をpython文字列(UTF-8)に変換して返します。
+		//
+		inline static std::string u8(const std::wstring& s)
+		{
+			return my::wide_to_cp(s, CP_UTF8);
+		}
+
+		//
+		// python例外メッセージをワイド文字列に変換して返します。
+		//
+		inline static std::wstring convert_what(const std::exception& error)
+		{
+			return my::cp_to_wide(error.what(), CP_UTF8);
+		}
+
+		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -58,9 +82,10 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				MY_TRACE_STR(error.what());
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
 
-				std::cout << error.what() << std::endl;
+				std::wcout << what << std::endl;
 
 				return FALSE;
 			}
@@ -89,7 +114,10 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				std::cout << error.what() << std::endl;
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
+
+				std::wcout << what << std::endl;
 
 				return FALSE;
 			}
@@ -122,9 +150,16 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				(void)error;
+				if (1)
+				{
+					(void)error;
+				}
+				else
+				{
+					auto what = convert_what(error);
 
-//				std::cout << error.what() << std::endl;
+					std::wcout << what << std::endl;
+				}
 
 				return FALSE;
 			}
@@ -183,9 +218,8 @@ namespace apn::dark
 					}
 					catch (const std::exception& error)
 					{
-						(void)error;
-
-						MY_TRACE_STR(error.what());
+						auto what = convert_what(error);
+						MY_TRACE_STR(what);
 					}
 				}
 
@@ -201,9 +235,10 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				MY_TRACE_STR(error.what());
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
 
-				std::cout << error.what() << std::endl;
+				std::wcout << what << std::endl;
 
 				return FALSE;
 			}
@@ -269,9 +304,10 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				MY_TRACE_STR(error.what());
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
 
-				std::cout << error.what() << std::endl;
+				std::wcout << what << std::endl;
 
 				return FALSE;
 			}
@@ -293,7 +329,11 @@ namespace apn::dark
 				scheme_module.release();
 				scheme_module = boot_module.attr("boot_scheme_module")(scheme_module_name).cast<py::module>();
 				if (!scheme_module)
-					throw std::exception(std::format("{}の読み込みに失敗しました", scheme_module_name).c_str());
+				{
+					auto message = std::format(L"{}の読み込みに失敗しました", ws(scheme_module_name));
+
+					throw std::exception(u8(message).c_str());
+				}
 
 				dark_module.add_object("scheme", scheme_module, true);
 
@@ -301,35 +341,45 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				MY_TRACE_STR(error.what());
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
 
-				std::cout << error.what() << std::endl;
+				std::wcout << what << std::endl;
 
 				return FALSE;
 			}
 		}
 
 		//
-		// スキンモジュールの初期化関数を呼び出します。
+		// スキーム・スキンモジュールの初期化関数を呼び出します。
 		//
 		BOOL call_init()
 		{
 			try
 			{
-				return skin_module && skin_module.attr("dark_init")(
-					share::InitArgs {
-						hive.dark_mode ? hive.color_set.dark : hive.color_set.light,
-					}
-				).cast<BOOL>();
+				if (!scheme_module || !skin_module) return FALSE;
+
+				constexpr auto func_name = "dark_init";
+				auto args = share::InitArgs {
+					{ std::begin(hive.dark_color), std::end(hive.dark_color) },
+					{ std::begin(hive.light_color), std::end(hive.light_color) },
+				};
+
+				if (py::hasattr(scheme_module, func_name))
+					scheme_module.attr(func_name)(args);
+
+				if (py::hasattr(skin_module, func_name))
+					return skin_module.attr(func_name)(args).cast<BOOL>();
 			}
 			catch (const std::exception& error)
 			{
-				MY_TRACE_STR(error.what());
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
 
-				std::cout << error.what() << std::endl;
-
-				return FALSE;
+				std::wcout << what << std::endl;
 			}
+
+			return FALSE;
 		}
 
 		//
@@ -346,9 +396,10 @@ namespace apn::dark
 			}
 			catch (const std::exception& error)
 			{
-				MY_TRACE_STR(error.what());
+				auto what = convert_what(error);
+				MY_TRACE_STR(what);
 
-				std::cout << error.what() << std::endl;
+				std::wcout << what << std::endl;
 
 				return FALSE;
 			}
@@ -362,7 +413,8 @@ namespace apn::dark
 			return call_python_func(
 				"dark_update",
 				share::UpdateArgs {
-					hive.dark_mode ? hive.color_set.dark : hive.color_set.light,
+					{ std::begin(hive.dark_color), std::end(hive.dark_color) },
+					{ std::begin(hive.light_color), std::end(hive.light_color) },
 				});
 		}
 

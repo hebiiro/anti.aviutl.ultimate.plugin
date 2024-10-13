@@ -366,22 +366,21 @@ namespace apn::dark
 
 		// ColorSetを登録します。
 		py::class_<ColorSet>(mod, "ColorSet")
-			.def_readwrite("primary_fill", &ColorSet::primary_fill)
-			.def_readwrite("primary_border", &ColorSet::primary_border)
-			.def_readwrite("primary_text", &ColorSet::primary_text)
-			.def_readwrite("secondary_fill", &ColorSet::secondary_fill)
-			.def_readwrite("secondary_border", &ColorSet::secondary_border)
-			.def_readwrite("secondary_text", &ColorSet::secondary_text)
+			.def_readwrite("fill", &ColorSet::fill)
+			.def_readwrite("border", &ColorSet::border)
+			.def_readwrite("text", &ColorSet::text)
 		;
 
 		// InitArgsを登録します。
 		py::class_<InitArgs>(mod, "InitArgs")
-			.def_readwrite("color_set", &InitArgs::color_set)
+			.def_readwrite("dark_color", &InitArgs::dark_color)
+			.def_readwrite("light_color", &InitArgs::light_color)
 		;
 
 		// UpdateArgsを登録します。
 		py::class_<UpdateArgs>(mod, "UpdateArgs")
-			.def_readwrite("color_set", &UpdateArgs::color_set)
+			.def_readwrite("dark_color", &UpdateArgs::dark_color)
+			.def_readwrite("light_color", &UpdateArgs::light_color)
 		;
 
 		// DrawFigureArgsを登録します。

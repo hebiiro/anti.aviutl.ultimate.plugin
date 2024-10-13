@@ -407,12 +407,9 @@ namespace apn::dark::share
 	//
 	struct ColorSet
 	{
-		COLORREF primary_fill;
-		COLORREF primary_border;
-		COLORREF primary_text;
-		COLORREF secondary_fill;
-		COLORREF secondary_border;
-		COLORREF secondary_text;
+		COLORREF fill;
+		COLORREF border;
+		COLORREF text;
 	};
 
 	//
@@ -420,7 +417,8 @@ namespace apn::dark::share
 	//
 	struct InitArgs
 	{
-		ColorSet color_set;
+		std::vector<ColorSet> dark_color;
+		std::vector<ColorSet> light_color;
 	};
 
 	//
@@ -428,7 +426,8 @@ namespace apn::dark::share
 	//
 	struct UpdateArgs
 	{
-		ColorSet color_set;
+		std::vector<ColorSet> dark_color;
+		std::vector<ColorSet> light_color;
 	};
 
 	//
