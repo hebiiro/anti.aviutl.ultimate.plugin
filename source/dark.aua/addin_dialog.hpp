@@ -23,6 +23,7 @@ namespace apn::dark
 			get_int(IDC_SCROLLBAR_REDUCTION, hive.scrollbar_reduction);
 			get_check(IDC_DRAW_SHADOW, hive.draw_shadow);
 			get_check(IDC_AS_ROUND, hive.as_round);
+			get_check(IDC_DRAW_GRADATION, hive.draw_gradation);
 			get_check(IDC_DRAW_BUTTON_EDGE, hive.draw_button_edge);
 			get_check(IDC_DRAW_BORDER, hive.draw_border);
 			get_check(IDC_AS_ZEBRA, hive.as_zebra);
@@ -60,6 +61,7 @@ namespace apn::dark
 			set_int(IDC_SCROLLBAR_REDUCTION, hive.scrollbar_reduction);
 			set_check(IDC_DRAW_SHADOW, hive.draw_shadow);
 			set_check(IDC_AS_ROUND, hive.as_round);
+			set_check(IDC_DRAW_GRADATION, hive.draw_gradation);
 			set_check(IDC_DRAW_BUTTON_EDGE, hive.draw_button_edge);
 			set_check(IDC_DRAW_BORDER, hive.draw_border);
 			set_check(IDC_AS_ZEBRA, hive.as_zebra);
@@ -235,6 +237,7 @@ namespace apn::dark
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_APPLY_FILE_DIALOG));
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_FIX_DPI_SCALING));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DRAW_GRADATION));
 			}
 
 			{
@@ -336,6 +339,7 @@ namespace apn::dark
 			case IDC_DARK_MODE:
 			case IDC_DRAW_SHADOW:
 			case IDC_AS_ROUND:
+			case IDC_DRAW_GRADATION:
 			case IDC_DRAW_BUTTON_EDGE:
 			case IDC_DRAW_BORDER:
 			case IDC_AS_ZEBRA:

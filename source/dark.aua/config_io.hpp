@@ -154,6 +154,7 @@ namespace apn::dark
 			get_int(root, "scrollbar_reduction", hive.scrollbar_reduction);
 			get_bool(root, "draw_shadow", hive.draw_shadow);
 			get_bool(root, "as_round", hive.as_round);
+			get_bool(root, "draw_gradation", hive.draw_gradation);
 			get_bool(root, "draw_button_edge", hive.draw_button_edge);
 			get_bool(root, "draw_border", hive.draw_border);
 			get_bool(root, "as_zebra", hive.as_zebra);
@@ -186,6 +187,7 @@ namespace apn::dark
 			set_int(root, "scrollbar_reduction", hive.scrollbar_reduction);
 			set_bool(root, "draw_shadow", hive.draw_shadow);
 			set_bool(root, "as_round", hive.as_round);
+			set_bool(root, "draw_gradation", hive.draw_gradation);
 			set_bool(root, "draw_button_edge", hive.draw_button_edge);
 			set_bool(root, "draw_border", hive.draw_border);
 			set_bool(root, "as_zebra", hive.as_zebra);

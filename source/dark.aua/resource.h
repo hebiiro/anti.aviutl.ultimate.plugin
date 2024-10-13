@@ -24,11 +24,12 @@
 #define IDC_SCROLLBAR_REDUCTION_SPIN    1018
 #define IDC_DRAW_SHADOW                 1020
 #define IDC_AS_ROUND                    1021
-#define IDC_DRAW_BUTTON_EDGE            1022
-#define IDC_DRAW_BORDER                 1023
-#define IDC_AS_ZEBRA                    1024
-#define IDC_APPLY_FILE_DIALOG           1025
-#define IDC_FIX_DPI_SCALING             1026
+#define IDC_DRAW_GRADATION              1022
+#define IDC_DRAW_BUTTON_EDGE            1023
+#define IDC_DRAW_BORDER                 1024
+#define IDC_AS_ZEBRA                    1025
+#define IDC_APPLY_FILE_DIALOG           1026
+#define IDC_FIX_DPI_SCALING             1027
 #define IDC_USE_LAYER_COLOR             1032
 #define IDC_USE_LAYER_COLOR_MULTI       1033
 #define IDC_DONT_WRITE_BYTECODE         1034

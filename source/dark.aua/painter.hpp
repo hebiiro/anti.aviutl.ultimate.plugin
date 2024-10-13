@@ -451,6 +451,9 @@ namespace apn::dark::painter
 		//
 		inline std::shared_ptr<Brush> create_brush(Graphics& graphics, const RectF& rc, const PaintArgs& args, GraphicsPath* path)
 		{
+			if (!hive.draw_gradation)
+				return std::make_shared<SolidBrush>(MyColor(args.etc.alpha, args.fill.color));
+
 			switch (args.fill.mode)
 			{
 			default:

@@ -127,37 +127,42 @@ namespace apn::dark
 		//
 		// TRUEの場合はテキストの影を描画します。
 		//
-		BOOL draw_shadow = FALSE;
+		BOOL draw_shadow = TRUE;
 
 		//
 		// TRUEの場合は矩形の角を丸めます。
 		//
-		BOOL as_round = FALSE;
+		BOOL as_round = TRUE;
+
+		//
+		// TRUEの場合はグラデーションを描画します。
+		//
+		BOOL draw_gradation = TRUE;
 
 		//
 		// TRUEの場合はボタンの縁を描画します。
 		//
-		BOOL draw_button_edge = TRUE;
+		BOOL draw_button_edge = FALSE;
 
 		//
 		// TRUEの場合はタイムラインの境界線を描画します。
 		//
-		BOOL draw_border = FALSE;
+		BOOL draw_border = TRUE;
 
 		//
 		// TRUEの場合はタイムラインを縞模様に描画します。
 		//
-		BOOL as_zebra = FALSE;
+		BOOL as_zebra = TRUE;
 
 		//
 		// TRUEの場合はファイル選択ダイアログもダークモード化します。
 		//
-		BOOL apply_file_dialog = TRUE;
+		BOOL apply_file_dialog = FALSE;
 
 		//
 		// TRUEの場合はDPIスケーリングを補正します。
 		//
-		BOOL fix_dpi_scaling = TRUE;
+		BOOL fix_dpi_scaling = FALSE;
 
 		//
 		// TRUEの場合はユーザー指定のレイヤーカラーを使用します。
