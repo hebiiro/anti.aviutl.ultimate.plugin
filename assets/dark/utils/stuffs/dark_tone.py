@@ -14,6 +14,14 @@ def create_dark_tone_stuffs(fill_tones, border_tones, text_tones):
 	utils.set_tone_array("border", border_tones)
 	utils.set_tone_array("text", text_tones)
 
+	# よく使う変数を定義します。
+	fill_mode = dark.Stuff.Fill.Mode.c_top_left
+
+	# ダークモジュールの設定値を取得します。
+	ellipse = dark.hive.ellipse
+	border_width = dark.hive.border_width
+	shadow_density = dark.hive.shadow_density / 100
+
 	#
 	# トーンから色を算出して返します。
 	#
@@ -33,20 +41,13 @@ def create_dark_tone_stuffs(fill_tones, border_tones, text_tones):
 	# 文字の影の色を算出して返します。
 	#
 	def text_shadow(stuff, ratio = 0.9):
-		return utils.lerp_color(stuff.text.color, stuff.fill.color, ratio)
+		return utils.dark_shadow_color(stuff, shadow_density, ratio)
 
 	#
 	# 無効状態の文字の色を算出して返します。
 	#
 	def disabled_text(stuff, ratio = 0.4):
 		return utils.lerp_color(primary_text(0.8), stuff.fill.color, ratio)
-
-	# よく使う変数を定義します。
-	fill_mode = dark.Stuff.Fill.Mode.c_top_left
-
-	# ダークモジュールの設定値を取得します。
-	ellipse = dark.hive.ellipse
-	border_width = dark.hive.border_width
 
 	# ダイアログ
 

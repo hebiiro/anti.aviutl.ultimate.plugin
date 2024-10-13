@@ -150,6 +150,7 @@ namespace apn::dark
 			get_bool(root, "dark_mode", hive.dark_mode);
 			get_int(root, "ellipse", hive.ellipse);
 			get_int(root, "border_width", hive.border_width);
+			get_int(root, "shadow_density", hive.shadow_density);
 			get_bool(root, "draw_shadow", hive.draw_shadow);
 			get_bool(root, "as_round", hive.as_round);
 			get_bool(root, "draw_button_edge", hive.draw_button_edge);
@@ -180,6 +181,7 @@ namespace apn::dark
 			set_bool(root, "dark_mode", hive.dark_mode);
 			set_int(root, "ellipse", hive.ellipse);
 			set_int(root, "border_width", hive.border_width);
+			set_int(root, "shadow_density", hive.shadow_density);
 			set_bool(root, "draw_shadow", hive.draw_shadow);
 			set_bool(root, "as_round", hive.as_round);
 			set_bool(root, "draw_button_edge", hive.draw_button_edge);

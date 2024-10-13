@@ -11,15 +11,6 @@ def clamp(value, min_value, max_value):
 	return value
 
 #
-# 指定されたカラーのダミーカラーを返します。
-#
-def dummy_color(color):
-	if ((color & 0xff) == 0x00):
-		return color + 1
-	else:
-		return color - 1
-
-#
 # 指定されたグレースケールをCOLORREFにして返します。
 #
 def gray(scale):
@@ -99,6 +90,33 @@ def add_color(color, r, g = None, b = None):
 		clamp(rgb[0] + r, 0, 255),
 		clamp(rgb[1] + g, 0, 255),
 		clamp(rgb[2] + b, 0, 255))
+
+#
+# 指定されたカラーのダミーカラーを返します。
+#
+def dummy_color(color):
+	if ((color & 0xff) == 0x00):
+		return color + 1
+	else:
+		return color - 1
+
+#
+# ダークモード用の影の色を算出して返します。
+#
+def dark_shadow_color(stuff, shadow_density, ratio = 0.9):
+	text_color = stuff.text.color
+	fill_color = lerp_color(stuff.fill.color, CLR(0), shadow_density)
+	shadow_color = lerp_color(text_color, fill_color, ratio)
+	return shadow_color
+
+#
+# ライトモード用の影の色を算出して返します。
+#
+def light_shadow_color(stuff, shadow_density, ratio = 0.9):
+	text_color = stuff.text.color
+	fill_color = lerp_color(stuff.fill.color, CLR(255), 1- shadow_density)
+	shadow_color = lerp_color(text_color, fill_color, ratio)
+	return shadow_color
 
 #
 # このクラスはトーンです。

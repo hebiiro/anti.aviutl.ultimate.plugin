@@ -16,6 +16,9 @@
 #define IDC_BORDER_WIDTH_STAT           1010
 #define IDC_BORDER_WIDTH                1011
 #define IDC_BORDER_WIDTH_SPIN           1012
+#define IDC_SHADOW_DENSITY_STAT         1013
+#define IDC_SHADOW_DENSITY              1014
+#define IDC_SHADOW_DENSITY_SPIN         1015
 #define IDC_DRAW_SHADOW                 1020
 #define IDC_AS_ROUND                    1021
 #define IDC_DRAW_BUTTON_EDGE            1022

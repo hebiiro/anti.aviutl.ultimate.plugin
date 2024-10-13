@@ -87,14 +87,19 @@ namespace apn::dark
 		bool dark_mode = true;
 
 		//
-		// スキンの丸みです。
+		// スキンの角の丸みです。
 		//
 		int32_t ellipse = 5;
 
 		//
-		// スキンの縁幅です。
+		// スキンの縁の幅です。
 		//
 		int32_t border_width = 1;
+
+		//
+		// スキンの影の濃度です。
+		//
+		int32_t shadow_density = 80;
 
 		//
 		// ユーザー定義ダークモードスキン用のカラーセットです。

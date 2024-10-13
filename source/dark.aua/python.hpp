@@ -258,6 +258,7 @@ namespace apn::dark
 			hive_module.attr("dark_mode") = &hive.dark_mode;
 			hive_module.attr("ellipse") = &hive.ellipse;
 			hive_module.attr("border_width") = &hive.border_width;
+			hive_module.attr("shadow_density") = &hive.shadow_density;
 
 			return TRUE;
 		}

@@ -7,15 +7,16 @@ from utils import add_color as ADD
 
 # 『[旧形式] 黒窓』のライトモードの設定です。
 
+# ダークモジュールの設定値を取得します。
+ellipse = dark.hive.ellipse
+border_width = dark.hive.border_width
+shadow_density = dark.hive.shadow_density / 100
+
 #
 # 文字の影の色を算出して返します。
 #
 def text_shadow(stuff, ratio = 0.9):
-	return utils.lerp_color(stuff.text.color, stuff.fill.color, ratio)
-
-# ダークモジュールの設定値を取得します。
-ellipse = dark.hive.ellipse
-border_width = dark.hive.border_width
+	return utils.light_shadow_color(stuff, shadow_density, ratio)
 
 # ダイアログ
 
