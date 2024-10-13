@@ -20,6 +20,7 @@ namespace apn::dark
 			get_int(IDC_ELLIPSE, hive.ellipse);
 			get_int(IDC_BORDER_WIDTH, hive.border_width);
 			get_int(IDC_SHADOW_DENSITY, hive.shadow_density);
+			get_int(IDC_SCROLLBAR_REDUCTION, hive.scrollbar_reduction);
 			get_check(IDC_DRAW_SHADOW, hive.draw_shadow);
 			get_check(IDC_AS_ROUND, hive.as_round);
 			get_check(IDC_DRAW_BUTTON_EDGE, hive.draw_button_edge);
@@ -56,6 +57,7 @@ namespace apn::dark
 			set_int(IDC_ELLIPSE, hive.ellipse);
 			set_int(IDC_BORDER_WIDTH, hive.border_width);
 			set_int(IDC_SHADOW_DENSITY, hive.shadow_density);
+			set_int(IDC_SCROLLBAR_REDUCTION, hive.scrollbar_reduction);
 			set_check(IDC_DRAW_SHADOW, hive.draw_shadow);
 			set_check(IDC_AS_ROUND, hive.as_round);
 			set_check(IDC_DRAW_BUTTON_EDGE, hive.draw_button_edge);
@@ -206,6 +208,13 @@ namespace apn::dark
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SHADOW_DENSITY_SPIN));
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, full, {}, ctrl(IDC_SHADOW_DENSITY));
 				}
+
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCROLLBAR_REDUCTION_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, nullptr);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SCROLLBAR_REDUCTION_SPIN));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, full, {}, ctrl(IDC_SCROLLBAR_REDUCTION));
+				}
 			}
 
 			{
@@ -316,6 +325,7 @@ namespace apn::dark
 			case IDC_ELLIPSE:
 			case IDC_BORDER_WIDTH:
 			case IDC_SHADOW_DENSITY:
+			case IDC_SCROLLBAR_REDUCTION:
 				{
 					if (code == EN_UPDATE)
 						app->on_change_controls();
@@ -497,6 +507,7 @@ namespace apn::dark
 								break;
 							}
 						case IDC_SHADOW_DENSITY:
+						case IDC_SCROLLBAR_REDUCTION:
 							{
 								auto value = get_int(edit_id);
 								value += (nm->iDelta > 0) ? -10 : +10;

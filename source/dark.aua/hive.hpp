@@ -102,6 +102,11 @@ namespace apn::dark
 		int32_t shadow_density = 80;
 
 		//
+		// スクロールバーの縮小率です。
+		//
+		int32_t scrollbar_reduction = 50;
+
+		//
 		// ユーザー定義ダークモードスキン用のカラーセットです。
 		//
 		share::ColorSet dark_color[3] = {

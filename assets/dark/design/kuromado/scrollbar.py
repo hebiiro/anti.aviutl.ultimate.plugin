@@ -86,6 +86,12 @@ class ScrollBar(core.Control):
 		self.add_handler(core.SBP_SIZEBOX, core.SZB_RIGHTALIGN, self.draw_sizebox_right_align, STUFF_NORMAL)
 
 	#
+	# スクロールバーの太さの倍率を返します。
+	#
+	def get_ratio(self):
+		return (100 - dark.hive.scrollbar_reduction) / 200
+
+	#
 	# スクロールバーの背景を描画します。
 	#
 	def draw_background(self, args):
@@ -102,7 +108,8 @@ class ScrollBar(core.Control):
 			rc = dark.RECT(args.rc)
 			if (stuff.accent.color != core.CLR_NONE):
 				dark.exports.gdiplus.draw_round_horz(args.dc, rc, stuff.accent.color)
-			rc.deflate(int(rc.width / 4), int(rc.height / 4))
+			ratio = self.get_ratio()
+			rc.deflate(int(rc.width * ratio), int(rc.height * ratio))
 			#dark.exports.gdiplus.draw_ellipse(args.dc, rc, stuff)
 			dark.exports.gdiplus.draw_round_horz(args.dc, rc, stuff)
 		return True
@@ -117,7 +124,8 @@ class ScrollBar(core.Control):
 			rc = dark.RECT(args.rc)
 			if (stuff.accent.color != core.CLR_NONE):
 				dark.exports.gdiplus.draw_round_vert(args.dc, rc, stuff.accent.color)
-			rc.deflate(int(rc.width / 4), int(rc.height / 4))
+			ratio = self.get_ratio()
+			rc.deflate(int(rc.width * ratio), int(rc.height * ratio))
 			#dark.exports.gdiplus.draw_ellipse(args.dc, rc, stuff)
 			dark.exports.gdiplus.draw_round_vert(args.dc, rc, stuff)
 		return True
@@ -154,7 +162,8 @@ class ScrollBar(core.Control):
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
-			rc.deflate(0, int(rc.height / 4))
+			ratio = self.get_ratio()
+			rc.deflate(0, int(rc.height * ratio))
 			dark.exports.gdiplus.draw_round_horz(args.dc, rc, stuff)
 		return True
 
@@ -166,7 +175,8 @@ class ScrollBar(core.Control):
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
-			rc.deflate(int(rc.width / 4), 0)
+			ratio = self.get_ratio()
+			rc.deflate(int(rc.width * ratio), 0)
 			dark.exports.gdiplus.draw_round_vert(args.dc, rc, stuff)
 		return True
 

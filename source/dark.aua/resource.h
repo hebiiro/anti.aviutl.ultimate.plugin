@@ -19,6 +19,9 @@
 #define IDC_SHADOW_DENSITY_STAT         1013
 #define IDC_SHADOW_DENSITY              1014
 #define IDC_SHADOW_DENSITY_SPIN         1015
+#define IDC_SCROLLBAR_REDUCTION_STAT    1016
+#define IDC_SCROLLBAR_REDUCTION         1017
+#define IDC_SCROLLBAR_REDUCTION_SPIN    1018
 #define IDC_DRAW_SHADOW                 1020
 #define IDC_AS_ROUND                    1021
 #define IDC_DRAW_BUTTON_EDGE            1022
@@ -59,7 +62,6 @@
 #define IDC_LIGHT_1_TEXT_COLOR          1121
 #define IDC_LIGHT_2_TEXT_COLOR          1122
 #define IDC_LIGHT_3_TEXT_COLOR          1123
-#define IDC_BUTTON1                     1200
 
 // Next default values for new objects
 // 
