@@ -456,26 +456,12 @@ namespace apn::dark
 							// 縁を描画します。
 							::DrawEdge(dc, &rc, EDGE_RAISED, BF_RECT);
 
-							// 補色を算出します。
+							// 文字の色を算出します。
 							auto r = GetRValue(color);
 							auto g = GetGValue(color);
 							auto b = GetBValue(color);
-							auto min = std::min(std::min(r, g), b);
-							auto max = std::max(std::max(r, g), b);
-							auto base = min + max;
-							constexpr auto threshold = 40;
-							constexpr auto add = 120;
-							if (max - min < threshold) // 最小値と最大値の差が閾値内の場合は
-							{
-								if (max < 128)
-									base += add; // 暗い色の場合は
-								else
-									base -= add; // 明るい色の場合は
-							}
-							auto toning_r = base - r;
-							auto toning_g = base - g;
-							auto toning_b = base - b;
-							auto toning_color = RGB(toning_r, toning_g, toning_b);
+							auto sqr = [](auto value) { return value * value; };
+							auto toning_color = sqrt(sqr(r) + sqr(g * 2) + sqr(b)) < 300 ? RGB(255, 255, 255) : RGB(0, 0, 0);
 
 							// 文字を描画します。
 							auto old_text_color = ::SetTextColor(dc, toning_color);
