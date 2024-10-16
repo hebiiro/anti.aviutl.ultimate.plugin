@@ -15,11 +15,11 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			constexpr LPCTSTR class_name = _T("apn::filter_drag::aim");
+			constexpr auto class_name = _T("apn::filter_drag::aim");
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_NOCLOSE;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
 			wc.lpszClassName = class_name;
@@ -31,7 +31,7 @@ namespace apn::filter_drag
 				class_name,
 				WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				0, 0, 0, 0,
-				0, 0, hive.instance, 0);
+				nullptr, nullptr, hive.instance, nullptr);
 		}
 
 		//
@@ -57,13 +57,13 @@ namespace apn::filter_drag
 		//
 		void show(const Layout& layout, const FilterHolder& filter)
 		{
-			LPCSTR name = filter.get_name();
+			auto name = filter.get_name();
 			::SetWindowTextA(*this, name);
-			::InvalidateRect(*this, 0, FALSE);
+			::InvalidateRect(*this, nullptr, FALSE);
 
-			RECT rc = layout.get_filter_rect(filter);
-			POINT pos = { rc.left, rc.top };
-			SIZE size = { rc.right - rc.left, rc.bottom - rc.top };
+			auto rc = layout.get_filter_rect(filter);
+			auto pos = POINT { rc.left, rc.top };
+			auto size = SIZE { rc.right - rc.left, rc.bottom - rc.top };
 			::ClientToScreen(magi.exin.get_setting_dialog(), &pos);
 			::SetLayeredWindowAttributes(*this, 0, alpha, LWA_ALPHA);
 			::SetWindowPos(*this, HWND_TOPMOST, pos.x, pos.y, size.cx, size.cy, SWP_NOACTIVATE | SWP_SHOWWINDOW);

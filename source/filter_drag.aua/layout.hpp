@@ -32,16 +32,17 @@ namespace apn::filter_drag
 				if (!::IsWindowVisible(arrow)) break;
 
 				auto arrow_rect = my::get_client_rect(arrow);
-				::MapWindowPoints(arrow, setting_dialog, (LPPOINT)&arrow_rect, 2);
+				my::map_window_points(arrow, setting_dialog, &arrow_rect);
 
 				auto name_rect = my::get_client_rect(name);
-				::MapWindowPoints(name, setting_dialog, (LPPOINT)&name_rect, 2);
+				my::map_window_points(name, setting_dialog, &name_rect);
 
-				RECT pane;
-				pane.left = arrow_rect.left;
-				pane.top = arrow_rect.top;
-				pane.right = name_rect.right;
-				pane.bottom = arrow_rect.bottom;
+				auto pane = RECT {
+					.left = arrow_rect.left,
+					.top = arrow_rect.top,
+					.right = name_rect.right,
+					.bottom = arrow_rect.bottom,
+				};
 				panes.push_back(pane);
 
 				if (i > 0)
@@ -79,7 +80,7 @@ namespace apn::filter_drag
 				if (::IsWindowVisible(child))
 				{
 					auto rc = my::get_client_rect(child);
-					::MapWindowPoints(child, setting_dialog, (LPPOINT)&rc, 2);
+					my::map_window_points(child, setting_dialog, &rc);
 
 					if (rc.left >= pane.left && rc.right <= pane.right)
 						result = std::max<int>(result, rc.bottom);

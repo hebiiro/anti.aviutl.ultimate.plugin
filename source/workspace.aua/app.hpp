@@ -101,7 +101,7 @@ namespace apn::workspace
 			ofn.nMaxFile = file_name.size();
 			ofn.lpstrFilter = L"レイアウトファイル (*.json)\0*.json\0" "すべてのファイル (*.*)\0*.*\0";
 			ofn.lpstrDefExt = L"json";
-			if (!::GetOpenFileNameW(&ofn))
+			if (!::GetSaveFileNameW(&ofn))
 				return FALSE;
 
 			// レイアウトをエクスポートします。

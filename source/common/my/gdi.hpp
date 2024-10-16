@@ -7,8 +7,8 @@ namespace my
 		HDC dc = nullptr;
 		HGDIOBJ obj = nullptr;
 
-		GdiObjSelector(HDC dc, HGDIOBJ obj) : dc(dc), obj(::SelectObject(dc, obj)) {}
-		~GdiObjSelector() { ::SelectObject(dc, obj); }
+		GdiObjSelector(HDC dc, HGDIOBJ obj) : dc(dc), obj(obj ? ::SelectObject(dc, obj) : nullptr) {}
+		~GdiObjSelector() { if (obj) ::SelectObject(dc, obj); }
 	};
 
 	struct ClientDC
@@ -93,6 +93,35 @@ namespace my
 			::DeleteObject(bitmap);
 			::DeleteDC(dc);
 		}
+	};
+
+	//
+	// このクラスはメモリDC(バックバッファ)です。
+	//
+	struct MemDC
+	{
+		int w = 0, h = 0;
+		HDC dc = nullptr;
+		HBITMAP bitmap = nullptr;
+		HBITMAP old_bitmap = nullptr;
+
+		MemDC(HDC orig, LPCRECT rc)
+		{
+			w = my::get_width(*rc);
+			h = my::get_height(*rc);
+			dc = ::CreateCompatibleDC(orig);
+			bitmap = ::CreateCompatibleBitmap(orig, w, h);
+			old_bitmap = (HBITMAP)::SelectObject(dc, bitmap);
+		}
+
+		~MemDC()
+		{
+			::SelectObject(dc, old_bitmap);
+			::DeleteObject(bitmap);
+			::DeleteDC(dc);
+		}
+
+		operator HDC() { return dc; }
 	};
 
 	namespace gdi

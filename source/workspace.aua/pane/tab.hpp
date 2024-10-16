@@ -10,7 +10,7 @@ namespace apn::workspace
 		BOOL set_font()
 		{
 			AviUtl::SysInfo si = {};
-			magi.auin.get_sys_info(0, &si);
+			magi.auin.get_sys_info(nullptr, &si);
 			if (!si.hfont) return FALSE;
 
 			::SendMessage(*this, WM_SETFONT, (WPARAM)si.hfont, TRUE);

@@ -867,7 +867,7 @@ namespace apn::text_split
 			::DeleteFileA(each_temp_file_name.c_str());
 
 			// 拡張編集を再描画します。
-			::InvalidateRect(magi.exin.get_exedit_window(), 0, 0);
+			magi.exin.invalidate();
 
 			// AviUtlを再描画します。
 			magi.redraw();

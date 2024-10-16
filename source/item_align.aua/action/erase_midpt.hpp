@@ -82,7 +82,7 @@ namespace apn::item_align
 			magi.exin.push_undo();
 			magi.exin.erase_midpt(near_object_index, 0);
 			magi.exin.redraw_layer(layer_set);
-			::InvalidateRect(magi.exin.get_setting_dialog(), 0, FALSE);
+			my::invalidate(magi.exin.get_setting_dialog());
 		}
 	};
 }

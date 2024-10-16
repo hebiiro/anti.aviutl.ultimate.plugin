@@ -175,12 +175,31 @@ namespace my
 		using weak_ptr = std::weak_ptr<typename std::remove_pointer<T>::type>;
 	}
 
+	namespace dwp
+	{
+		inline const auto deleter = [](HDWP x){ if (x) ::EndDeferWindowPos(x); };
+
+		template <typename T = HDWP>
+		using unique_ptr = std::unique_ptr<typename std::remove_pointer<T>::type, decltype(deleter)>;
+
+		template <typename T = HDWP>
+		struct shared_ptr : std::shared_ptr<typename std::remove_pointer<T>::type>
+		{
+			shared_ptr() {}
+			shared_ptr(T x) : std::shared_ptr<typename std::remove_pointer<T>::type>(x, deleter) {}
+			auto reset(T x) { return __super::reset(x, deleter); }
+		};
+
+		template <typename T = HDWP>
+		using weak_ptr = std::weak_ptr<typename std::remove_pointer<T>::type>;
+	}
+
 	// 以下のクラスは自作クラスでハンドルを管理します。
 
 	struct Handle
 	{
 		HANDLE handle;
-		Handle(HANDLE handle = 0) : handle(handle) {}
+		Handle(HANDLE handle = nullptr) : handle(handle) {}
 		~Handle() { if (handle) ::CloseHandle(handle); }
 		operator HANDLE() { return handle; }
 	};
@@ -188,7 +207,7 @@ namespace my
 	struct Icon
 	{
 		HICON handle;
-		Icon(HICON handle = 0) : handle(handle) {}
+		Icon(HICON handle = nullptr) : handle(handle) {}
 		~Icon() { if (handle) ::DestroyIcon(handle); }
 		operator HICON() { return handle; }
 	};
@@ -196,7 +215,7 @@ namespace my
 	struct Menu
 	{
 		HMENU handle;
-		Menu(HMENU handle = 0) : handle(handle) {}
+		Menu(HMENU handle = nullptr) : handle(handle) {}
 		~Menu() { if (handle) ::DestroyMenu(handle); }
 		operator HMENU() { return handle; }
 	};
@@ -204,7 +223,7 @@ namespace my
 	struct Theme
 	{
 		HTHEME handle;
-		Theme(HTHEME handle = 0) : handle(handle) {}
+		Theme(HTHEME handle = nullptr) : handle(handle) {}
 		~Theme() { if (handle) ::CloseThemeData(handle); }
 		operator HTHEME() { return handle; }
 	};
@@ -212,7 +231,7 @@ namespace my
 	template <typename T>
 	struct GdiObj
 	{
-		T handle = 0;
+		T handle = nullptr;
 		GdiObj(T handle) : handle(handle) {}
 		~GdiObj() { if (handle) ::DeleteObject(handle); }
 		operator T() { return handle; }
@@ -221,15 +240,15 @@ namespace my
 	struct DC
 	{
 		HDC handle;
-		DC(HDC handle = 0) : handle(handle) {}
+		DC(HDC handle = nullptr) : handle(handle) {}
 		~DC() { if (handle) ::DeleteDC(handle); }
 		operator HDC() { return handle; }
 	};
 
 	struct SimpleFileMapping
 	{
-		HANDLE handle = 0;
-		BYTE* buffer = 0;
+		HANDLE handle = nullptr;
+		BYTE* buffer = nullptr;
 
 		SimpleFileMapping()
 		{
@@ -247,8 +266,8 @@ namespace my
 
 		~SimpleFileMapping()
 		{
-			::UnmapViewOfFile(buffer), buffer = 0;
-			::CloseHandle(handle), handle = 0;
+			::UnmapViewOfFile(buffer), buffer = nullptr;
+			::CloseHandle(handle), handle = nullptr;
 		}
 
 		BOOL init(DWORD size, LPCTSTR name)
@@ -297,7 +316,7 @@ namespace my
 		HANDLE handle;
 
 		FileMapping(DWORD size, LPCTSTR name) : handle(::CreateFileMapping(INVALID_HANDLE_VALUE, 0, PAGE_READWRITE, 0, size, name)) {}
-		~FileMapping() { ::CloseHandle(handle), handle = 0; }
+		~FileMapping() { ::CloseHandle(handle), handle = nullptr; }
 		BYTE* alloc_buffer() { return (BYTE*)::MapViewOfFile(handle, FILE_MAP_WRITE, 0, 0, 0); }
 		void free_buffer(BYTE* buffer) { ::UnmapViewOfFile(buffer); }
 
@@ -307,7 +326,7 @@ namespace my
 			BYTE* buffer;
 
 			Buffer(FileMapping* file_mapping) : file_mapping(file_mapping), buffer(file_mapping->alloc_buffer()) {}
-			~Buffer() { file_mapping->free_buffer(buffer), buffer = 0; }
+			~Buffer() { file_mapping->free_buffer(buffer), buffer = nullptr; }
 			BYTE* get() { return buffer; }
 		};
 	};
@@ -340,7 +359,7 @@ namespace my
 
 	struct Mutex : Sync
 	{
-		HANDLE handle = 0;
+		HANDLE handle = nullptr;
 
 		Mutex() {}
 		Mutex(LPSECURITY_ATTRIBUTES sa, BOOL initial_owner, LPCTSTR name) { init(sa, initial_owner, name); }
@@ -356,7 +375,7 @@ namespace my
 
 	struct Event : Sync
 	{
-		HANDLE handle = 0;
+		HANDLE handle = nullptr;
 
 		Event() {}
 		Event(LPSECURITY_ATTRIBUTES sa, BOOL manual_reset, BOOL initial_state, LPCTSTR name) { init(sa, manual_reset, initial_state, name); }
@@ -379,5 +398,14 @@ namespace my
 		virtual DWORD lock(DWORD timeout = INFINITE) override { ::EnterCriticalSection(&cs); return WAIT_OBJECT_0; }
 		virtual BOOL unlock() override { ::LeaveCriticalSection(&cs); return TRUE; }
 		void init() { ::InitializeCriticalSection(&cs); }
+	};
+
+	struct DeferWindowPos
+	{
+		HDWP dwp;
+
+		DeferWindowPos(int c = 0) : dwp(BeginDeferWindowPos(c)) {}
+		~DeferWindowPos() { if (dwp) ::EndDeferWindowPos(dwp); }
+		operator HDWP() { return dwp; }
 	};
 }

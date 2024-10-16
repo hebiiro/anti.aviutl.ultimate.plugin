@@ -115,14 +115,29 @@ namespace my
 		rc->bottom -= window_rc.bottom - client_rc.bottom;
 	}
 
-	inline auto set_window_rect(HWND hwnd, LPCRECT rc, UINT flags = 0)
+	inline auto set_window_pos(HWND hwnd, HWND insert_after, LPCRECT rc, UINT flags)
 	{
 		auto x = rc->left;
 		auto y = rc->top;
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		return ::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | flags);
+		return ::SetWindowPos(hwnd, insert_after, x, y, w, h, flags);
+	}
+
+	inline auto defer_window_pos(HDWP dwp, HWND hwnd, HWND insert_after, LPCRECT rc, UINT flags)
+	{
+		auto x = rc->left;
+		auto y = rc->top;
+		auto w = my::get_width(*rc);
+		auto h = my::get_height(*rc);
+
+		return ::DeferWindowPos(dwp, hwnd, insert_after, x, y, w, h, flags);
+	}
+
+	inline auto set_window_rect(HWND hwnd, LPCRECT rc, UINT flags = 0)
+	{
+		return set_window_pos(hwnd, nullptr, rc, flags | SWP_NOZORDER);
 	}
 
 	//
@@ -179,6 +194,19 @@ namespace my
 	inline void set_editbox_text_no_notify(HWND dialog, UINT id, LPCTSTR text)
 	{
 		set_editbox_text_no_notify(::GetDlgItem(dialog, id), text);
+	}
+
+	inline BOOL invalidate(HWND hwnd, LPCRECT rc = nullptr, BOOL erase = FALSE)
+	{
+		return ::InvalidateRect(hwnd, rc, erase);
+	}
+
+	inline BOOL track_mouse_event(HWND hwnd, DWORD flags = TME_LEAVE)
+	{
+		TRACKMOUSEEVENT tme = { sizeof(tme) };
+		tme.dwFlags = flags;
+		tme.hwndTrack = hwnd;
+		return ::TrackMouseEvent(&tme);
 	}
 
 	inline HANDLE create_file_for_read(LPCTSTR file_name)

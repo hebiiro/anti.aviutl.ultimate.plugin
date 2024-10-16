@@ -55,6 +55,8 @@ namespace apn::workspace
 		Container(Content* content, DWORD style, DWORD ex_style)
 			: content(content)
 		{
+			MY_TRACE_FUNC("{:010x}, {:010x}, {:010x}", content, style, ex_style);
+
 			create(
 				ex_style,
 				c_class_name,
@@ -70,6 +72,8 @@ namespace apn::workspace
 		//
 		virtual ~Container() override
 		{
+			MY_TRACE_FUNC("");
+
 			destroy();
 		}
 

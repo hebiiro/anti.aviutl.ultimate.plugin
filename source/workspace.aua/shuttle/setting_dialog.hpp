@@ -101,7 +101,7 @@ namespace apn::workspace
 					// 「patch.aul」用の処理です。
 					// 設定ダイアログが高速描画されているときは
 					// 親ウィンドウ(コンテナ)を手動で再描画する必要があります。
-					::InvalidateRect(::GetParent(hwnd), 0, FALSE);
+					my::invalidate(::GetParent(hwnd));
 
 					break;
 				}

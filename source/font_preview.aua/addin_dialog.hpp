@@ -52,7 +52,7 @@ namespace apn::font_preview
 
 			auto hwnd = magi.exin.get_setting_dialog();
 			auto combobox = ::GetDlgItem(hwnd, hive.c_control_id.c_font_combobox);
-			::InvalidateRect(combobox, nullptr, TRUE);
+			my::invalidate(combobox, nullptr, TRUE);
 		}
 
 		//
@@ -171,18 +171,16 @@ namespace apn::font_preview
 			case IDC_SELECT_PREVIEW_COLOR:
 			case IDC_SELECT_FONT_NAME_COLOR:
 				{
-					auto color = get_uint(id);
-
 					CHOOSECOLOR cc { sizeof(cc) };
 					cc.hwndOwner = hwnd;
 					cc.lpCustColors = hive.custom_colors;
-					cc.rgbResult = color;
+					cc.rgbResult = get_uint(id);
 					cc.Flags = CC_RGBINIT | CC_FULLOPEN;
 					if (!::ChooseColor(&cc)) return;
 
 					set_uint(id, cc.rgbResult);
 
-					::InvalidateRect(control, 0, FALSE);
+					my::invalidate(control);
 
 					update_config();
 
