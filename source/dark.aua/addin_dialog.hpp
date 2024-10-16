@@ -128,9 +128,9 @@ namespace apn::dark
 					set_uint(border_id + i, color[i].border);
 					set_uint(text_id + i, color[i].text);
 
-					::InvalidateRect(ctrl(fill_id + i), nullptr, FALSE);
-					::InvalidateRect(ctrl(border_id + i), nullptr, FALSE);
-					::InvalidateRect(ctrl(text_id + i), nullptr, FALSE);
+					my::invalidate(ctrl(fill_id + i));
+					my::invalidate(ctrl(border_id + i));
+					my::invalidate(ctrl(text_id + i));
 				}
 
 				// コントロールが変更されたことをアプリに通知します。
@@ -383,7 +383,7 @@ namespace apn::dark
 
 					// 取得した色をコントロールに適用します。
 					set_uint(id, cc.rgbResult);
-					::InvalidateRect(control, nullptr, FALSE);
+					my::invalidate(control);
 
 					// コントロールが変更されたことをアプリに通知します。
 					app->on_change_controls();

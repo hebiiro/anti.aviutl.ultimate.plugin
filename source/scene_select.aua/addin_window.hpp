@@ -56,7 +56,7 @@ namespace apn::scene_select
 		//
 		BOOL redraw()
 		{
-			return ::InvalidateRect(*this, nullptr, FALSE);
+			return my::invalidate(*this);
 		}
 
 		//
@@ -584,10 +584,7 @@ namespace apn::scene_select
 							if (hot_button >= 0)
 							{
 								// WM_MOUSELEAVEが発行されるようにします。
-								TRACKMOUSEEVENT tme = { sizeof(tme) };
-								tme.dwFlags = TME_LEAVE;
-								tme.hwndTrack = hwnd;
-								::TrackMouseEvent(&tme);
+								my::track_mouse_event(hwnd);
 							}
 
 							// ウィンドウを再描画します。

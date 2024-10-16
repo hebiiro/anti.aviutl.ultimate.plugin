@@ -181,6 +181,19 @@ namespace my
 		set_editbox_text_no_notify(::GetDlgItem(dialog, id), text);
 	}
 
+	inline BOOL invalidate(HWND hwnd, LPCRECT rc = nullptr, BOOL erase = FALSE)
+	{
+		return ::InvalidateRect(hwnd, rc, erase);
+	}
+
+	inline BOOL track_mouse_event(HWND hwnd, DWORD flags = TME_LEAVE)
+	{
+		TRACKMOUSEEVENT tme = { sizeof(tme) };
+		tme.dwFlags = flags;
+		tme.hwndTrack = hwnd;
+		return ::TrackMouseEvent(&tme);
+	}
+
 	inline HANDLE create_file_for_read(LPCTSTR file_name)
 	{
 		return ::CreateFile(file_name, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);

@@ -85,7 +85,7 @@ namespace apn::font_select
 
 			auto hwnd = magi.exin.get_setting_dialog();
 			auto combobox = ::GetDlgItem(hwnd, hive.c_control_id.c_font_combobox);
-			::InvalidateRect(combobox, 0, TRUE);
+			my::invalidate(combobox, nullptr, TRUE);
 
 			return TRUE;
 		}
@@ -143,19 +143,16 @@ namespace apn::font_select
 					case IDC_SELECT_TEXT:
 					case IDC_SELECT_FONT:
 						{
-							auto color = get_uint(id);
-
 							CHOOSECOLOR cc { sizeof(cc) };
 							cc.hwndOwner = hwnd;
 							cc.lpCustColors = colors;
-							cc.rgbResult = color;
+							cc.rgbResult = get_uint(id);
 							cc.Flags = CC_RGBINIT | CC_FULLOPEN;
 							if (!::ChooseColor(&cc)) return TRUE;
 
-							color = cc.rgbResult;
+							set_uint(id, cc.rgbResult);
 
-							set_uint(id, color);
-							::InvalidateRect(control, 0, FALSE);
+							my::invalidate(control);
 
 							return TRUE;
 						}
