@@ -295,6 +295,42 @@ namespace apn::workspace::hook
 		} AdjustWindowRectEx;
 
 		//
+		// このクラスはdraw_aviutl_button_as_play()をフックします。
+		// スペースキーで再生を開始したときに呼ばれます。
+		//
+		inline static struct {
+			inline static void __fastcall hook_proc(HWND hwnd, HICON icon)
+			{
+				MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, icon);
+
+				// ボタンにアイコンをセットします。
+				::SetWindowLongA(hwnd, 0, (LONG)icon);
+
+				// デフォルト処理で上書き描画するのではなく、ボタンを再描画します。
+				my::invalidate(hwnd);
+			}
+			inline static decltype(&hook_proc) orig_proc = nullptr;
+		} draw_aviutl_button_as_play;
+
+		//
+		// このクラスはdraw_aviutl_button_as_stop()をフックします。
+		// スペースキーで再生を停止したときに呼ばれます。
+		//
+		inline static struct {
+			inline static void __fastcall hook_proc(HWND hwnd, HICON icon)
+			{
+				MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, icon);
+
+				// ボタンにアイコンをセットします。
+				::SetWindowLongA(hwnd, 0, (LONG)icon);
+
+				// デフォルト処理で上書き描画するのではなく、ボタンを再描画します。
+				my::invalidate(hwnd);
+			}
+			inline static decltype(&hook_proc) orig_proc = nullptr;
+		} draw_aviutl_button_as_stop;
+
+		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -305,9 +341,17 @@ namespace apn::workspace::hook
 			auto aviutl = (my::addr_t)::GetModuleHandle(nullptr);
 			MY_TRACE_HEX(aviutl);
 
-			// AviUtl内の::AdjustWindowRectEx()をフックします。
+			// AviUtl内の::AdjustWindowRectEx()のインポートをフックします。
 			my::hook::attach_import(AdjustWindowRectEx, (HMODULE)aviutl, "AdjustWindowRectEx");
 			MY_TRACE_HEX(AdjustWindowRectEx.orig_proc);
+
+			// AviUtl内のdraw_aviutl_button_as_play()のコールをフックします。
+			my::hook::attach_call(draw_aviutl_button_as_play, aviutl + 0x53383);
+			MY_TRACE_HEX(draw_aviutl_button_as_play.orig_proc);
+
+			// AviUtl内のdraw_aviutl_button_as_stop()のコールをフックします。
+			my::hook::attach_call(draw_aviutl_button_as_stop, aviutl + 0x536A1);
+			MY_TRACE_HEX(draw_aviutl_button_as_stop.orig_proc);
 
 			// AviUtlのiniファイルのパスを取得します。
 			auto file_name = my::get_module_file_name(nullptr).parent_path() / _T("aviutl.ini");
