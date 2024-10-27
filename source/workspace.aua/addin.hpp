@@ -26,7 +26,7 @@ namespace apn::workspace
 		//
 		// この仮想関数は、DLLの初期化のタイミングで呼ばれます。
 		//
-		BOOL on_dll_init(HINSTANCE instance) override
+		virtual BOOL on_dll_init(HINSTANCE instance) override
 		{
 			MY_TRACE_FUNC("{:#010x}", instance);
 
@@ -45,7 +45,7 @@ namespace apn::workspace
 		//
 		// この仮想関数は、DLLの後始末のタイミングで呼ばれます。
 		//
-		BOOL on_dll_exit(HINSTANCE instance) override
+		virtual BOOL on_dll_exit(HINSTANCE instance) override
 		{
 			MY_TRACE_FUNC("");
 
@@ -84,8 +84,16 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			// 無駄な描画を減らすためにメインウィンドウを非表示にします。
-			::ShowWindow(*main_window, SW_HIDE);
+			// 後始末処理を最適化します。
+			{
+				// 無駄な処理を減らすために可能な限りサブクラス化を解除します。
+				main_window->unsubclass();
+				for (const auto& sub_window : SubWindow::collection) sub_window->unsubclass();
+				for (const auto& node : shuttle_manager.collection) node.second->unsubclass();
+
+				// 無駄な描画を減らすためにメインウィンドウを非表示にします。
+				::ShowWindow(hive.main_window, SW_HIDE);
+			}
 
 			hook_manager.exit();
 
