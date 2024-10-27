@@ -63,6 +63,8 @@ namespace apn
 		//
 		inline BOOL on_free_library(HINSTANCE instance)
 		{
+			MY_TRACE_FUNC("{:#010x}", instance);
+
 			if (!instance) return FALSE;
 
 			// このモジュールが開放される場合は
