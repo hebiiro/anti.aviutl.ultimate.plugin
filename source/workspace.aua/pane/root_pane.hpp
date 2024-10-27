@@ -48,23 +48,35 @@ namespace apn::workspace
 
 			maximized_pane = new_maximized_pane;
 
-			show_tab(shared_from_this(), !maximized_pane);
+			// 最大化ペインが有効の場合は
+			if (maximized_pane)
+			{
+				// 他のペインを非表示にします。
+				hide_others(my::DeferWindowPos(100), shared_from_this());
+			}
 		}
 
 		//
-		// タブの表示状態を変更します。
+		// 他のペインを非表示にします。
 		//
-		void show_tab(const std::shared_ptr<Pane>& pane, BOOL show)
+		void hide_others(HDWP dwp, const std::shared_ptr<Pane>& pane)
 		{
 			if (pane == maximized_pane) return;
 
-			::ShowWindow(tab, show ? SW_SHOW : SW_HIDE);
+			{
+				// タブコントロールを非表示にします。
+				pane->hide_tab(dwp);
+
+				// カレントシャトルを非表示にします。
+				if (auto shuttle = pane->get_current_shuttle())
+					pane->hide_shuttle(dwp, shuttle);
+			}
 
 			for (auto& child : pane->children)
 			{
 				if (!child) continue;
 
-				show_tab(child, show);
+				hide_others(dwp, child);
 			}
 		}
 

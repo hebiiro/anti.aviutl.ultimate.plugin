@@ -20,6 +20,7 @@ namespace apn::workspace
 			hook::menu.init();
 			hook::window.init();
 			hook::get_message.init();
+			hook::mouse.init();
 
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
@@ -42,6 +43,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
+			hook::mouse.exit();
 			hook::get_message.exit();
 			hook::window.exit();
 			hook::menu.exit();

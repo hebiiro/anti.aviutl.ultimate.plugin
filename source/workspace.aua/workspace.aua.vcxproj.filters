@@ -124,6 +124,12 @@
     <ClInclude Include="sub_process\sub_process_manager.hpp">
       <Filter>element\sub_process</Filter>
     </ClInclude>
+    <ClInclude Include="pane\tav.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\mouse.hpp">
+      <Filter>hook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

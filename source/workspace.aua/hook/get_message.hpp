@@ -87,7 +87,7 @@ namespace apn::workspace::hook
 
 //						MY_TRACE("ショートカットキーを発動するかどうかチェックします\n");
 
-						// ショートカットキーshowCaptionが活性化されている場合は
+						// ショートカットキーshow_captionが活性化されている場合は
 						if (hive.shortcut_key.show_caption.is_active(msg->wParam))
 						{
 							// カーソル位置を取得します。
@@ -106,7 +106,7 @@ namespace apn::workspace::hook
 							if (!root) break;
 
 							// カーソル位置をクライアント座標に変換します。
-							::MapWindowPoints(nullptr, dock_site, &point, 1);
+							my::map_window_points(nullptr, dock_site, &point);
 
 							// カーソル位置にあるペインを取得します。
 							auto pane = root->hittest_pane(point);
@@ -115,10 +115,10 @@ namespace apn::workspace::hook
 							if (pane)
 							{
 								// ペインのキャプションの表示状態を切り替えます。
-								if (pane->caption_mode == Pane::c_caption_mode.c_show)
-									pane->set_caption_mode(Pane::c_caption_mode.c_hide);
+								if (pane->caption_mode == pane->c_caption_mode.c_show)
+									pane->set_caption_mode(pane->c_caption_mode.c_hide);
 								else
-									pane->set_caption_mode(Pane::c_caption_mode.c_show);
+									pane->set_caption_mode(pane->c_caption_mode.c_show);
 
 								// ペインのレイアウトを更新します。
 								pane->update_origin();
@@ -136,18 +136,18 @@ namespace apn::workspace::hook
 						auto class_name = my::get_class_name(msg->hwnd);
 						MY_TRACE_STR(class_name);
 
-						// コンボボックスの場合
-						if (class_name == WC_COMBOBOX)
+						// コンボボックスの場合は
+						if (::lstrcmpi(class_name.c_str(), WC_COMBOBOX) == 0)
 						{
-							// スクロールを優先するように指定されているなら
+							// スクロールを優先する場合は
 							if (hive.scroll_force)
 							{
 								// 親ウィンドウにマウスホイールメッセージを処理させます。
 								msg->hwnd = ::GetParent(msg->hwnd);
 							}
 						}
-						// トラックバーの場合
-						else if (class_name == TRACKBAR_CLASS)
+						// トラックバーの場合は
+						else if (::lstrcmpi(class_name.c_str(), TRACKBAR_CLASS) == 0)
 						{
 							// 親ウィンドウにマウスホイールメッセージを処理させます。
 							msg->hwnd = ::GetParent(msg->hwnd);

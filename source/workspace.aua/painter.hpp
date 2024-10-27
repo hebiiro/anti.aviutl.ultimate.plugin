@@ -20,13 +20,21 @@ namespace apn::workspace
 		//
 		void fill_background(HDC dc, LPCRECT rc, COLORREF color, int part_id, int state_id)
 		{
-			// テーマを使用するなら
+			return fill_background(dc, rc, color, hive.theme.get(), part_id, state_id);
+		}
+
+		//
+		// 矩形を塗りつぶします。
+		//
+		void fill_background(HDC dc, LPCRECT rc, COLORREF color, HTHEME theme, int part_id, int state_id)
+		{
+			// テーマを使用する場合は
 			if (hive.use_theme)
 			{
-				// テーマAPIを使用してボーダーを描画します。
-				::DrawThemeBackground(hive.theme.get(), dc, part_id, state_id, rc, 0);
+				// テーマAPIを使用して描画します。
+				::DrawThemeBackground(theme, dc, part_id, state_id, rc, nullptr);
 			}
-			// テーマを使用しないなら
+			// テーマを使用しない場合は
 			else
 			{
 				// ブラシで塗りつぶします。

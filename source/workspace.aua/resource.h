@@ -40,6 +40,24 @@
 #define IDC_PANE_TOP_LEFT               2013
 #define IDC_PANE_BOTTOM_RIGHT_STAT      2014
 #define IDC_PANE_BOTTOM_RIGHT           2015
+#define IDC_TAV_DISPLAY_MODE_STAT       2016
+#define IDC_TAV_DISPLAY_MODE            2017
+#define IDC_TAV_SELECT_MODE_STAT        2018
+#define IDC_TAV_SELECT_MODE             2019
+#define IDC_TAV_STRETCH_MODE_STAT       2020
+#define IDC_TAV_STRETCH_MODE            2021
+#define IDC_TAV_LOCATION_STAT           2022
+#define IDC_TAV_LOCATION                2023
+#define IDC_TAV_NODE_ALIGN_STAT         2024
+#define IDC_TAV_NODE_ALIGN              2025
+#define IDC_TAV_STAT                    2026
+#define IDC_PANE_STAT                   2027
+#define IDC_CAPTION_STAT                2028
+#define IDC_CAPTION_LOCATION_STAT       2029
+#define IDC_CAPTION_LOCATION            2030
+#define IDC_CAPTION_MODE_STAT           2031
+#define IDC_CAPTION_MODE                2032
+#define IDC_CAPTION_HEIGHT_STAT         3003
 
 // Next default values for new objects
 // 
@@ -48,7 +66,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         3003
+#define _APS_NEXT_CONTROL_VALUE         3004
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

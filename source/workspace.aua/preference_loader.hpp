@@ -29,10 +29,11 @@ namespace apn::workspace
 
 			if (flags & hive.c_preference_flag.c_config)
 			{
-				get_int(node, "border_width", Pane::border_width);
-				get_int(node, "caption_height", Pane::caption_height);
-				get_int(node, "tab_height", Pane::tab_height);
-				get_label(node, "tab_mode", Pane::tab_mode, Pane::c_tab_mode.labels);
+				read_tav(node, hive.tav);
+				get_int(node, "tab_height", hive.tab_height);
+				get_int(node, "tab_space", hive.tab_space);
+				get_int(node, "caption_height", hive.caption_height);
+				get_int(node, "border_width", hive.border_width);
 				get_color(node, "fill_color", hive.fill_color);
 				get_color(node, "border_color", hive.border_color);
 				get_color(node, "hot_border_color", hive.hot_border_color);
@@ -50,24 +51,24 @@ namespace apn::workspace
 			}
 
 			// 事前にサブウィンドウを読み込みます。
-			pre_load_sub_window(node);
+			pre_read_sub_window(node);
 
 			// メインウィンドウを読み込みます。
-			load_main_window(node);
+			read_main_window(node);
 
 			// サブウィンドウを読み込みます。
-			load_sub_window(node);
+			read_sub_window(node);
 
 			// フローティングシャトルを読み込みます。
-			load_float_shuttle(node);
+			read_float_shuttle(node);
 
 			return TRUE;
 		}
 
 		//
-		// 指定された要素からシャトル名を読み込みます。
+		// シャトル名を読み込みます。
 		//
-		void get_shuttle_name(const n_json& node, const std::string& name, std::wstring& value)
+		void read_shuttle_name(const n_json& node, const std::string& name, std::wstring& value)
 		{
 			get_string(node, name, value);
 
@@ -75,18 +76,39 @@ namespace apn::workspace
 		}
 
 		//
-		// ペインを読み込みます。
+		// タブを読み込みます。
 		//
-		void load_pane(const n_json& node, const std::shared_ptr<Pane>& pane)
+		void read_tav(const n_json& node, Hive::Tav& tav)
 		{
 			MY_TRACE_FUNC("");
+
+			// タブの属性を読み込みます。
+			n_json tav_node;
+			get_child_node(node, "tav", tav_node);
+			get_label(tav_node, "display_mode", tav.display_mode, tav.c_display_mode.labels);
+			get_label(tav_node, "select_mode", tav.select_mode, tav.c_select_mode.labels);
+			get_label(tav_node, "stretch_mode", tav.stretch_mode, tav.c_stretch_mode.labels);
+			get_label(tav_node, "location", tav.location, tav.c_location.labels);
+			get_label(tav_node, "node_align", tav.node_align, tav.c_node_align.labels);
+		}
+
+		//
+		// ペインを読み込みます。
+		//
+		void read_pane(const n_json& node, const std::shared_ptr<Pane>& pane)
+		{
+			MY_TRACE_FUNC("");
+
+			// タブを読み込みます。
+			read_tav(node, pane->tav);
 
 			// ペインの属性を読み込みます。
 			auto current = -1;
 
-			get_label(node, "split_mode", pane->split_mode, Pane::c_split_mode.labels);
-			get_label(node, "origin", pane->origin, Pane::c_origin.labels);
-			get_label(node, "caption_mode", pane->caption_mode, Pane::c_caption_mode.labels);
+			get_label(node, "split_mode", pane->split_mode, hive.pane.c_split_mode.labels);
+			get_label(node, "origin", pane->origin, hive.pane.c_origin.labels);
+			get_label(node, "caption_mode", pane->caption_mode, hive.pane.c_caption_mode.labels);
+			get_label(node, "caption_location", pane->caption_location, hive.pane.c_caption_location.labels);
 			get_bool(node, "is_border_locked", pane->is_border_locked);
 			get_int(node, "border", pane->border);
 			get_int(node, "current", current);
@@ -94,6 +116,7 @@ namespace apn::workspace
 			MY_TRACE_INT(pane->split_mode);
 			MY_TRACE_INT(pane->origin);
 			MY_TRACE_INT(pane->caption_mode);
+			MY_TRACE_INT(pane->caption_location);
 			MY_TRACE_INT(pane->is_border_locked);
 			MY_TRACE_INT(pane->border);
 			MY_TRACE_INT(current);
@@ -104,7 +127,7 @@ namespace apn::workspace
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
-				get_shuttle_name(dock_shuttle_node, "name", name);
+				read_shuttle_name(dock_shuttle_node, "name", name);
 				MY_TRACE_STR(name);
 
 				// シャトルを取得します。
@@ -130,7 +153,7 @@ namespace apn::workspace
 
 				pane->children[i] = std::make_shared<Pane>(pane->owner);
 
-				load_pane(pane_node, pane->children[i]);
+				read_pane(pane_node, pane->children[i]);
 
 				i++;
 
@@ -141,7 +164,7 @@ namespace apn::workspace
 		//
 		// ルートペインを読み込みます。
 		//
-		void load_root_pane(const n_json& node, HWND hwnd)
+		void read_root_pane(const n_json& node, HWND hwnd)
 		{
 			MY_TRACE_FUNC("");
 
@@ -163,14 +186,14 @@ namespace apn::workspace
 			n_json root_pane_node;
 			get_child_node(node, "root_pane", root_pane_node);
 			get_bool(root_pane_node, "is_solid", root->is_solid);
-			load_pane(root_pane_node, root);
+			read_pane(root_pane_node, root);
 		}
 
 		//
 		// 事前にサブウィンドウを読み込みます。
 		// これにより、レイアウトを読み込む前に必要なすべてのサブウィンドウが存在する状態になります。
 		//
-		void pre_load_sub_window(const n_json& node)
+		void pre_read_sub_window(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -191,7 +214,7 @@ namespace apn::workspace
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
-				get_shuttle_name(sub_window_node, "name", name);
+				read_shuttle_name(sub_window_node, "name", name);
 				MY_TRACE_STR(name);
 
 				// 既存のサブウィンドウが存在する場合は
@@ -215,7 +238,7 @@ namespace apn::workspace
 		//
 		// メインウィンドウを読み込みます。
 		//
-		void load_main_window(const n_json& node)
+		void read_main_window(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -227,13 +250,13 @@ namespace apn::workspace
 			get_window(main_window_node, "placement", hive.main_window);
 
 			// ルートペインを読み込みます。
-			load_root_pane(main_window_node, hive.main_window);
+			read_root_pane(main_window_node, hive.main_window);
 		}
 
 		//
 		// サブウィンドウを読み込みます。
 		//
-		void load_sub_window(const n_json& node)
+		void read_sub_window(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -243,7 +266,7 @@ namespace apn::workspace
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
-				get_shuttle_name(sub_window_node, "name", name);
+				read_shuttle_name(sub_window_node, "name", name);
 				MY_TRACE_STR(name);
 
 				// サブウィンドウを取得します。
@@ -251,7 +274,7 @@ namespace apn::workspace
 				if (!shuttle) return TRUE;
 
 				// ルートペインを読み込みます。
-				load_root_pane(sub_window_node, *shuttle);
+				read_root_pane(sub_window_node, *shuttle);
 
 				return TRUE;
 			});
@@ -260,7 +283,7 @@ namespace apn::workspace
 		//
 		// フローティングシャトルを読み込みます。
 		//
-		void load_float_shuttle(const n_json& node)
+		void read_float_shuttle(const n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -273,7 +296,7 @@ namespace apn::workspace
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
-				get_shuttle_name(float_shuttle_node, "name", name);
+				read_shuttle_name(float_shuttle_node, "name", name);
 				MY_TRACE_STR(name);
 
 				// シャトルを取得します。

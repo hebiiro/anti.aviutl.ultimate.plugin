@@ -11,6 +11,7 @@
 #include "shuttle/setting_dialog.hpp"
 #include "shuttle/shuttle_manager.hpp"
 #include "pane/tab.hpp"
+#include "pane/tav.hpp"
 #include "pane/pane.hpp"
 #include "pane/root_pane.hpp"
 #include "dock_site.hpp"
@@ -24,6 +25,7 @@
 #include "hook/menu.hpp"
 #include "hook/window.hpp"
 #include "hook/get_message.hpp"
+#include "hook/mouse.hpp"
 #include "hook/program/aviutl.hpp"
 #include "hook/program/exedit.hpp"
 #include "hook/program/vsthost.hpp"
@@ -46,7 +48,7 @@ namespace apn::workspace
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!::StrStrIW(args, L"debug")) my::Tracer::logger = 0;
+		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
 
 		return &addin;
 	}

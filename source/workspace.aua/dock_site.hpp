@@ -26,11 +26,13 @@ namespace apn::workspace
 			} c_caption_mode;
 			inline static constexpr uint32_t c_is_border_locked = 1100;
 			inline static constexpr uint32_t c_rename_sub_window = 1101;
-			inline static constexpr uint32_t c_move_to_left = 1102;
-			inline static constexpr uint32_t c_move_to_right = 1103;
-			inline static constexpr uint32_t c_undock = 1104;
-			inline static constexpr uint32_t c_is_solid = 1105;
-			inline static constexpr uint32_t c_pane_config = 1106;
+			inline static constexpr uint32_t c_move_to_front = 1102;
+			inline static constexpr uint32_t c_move_to_back = 1103;
+			inline static constexpr uint32_t c_move_to_left = 1104;
+			inline static constexpr uint32_t c_move_to_right = 1105;
+			inline static constexpr uint32_t c_undock = 1106;
+			inline static constexpr uint32_t c_is_solid = 1107;
+			inline static constexpr uint32_t c_pane_config = 1108;
 			inline static constexpr struct Shuttle {
 				inline static constexpr uint32_t c_begin = 2000;
 				inline static constexpr uint32_t c_end = 3000;
@@ -133,12 +135,13 @@ namespace apn::workspace
 		}
 
 		//
-		// メニューのコピーを作成します。
+		// 指定されたメニューのコピーを作成して返します。
 		//
-		inline static void copy_menu(HMENU dst_menu, HMENU src_menu)
+		inline static HMENU copy_menu(HMENU src_menu)
 		{
-			auto c = ::GetMenuItemCount(src_menu);
+			auto dst_menu = ::CreatePopupMenu();
 
+			auto c = ::GetMenuItemCount(src_menu);
 			for (decltype(c) i = 0; i < c; i++)
 			{
 				std::vector<TCHAR> text(MAX_PATH, _T('\0'));
@@ -149,62 +152,37 @@ namespace apn::workspace
 				::GetMenuItemInfo(src_menu, i, TRUE, &mii);
 
 				if (mii.hSubMenu)
-				{
-					auto sub_menu = ::CreatePopupMenu();
-					copy_menu(sub_menu, mii.hSubMenu);
-					mii.hSubMenu = sub_menu;
-				}
+					mii.hSubMenu = copy_menu(mii.hSubMenu);
 
 				::InsertMenuItem(dst_menu, i, TRUE, &mii);
 			}
+
+			return dst_menu;
 		}
 
 		//
-		// ターゲットのメニューを表示します。
+		// 指定されたメニューのコピーを作成して返します。
 		//
-		inline static BOOL show_target_menu(HWND dock_site, POINT point)
+		inline static BOOL show_shuttle_menu(const std::shared_ptr<Pane>& pane, POINT cursor_pos)
 		{
-			MY_TRACE_FUNC("{}, {}", point.x, point.y);
-
-			// ルートペインを取得します。
-			auto root = get_top_level_pane(dock_site);
-			if (!root) return FALSE;
-
-			// 指定された座標からペインを取得します。
-			auto pane = root->hittest_pane(point);
-			if (!pane) return FALSE;
-
 			// カレントシャトルを取得します。
-			auto shuttle = pane->get_current_shuttle();
-			if (!shuttle) return FALSE;
+			if (auto shuttle = pane->get_current_shuttle())
+			{
+				// シャトルのメニューを取得します。
+				if (auto orig_menu = ::GetMenu(*shuttle))
+				{
+					// メニューのコピーを作成します。(ポップアップメニュー化します)
+					my::menu::unique_ptr<> menu(copy_menu(orig_menu));
 
-			// ターゲットを取得します。
-			auto hwnd = (HWND)*shuttle;
+					// ポップアップメニューを表示します。
+					::TrackPopupMenuEx(menu.get(), 0,
+						cursor_pos.x, cursor_pos.y, *shuttle, nullptr);
 
-			// ターゲットのメニューを取得します。
-			auto src_menu = ::GetMenu(hwnd);
-			if (!src_menu) return FALSE;
+					return TRUE;
+				}
+			}
 
-			// 指定された座標がメニュー矩形の中にあるかチェックします。
-			auto rc_menu = pane->get_menu_rect();
-			if (!::PtInRect(&rc_menu, point)) return FALSE;
-
-			// メニュー矩形からメニューを表示する座標を算出します。
-			point.x = rc_menu.left;
-			point.y = rc_menu.bottom;
-			::ClientToScreen(dock_site, &point);
-
-			// ポップアップメニューを作成します。
-			auto dst_menu = ::CreatePopupMenu();
-			copy_menu(dst_menu, src_menu);
-
-			// ポップアップメニューを表示します。
-			::TrackPopupMenuEx(dst_menu, TPM_VERPOSANIMATION, point.x, point.y, hwnd, nullptr);
-
-			// ポップアップメニューを削除します。
-			::DestroyMenu(dst_menu);
-
-			return TRUE;
+			return FALSE;
 		}
 
 		//
@@ -283,34 +261,35 @@ namespace apn::workspace
 		//
 		// ペイン操作用のメニューを表示します。
 		//
-		inline static void show_pane_menu(HWND dock_site)
+		inline static void show_pane_menu(HWND dock_site, const std::shared_ptr<Pane>& pane)
 		{
 			// ルートペインを取得します。
 			auto root = get_root_pane(dock_site);
-			if (!root || root->get_maximized_pane()) return;
+			if (!root) return;
 
-			// カーソル座標を取得して、クライアント座標に変換します。
+			// マウスカーソル座標を取得します。
 			auto cursor_pos = my::get_cursor_pos();
+
+			// マウスカーソル座標をクライアント座標に変換します。
 			auto point = cursor_pos;
 			my::map_window_points(nullptr, dock_site, &point);
 
-			// カーソル座標にヒットするペインを取得します。
-			auto pane = root->hittest_pane(point);
-			if (!pane) return;
-
-			auto point2 = point;
-			my::map_window_points(dock_site, pane->owner, &point2);
-			auto in_caption = pane->hittest_caption(point2);
-
+			// タブ項目の数を取得します。
 			auto c = pane->get_tab_count();
+
+			// マウスカーソル位置にあるタブ項目を取得します。
 			auto ht = pane->hittest(point);
 
+			// タブのアイコンがクリックされた場合は
+			if (ht == pane->tav.c_icon_index)
+			{
+				show_shuttle_menu(pane, cursor_pos);
+
+				return;
+			}
+
 			// シャトルを取得します。取得できない場合もあります。
-			auto shuttle = (Shuttle*)nullptr;
-			if (ht != -1)
-				shuttle = pane->get_shuttle(ht);
-			else if (in_caption)
-				shuttle = pane->get_shuttle(pane->get_current_index());
+			auto shuttle = pane->get_shuttle(ht);
 
 			// ターゲットがサブウィンドウか判定します。
 			auto is_sub_window = shuttle && get_root_pane(*shuttle);
@@ -320,7 +299,7 @@ namespace apn::workspace
 
 			// メニューにシャトルの一覧を追加します。
 			add_shuttle_list(menu.get(), c_command_id.c_shuttle.c_begin,
-				[=](HMENU sub_menu, UINT_PTR id, auto shuttle)
+				[&](HMENU sub_menu, UINT_PTR id, auto shuttle)
 				{
 					// シャトルのタブが存在するなら
 					if (pane->find_tab(shuttle.get()) != -1)
@@ -337,70 +316,79 @@ namespace apn::workspace
 					}
 				});
 
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_none, _T("分割なし"));
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_vert, _T("左右に分割"));
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_split_mode.c_horz, _T("上下に分割"));
-			switch (pane->split_mode) {
-			case Pane::c_split_mode.c_none: ::CheckMenuItem(menu.get(), c_command_id.c_split_mode.c_none, MF_CHECKED); break;
-			case Pane::c_split_mode.c_vert: ::CheckMenuItem(menu.get(), c_command_id.c_split_mode.c_vert, MF_CHECKED); break;
-			case Pane::c_split_mode.c_horz: ::CheckMenuItem(menu.get(), c_command_id.c_split_mode.c_horz, MF_CHECKED); break;
-			}
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_origin.c_top_left, _T("左上を原点にする"));
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_origin.c_bottom_right, _T("右下を原点にする"));
-			switch (pane->origin) {
-			case Pane::c_origin.c_top_left: ::CheckMenuItem(menu.get(), c_command_id.c_origin.c_top_left, MF_CHECKED); break;
-			case Pane::c_origin.c_bottom_right: ::CheckMenuItem(menu.get(), c_command_id.c_origin.c_bottom_right, MF_CHECKED); break;
-			}
-#if 0
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_caption_mode.c_show, _T("キャプションを表示する"));
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_caption_mode.c_hide, _T("キャプションを表示しない"));
-			switch (pane->caption_mode) {
-			case Pane::c_caption_mode.c_hide: ::CheckMenuItem(menu.get(), c_command_id.c_caption_mode.c_hide, MF_CHECKED); break;
-			case Pane::c_caption_mode.c_show: ::CheckMenuItem(menu.get(), c_command_id.c_caption_mode.c_show, MF_CHECKED); break;
-			}
-#endif
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_move_to_left, _T("左に移動する"));
-			if (ht == -1 || ht <= 0)
-				::EnableMenuItem(menu.get(), c_command_id.c_move_to_left, MF_GRAYED | MF_DISABLED);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_move_to_right, _T("右に移動する"));
-			if (ht == -1 || ht >= c - 1)
-				::EnableMenuItem(menu.get(), c_command_id.c_move_to_right, MF_GRAYED | MF_DISABLED);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_is_border_locked, _T("ボーダーをロックする"));
-			if (pane->is_border_locked)
-				::CheckMenuItem(menu.get(), c_command_id.c_is_border_locked, MF_CHECKED);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_rename_sub_window, _T("名前を変更"));
-			if (!is_sub_window) // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
-				::EnableMenuItem(menu.get(), c_command_id.c_rename_sub_window, MF_GRAYED | MF_DISABLED);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_is_solid, _T("レイアウトを固定化"));
-			if (root->is_solid)
-				::CheckMenuItem(menu.get(), c_command_id.c_is_solid, MF_CHECKED);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_pane_config, _T("ペインの設定"));
-			::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_undock, _T("ドッキングを解除"));
-			if (c == 0) // ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
-				::EnableMenuItem(menu.get(), c_command_id.c_undock, MF_DISABLED | MF_GRAYED);
+			auto append_separator = [&]() {
+				::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
+			};
 
-			auto id = ::TrackPopupMenu(menu.get(),
+			auto append_menu = [&](uint32_t id, LPCTSTR text) {
+				::AppendMenu(menu.get(), MF_STRING, id, text);
+			};
+
+			auto check_menu = [&](uint32_t id) {
+				::CheckMenuItem(menu.get(), id, MF_CHECKED);
+			};
+
+			auto disable_menu = [&](uint32_t id) {
+				::EnableMenuItem(menu.get(), id, MF_GRAYED | MF_DISABLED);
+			};
+
+			auto append_disable_menu = [&](BOOL disable, uint32_t id, LPCTSTR text) {
+				append_menu(id, text); if (disable) disable_menu(id);
+			};
+
+			auto append_check_menu = [&](BOOL check, uint32_t id, LPCTSTR text) {
+				append_menu(id, text); if (check) check_menu(id);
+			};
+
+			auto is_front = ht <= 0 || ht > c - 1;
+			auto is_back = ht < 0 || ht >= c - 1;
+
+			append_separator();
+			append_menu(c_command_id.c_split_mode.c_none, _T("分割なし"));
+			append_menu(c_command_id.c_split_mode.c_vert, _T("左右に分割"));
+			append_menu(c_command_id.c_split_mode.c_horz, _T("上下に分割"));
+			switch (pane->split_mode) {
+			case hive.pane.c_split_mode.c_none: check_menu(c_command_id.c_split_mode.c_none); break;
+			case hive.pane.c_split_mode.c_vert: check_menu(c_command_id.c_split_mode.c_vert); break;
+			case hive.pane.c_split_mode.c_horz: check_menu(c_command_id.c_split_mode.c_horz); break;
+			}
+			append_separator();
+			append_menu(c_command_id.c_origin.c_top_left, _T("左上を原点にする"));
+			append_menu(c_command_id.c_origin.c_bottom_right, _T("右下を原点にする"));
+			switch (pane->origin) {
+			case hive.pane.c_origin.c_top_left: check_menu(c_command_id.c_origin.c_top_left); break;
+			case hive.pane.c_origin.c_bottom_right: check_menu(c_command_id.c_origin.c_bottom_right); break;
+			}
+			append_separator();
+			append_disable_menu(is_front, c_command_id.c_move_to_front, _T("先頭に移動する"));
+			append_disable_menu(is_back, c_command_id.c_move_to_back, _T("末尾に移動する"));
+			append_disable_menu(is_front, c_command_id.c_move_to_left, _T("左に移動する"));
+			append_disable_menu(is_back, c_command_id.c_move_to_right, _T("右に移動する"));
+			append_check_menu(pane->is_border_locked, c_command_id.c_is_border_locked, _T("ボーダーをロックする"));
+			// // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
+			append_disable_menu(!is_sub_window, c_command_id.c_rename_sub_window, _T("名前を変更"));
+			append_check_menu(root->is_solid, c_command_id.c_is_solid, _T("レイアウトを固定化"));
+			append_menu(c_command_id.c_pane_config, _T("ペインとタブの設定"));
+			append_separator();
+			// ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
+			append_disable_menu(c == 0, c_command_id.c_undock, _T("ドッキングを解除"));
+
+			auto id = ::TrackPopupMenuEx(menu.get(),
 				TPM_NONOTIFY | TPM_RETURNCMD,
-				cursor_pos.x, cursor_pos.y, 0, dock_site, nullptr);
+				cursor_pos.x, cursor_pos.y, dock_site, nullptr);
 			if (!id) return;
 
 			switch (id)
 			{
-			case c_command_id.c_split_mode.c_none: pane->set_split_mode(Pane::c_split_mode.c_none); break;
-			case c_command_id.c_split_mode.c_vert: pane->set_split_mode(Pane::c_split_mode.c_vert); break;
-			case c_command_id.c_split_mode.c_horz: pane->set_split_mode(Pane::c_split_mode.c_horz); break;
+			case c_command_id.c_split_mode.c_none: pane->set_split_mode(hive.pane.c_split_mode.c_none); break;
+			case c_command_id.c_split_mode.c_vert: pane->set_split_mode(hive.pane.c_split_mode.c_vert); break;
+			case c_command_id.c_split_mode.c_horz: pane->set_split_mode(hive.pane.c_split_mode.c_horz); break;
 
-			case c_command_id.c_origin.c_top_left: pane->set_origin(Pane::c_origin.c_top_left); break;
-			case c_command_id.c_origin.c_bottom_right: pane->set_origin(Pane::c_origin.c_bottom_right); break;
+			case c_command_id.c_origin.c_top_left: pane->set_origin(hive.pane.c_origin.c_top_left); break;
+			case c_command_id.c_origin.c_bottom_right: pane->set_origin(hive.pane.c_origin.c_bottom_right); break;
 
-			case c_command_id.c_caption_mode.c_hide: pane->set_caption_mode(Pane::c_caption_mode.c_hide); break;
-			case c_command_id.c_caption_mode.c_show: pane->set_caption_mode(Pane::c_caption_mode.c_show); break;
-
+			case c_command_id.c_move_to_front: pane->move_tab(ht, 0); break;
+			case c_command_id.c_move_to_back: pane->move_tab(ht, c - 1); break;
 			case c_command_id.c_move_to_left: pane->move_tab(ht, ht - 1); break;
 			case c_command_id.c_move_to_right: pane->move_tab(ht, ht + 1); break;
 
@@ -424,9 +412,8 @@ namespace apn::workspace
 					// インデックスが有効の場合は
 					if (index != -1)
 					{
-						// ドッキングしているシャトルを取得します。
-						auto shuttle = pane->get_shuttle(index);
-						if (shuttle) // ドッキングしているシャトルが存在する場合は
+						// ドッキングしているシャトルが存在する場合は
+						if (auto shuttle = pane->get_shuttle(index))
 							pane->release_shuttle(shuttle); // ドッキングを解除します。
 					}
 
@@ -473,9 +460,8 @@ namespace apn::workspace
 		//
 		void reset_pane()
 		{
-			auto pane = get_root_pane(*this);
-			if (!pane) return;
-			pane->reset_pane();
+			if (auto pane = get_root_pane(*this))
+				pane->reset_pane();
 		}
 
 		//
@@ -491,10 +477,8 @@ namespace apn::workspace
 		//
 		virtual void update_dock_site(const RECT& rc)
 		{
-			auto root = get_root_pane(*this);
-			if (!root) return;
-
-			root->update_origin(&rc, Pane::c_update_flag.c_default);
+			if (auto pane = get_top_level_pane(*this))
+				pane->update_origin(&rc, pane->c_update_flag.c_default);
 		}
 
 		//
@@ -526,6 +510,18 @@ namespace apn::workspace
 							auto pane = Pane::get_pane(header->hwndFrom);
 							if (!pane) break;
 
+							// マウスカーソルの座標を取得します。
+							auto point = my::get_cursor_pos();
+
+							// マウスカーソルの座標をクライアント座標に変換します。
+							my::map_window_points(nullptr, hwnd, &point);
+
+							// マウスカーソルの座標にあるタブ項目を取得します。
+							auto ht = pane->hittest(point);
+
+							// タブ項目が無効の場合は何もしません。
+							if (ht < 0) break;
+
 							// ルートペインを取得します。
 							auto root = get_root_pane(hwnd);
 
@@ -553,7 +549,7 @@ namespace apn::workspace
 							if (!pane) break;
 
 							// タブ上で右クリックが発生した場合はペインメニューを表示します。
-							show_pane_menu(hwnd);
+							show_pane_menu(hwnd, pane->shared_from_this());
 
 							break;
 						}
@@ -592,6 +588,10 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
+					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+
+					// ドッキングサイトのウィンドウサイズが変更されたので
+					// すべてのペインのレイアウトを再計算します。
 					update_dock_site();
 
 					break;
@@ -602,17 +602,22 @@ namespace apn::workspace
 
 					if (wParam)
 					{
-						auto root = get_root_pane(hwnd);
-
-						root->update_origin();
+						// ルートペインを取得できた場合は
+						if (auto root = get_top_level_pane(hwnd))
+						{
+							// ルートペインのレイアウトを更新します。
+							root->update_origin();
+						}
 					}
 
 					break;
 				}
 			case WM_PAINT:
 				{
+					// メモリDCを作成するためのクライアント領域を取得します。
 					auto rc = my::get_client_rect(hwnd);
 
+					// 描画の準備をします。
 					my::PaintDC pdc(hwnd);
 #if 1
 					my::DoubleBufferDC dc(pdc, &rc);
@@ -624,19 +629,14 @@ namespace apn::workspace
 					auto root = get_top_level_pane(hwnd);
 					if (!root) return 0;
 
+					// 描画に適したクライアント領域を取得します。
 					rc = get_client_rect();
 
-					{
-						// 背景を塗りつぶします。
+					// 背景を塗りつぶします。
+					painter.fill_background(dc, &rc);
 
-						painter.fill_background(dc, &rc);
-					}
-
-					{
-						// ボーダーを再帰的に描画します。
-
-						root->draw_border(dc);
-					}
+					// 各ペインのボーダーを再帰的に描画します。
+					root->draw_border(dc);
 
 					{
 						// ホットボーダーの矩形を取得できる場合は
@@ -651,13 +651,12 @@ namespace apn::workspace
 					}
 
 					{
-						// 各ウィンドウのキャプションを再帰的に描画します。
-
 						LOGFONTW lf = {};
 						::GetThemeSysFont(hive.theme.get(), TMT_CAPTIONFONT, &lf);
 						my::gdi::unique_ptr<HFONT> font(::CreateFontIndirectW(&lf));
 						my::gdi::selector font_selector(dc, font.get());
 
+						// 各ペインのキャプションを再帰的に描画します。
 						root->draw_caption(dc);
 					}
 
@@ -673,21 +672,26 @@ namespace apn::workspace
 					auto root = get_top_level_pane(hwnd);
 					if (!root) break;
 
+					// マウスカーソルの座標を取得します。
 					auto point = my::get_cursor_pos();
-					::ScreenToClient(hwnd, &point);
 
+					// スクリーン座標からクライアント座標に変換します。
+					my::map_window_points(nullptr, hwnd, &point);
+
+					// マウスカーソルの座標にあるボーダーを取得します。
 					auto border_pane = root->hittest_border(point);
 					if (!border_pane) break;
 
+					// マウスカーソルの形状を変更します。
 					switch (border_pane->split_mode)
 					{
-					case Pane::c_split_mode.c_vert:
+					case hive.pane.c_split_mode.c_vert:
 						{
 							::SetCursor(::LoadCursor(nullptr, IDC_SIZEWE));
 
 							return TRUE;
 						}
-					case Pane::c_split_mode.c_horz:
+					case hive.pane.c_split_mode.c_horz:
 						{
 							::SetCursor(::LoadCursor(nullptr, IDC_SIZENS));
 
@@ -701,18 +705,40 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_LBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
 
-					// マウス座標を取得します。
+					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
-
-					// 必要であればターゲットウィンドウのメニューを表示します。
-					if (show_target_menu(hwnd, point))
-						break; // メニューの表示が行われた場合はここで処理を終わります。
 
 					// ルートペインを取得します。
 					auto root = get_top_level_pane(hwnd);
 					if (!root) break;
 
-					// マウス座標にあるボーダーを取得します。
+					// 指定された座標からペインを取得します。
+					auto pane = root->hittest_pane(point);
+					if (!pane) break;
+
+					// ペインのファセットを取得します。
+					if (auto facet = pane->get_facet())
+					{
+						// キャプション領域を取得します。
+						auto caption_rc = facet->get_caption_rect(pane.get());
+
+						// メニュー領域を取得します。
+						auto menu_rc = facet->get_menu_rect(pane.get(), &caption_rc);
+
+						// メニュー領域で左クリックした場合は
+						if (::PtInRect(&menu_rc, point))
+						{
+							// マウスカーソルの座標をスクリーン座標に変換します。
+							auto cursor_pos = point;
+							my::map_window_points(hwnd, nullptr, &cursor_pos);
+
+							// シャトルのメニューを表示します。
+							if (show_shuttle_menu(pane, cursor_pos))
+								break;
+						}
+					}
+
+					// マウスカーソルの座標にあるボーダーを取得します。
 					hot_border_pane = root->hittest_border(point);
 
 					// ボーダーが有効かチェックします。
@@ -731,13 +757,11 @@ namespace apn::workspace
 					}
 
 					{
-						// マウス座標にあるペインを取得できたら
-						auto pane = root->hittest_pane(point);
-						if (pane)
+						// マウスカーソルの座標にあるペインを取得できた場合は
+						if (auto pane = root->hittest_pane(point))
 						{
-							// クリックされたペインがシャトルを持っているなら
-							auto shuttle = pane->get_current_shuttle();
-							if (shuttle)
+							// クリックされたペインがシャトルを持っている場合は
+							if (auto shuttle = pane->get_current_shuttle())
 								::SetFocus(*shuttle); // そのシャトルにフォーカスを当てます。
 						}
 					}
@@ -748,7 +772,7 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_LBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
 
-					// マウス座標を取得します。
+					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
 
 					// マウスをキャプチャ中かチェックします。
@@ -757,6 +781,7 @@ namespace apn::workspace
 						// マウスキャプチャを終了します。
 						::ReleaseCapture();
 
+						// ボーダーが有効かチェックします。
 						if (hot_border_pane)
 						{
 							// ボーダーを動かします。
@@ -776,7 +801,7 @@ namespace apn::workspace
 					// ルートペインを取得します。
 					auto root = get_root_pane(hwnd);
 
-					// 最大化されたペインが存在するなら
+					// 既に最大化されたペインが存在するなら
 					if (root->get_maximized_pane())
 					{
 						// 最大化を解除します。
@@ -784,16 +809,25 @@ namespace apn::workspace
 					}
 					else
 					{
-						// マウス座標を取得します。
+						// マウスカーソルの座標を取得します。
 						auto point = my::lp_to_pt(lParam);
 
-						// マウス座標にあるキャプションのペインを取得します。
+						// マウスカーソルの座標にあるペインを取得します。
 						auto pane = root->hittest_pane(point);
-						if (!pane || !pane->hittest_caption(point)) break;
+						if (!pane) break;
 
-						// キャプションをダブルクリックされたペインを
-						// 最大化されたペインにセットします。
-						root->set_maximized_pane(pane);
+						// ペインのファセットを取得します。
+						auto facet = pane->get_facet();
+						if (!facet) break;
+
+						// ペインのキャプション領域を取得します。
+						auto caption_rc = facet->get_caption_rect(pane.get());
+						if (::PtInRect(&caption_rc, point))
+						{
+							// ペインのキャプションが
+							// ダブルクリックされたので最大化します。
+							root->set_maximized_pane(pane);
+						}
 					}
 
 					// レイアウトを更新します。
@@ -805,8 +839,19 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_RBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
 
+					// マウスカーソルの座標を取得します。
+					auto point = my::lp_to_pt(lParam);
+
+					// ルートペインを取得します。
+					auto root = get_top_level_pane(hwnd);
+					if (!root) break;
+
+					// 指定された座標からペインを取得します。
+					auto pane = root->hittest_pane(point);
+					if (!pane) break;
+
 					// ペイン編集用メニューを表示します。
-					show_pane_menu(hwnd);
+					show_pane_menu(hwnd, pane);
 
 					break;
 				}
@@ -818,7 +863,7 @@ namespace apn::workspace
 
 //					MY_TRACE_FUNC("WM_MOUSEMOVE, {:#010x}, {:#010x}", wParam, lParam);
 
-					// マウス座標を取得します。
+					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
 
 					// マウスをキャプチャ中かチェックします。
@@ -839,7 +884,7 @@ namespace apn::workspace
 						auto root = get_top_level_pane(hwnd);
 						if (!root) break;
 
-						// マウス座標にあるボーダーを取得します。
+						// マウスカーソルの座標にあるボーダーを取得します。
 						auto pane = root->hittest_border(point);
 
 						// 現在のホットボーダーと違うなら
@@ -849,14 +894,11 @@ namespace apn::workspace
 							hot_border_pane = pane;
 
 							// 再描画します。
-							::InvalidateRect(hwnd, nullptr, FALSE);
+							my::invalidate(hwnd);
 						}
 
-						// マウスリーブイベントをトラックします。
-						TRACKMOUSEEVENT tme = { sizeof(tme) };
-						tme.dwFlags = TME_LEAVE;
-						tme.hwndTrack = hwnd;
-						::TrackMouseEvent(&tme);
+						// WM_MOUSELEAVEが発行されるようにします。
+						my::track_mouse_event(hwnd);
 					}
 
 					break;
@@ -956,11 +998,11 @@ namespace apn::workspace
 				if (origin == pane->c_origin.c_top_left)
 				{
 					top_left = border_pos;
-					bottom_right = w - (border_pos + pane->border_width);
+					bottom_right = w - (border_pos + hive.border_width);
 				}
 				else
 				{
-					top_left = w - (border_pos - pane->border_width);
+					top_left = w - (border_pos - hive.border_width);
 					bottom_right = border_pos;
 				}
 
@@ -979,19 +1021,49 @@ namespace apn::workspace
 				auto h = my::get_height(pane->position);
 
 				init_combobox(IDC_PANE_ORIGIN, _T("左上"), _T("右下"));
+				init_combobox(IDC_CAPTION_MODE, _T("非表示"), _T("表示"));
+				init_combobox(IDC_CAPTION_LOCATION, _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
+				init_combobox(IDC_TAV_DISPLAY_MODE, _T("デフォルト"), _T("手動"), _T("半自動"), _T("自動"), _T("全自動"));
+				init_combobox(IDC_TAV_SELECT_MODE, _T("デフォルト"), _T("クリック"), _T("ホバー"));
+				init_combobox(IDC_TAV_STRETCH_MODE, _T("デフォルト"), _T("内側"), _T("外側"));
+				init_combobox(IDC_TAV_LOCATION, _T("デフォルト"), _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
+				init_combobox(IDC_TAV_NODE_ALIGN, _T("デフォルト"), _T("左または上"), _T("右または下"), _T("中央"));
 
 				set_int(IDC_PANE_X, x);
 				set_int(IDC_PANE_Y, y);
 				set_int(IDC_PANE_W, w);
 				set_int(IDC_PANE_H, h);
 				set_combobox_index(IDC_PANE_ORIGIN, pane->origin);
+				set_combobox_index(IDC_CAPTION_MODE, pane->caption_mode);
+				set_combobox_index(IDC_CAPTION_LOCATION, pane->caption_location - 1);
 				set_int(IDC_PANE_BORDER_POS, pane->border);
+				set_combobox_index(IDC_TAV_DISPLAY_MODE, pane->tav.display_mode);
+				set_combobox_index(IDC_TAV_SELECT_MODE, pane->tav.select_mode);
+				set_combobox_index(IDC_TAV_STRETCH_MODE, pane->tav.stretch_mode);
+				set_combobox_index(IDC_TAV_LOCATION, pane->tav.location);
+				set_combobox_index(IDC_TAV_NODE_ALIGN, pane->tav.node_align);
 
 				auto result = __super::do_modal();
 				if (result != IDOK) return result;
 
-				get_combobox_index(IDC_PANE_ORIGIN, pane->origin);
-				get_int(IDC_PANE_BORDER_POS, pane->border);
+				auto origin = pane->origin;
+				auto caption_mode = pane->caption_mode;
+				auto caption_location = pane->caption_location;
+				auto border = pane->border;
+				get_combobox_index(IDC_PANE_ORIGIN, origin);
+				get_combobox_index(IDC_CAPTION_MODE, caption_mode);
+				get_combobox_index(IDC_CAPTION_LOCATION, caption_location);
+				get_int(IDC_PANE_BORDER_POS, border);
+				get_combobox_index(IDC_TAV_DISPLAY_MODE, pane->tav.display_mode);
+				get_combobox_index(IDC_TAV_SELECT_MODE, pane->tav.select_mode);
+				get_combobox_index(IDC_TAV_STRETCH_MODE, pane->tav.stretch_mode);
+				get_combobox_index(IDC_TAV_LOCATION, pane->tav.location);
+				get_combobox_index(IDC_TAV_NODE_ALIGN, pane->tav.node_align);
+
+				pane->set_origin(origin);
+				pane->set_caption_mode(caption_mode);
+				pane->set_caption_location(caption_location + 1);
+				pane->border = border;
 
 				return result;
 			}

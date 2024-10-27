@@ -316,12 +316,13 @@ namespace apn::workspace
 		virtual RECT get_client_rect() override
 		{
 			auto rc = __super::get_client_rect();
+
 			switch (hive.layout_list_mode)
 			{
 			default:
 			case hive.c_layout_list_mode.c_none: break;
-			case hive.c_layout_list_mode.c_top: rc.top += Pane::tab_height; break;
-			case hive.c_layout_list_mode.c_bottom: rc.bottom -= Pane::tab_height; break;
+			case hive.c_layout_list_mode.c_top: rc.top += hive.tab_height; break;
+			case hive.c_layout_list_mode.c_bottom: rc.bottom -= hive.tab_height; break;
 			}
 
 			return rc;
@@ -348,9 +349,9 @@ namespace apn::workspace
 				{
 					// レイアウトリストをメインウィンドウの上側に配置します。
 					auto x = rc.left;
-					auto y = rc.top - Pane::tab_height;
+					auto y = rc.top - hive.tab_height;
 					auto w = my::get_width(rc);
-					auto h = Pane::tab_height;
+					auto h = hive.tab_height;
 
 					// レイアウトリストを表示します。
 					::SetWindowPos(layout_list, HWND_TOP,
@@ -364,7 +365,7 @@ namespace apn::workspace
 					auto x = rc.left;
 					auto y = rc.bottom;
 					auto w = my::get_width(rc);
-					auto h = Pane::tab_height;
+					auto h = hive.tab_height;
 
 					// レイアウトリストを表示します。
 					::SetWindowPos(layout_list, HWND_TOP,
@@ -595,12 +596,16 @@ namespace apn::workspace
 					hive.theme.reset(::OpenThemeData(hwnd, VSCLASS_WINDOW));
 					MY_TRACE_HEX(hive.theme.get());
 
+					hive.theme_tav.reset(::OpenThemeData(hwnd, VSCLASS_TAB));
+					MY_TRACE_HEX(hive.theme_tav.get());
+
 					break;
 				}
 			case WM_DESTROY:
 				{
 					MY_TRACE_FUNC("WM_DESTROY");
 
+					hive.theme_tav.reset();
 					hive.theme.reset();
 
 					break;
@@ -612,12 +617,7 @@ namespace apn::workspace
 					// エキストラメニューを初期化します。
 					init_extra_menu();
 
-					// メインウィンドウが初期化された時点では
-					// まだAviUtlのフォントが作成されていなかったので
-					// ここでタブのフォントをセットします。
-					get_root_pane(hwnd)->tab.set_font();
-
-					// レイアウトリストのフォントもここでセットします。
+					// レイアウトリストのフォントをセットします。
 					layout_list.set_font();
 
 					// レイアウトリストを更新します。
@@ -678,8 +678,15 @@ namespace apn::workspace
 		{
 			int do_modal(HWND parent)
 			{
+				auto tav_display_mode = hive.tav.display_mode - 1;
+				auto tav_select_mode = hive.tav.select_mode - 1;
+				auto tav_stretch_mode = hive.tav.stretch_mode - 1;
+				auto tav_location = hive.tav.location - 1;
+				auto tav_node_align = hive.tav.node_align - 1;
+
 				create(hive.instance, MAKEINTRESOURCE(IDD_CONFIG), parent);
 
+				// 配色
 				set_uint(IDC_FILL_COLOR, hive.fill_color);
 				set_uint(IDC_BORDER_COLOR, hive.border_color);
 				set_uint(IDC_HOT_BORDER_COLOR, hive.hot_border_color);
@@ -687,11 +694,21 @@ namespace apn::workspace
 				set_uint(IDC_ACTIVE_CAPTION_TEXT_COLOR, hive.active_caption_text_color);
 				set_uint(IDC_INACTIVE_CAPTION_COLOR, hive.inactive_caption_color);
 				set_uint(IDC_INACTIVE_CAPTION_TEXT_COLOR, hive.inactive_caption_text_color);
-				set_uint(IDC_BORDER_WIDTH, Pane::border_width);
-				set_uint(IDC_CAPTION_HEIGHT, Pane::caption_height);
-				set_uint(IDC_TAB_HEIGHT, Pane::tab_height);
-				set_combobox_index(IDC_TAB_MODE, Pane::tab_mode, _T("タイトル"), _T("上"), _T("下"));
+
+				// タブの設定
+				set_combobox_index(IDC_TAV_DISPLAY_MODE, tav_display_mode, _T("手動"), _T("半自動"), _T("自動"), _T("全自動"));
+				set_combobox_index(IDC_TAV_SELECT_MODE, tav_select_mode, _T("クリック"), _T("ホバー"));
+				set_combobox_index(IDC_TAV_STRETCH_MODE, tav_stretch_mode, _T("内側"), _T("外側"));
+				set_combobox_index(IDC_TAV_LOCATION, tav_location, _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
+				set_combobox_index(IDC_TAV_NODE_ALIGN, tav_node_align, _T("左または上"), _T("右または下"), _T("中央"));
+				set_uint(IDC_TAB_HEIGHT, hive.tab_height);
+
+				// その他の設定
 				set_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
+				set_uint(IDC_BORDER_WIDTH, hive.border_width);
+				set_uint(IDC_CAPTION_HEIGHT, hive.caption_height);
+
+				// チェックボックス
 				set_check(IDC_USE_THEME, hive.use_theme);
 				set_check(IDC_SCROLL_FORCE, hive.scroll_force);
 				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_preview);
@@ -699,7 +716,16 @@ namespace apn::workspace
 				set_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
 				set_check(IDC_IGNORE_CTRL_KEY_UP, hive.ignore_ctrl_key_up);
 
-				return do_modal2(parent);
+				auto result = do_modal2(parent);
+				if (result != IDOK) return result;
+
+				hive.tav.display_mode = tav_display_mode + 1;
+				hive.tav.select_mode = tav_select_mode + 1;
+				hive.tav.stretch_mode = tav_stretch_mode + 1;
+				hive.tav.location = tav_location + 1;
+				hive.tav.node_align = tav_node_align + 1;
+
+				return result;
 			}
 
 			virtual INT_PTR on_dlg_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -721,19 +747,16 @@ namespace apn::workspace
 						case IDC_INACTIVE_CAPTION_COLOR:
 						case IDC_INACTIVE_CAPTION_TEXT_COLOR:
 							{
-								auto color = (COLORREF)::GetDlgItemInt(hwnd, id, nullptr, FALSE);
-
 								CHOOSECOLOR cc { sizeof(cc) };
 								cc.hwndOwner = hwnd;
 								cc.lpCustColors = custom_colors;
-								cc.rgbResult = color;
+								cc.rgbResult = get_uint(id);
 								cc.Flags = CC_RGBINIT | CC_FULLOPEN;
 								if (!::ChooseColor(&cc)) return TRUE;
 
-								color = cc.rgbResult;
+								set_uint(id, cc.rgbResult);
 
-								::SetDlgItemInt(hwnd, id, color, FALSE);
-								::InvalidateRect(control, nullptr, FALSE);
+								my::invalidate(control);
 
 								return TRUE;
 							}
@@ -757,10 +780,8 @@ namespace apn::workspace
 							{
 								auto dis = (DRAWITEMSTRUCT*)lParam;
 
-								auto color = (COLORREF)::GetDlgItemInt(hwnd, id, nullptr, FALSE);
-
-								my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(color));
-
+								my::gdi::unique_ptr<HBRUSH> brush(
+									::CreateSolidBrush(get_uint(id)));
 								::FillRect(dis->hDC, &dis->rcItem, brush.get());
 
 								return TRUE;

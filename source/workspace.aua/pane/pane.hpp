@@ -2,47 +2,9 @@
 
 namespace apn::workspace
 {
-	struct Pane : Shuttle::Listener, std::enable_shared_from_this<Pane>
+	struct Pane : Hive::Pane, Shuttle::Listener, std::enable_shared_from_this<Pane>
 	{
-		inline static struct SplitMode {
-			inline static constexpr int32_t c_none = 0;
-			inline static constexpr int32_t c_vert = 1;
-			inline static constexpr int32_t c_horz = 2;
-			inline static constexpr my::Label labels[] = {
-				{ c_none, L"none" },
-				{ c_vert, L"vert" },
-				{ c_horz, L"horz" },
-			};
-		} c_split_mode;
-
-		inline static struct Origin {
-			inline static constexpr int32_t c_top_left = 0;
-			inline static constexpr int32_t c_bottom_right = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_top_left, L"top_left" },
-				{ c_bottom_right, L"bottom_right" },
-			};
-		} c_origin;
-
-		inline static struct CaptionMode {
-			inline static constexpr int32_t c_hide = 0;
-			inline static constexpr int32_t c_show = 1;
-			inline static constexpr my::Label labels[] = {
-				{ c_hide, L"hide" },
-				{ c_show, L"show" },
-			};
-		} c_caption_mode;
-
-		inline static struct TabMode {
-			inline static constexpr int32_t c_caption = 0;
-			inline static constexpr int32_t c_top = 1;
-			inline static constexpr int32_t c_bottom = 2;
-			inline static constexpr my::Label labels[] = {
-				{ c_caption, L"caption" },
-				{ c_top, L"top" },
-				{ c_bottom, L"bottom" },
-			};
-		} c_tab_mode;
+		inline static constexpr auto c_prop_name = _T("apn::workspace::pane");
 
 		inline static struct UpdateFlag {
 			inline static constexpr uint32_t c_deep = 0x00000001;
@@ -57,23 +19,167 @@ namespace apn::workspace
 				c_show_current_shuttle | c_show_tab | c_origin;
 		} c_update_flag;
 
-		inline static constexpr auto c_prop_name = _T("apn::workspace::pane");
-		inline static auto border_width = 8;
-		inline static auto caption_height = 24;
-		inline static auto tab_height = 24;
-		inline static auto tab_mode = TabMode::c_bottom;
-
 		HWND owner = nullptr;
 		RECT position = {};
-		int32_t split_mode = SplitMode::c_none;
-		int32_t origin = Origin::c_bottom_right;
-		int32_t caption_mode = CaptionMode::c_show;
+		int32_t split_mode = c_split_mode.c_none;
+		int32_t origin = c_origin.c_bottom_right;
+		int32_t caption_mode = c_caption_mode.c_show;
+		int32_t caption_location = c_caption_location.c_top;
 		BOOL is_border_locked = FALSE;
 		int32_t border = 0; // ボーダーの位置です。
 		int32_t drag_offset = 0; // ドラッグ処理に使用します。
 
-		Tab tab; // タブコントロールです。
+		Tav tav; // タブコントロールです。
 		std::shared_ptr<Pane> children[2]; // 子ペインです。
+
+		//
+		// このクラスはファセットのインターフェイスです。
+		//
+		struct Facet {
+			virtual RECT get_exclude_rect(Pane* pane) = 0;
+			virtual RECT get_caption_rect(Pane* pane) = 0;
+			virtual RECT get_caption_text_rect(Pane* pane, LPCRECT caption_rect) = 0;
+			virtual RECT get_menu_rect(Pane* pane, LPCRECT caption_rect) = 0;
+		};
+
+		//
+		// このクラスはファセットのテンプレートです。
+		// コメントはタブコントロールを上側に配置する場合を前提にして記述しています。
+		//
+		template <LONG RECT::* left, LONG RECT::* top, LONG RECT::* right, LONG RECT::* bottom>
+		struct FacetT : Facet {
+			//
+			// 指定されたメンバ変数のオフセットを返します。
+			//
+			inline static constexpr size_t offset(LONG RECT::* m)
+			{
+				return (size_t)&(((RECT*)0)->*m);
+			}
+
+			//
+			// 水平方向の符号を返します。
+			//
+			inline static constexpr LONG horz_sign()
+			{
+				return (offset(left) < offset(right)) ? +1 : -1;
+			}
+
+			//
+			// 垂直方向の符号を返します。
+			//
+			inline static constexpr LONG vert_sign()
+			{
+				return (offset(top) < offset(bottom)) ? +1 : -1;
+			}
+
+			//
+			// ペイン領域からキャプションの領域を取り除いた領域を返します。
+			//
+			virtual RECT get_exclude_rect(Pane* pane) override
+			{
+				// ペイン領域の上辺部分を除外して返します。
+				auto rc = pane->position;
+				rc.*top += hive.caption_height * vert_sign();
+				return rc;
+			}
+
+			//
+			// キャプション領域を返します。
+			//
+			virtual RECT get_caption_rect(Pane* pane) override
+			{
+				// ペイン領域を基準にします。
+				auto caption_rc = pane->position;
+
+				// キャプションとタブコントロールが同じ辺に存在する場合は
+				if (pane->is_tab_same_location())
+				{
+					// タブコントロールが全自動モードではなく、
+					// なおかつタブコントロールが外側に展開する場合は
+					if (pane->tav.get_display_mode() != pane->tav.c_display_mode.c_full_auto &&
+						pane->tav.get_stretch_mode() == pane->tav.c_stretch_mode.c_outside)
+					{
+						// キャプションを内側、タブコントロールを外側に配置します。
+						// そのため、キャプション領域をタブ項目一行分下にずらします。
+						caption_rc.*top += hive.tab_height * vert_sign();
+					}
+				}
+
+				// キャプションの高さをセットします。
+				caption_rc.*bottom = caption_rc.*top + hive.caption_height * vert_sign();
+
+				// 計算結果を返します。
+				return caption_rc;
+			}
+
+			//
+			// キャプションの文字領域を返します。
+			//
+			virtual RECT get_caption_text_rect(Pane* pane, LPCRECT caption_rect) override
+			{
+				// キャプション領域からメニュー領域を除外します。
+				auto text_rc = *caption_rect;
+				text_rc.*right -= hive.caption_height * horz_sign();
+				return text_rc;
+			}
+
+			//
+			// メニュー領域を返します。
+			//
+			virtual RECT get_menu_rect(Pane* pane, LPCRECT caption_rect) override
+			{
+				// キャプションの右端を返します。
+				auto menu_rc = *caption_rect;
+				menu_rc.*left = menu_rc.*right - hive.caption_height * horz_sign();
+				return menu_rc;
+			}
+		};
+
+		//
+		// このクラスは左側のファセットです。
+		//
+		inline static struct LeftFacet : FacetT<&RECT::top, &RECT::left, &RECT::bottom, &RECT::right> {
+		} left_facet;
+
+		//
+		// このクラスは上側のファセットです。
+		//
+		inline static struct TopFacet : FacetT<&RECT::left, &RECT::top, &RECT::right, &RECT::bottom> {
+		} top_facet;
+
+		//
+		// このクラスは右側のファセットです。
+		//
+		inline static struct RightFacet : FacetT<&RECT::top, &RECT::right, &RECT::bottom, &RECT::left> {
+		} right_facet;
+
+		//
+		// このクラスは下側のファセットです。
+		//
+		inline static struct BottomFacet : FacetT<&RECT::left, &RECT::bottom, &RECT::right, &RECT::top> {
+		} bottom_facet;
+
+		//
+		// ファセットを返します。
+		//
+		Facet* get_facet()
+		{
+			// キャプションを表示する場合は
+			if (caption_mode == c_caption_mode.c_show)
+			{
+				// 各辺のファセットを返します。
+				switch (caption_location)
+				{
+				case c_caption_location.c_left: return &left_facet;
+				case c_caption_location.c_top: return &top_facet;
+				case c_caption_location.c_right: return &right_facet;
+				case c_caption_location.c_bottom: return &bottom_facet;
+				}
+			}
+
+			// それ以外の場合はnullptrを返します。
+			return nullptr;
+		}
 
 		//
 		// コンストラクタです。
@@ -82,19 +188,11 @@ namespace apn::workspace
 		Pane(HWND owner)
 			: owner(owner)
 		{
-			// タブを作成します。
-			tab.create(
-				WS_EX_NOPARENTNOTIFY,
-				WC_TABCONTROL,
-				_T("apn::workspace::pane::tab"),
-				WS_VISIBLE | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
-				TCS_FOCUSNEVER,
-				0, 0, 0, 0,
-				owner, nullptr, hive.instance, nullptr);
-			tab.set_font();
+			// タブコントロールを初期化します。
+			tav.init(owner);
 
 			// このペインをタブに関連付けます。
-			set_pane(tab, this);
+			set_pane(tav, this);
 		}
 
 		//
@@ -102,8 +200,8 @@ namespace apn::workspace
 		//
 		virtual ~Pane()
 		{
-			// タブを削除します。
-			tab.destroy();
+			// タブコントロールを終了します。
+			tav.exit();
 		}
 
 		//
@@ -117,7 +215,7 @@ namespace apn::workspace
 		//
 		// 指定されたウィンドウハンドルにペインを関連付けます。
 		//
-		static void set_pane(HWND hwnd, Pane* pane)
+		inline static void set_pane(HWND hwnd, Pane* pane)
 		{
 			::SetProp(hwnd, c_prop_name, pane);
 		}
@@ -127,7 +225,7 @@ namespace apn::workspace
 		//
 		int32_t get_tab_count()
 		{
-			return ::SendMessage(tab, TCM_GETITEMCOUNT, 0, 0);
+			return (int32_t)tav.nodes.size();
 		}
 
 		//
@@ -135,13 +233,10 @@ namespace apn::workspace
 		//
 		Shuttle* get_shuttle(int32_t index)
 		{
-			if (index == -1) return nullptr;
+			if (index < 0 || index >= get_tab_count())
+				return nullptr;
 
-			TCITEM item = {};
-			item.mask = TCIF_PARAM;
-			::SendMessage(tab, TCM_GETITEM, index, (LPARAM)&item);
-
-			return (Shuttle*)item.lParam;
+			return Shuttle::get_pointer(tav.nodes[index]->hwnd);
 		}
 
 		//
@@ -149,30 +244,30 @@ namespace apn::workspace
 		//
 		int32_t get_current_index()
 		{
-			return ::SendMessage(tab, TCM_GETCURSEL, 0, 0);
+			return tav.selected_node_index;
 		}
 
 		//
 		// タブのカレントインデックスを指定されたインデックスに変更します。
 		//
-		int32_t set_current_index(int32_t index)
+		void set_current_index(int32_t index)
 		{
 			if (index < 0 || index >= get_tab_count())
 				index = 0;
 
-			return ::SendMessage(tab, TCM_SETCURSEL, index, 0);
+			tav.selected_node_index = index;
 		}
 
 		//
 		// 指定された座標にあるタブのインデックスを返します。
-		// pointはタブの親ウィンドウの座標系で指定します。
+		// pointはオーナーの座標系で指定します。
 		//
 		int32_t hittest(POINT point)
 		{
-			TCHITTESTINFO hti = {};
-			hti.pt = point;
-			::MapWindowPoints(::GetParent(tab), tab, &hti.pt, 1);
-			return ::SendMessage(tab, TCM_HITTEST, 0, (LPARAM)&hti);
+			// オーナーの座標系からタブの座標系に変換します。
+			my::map_window_points(owner, tav, &point);
+
+			return tav.hittest(point);
 		}
 
 		//
@@ -182,19 +277,15 @@ namespace apn::workspace
 		//
 		int32_t add_tab(Shuttle* shuttle, LPCTSTR text, int32_t index)
 		{
-			TCITEM item = {};
-			item.mask = TCIF_PARAM | TCIF_TEXT;
-			item.lParam = (LPARAM)shuttle;
-			item.pszText = (LPTSTR)text;
-			return ::SendMessage(tab, TCM_INSERTITEM, index, (LPARAM)&item);
+			return tav.insert_node(shuttle->hwnd, text, index);
 		}
 
 		//
 		// 指定されたインデックスのタブを削除します。
 		//
-		void erase_tab(int32_t index)
+		BOOL erase_tab(int32_t index)
 		{
-			::SendMessage(tab, TCM_DELETEITEM, index, 0);
+			return tav.erase_node(index);
 		}
 
 		//
@@ -202,7 +293,7 @@ namespace apn::workspace
 		//
 		void clear_all_tabs()
 		{
-			::SendMessage(tab, TCM_DELETEALLITEMS, 0, 0);
+			tav.clear();
 		}
 
 		//
@@ -227,23 +318,7 @@ namespace apn::workspace
 		//
 		int32_t move_tab(int32_t from, int32_t to)
 		{
-			auto c = get_tab_count();
-
-			if (from < 0 || from >= c) return -1;
-			if (to < 0 || to >= c) return -1;
-
-			auto current = get_current_index();
-			std::vector<TCHAR> text(MAX_PATH, _T('\0'));
-			TCITEM item = {};
-			item.mask = TCIF_PARAM | TCIF_TEXT;
-			item.pszText = text.data();
-			item.cchTextMax = text.size();
-			::SendMessage(tab, TCM_GETITEM, from, (LPARAM)&item);
-			::SendMessage(tab, TCM_DELETEITEM, from, 0);
-			::SendMessage(tab, TCM_INSERTITEM, to, (LPARAM)&item);
-			if (from == current) set_current_index(to);
-
-			return to;
+			return tav.move_node(from, to);
 		}
 
 		//
@@ -253,11 +328,7 @@ namespace apn::workspace
 		{
 			auto index = find_tab(shuttle);
 			if (index == -1) return;
-
-			TCITEM item = {};
-			item.mask = TCIF_TEXT;
-			item.pszText = (LPTSTR)text;
-			::SendMessage(tab, TCM_SETITEM, index, (LPARAM)&item);
+			tav.set_node_text(index, text);
 		}
 
 		//
@@ -265,11 +336,15 @@ namespace apn::workspace
 		//
 		BOOL has_tab()
 		{
-			auto c = get_tab_count();
-			if (hive.show_tab_force)
-				return c >= 1;
-			else
-				return c >= 2;
+			return tav.need_deploy();
+		}
+
+		//
+		// タブがキャプションと同じ位置モードの場合はTRUEを返します。
+		//
+		BOOL is_tab_same_location()
+		{
+			return get_caption_location() == tav.get_location();
 		}
 
 		//
@@ -277,8 +352,7 @@ namespace apn::workspace
 		//
 		Shuttle* get_current_shuttle()
 		{
-			auto current = get_current_index();
-			return get_shuttle(current);
+			return get_shuttle(get_current_index());
 		}
 
 		//
@@ -286,7 +360,7 @@ namespace apn::workspace
 		//
 		void dock_shuttle(Shuttle* shuttle)
 		{
-			set_pane(*shuttle, this);
+//			set_pane(*shuttle, this);
 			shuttle->add_listener(this);
 			shuttle->dock_window(owner);
 		}
@@ -296,7 +370,7 @@ namespace apn::workspace
 		//
 		void float_shuttle(Shuttle* shuttle)
 		{
-			set_pane(*shuttle, nullptr);
+//			set_pane(*shuttle, nullptr);
 			shuttle->remove_listener(this);
 			shuttle->float_window();
 		}
@@ -315,8 +389,7 @@ namespace apn::workspace
 			shuttle->fire_release_shuttle();
 
 			// 追加位置が無効の場合は末尾に追加します。
-			if (index == -1)
-				index = get_tab_count();
+			if (index == -1) index = get_tab_count();
 
 			// ウィンドウテキストを取得します。
 			auto text = my::get_window_text(*shuttle);
@@ -376,13 +449,11 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// すべてのシャトルをフローティング状態にします。
-
 			auto c = get_tab_count();
 			for (decltype(c) i = 0; i < c; i++)
 			{
-				auto shuttle = get_shuttle(i);
-
-				float_shuttle(shuttle);
+				if (auto shuttle = get_shuttle(i))
+					float_shuttle(shuttle);
 			}
 
 			// すべてのタブを削除します。
@@ -414,13 +485,13 @@ namespace apn::workspace
 
 			switch (split_mode)
 			{
-			case SplitMode::c_none:
+			case c_split_mode.c_none:
 				{
 					reset_pane();
 
 					break;
 				}
-			case SplitMode::c_vert:
+			case c_split_mode.c_vert:
 				{
 					border = my::get_width(position) / 2;
 
@@ -429,7 +500,7 @@ namespace apn::workspace
 
 					break;
 				}
-			case SplitMode::c_horz:
+			case c_split_mode.c_horz:
 				{
 					border = my::get_height(position) / 2;
 
@@ -451,14 +522,14 @@ namespace apn::workspace
 		{
 			if (origin == new_origin) return;
 			origin = new_origin;
-			if (split_mode == Pane::SplitMode::c_none) return;
+			if (split_mode == c_split_mode.c_none) return;
 
-			border = -border_width - border;
+			border = -hive.border_width - border;
 
 			switch (split_mode)
 			{
-			case Pane::SplitMode::c_horz: border += position.bottom - position.top; break;
-			case Pane::SplitMode::c_vert: border += position.right - position.left; break;
+			case c_split_mode.c_horz: border += position.bottom - position.top; break;
+			case c_split_mode.c_vert: border += position.right - position.left; break;
 			}
 		}
 
@@ -472,14 +543,28 @@ namespace apn::workspace
 		}
 
 		//
-		// このペインのキャプションの高さを返します。
+		// キャプション位置モードを返します。
 		//
-		int32_t get_caption_height()
+		int32_t get_caption_location()
 		{
-			if (caption_mode == CaptionMode::c_hide) return 0;
-			return caption_height;
+			if (caption_mode == c_caption_mode.c_show)
+				return caption_location;
+			else
+				return c_caption_location.c_nowhere;
 		}
 
+		//
+		// キャプション位置モードを変更します。
+		//
+		void set_caption_location(int32_t new_caption_location)
+		{
+			if (caption_location == new_caption_location) return;
+			caption_location = new_caption_location;
+		}
+
+		//
+		// 与えられた値をクランプして返します。
+		//
 		inline static int32_t clamp(int32_t x, int32_t min_value, int32_t max_value)
 		{
 			if (x < min_value) return min_value;
@@ -491,8 +576,8 @@ namespace apn::workspace
 		{
 			switch (origin)
 			{
-			case Origin::c_top_left: return position.left + x;
-			case Origin::c_bottom_right: return position.right - x - border_width;
+			case c_origin.c_top_left: return position.left + x;
+			case c_origin.c_bottom_right: return position.right - x - hive.border_width;
 			}
 
 			return 0;
@@ -502,8 +587,8 @@ namespace apn::workspace
 		{
 			switch (origin)
 			{
-			case Origin::c_top_left: return position.top + y;
-			case Origin::c_bottom_right: return position.bottom - y - border_width;
+			case c_origin.c_top_left: return position.top + y;
+			case c_origin.c_bottom_right: return position.bottom - y - hive.border_width;
 			}
 
 			return 0;
@@ -513,8 +598,8 @@ namespace apn::workspace
 		{
 			switch (origin)
 			{
-			case Origin::c_top_left: return x - position.left;
-			case Origin::c_bottom_right: return position.right - x + border_width;
+			case c_origin.c_top_left: return x - position.left;
+			case c_origin.c_bottom_right: return position.right - x + hive.border_width;
 			}
 
 			return 0;
@@ -524,11 +609,28 @@ namespace apn::workspace
 		{
 			switch (origin)
 			{
-			case Origin::c_top_left: return y - position.top;
-			case Origin::c_bottom_right: return position.bottom - y + border_width;
+			case c_origin.c_top_left: return y - position.top;
+			case c_origin.c_bottom_right: return position.bottom - y + hive.border_width;
 			}
 
 			return 0;
+		}
+
+		//
+		// ワークエリア領域を返します。
+		//
+		RECT get_workarea()
+		{
+			if (auto facet = get_facet())
+			{
+				// ペイン領域からキャプション領域を除外します。
+				return facet->get_exclude_rect(this);
+			}
+			else
+			{
+				// ペイン領域を返します。
+				return position;
+			}
 		}
 
 		//
@@ -536,94 +638,21 @@ namespace apn::workspace
 		//
 		RECT get_dock_rect()
 		{
-			// キャプションの高さを取得します。
-			auto caption_height = get_caption_height();
+			// ワークエリア領域を取得します。
+			auto workarea = get_workarea();
 
-			// このペインがタブを表示する場合は
+			// タブを表示する場合は
 			if (has_tab())
 			{
-				// タブを考慮に入れてドッキング領域を返します。
-				switch (tab_mode)
-				{
-				case TabMode::c_caption: // タブをキャプションに配置する場合
-					{
-						return RECT
-						{
-							position.left,
-							position.top + std::max<int>(caption_height, tab_height),
-							position.right,
-							position.bottom,
-						};
-					}
-				case TabMode::c_top: // タブを上に配置する場合
-					{
-						return RECT
-						{
-							position.left,
-							position.top + caption_height + tab_height,
-							position.right,
-							position.bottom,
-						};
-					}
-				case TabMode::c_bottom: // タブを下に配置する場合
-					{
-						return RECT
-						{
-							position.left,
-							position.top + caption_height,
-							position.right,
-							position.bottom - tab_height,
-						};
-					}
-				}
+				// ワークエリア領域からタブを除外した領域を返します。
+				return tav.get_facet()->get_exclude_rect(&tav, &workarea);
 			}
-
-			// タブを考慮に入れずにドッキング領域を返します。
-			return RECT
+			// タブを表示しない場合は
+			else
 			{
-				position.left,
-				position.top + caption_height,
-				position.right,
-				position.bottom,
-			};
-		}
-
-		//
-		// キャプション領域を返します。
-		//
-		RECT get_caption_rect()
-		{
-			return RECT
-			{
-				position.left,
-				position.top,
-				position.right,
-				position.top + caption_height,
-			};
-		}
-
-		//
-		// メニューボタンの領域を返します。
-		//
-		RECT get_menu_rect()
-		{
-			return RECT
-			{
-				position.right - caption_height,
-				position.top,
-				position.right,
-				position.top + caption_height,
-			};
-		}
-
-		//
-		// 与えられた値をクランプして返します。
-		//
-		inline static auto clamp(auto a, auto b, auto c)
-		{
-			a = std::max(a, b);
-			a = std::min(a, c);
-			return a;
+				// ワークエリア領域全体を返します。
+				return workarea;
+			}
 		}
 
 		//
@@ -635,17 +664,62 @@ namespace apn::workspace
 
 			switch (split_mode)
 			{
-			case SplitMode::c_vert: border = clamp(border, 0, my::get_width(position) - border_width); break;
-			case SplitMode::c_horz: border = clamp(border, 0, my::get_height(position) - border_width); break;
+			case c_split_mode.c_vert: border = clamp(border, 0, my::get_width(position) - hive.border_width); break;
+			case c_split_mode.c_horz: border = clamp(border, 0, my::get_height(position) - hive.border_width); break;
 			}
 		}
+
+		//
+		// 指定されたシャトルを表示します。
+		//
+		void show_shuttle(HDWP dwp, const auto& shuttle)
+		{
+#if 1
+			// シャトルが格納されているドッキングコンテナを
+			// タブコントロールのすぐ後ろに表示にします。
+			::DeferWindowPos(dwp, *shuttle->dock_container,
+				tav, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+			// SWP_SHOWWINDOWを使用してウィンドウを表示した場合は
+			// WM_SHOWWINDOWが送信されないので手動で送信しています。
+			::PostMessage(*shuttle->dock_container, WM_SHOWWINDOW, TRUE, 0);
+#else
+			::DeferWindowPos(dwp, *shuttle->dock_container,
+				tav, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+			::ShowWindowAsync(*shuttle->dock_container, SW_SHOWNA);
+#endif
+		};
+
+		//
+		// 指定されたシャトルを非表示にします。
+		//
+		void hide_shuttle(HDWP dwp, const auto& shuttle)
+		{
+			// シャトルが格納されているドッキングコンテナを非表示にします。
+			::DeferWindowPos(dwp, *shuttle->dock_container,
+				nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+			// SWP_HIDEWINDOWを使用してウィンドウを非表示にした場合は
+			// WM_SHOWWINDOWが送信されないので手動で送信しています。
+			::PostMessage(*shuttle->dock_container, WM_SHOWWINDOW, FALSE, 0);
+		};
+
+		//
+		// タブコントロールを非表示にします。
+		//
+		void hide_tab(HDWP dwp)
+		{
+			// タブコントロールを非表示にします。
+			::DeferWindowPos(dwp, tav, nullptr, 0, 0, 0, 0,
+				SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+		};
 
 		//
 		// このペインを起点にして、
 		// このペインおよび子孫ペインの位置情報を更新します。
 		//
-		void update_origin(uint32_t flags = UpdateFlag::c_default)
+		void update_origin(uint32_t flags = c_update_flag.c_default)
 		{
+//			MY_TRACE_FUNC("{:#010x}", flags);
+
 			update_origin(&position, flags);
 		}
 
@@ -653,11 +727,11 @@ namespace apn::workspace
 		// このペインを起点にして、
 		// このペインおよび子孫ペインの位置情報を更新します。
 		//
-		void update_origin(LPCRECT rc, uint32_t flags = UpdateFlag::c_default)
+		void update_origin(LPCRECT rc, uint32_t flags = c_update_flag.c_default)
 		{
-			auto dwp = ::BeginDeferWindowPos(100);
-			update(dwp, rc, flags);
-			::EndDeferWindowPos(dwp);
+//			MY_TRACE_FUNC("{:#010x}", flags);
+
+			update(my::DeferWindowPos(100), rc, flags);
 		}
 
 		//
@@ -666,7 +740,7 @@ namespace apn::workspace
 		//
 		virtual void update(HDWP dwp, LPCRECT rc, uint32_t flags)
 		{
-//			MY_TRACE_FUNC("");
+//			MY_TRACE_FUNC("{:#010x}", flags);
 
 			if (::IsIconic(owner))
 				return;
@@ -674,32 +748,28 @@ namespace apn::workspace
 			// このペインの位置を更新します。
 			position = *rc;
 
-			if (flags & UpdateFlag::c_invalidate)
+			if (flags & c_update_flag.c_invalidate)
 			{
 				// ペイン矩形が変更されたので、
 				// オーナーにペイン矩形の再描画処理を発注しておきます。
 				invalidate();
 			}
 
-			// タブの数が最小数以上の場合は
-			if (has_tab() && flags & UpdateFlag::c_show_tab)
+			if (flags & UpdateFlag::c_show_tab)
 			{
+				// タブコントロールを更新します。
 				update_tab(dwp);
 			}
-			// タブの数が最小数未満の場合は
 			else
 			{
 				// タブコントロールを非表示にします。
-				::DeferWindowPos(dwp, tab, nullptr, 0, 0, 0, 0,
-					SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
-//				::ShowWindow(tab, SW_HIDE);
+				hide_tab(dwp);
 			}
 
 			// シャトルを持っている場合は
-			auto c = get_tab_count();
-			if (c)
+			if (get_tab_count())
 			{
-				if (flags & UpdateFlag::c_show_current_shuttle)
+				if (flags & c_update_flag.c_show_current_shuttle)
 				{
 					// カレントシャトルのみを表示し、フォーカスを与えます。
 					update_shuttles(dwp, flags);
@@ -708,107 +778,70 @@ namespace apn::workspace
 				return; // シャトルを持つペインはボーダーも子ペインも持たないので、ここで処理を終了します。
 			}
 
-			if (flags & UpdateFlag::c_normalize)
+			if (flags & c_update_flag.c_normalize)
 			{
 				// ボーダーが飛び出ないように調整します。
 				normalize();
 			}
 
-			if (flags & UpdateFlag::c_deep)
+			if (flags & c_update_flag.c_deep)
 			{
 				// 子ペインを再帰的に更新します。
 				// すでに親ペインの再描画が発行されている場合は
 				// c_invalidateフラグは冗長になるので除外します。
-				update_children(dwp, flags & ~UpdateFlag::c_invalidate);
+				update_children(dwp, flags & ~c_update_flag.c_invalidate);
 			}
 		}
 
 		//
-		// タブのウィンドウ位置を更新します。
-		// update()から呼び出されます。
+		// タブコントロールのウィンドウ位置を更新します。
+		// この関数はupdate()から呼び出されます。
 		//
 		void update_tab(HDWP dwp)
 		{
-			// キャプションの高さを取得します。
-			auto caption_height = get_caption_height();
+//			MY_TRACE_FUNC("");
 
-			// 次のswitch文でこれらの変数にタブコントロールの位置を格納します。
-			auto x = 0, y = 0, w = 0, h = 0;
+			// ワークエリアを取得します。
+			auto workarea = get_workarea();
 
-			switch (tab_mode)
+			// タブコントロールに追加領域をリセットします。
+			tav.addional_height = 0;
+
+			// キャプションとタブコントロールが同じ辺に配置されている場合は
+			if (is_tab_same_location())
 			{
-			case TabMode::c_caption: // タブをキャプションに表示するなら
-				{
-					auto cx = 0;
-					auto cy = std::max<int32_t>(caption_height, tab_height);
-
-					// 現在表示しているシャトルを取得します。
-					auto shuttle = get_current_shuttle();
-					if (shuttle)
-					{
-						// シャトルがメニューを持っている場合は
-						if (::GetMenu(*shuttle))
-						{
-							// メニューアイコンのスペースを確保します。
-							cx = cy;
-						}
-					}
-
-					x = position.left;
-					y = position.top;
-					w = my::get_width(position) - cx; // 右側にあるメニューアイコンの分だけ少し狭めます。
-					h = cy;
-
-					modify_style(tab, TCS_BOTTOM, 0);
-
-					break;
-				}
-			case TabMode::c_top: // タブを上に表示するなら
-				{
-					x = position.left;
-					y = position.top + caption_height;
-					w = my::get_width(position);
-					h = tab_height;
-
-					modify_style(tab, TCS_BOTTOM, 0);
-
-					break;
-				}
-			case TabMode::c_bottom: // タブを下に表示するなら
-				{
-					x = position.left;
-					y = position.bottom - tab_height;
-					w = my::get_width(position);
-					h = tab_height;
-
-					MY_TRACE("{}, {}, {}, {}\n", x, y, w, h);
-
-					modify_style(tab, 0, TCS_BOTTOM);
-
-					break;
-				}
+				// タブコントロールに追加領域を設定します。
+				tav.addional_height = hive.caption_height;
 			}
 
-			if (w > 0 && h > 0)
+			// タブコントロールのレイアウトを更新します。
+			tav.update(&workarea);
+
+			// タブコントロールのレイアウトを取得します。
+			auto layout = tav.get_layout();
+
+			if (layout.show)
 			{
 				// タブコントロールを表示します。
-				::DeferWindowPos(dwp, tab, HWND_TOP,
-					x, y, w, h, SWP_NOACTIVATE | SWP_SHOWWINDOW);
+				my::defer_window_pos(dwp, tav, HWND_TOP,
+					&layout.rc, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 			}
 			else
 			{
 				// タブコントロールを非表示にします。
-				::DeferWindowPos(dwp, tab, nullptr,
-					x, y, 1, 1, SWP_NOZORDER | SWP_HIDEWINDOW);
+				my::defer_window_pos(dwp, tav, nullptr,
+					&layout.rc, SWP_NOZORDER | SWP_HIDEWINDOW);
 			}
 		}
 
 		//
-		// シャトルを更新します。
-		// update()から呼び出されます。
+		// シャトル(が格納されているドッキングコンテナ)のウィンドウ位置を更新します。
+		// この関数はupdate()から呼び出されます。
 		//
 		void update_shuttles(HDWP dwp, uint32_t flags)
 		{
+//			MY_TRACE_FUNC("{:#010x}", flags);
+
 			// タブの数を取得します。
 			auto c = get_tab_count();
 
@@ -823,11 +856,12 @@ namespace apn::workspace
 			{
 				// インデックスからシャトルを取得します。
 				auto shuttle = get_shuttle(i);
+				if (!shuttle) continue;
 
 				// シャトルをリサイズします。
 				shuttle->resize(&rc_dock);
 
-				MY_TRACE("「{}」の表示状態を変更します\n", shuttle->name);
+				MY_TRACE("『{}』の表示状態を変更します\n", shuttle->name);
 
 				MY_TRACE_INT(::IsWindowVisible(*shuttle));
 				MY_TRACE_INT(::IsWindowVisible(*shuttle->dock_container));
@@ -835,33 +869,22 @@ namespace apn::workspace
 
 				if (i == current_index)
 				{
-					// 空の設定ダイアログかどうかチェックします。
+					// 空の設定ダイアログの場合は
 					if (*shuttle == hive.setting_dialog &&
 						magi.exin.get_current_object_index() == -1)
 					{
 						MY_TRACE("空の設定ダイアログなので表示できません\n");
 
-						::DeferWindowPos(dwp, *shuttle->dock_container,
-							nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
-//						::ShowWindow(*shuttle->dock_container, SW_HIDE);
+						hide_shuttle(dwp, shuttle);
 					}
 					else
 					{
 						MY_TRACE("「{}」を表示します\n", shuttle->name);
-#if 1
-						::DeferWindowPos(dwp, *shuttle->dock_container,
-							HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-						::SendMessage(*shuttle->dock_container, WM_SHOWWINDOW, TRUE, 0);
-#else
-						// SWP_SHOWWINDOWを使用してウィンドウを表示した場合は
-						// WM_SHOWWINDOWが送信されないので使用できません。
-						::SetWindowPos(*shuttle->dock_container,
-							HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-						::ShowWindow(*shuttle->dock_container, SW_SHOW);
-#endif
+
+						show_shuttle(dwp, shuttle);
 					}
 
-					if (flags & UpdateFlag::c_set_focus)
+					if (flags & c_update_flag.c_set_focus)
 					{
 						if (::IsWindowVisible(*shuttle))
 							::SetFocus(*shuttle);
@@ -870,13 +893,8 @@ namespace apn::workspace
 				else
 				{
 					MY_TRACE("「{}」を非表示にします\n", shuttle->name);
-#if 1
-					::DeferWindowPos(dwp, *shuttle->dock_container,
-						nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
-					::SendMessage(*shuttle->dock_container, WM_SHOWWINDOW, FALSE, 0);
-#else
-					::ShowWindow(*shuttle->dock_container, SW_HIDE);
-#endif
+
+					hide_shuttle(dwp, shuttle);
 				}
 
 				MY_TRACE_INT(::IsWindowVisible(*shuttle));
@@ -893,7 +911,7 @@ namespace apn::workspace
 		{
 			switch (split_mode)
 			{
-			case SplitMode::c_vert:
+			case c_split_mode.c_vert:
 				{
 					auto abs_border = absolute_x(border);
 
@@ -906,14 +924,14 @@ namespace apn::workspace
 
 					if (children[1])
 					{
-						RECT rc = { abs_border + border_width, position.top, position.right, position.bottom };
+						RECT rc = { abs_border + hive.border_width, position.top, position.right, position.bottom };
 
 						children[1]->update(dwp, &rc, flags);
 					}
 
 					break;
 				}
-			case SplitMode::c_horz:
+			case c_split_mode.c_horz:
 				{
 					auto abs_border = absolute_y(border);
 
@@ -926,7 +944,7 @@ namespace apn::workspace
 
 					if (children[1])
 					{
-						RECT rc = { position.left, abs_border + border_width, position.right, position.bottom };
+						RECT rc = { position.left, abs_border + hive.border_width, position.right, position.bottom };
 
 						children[1]->update(dwp, &rc, flags);
 					}
@@ -934,16 +952,6 @@ namespace apn::workspace
 					break;
 				}
 			}
-		}
-
-		//
-		// 指定された位置がキャプション内の場合はTRUEを返します。
-		//
-		BOOL hittest_caption(const POINT& point)
-		{
-			RECT rc = get_caption_rect();
-
-			return ::PtInRect(&rc, point);
 		}
 
 		//
@@ -961,8 +969,8 @@ namespace apn::workspace
 
 			switch (split_mode)
 			{
-			case SplitMode::c_vert:
-			case SplitMode::c_horz:
+			case c_split_mode.c_vert:
+			case c_split_mode.c_horz:
 				{
 					// 子ペインに再帰的に処理させます。
 					for (auto& child : children)
@@ -998,22 +1006,22 @@ namespace apn::workspace
 			{
 				switch (split_mode)
 				{
-				case SplitMode::c_vert:
+				case c_split_mode.c_vert:
 					{
 						auto abs_border = absolute_x(border);
 
 						// pointがボーダーの範囲内なら
-						if (point.x >= abs_border && point.x < abs_border + border_width)
+						if (point.x >= abs_border && point.x < abs_border + hive.border_width)
 							return shared_from_this(); // ヒットしているのでこのペインを返します。
 
 						break;
 					}
-				case SplitMode::c_horz:
+				case c_split_mode.c_horz:
 					{
 						auto abs_border = absolute_y(border);
 
 						// pointがボーダーの範囲内なら
-						if (point.y >= abs_border && point.y < abs_border + border_width)
+						if (point.y >= abs_border && point.y < abs_border + hive.border_width)
 							return shared_from_this(); // ヒットしているのでこのペインを返します。
 
 						break;
@@ -1045,8 +1053,8 @@ namespace apn::workspace
 		{
 			switch (split_mode)
 			{
-			case SplitMode::c_vert: return border - relative_x(point.x);
-			case SplitMode::c_horz: return border - relative_y(point.y);
+			case c_split_mode.c_vert: return border - relative_x(point.x);
+			case c_split_mode.c_horz: return border - relative_y(point.y);
 			}
 
 			return 0;
@@ -1060,8 +1068,8 @@ namespace apn::workspace
 		{
 			switch (split_mode)
 			{
-			case SplitMode::c_vert: border = relative_x(point.x) + drag_offset; break;
-			case SplitMode::c_horz: border = relative_y(point.y) + drag_offset; break;
+			case c_split_mode.c_vert: border = relative_x(point.x) + drag_offset; break;
+			case c_split_mode.c_horz: border = relative_y(point.y) + drag_offset; break;
 			}
 		}
 
@@ -1076,25 +1084,25 @@ namespace apn::workspace
 
 			switch (split_mode)
 			{
-			case SplitMode::c_vert:
+			case c_split_mode.c_vert:
 				{
 					auto abs_border = absolute_x(border);
 
 					rc->left = abs_border;
 					rc->top = position.top;
-					rc->right = abs_border + border_width;
+					rc->right = abs_border + hive.border_width;
 					rc->bottom = position.bottom;
 
 					return TRUE;
 				}
-			case SplitMode::c_horz:
+			case c_split_mode.c_horz:
 				{
 					auto abs_border = absolute_y(border);
 
 					rc->left = position.left;
 					rc->top = abs_border;
 					rc->right = position.right;
-					rc->bottom = abs_border + border_width;
+					rc->bottom = abs_border + hive.border_width;
 
 					return TRUE;
 				}
@@ -1114,8 +1122,8 @@ namespace apn::workspace
 
 			switch (split_mode)
 			{
-			case SplitMode::c_vert:
-			case SplitMode::c_horz:
+			case c_split_mode.c_vert:
+			case c_split_mode.c_horz:
 				{
 					auto rc = RECT {};
 					if (get_border_rect(&rc))
@@ -1149,101 +1157,39 @@ namespace apn::workspace
 		//
 		void draw_caption(HDC dc)
 		{
-			// カレントシャトルが存在するなら
+			// カレントシャトルが存在する場合は
 			if (auto shuttle = get_current_shuttle())
 			{
-				// キャプションを描画します。
-
-				auto rc = get_caption_rect();
-
-				if (rc.bottom > position.bottom)
-					return; // キャプションが描画範囲からはみ出てしまう場合は何もしません。
-
-				auto rc_menu = get_menu_rect();
-				auto has_menu = !!::GetMenu(*shuttle);
-				auto has_focus = ::GetFocus() == *shuttle;
-
-				// シャトルのウィンドウテキストを取得します。
-				auto text = my::get_window_text(*shuttle);
-
-				constexpr auto menu_icon = L"\xFE19";
-
-				// テーマを使用するなら
-				if (hive.use_theme)
+				switch (get_caption_location())
 				{
-					// ウィンドウの状態からstate_idを取得します。
-					auto state_id = CS_ACTIVE;
-					if (!has_focus) state_id = CS_INACTIVE;
-					if (!::IsWindowEnabled(*shuttle)) state_id = CS_DISABLED;
-
-					// テーマAPIを使用してタイトルを描画します。
-					::DrawThemeBackground(hive.theme.get(), dc, WP_CAPTION, state_id, &rc, nullptr);
-
-					{
-						auto rc_text = rc;
-
-						if (has_menu)
-						{
-							rc_text.right = rc_menu.left;
-
-							::DrawThemeText(hive.theme.get(), dc, WP_CAPTION, state_id,
-								menu_icon, -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rc_menu);
-						}
-
-						if (rc_text.left < rc_text.right)
-							::DrawThemeText(hive.theme.get(), dc, WP_CAPTION, state_id,
-								text.c_str(), text.length(), DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &rc_text);
-					}
-				}
-				// テーマを使用しないなら
-				else
-				{
-					// 直接GDIを使用して描画します。
-
-					auto caption_color = hive.active_caption_color;
-					auto caption_text_color = hive.active_caption_text_color;
-
-					if (!has_focus)
-					{
-						caption_color = hive.inactive_caption_color;
-						caption_text_color = hive.inactive_caption_text_color;
-					}
-
-					{
-						my::gdi::unique_ptr<HBRUSH> brush(
-							::CreateSolidBrush(caption_color));
-
-						::FillRect(dc, &rc, brush.get());
-					}
-
-					auto bk_mode = ::SetBkMode(dc, TRANSPARENT);
-					auto text_color = ::SetTextColor(dc, caption_text_color);
-					{
-						auto rc_text = rc;
-
-						if (has_menu)
-						{
-							rc_text.right = rc_menu.left;
-
-							::DrawTextW(dc, menu_icon, -1, &rc_menu, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-						}
-
-						if (rc_text.left < rc_text.right)
-							::DrawTextW(dc, text.c_str(), text.length(), &rc_text, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-					}
-					::SetTextColor(dc, text_color);
-					::SetBkMode(dc, bk_mode);
+				case c_caption_location.c_left:
+				case c_caption_location.c_right:
+					return draw_caption(dc, shuttle,
+						[this](const RECT& rc, const RECT& base_rc) -> RECT {
+							auto h = my::get_height(base_rc);
+							return {
+								rc.top,
+								h - rc.right,
+								rc.bottom,
+								h - rc.left,
+							};
+						});
+				case c_caption_location.c_top:
+				case c_caption_location.c_bottom:
+					return draw_caption(dc, shuttle,
+						[this](const RECT& rc, const RECT& base_rc) -> RECT {
+							return rc;
+						});
 				}
 
 				return;
 			}
 
 			// 子ペインも再帰的に処理させます。
-
 			switch (split_mode)
 			{
-			case SplitMode::c_vert:
-			case SplitMode::c_horz:
+			case c_split_mode.c_vert:
+			case c_split_mode.c_horz:
 				{
 					for (auto& child : children)
 					{
@@ -1258,11 +1204,173 @@ namespace apn::workspace
 		}
 
 		//
+		// キャプションを描画します。
+		//
+		void draw_caption(HDC paint_dc, Shuttle* shuttle, auto get_mem_rect)
+		{
+			// ファセットが取得できない場合はキャプションは描画されないので何もしません。
+			auto facet = get_facet(); if (!facet) return;
+
+			// キャプション領域を取得します。
+			auto caption_rc = facet->get_caption_rect(this);
+			if (caption_rc.top < position.top ||
+				caption_rc.bottom > position.bottom)
+			{
+				return; // キャプション領域が描画範囲からはみ出てしまう場合は何もしません。
+			}
+
+			// キャプション領域から描画先領域を取得します。
+			auto paint_rc = caption_rc;
+
+			// キャプション領域から基準領域を取得します。
+			auto base_rc = caption_rc; ::OffsetRect(&base_rc, -base_rc.left, -base_rc.top);
+
+			// メモリDC用の領域を取得します。
+			auto rc = get_mem_rect(base_rc, {}); ::OffsetRect(&rc, -rc.left, -rc.top);
+
+			// メモリDCを作成します。
+			my::MemDC dc(paint_dc, &rc);
+			my::gdi::selector font_selector(dc, ::GetCurrentObject(paint_dc, OBJ_FONT));
+
+			// メニューアイコン代わりの文字です。
+			constexpr auto menu_icon = L"\xFE19";
+
+			// キャプション領域を再取得します。
+			caption_rc = rc;
+
+			// メニュー領域を取得します。
+			auto menu_rc = facet->get_menu_rect(this, &base_rc);
+
+			// メニュー領域をメモリDC用に変換します。
+			menu_rc = get_mem_rect(menu_rc, rc);
+
+			// シャトルのメニュー状態を取得します。
+			auto has_menu = !!::GetMenu(*shuttle);
+
+			// シャトルのフォーカス状態を取得します。
+			auto has_focus = ::GetFocus() == *shuttle;
+
+			// シャトルのウィンドウ名を取得します。
+			auto text = my::get_window_text(*shuttle);
+
+			// テーマを使用する場合はテーマAPIで描画します。
+			if (hive.use_theme)
+			{
+				// ウィンドウの状態からstate_idを取得します。
+				auto state_id = CS_ACTIVE;
+				if (!has_focus) state_id = CS_INACTIVE;
+				if (!::IsWindowEnabled(*shuttle)) state_id = CS_DISABLED;
+
+				// キャプションの背景を描画します。
+				::DrawThemeBackground(hive.theme.get(), dc, WP_CAPTION, state_id, &caption_rc, nullptr);
+
+				// シャトルがメニューを持っている場合は
+				if (has_menu)
+				{
+					// キャプションの文字領域を取得します。
+					caption_rc = facet->get_caption_text_rect(this, &base_rc);
+
+					// キャプションの文字領域をメモリDC用に変換します。
+					caption_rc = get_mem_rect(caption_rc, rc);
+
+					// メニューアイコンを描画します。
+					::DrawThemeText(hive.theme.get(), dc, WP_CAPTION, state_id,
+						menu_icon, -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &menu_rc);
+				}
+
+				// 描画位置が有効の場合は
+				if (caption_rc.top < caption_rc.bottom &&
+					caption_rc.left < caption_rc.right)
+				{
+					// キャプションの文字を描画します。
+					::DrawThemeText(hive.theme.get(), dc, WP_CAPTION, state_id,
+						text.c_str(), -1, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS, 0, &caption_rc);
+				}
+			}
+			// テーマを使用しない場合はGDIで描画します。
+			else
+			{
+				auto caption_color = hive.active_caption_color;
+				auto caption_text_color = hive.active_caption_text_color;
+
+				if (!has_focus)
+				{
+					caption_color = hive.inactive_caption_color;
+					caption_text_color = hive.inactive_caption_text_color;
+				}
+
+				{
+					my::gdi::unique_ptr<HBRUSH> brush(
+						::CreateSolidBrush(caption_color));
+
+					// キャプションの背景を描画します。
+					::FillRect(dc, &caption_rc, brush.get());
+				}
+
+				auto old_bk_mode = ::SetBkMode(dc, TRANSPARENT);
+				auto old_text_color = ::SetTextColor(dc, caption_text_color);
+
+				// シャトルがメニューを持っている場合は
+				if (has_menu)
+				{
+					// キャプションの文字領域を取得します。
+					caption_rc = facet->get_caption_text_rect(this, &base_rc);
+
+					// キャプションの文字領域をメモリDC用に変換します。
+					caption_rc = get_mem_rect(caption_rc, rc);
+
+					// メニューアイコンを描画します。
+					::DrawTextW(dc, menu_icon, -1, &menu_rc,
+						DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				}
+
+				// 描画位置が有効の場合は
+				if (caption_rc.top < caption_rc.bottom &&
+					caption_rc.left < caption_rc.right)
+				{
+					// キャプションの文字を描画します。
+					::DrawTextW(dc, text.c_str(), -1, &caption_rc,
+						DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS);
+				}
+
+				::SetTextColor(dc, old_text_color);
+				::SetBkMode(dc, old_bk_mode);
+			}
+
+			auto x = paint_rc.left;
+			auto y = paint_rc.top;
+			auto w = my::get_width(paint_rc);
+			auto h = my::get_height(paint_rc);
+
+			switch (caption_location)
+			{
+			case c_caption_location.c_left:
+			case c_caption_location.c_right:
+				{
+					// PlgBltの罠 - 門前の小僧
+					// https://motchy99.blog.fc2.com/blog-entry-60.html
+					POINT points[3] = { { dc.h, 0 }, { dc.h, dc.w }, { 0, 0 } }; // 90度回転させます。
+					for (auto& point : points) point.x += x, point.y += y;
+					::PlgBlt(paint_dc, points, dc, 0, 0, dc.w, dc.h, nullptr, 0, 0);
+
+					break;
+				}
+			case c_caption_location.c_top:
+			case c_caption_location.c_bottom:
+				{
+					::BitBlt(paint_dc, x, y, w, h, dc, 0, 0, SRCCOPY);
+
+					break;
+				}
+			}
+		}
+
+		//
 		// このペインを再描画します。
 		//
 		void invalidate()
 		{
-			::InvalidateRect(owner, &position, FALSE);
+			my::invalidate(owner, &position, FALSE);
 		}
 
 		//
