@@ -17,9 +17,13 @@ layout: default
 
 1. [アルティメットプラグインをダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)します。
 1. zip内の`plugins`フォルダを`aviutlフォルダ`内にコピーします。
-	* またはzip内の`install.exe`を使用して新バージョンをインストールします。[install.exeの使い方はこちら](./utils/install.html)
+	* またはzip内の`install.exe`を使用して新バージョンをインストールします。[install.exeの使い方はこちら](./contents/utils/install.html)
 1. [`python実行環境`をダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
 1. `python実行環境`のzip内の`plugins`フォルダも`aviutlフォルダ`内にコピーします。
+
+## 🔖更新履歴
+
+* [更新履歴のページ](./contents/history.html)を参照してください。
 
 ## 🔧設定方法
 
@@ -30,7 +34,7 @@ layout: default
 
 1. aviutlを一旦終了します。
 1. `plugins\ultimate\ui\アルティメットプラグインの設定.html_local`ファイルを実行します。
-	* `.html_local`ファイルは[『ローカルウェブアプリ』](./utils/local_web_app.html)で実行する必要があります。
+	* `.html_local`ファイルは[『ローカルウェブアプリ』](./contents/utils/local_web_app.html)で実行する必要があります。
 1. もしくは`config/ultimate.auf.json`をテキストエディタで編集します。
 	* ファイルが存在しない場合は`config/default`フォルダにあるものを`config`フォルダにコピーしてから編集してください。
 	* `python_file_name` ✏️python312.dllのパスを指定します。
