@@ -5,12 +5,6 @@ layout: default
 # 🎉アルティメットプラグイン
 
 * [aviutl](https://spring-fragrance.mints.ne.jp/aviutl/)のプラグインです。
-* プラグイン数上限の問題を解決するために、既存の複数のプラグインの機能を一つにまとめています。
-
-## ⬇️ダウンロード
-
-* [アルティメットプラグインの最新バージョンはこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)
-* [`python実行環境`の最新バージョンはこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)
 
 ## ⚠事前準備
 
@@ -21,10 +15,10 @@ layout: default
 
 ## 🚀導入方法
 
+1. [アルティメットプラグインをダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/)します。
 1. zip内の`plugins`フォルダを`aviutlフォルダ`内にコピーします。
-	* またはzip内の`install.exe`を使用して新バージョンをインストールします。
-		[install.exeの使い方はこちら](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/wiki/install)
-1. `python実行環境`を[こちらからダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
+	* またはzip内の`install.exe`を使用して新バージョンをインストールします。[install.exeの使い方はこちら](./utils/install.html)
+1. [`python実行環境`をダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
 1. `python実行環境`のzip内の`plugins`フォルダも`aviutlフォルダ`内にコピーします。
 
 ## 🔧設定方法
@@ -36,7 +30,7 @@ layout: default
 
 1. aviutlを一旦終了します。
 1. `plugins\ultimate\ui\アルティメットプラグインの設定.html_local`ファイルを実行します。
-	* `.html_local`ファイルは[『ローカルウェブアプリ』](local_web_app)で開く必要があります。
+	* `.html_local`ファイルは[『ローカルウェブアプリ』](./utils/local_web_app.html)で実行する必要があります。
 1. もしくは`config/ultimate.auf.json`をテキストエディタで編集します。
 	* ファイルが存在しない場合は`config/default`フォルダにあるものを`config`フォルダにコピーしてから編集してください。
 	* `python_file_name` ✏️python312.dllのパスを指定します。
@@ -92,7 +86,7 @@ layout: default
 | [dialog_position](./contents/addin/dialog_position.html) | ダイアログ位置調整 | ダイアログがモニター外に表示されないように調整します。 |
 | [dialog_size](./contents/addin/dialog_size.html) | ダイアログサイズ調整 | DPIに合わせてダイアログのサイズを調整します。 |
 
-## 🎞️ 動画
+## 🎞️紹介動画
 
 <script type="application/javascript" src="https://embed.nicovideo.jp/watch/sm44120795/script"></script>
 <noscript><a href="https://www.nicovideo.jp/watch/sm44120795">AviUtlプラグイン/アルティメットプラグイン/大改造!!究極ビフォーアフター</a></noscript>
