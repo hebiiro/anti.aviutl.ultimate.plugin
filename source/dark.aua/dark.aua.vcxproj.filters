@@ -253,6 +253,9 @@
     <ClInclude Include="gdi\element\shell_listview.hpp">
       <Filter>renderer\gdi\element</Filter>
     </ClInclude>
+    <ClInclude Include="gdi\element\richedit.hpp">
+      <Filter>renderer\gdi\element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
