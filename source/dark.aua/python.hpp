@@ -457,12 +457,27 @@ namespace apn::dark
 		BOOL call_text_out(HWND hwnd, HTHEME theme, HDC dc, int part_id, int state_id,
 			int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx)
 		{
-			return call_python_func(
-				"dark_text_out",
-				share::TextOutArgs {
-					{ (share::HTHEME)theme, part_id, state_id },
-					(share::HWND)hwnd, (share::HDC)dc, rc, text, c, options, x, y, (my::addr_t)dx,
-				});
+			if (options & (ETO_GLYPH_INDEX | ETO_IGNORELANGUAGE))
+			{
+				return call_python_func(
+					"dark_text_out",
+					share::TextOutArgs {
+						{ (share::HTHEME)theme, part_id, state_id },
+						(share::HWND)hwnd, (share::HDC)dc, rc, text, c, options, x, y, (my::addr_t)dx,
+					});
+			}
+			else
+			{
+				// textがヌル終端でないとpythonに渡すことができないので、std::wstringに変換します。
+				auto s = std::wstring(text, c);
+
+				return call_python_func(
+					"dark_text_out",
+					share::TextOutArgs {
+						{ (share::HTHEME)theme, part_id, state_id },
+						(share::HWND)hwnd, (share::HDC)dc, rc, s.c_str(), s.length(), options, x, y, (my::addr_t)dx,
+					});
+			}
 		}
 
 		//
