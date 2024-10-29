@@ -10,3 +10,5 @@ github:
   pyenv:
     url: https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r36/python32_r36.zip
     name: PY-ENV
+plugins:
+  - jekyll-sitemap

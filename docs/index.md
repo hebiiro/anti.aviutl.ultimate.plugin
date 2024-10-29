@@ -1,5 +1,8 @@
 ﻿---
 layout: default
+title: アルティメットプラグインのお部屋
+description: ここはアルティメットプラグインの説明所です。
+lang: ja_JP
 ---
 
 # 🎉アルティメットプラグイン
