@@ -4,4 +4,9 @@ show_downloads: true
 google_analytics:
 theme: jekyll-theme-leap-day
 github:
-  zip_url: http://example.com/download.zip
+  ultimate:
+    url: https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r43/ultimate_r43.zip
+    name: ULT-R43
+  pyenv:
+    url: https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r36/python32_r36.zip
+    name: PY-ENV

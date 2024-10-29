@@ -21,6 +21,7 @@
 <!--
         <h1>{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
 -->
+        <!-- ヘッダーをトップページへのリンクに変更 -->
         <h1><a href="https://hebiiro.github.io/anti.aviutl.ultimate.plugin/" style="color: inherit;">{{ site.title | default: site.github.repository_name }}</a></h1>
         <p>{{ page.description | default: site.description | default: site.github.project_tagline }}</p>
       </header>
@@ -33,12 +34,13 @@
           <div class="downloads">
             <span>Downloads:</span>
             <ul>
-              <li><a href="https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/latest/" class="button">LATEST</a></li>
-              <li><a href="https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r36/python32_r36.zip" class="button">LATEST-PYENV</a></li>
 <!--
               <li><a href="{{ site.github.zip_url }}" class="button">ZIP</a></li>
               <li><a href="{{ site.github.tar_url }}" class="button">TAR</a></li>
 -->
+              <!-- URLと表示名を_config.ymlで指定できるように変更。 -->
+              <li><a href="{{ site.github.ultimate.url }}" class="button">{{ site.github.ultimate.name }}</a></li>
+              <li><a href="{{ site.github.pyenv.url }}" class="button">{{ site.github.pyenv.name }}</a></li>
             </ul>
           </div>
         {% endif %}
