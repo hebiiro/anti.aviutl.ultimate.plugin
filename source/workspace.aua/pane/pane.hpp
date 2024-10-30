@@ -1232,6 +1232,9 @@ namespace apn::workspace
 			my::MemDC dc(paint_dc, &rc);
 			my::gdi::selector font_selector(dc, ::GetCurrentObject(paint_dc, OBJ_FONT));
 
+			// 背景を塗りつぶします。
+			painter.fill_background(dc, &rc);
+
 			// メニューアイコン代わりの文字です。
 			constexpr auto menu_icon = L"\xFE19";
 
