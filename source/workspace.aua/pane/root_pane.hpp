@@ -111,7 +111,7 @@ namespace apn::workspace
 			{
 				// c_show_tabフラグなしで子ペインを更新します。
 				// これにより、すべての子孫ペインのタブが非表示になります。
-				update_children(dwp, UpdateFlag::c_deep);
+				update_children(dwp, c_update_flag.c_deep);
 
 				// maximized_paneがルートペインとなるようにレイアウトを更新します。
 				maximized_pane->update(dwp, rc, flags);

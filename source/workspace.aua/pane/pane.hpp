@@ -755,7 +755,7 @@ namespace apn::workspace
 				invalidate();
 			}
 
-			if (flags & UpdateFlag::c_show_tab)
+			if (flags & c_update_flag.c_show_tab)
 			{
 				// タブコントロールを更新します。
 				update_tab(dwp);
