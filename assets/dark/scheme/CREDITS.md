@@ -16,6 +16,10 @@ A.I.VOICEの琴葉葵ちゃんをモチーフにして作成しています。
 ニチカ・バーチさんをモチーフにして作成しています。
 > https://x.com/maou_2chica
 
+## guin
+GuiNさんをモチーフにして作成しています。
+> https://www.youtube.com/@GuiN_next
+
 ## miku
 クリプトンの初音ミクをモチーフにして作成しています。
 > https://blog.piapro.net/
