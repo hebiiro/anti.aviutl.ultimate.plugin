@@ -140,7 +140,7 @@ namespace apn
 								// 同じ通知が2回発生する場合があるので、
 								// ファイルサイズをチェックして回避します。
 								my::handle::unique_ptr<> file(::CreateFileW((folder_name / file_name).c_str(),
-									GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0));
+									GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr));
 								auto file_size = ::GetFileSize(file.get(), nullptr);
 								if (file_size)
 									::PostMessage(plugin_window, c_message.c_update_config_file, 0, (LPARAM)file_name);

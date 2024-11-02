@@ -117,7 +117,7 @@ namespace apn::workspace::hook
 
 				return hook_window(hwnd, safe_string(class_name), safe_string(window_name));
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} CreateWindowExA;
 
 		//
@@ -131,7 +131,7 @@ namespace apn::workspace::hook
 
 				return hook_window(hwnd, safe_string(class_name), safe_string(window_name));
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} CreateWindowExW;
 
 		//
@@ -143,10 +143,9 @@ namespace apn::workspace::hook
 				MY_TRACE_FUNC("{}, {}", class_name, window_name);
 
 				// 「ショートカット再生」用の処理です。
-				if (class_name && window_name && _stricmp(class_name, "AviUtl") == 0)
+				if (class_name && window_name && ::lstrcmpiA(class_name, "AviUtl") == 0)
 				{
-					auto shuttle = shuttle_manager.get(my::ts(window_name));
-					if (shuttle)
+					if (auto shuttle = shuttle_manager.get(my::ts(window_name)))
 						return *shuttle;
 				}
 
@@ -164,7 +163,7 @@ namespace apn::workspace::hook
 				MY_TRACE_FUNC("{}, {}", class_name, window_name);
 
 				// 「PSDToolKit」の「送る」用の処理です。
-				if (class_name && _wcsicmp(class_name, L"ExtendedFilterClass") == 0)
+				if (class_name && ::lstrcmpiW(class_name, L"ExtendedFilterClass") == 0)
 					return hive.setting_dialog;
 
 				return orig_proc(class_name, window_name);
@@ -183,15 +182,14 @@ namespace apn::workspace::hook
 				if (!parent && class_name)
 				{
 					// 「テキスト編集補助プラグイン」用の処理です。
-					if (_stricmp(class_name, "ExtendedFilterClass") == 0)
+					if (::lstrcmpiA(class_name, "ExtendedFilterClass") == 0)
 					{
 						return hive.setting_dialog;
 					}
 					// 「キーフレームプラグイン」用の処理です。
-					else if (_stricmp(class_name, "AviUtl") == 0 && window_name)
+					else if (::lstrcmpiA(class_name, "AviUtl") == 0 && window_name)
 					{
-						auto shuttle = shuttle_manager.get(my::ts(window_name));
-						if (shuttle)
+						if (auto shuttle = shuttle_manager.get(my::ts(window_name)))
 						{
 							MY_TRACE("{}を返します\n", window_name);
 
@@ -292,8 +290,7 @@ namespace apn::workspace::hook
 				// 「拡張ツールバー」用の処理です。
 				if (index == GWL_HWNDPARENT)
 				{
-					auto shuttle = Shuttle::get_pointer(hwnd);
-					if (shuttle)
+					if (auto shuttle = Shuttle::get_pointer(hwnd))
 					{
 						MY_TRACE("シャトルが取得できるウィンドウはHWNDPARENTを変更できないようにします\n");
 

@@ -16,7 +16,7 @@ namespace apn::filer
 		{
 			MY_TRACE_FUNC("{:#010x}", hwnd);
 
-			my::Event event(0, TRUE, FALSE, share::event::c_post_init_client);
+			my::Event event(nullptr, TRUE, FALSE, share::event::c_post_init_client);
 			MY_TRACE_HEX((HANDLE)event);
 
 			auto path = magi.get_module_file_name(L"filer_ui.exe");
@@ -29,12 +29,12 @@ namespace apn::filer
 			if (!::CreateProcessW(
 				path.c_str(),	// No module name (use command line)
 				args.data(),	// Command line
-				0,				// Process handle not inheritable
-				0,              // Thread handle not inheritable
+				nullptr,		// Process handle not inheritable
+				nullptr,		// Thread handle not inheritable
 				FALSE,			// Set handle inheritance to FALSE
 				0,				// No creation flags
-				0,				// Use parent's environment block
-				0,				// Use parent's starting directory 
+				nullptr,		// Use parent's environment block
+				nullptr,		// Use parent's starting directory 
 				&si,			// Pointer to STARTUPINFO structure
 				&pi))			// Pointer to PROCESS_INFORMATION structur
 			{

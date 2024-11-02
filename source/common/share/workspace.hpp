@@ -46,7 +46,7 @@ namespace apn::workspace::share
 		{
 			virtual BOOL rename(HWND target, LPCWSTR name) =  0;
 			virtual BOOL is_available_name(LPCWSTR name) = 0;
-		} *shuttle = 0;
+		} *shuttle = nullptr;
 
 		//
 		// ワークスペース化アドインのエクスポート関数群を初期化します。

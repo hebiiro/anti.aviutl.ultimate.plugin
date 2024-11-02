@@ -44,10 +44,10 @@ namespace apn::filter_drag
 		int current_count = 0;
 
 		struct TimerID {
-			inline static constexpr UINT c_move = 1000;
+			inline static constexpr auto c_move = 1000U;
 		};
 
-		inline static constexpr int c_max_count = 30;
+		inline static constexpr auto c_max_count = 30;
 
 		//
 		// 初期化処理を実行します。
@@ -56,11 +56,11 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			constexpr LPCTSTR class_name = _T("apn::filter_drag::sight");
+			constexpr auto class_name = _T("apn::filter_drag::sight");
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS | CS_NOCLOSE;
-			wc.hCursor = ::LoadCursor(0, IDC_ARROW);
+			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpfnWndProc = ::DefWindowProc;
 			wc.hInstance = hive.instance;
 			wc.lpszClassName = class_name;
@@ -72,7 +72,7 @@ namespace apn::filter_drag
 				class_name,
 				WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				0, 0, 0, 0,
-				0, 0, hive.instance, 0);
+				nullptr, nullptr, hive.instance, nullptr);
 		}
 
 		//
@@ -111,14 +111,15 @@ namespace apn::filter_drag
 			// コンテキストがまだ作成されていない場合は何もしません。
 			if (!context) return;
 
-			LPCSTR name = filter.get_name();
+			auto name = filter.get_name();
 
 			render(name, config.alpha);
 
-			RECT rc = layout.get_filter_rect(filter);
-			POINT pos;
-			pos.x = (rc.left + rc.right) / 2;
-			pos.y = (rc.top + rc.bottom) / 2;
+			auto rc = layout.get_filter_rect(filter);
+			auto pos = POINT {
+				.x = (rc.left + rc.right) / 2,
+				.y = (rc.top + rc.bottom) / 2,
+			};
 			::ClientToScreen(layout.get_setting_dialog(), &pos);
 
 			if (show)
@@ -141,7 +142,7 @@ namespace apn::filter_drag
 			Pen pen(config.pen_color, config.pen_width);
 			SolidBrush brush(config.brush_color);
 
-			Status status = context->graphics.Clear(Color(0, 0, 0, 0));
+			auto status = context->graphics.Clear(Color(0, 0, 0, 0));
 
 			int w = context->info.GetWidth();
 			int h = context->info.GetHeight();
@@ -283,7 +284,7 @@ namespace apn::filter_drag
 		void move_internal()
 		{
 			if (current_count == c_max_count)
-				::SetTimer(*this, TimerID::c_move, 10, 0);
+				::SetTimer(*this, TimerID::c_move, 10, nullptr);
 
 			double a = (double)current_count / c_max_count;
 			a = a * a;

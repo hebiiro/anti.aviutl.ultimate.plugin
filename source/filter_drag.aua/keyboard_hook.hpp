@@ -4,7 +4,7 @@ namespace apn::filter_drag
 {
 	inline struct KeyboardHook
 	{
-		HHOOK hook = 0; // キーボードフックのハンドルです。
+		HHOOK hook = nullptr; // キーボードフックのハンドルです。
 		BOOL use_shift = FALSE; // ドラッグ開始にshiftキーを必須にします。
 		BOOL use_ctrl = FALSE; // ドラッグ開始にctrlキーを必須にします。
 		BOOL use_alt = FALSE; // ドラッグ開始にaltキーを必須にします。
@@ -17,7 +17,7 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			hook = ::SetWindowsHookEx(WH_KEYBOARD, hook_proc, 0, ::GetCurrentThreadId());
+			hook = ::SetWindowsHookEx(WH_KEYBOARD, hook_proc, nullptr, ::GetCurrentThreadId());
 
 			return !!hook;
 		}
@@ -29,7 +29,7 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			::UnhookWindowsHookEx(hook), hook = 0;
+			::UnhookWindowsHookEx(hook), hook = nullptr;
 
 			return TRUE;
 		}

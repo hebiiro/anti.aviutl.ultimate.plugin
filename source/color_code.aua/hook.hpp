@@ -201,7 +201,7 @@ namespace apn::color_code
 				{
 					MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {:#010x}", instance, template_name, parent, dlg_proc);
 
-					if (_stricmp(template_name, "GET_COLOR") == 0)
+					if (::lstrcmpiA(template_name, "GET_COLOR") == 0)
 					{
 						MY_TRACE("「色の選択」ダイアログをフックします\n");
 

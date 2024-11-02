@@ -29,7 +29,7 @@ namespace apn::workspace::hook
 
 				return hwnd;
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} CreateDialogParamA;
 
 		//
@@ -56,7 +56,7 @@ namespace apn::workspace::hook
 
 				return orig_proc(hwnd, show_cmd);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} ShowWindow;
 
 		//

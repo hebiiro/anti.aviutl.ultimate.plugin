@@ -8,7 +8,7 @@ namespace apn::filer_ui
 
 		inline static std::vector<std::shared_ptr<FilerDialog>> collection;
 
-		HWND filer_window = 0;
+		HWND filer_window = nullptr;
 		CToolTipCtrl tooltip;
 
 		//
@@ -82,7 +82,7 @@ namespace apn::filer_ui
 			// 一旦ブックマークを削除します。
 			folder_control.ResetContent();
 
-			bool nav_pane = true;
+			auto nav_pane = true;
 			get_bool(node, "nav_pane", nav_pane);
 			nav_pane_control.SetCheck(nav_pane ? BST_CHECKED : BST_UNCHECKED);
 
@@ -151,7 +151,7 @@ namespace apn::filer_ui
 
 			IShellBrowserPtr browser = explorer;
 			MY_TRACE_HEX(browser.GetInterfacePtr());
-			HWND hwnd = 0; browser->GetWindow(&hwnd);
+			HWND hwnd = nullptr; browser->GetWindow(&hwnd);
 			MY_TRACE_HEX(hwnd);
 			share::filer_window::set_browser(filer_window, hwnd);
 
@@ -286,10 +286,10 @@ namespace apn::filer_ui
 						MY_TRACE_FUNC("TTN_SHOW");
 
 						CRect rc; tooltip.GetWindowRect(&rc);
-						int x = rc.left;
-						int y = rc.top;
-						int w = rc.Width();
-						int h = rc.Height();
+						auto x = rc.left;
+						auto y = rc.top;
+						auto w = rc.Width();
+						auto h = rc.Height();
 
 						{
 							// ツールチップのX座標をマウスカーソルのX座標に設定します。
@@ -306,7 +306,8 @@ namespace apn::filer_ui
 							y = rc.top - h;
 						}
 
-						tooltip.SetWindowPos(0, x, y, w, h, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+						tooltip.SetWindowPos(nullptr, x, y, w, h,
+							SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 
 						*pResult = TRUE;
 						return TRUE;

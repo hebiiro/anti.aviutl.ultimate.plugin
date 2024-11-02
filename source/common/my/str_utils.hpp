@@ -215,7 +215,7 @@ namespace my
 	//
 	inline auto get_temp_path()
 	{
-		const auto buffer_length = ::GetTempPath(0, 0);
+		const auto buffer_length = ::GetTempPath(0, nullptr);
 		tstring buffer(buffer_length, _T('\0'));
 		auto length = ::GetTempPath(buffer_length, buffer.data());
 		buffer.resize(length);
@@ -227,7 +227,7 @@ namespace my
 	//
 	inline auto get_current_directory()
 	{
-		const auto buffer_length = ::GetCurrentDirectory(0, 0);
+		const auto buffer_length = ::GetCurrentDirectory(0, nullptr);
 		tstring buffer(buffer_length, _T('\0'));
 		auto length = ::GetCurrentDirectory(buffer_length, buffer.data());
 		buffer.resize(length);
@@ -294,7 +294,7 @@ namespace my
 	//
 	inline auto get_menu_item_text(HMENU menu, UINT item_id, UINT flags)
 	{
-		const auto buffer_length = ::GetMenuString(menu, item_id, 0, 0, flags) + 1;
+		const auto buffer_length = ::GetMenuString(menu, item_id, nullptr, 0, flags) + 1;
 		tstring buffer(buffer_length, _T('\0'));
 		::GetMenuString(menu, item_id, buffer.data(), buffer.length(), flags);
 		buffer.resize(buffer_length - 1);
@@ -311,7 +311,7 @@ namespace my
 
 		// 指定されたアイテムのテキストの長さを取得します。
 		auto text_length = (int)::SendMessage(combobox, CB_GETLBTEXTLEN, index, 0);
-		if (text_length <= 0) return tstring();
+		if (text_length <= 0) return {};
 
 		// 指定されたアイテムのテキストを取得します。
 		tstring text(text_length, _T('\0'));

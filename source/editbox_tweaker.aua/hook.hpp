@@ -62,7 +62,7 @@ namespace apn::editbox_tweaker
 		struct {
 			inline static BOOL WINAPI hook_proc(LPMSG msg, HWND hwnd, UINT msgFilterMin, UINT msgFilterMax)
 			{
-				BOOL result = FALSE;
+				auto result = FALSE;
 				if (hive.unicode_input)
 				{
 					// ::GetMessageA()の代わりに::GetMessageW()を呼び出します。
@@ -129,7 +129,7 @@ namespace apn::editbox_tweaker
 			{
 				MY_TRACE_FUNC("{}, {}, {}", class_name, w, h);
 
-				HWND hwnd = orig_proc(ex_style, class_name, window_name,
+				auto hwnd = orig_proc(ex_style, class_name, window_name,
 					style, x, y, w, h + hive.delta, parent, menu, instance, param);
 
 				if (hive.zoomable)

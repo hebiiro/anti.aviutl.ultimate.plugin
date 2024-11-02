@@ -70,7 +70,7 @@ namespace my::hook
 
 		} hooker = { func_name, new_func };
 
-		DetourEnumerateImportsEx(module, &hooker, 0, hooker.detour);
+		DetourEnumerateImportsEx(module, &hooker, nullptr, hooker.detour);
 
 		return hooker.old_func;
 	}

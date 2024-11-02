@@ -25,7 +25,7 @@ namespace my
 
 		BOOL check_update()
 		{
-			FILETIME file_time;
+			FILETIME file_time = {};
 
 			if (!get_file_time(file_name.c_str(), &file_time))
 				return FALSE;
@@ -41,13 +41,14 @@ namespace my
 		static BOOL get_file_time(LPCWSTR file_name, FILETIME* file_time)
 		{
 			std::unique_ptr<std::remove_pointer<HANDLE>::type, decltype(&::CloseHandle)> file(
-				::CreateFileW(file_name, GENERIC_READ,
-					FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0), &::CloseHandle);
+				::CreateFileW(file_name,
+					GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+					nullptr, OPEN_EXISTING, 0, nullptr), &::CloseHandle);
 
 			if (file.get() == INVALID_HANDLE_VALUE)
 				return FALSE;
 
-			return ::GetFileTime(file.get(), 0, 0, file_time);
+			return ::GetFileTime(file.get(), nullptr, nullptr, file_time);
 		}
 	};
 

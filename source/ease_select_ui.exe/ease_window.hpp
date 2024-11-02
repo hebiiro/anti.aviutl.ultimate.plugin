@@ -78,7 +78,7 @@ namespace apn::ease_select_ui
 		{
 			MY_TRACE_FUNC("{:#010x}", parent);
 
-			return __super::CreateEx(0, 0, 0, WS_POPUP, CRect(0, 0, 0, 0), parent, 0);
+			return __super::CreateEx(0, nullptr, nullptr, WS_POPUP, CRect(0, 0, 0, 0), parent, 0);
 		}
 
 		//
@@ -362,7 +362,7 @@ namespace apn::ease_select_ui
 			cs.dwExStyle = WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_LAYERED;
 			cs.lpszClass = AfxRegisterWndClass(
 				CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
-				::LoadCursor(0, IDC_ARROW));
+				::LoadCursor(nullptr, IDC_ARROW));
 
 			if (!__super::PreCreateWindow(cs))
 				return FALSE;

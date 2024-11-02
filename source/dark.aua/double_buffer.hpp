@@ -14,10 +14,10 @@ namespace apn::dark
 		//
 		struct Node
 		{
-			HDC front_dc = 0;
-			HDC back_dc = 0;
-			HBITMAP bitmap = 0;
-			HBITMAP old_bitmap = 0;
+			HDC front_dc = nullptr;
+			HDC back_dc = nullptr;
+			HBITMAP bitmap = nullptr;
+			HBITMAP old_bitmap = nullptr;
 			RECT rc = {};
 
 			//
@@ -60,9 +60,9 @@ namespace apn::dark
 			//
 			BOOL destroy()
 			{
-				::SelectObject(back_dc, old_bitmap), old_bitmap = 0;
-				::DeleteObject(bitmap), bitmap = 0;
-				::DeleteDC(back_dc), back_dc = 0;
+				::SelectObject(back_dc, old_bitmap), old_bitmap = nullptr;
+				::DeleteObject(bitmap), bitmap = nullptr;
+				::DeleteDC(back_dc), back_dc = nullptr;
 
 				return TRUE;
 			}

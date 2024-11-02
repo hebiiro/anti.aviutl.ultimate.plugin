@@ -22,7 +22,7 @@ namespace apn::ease_select_ui
 			__super::init(hive.config_file_name.c_str());
 
 			// コンフィグファイルを監視するタイマーを作成します。
-			timer_id = ::SetTimer(0, 0, 1000,
+			timer_id = ::SetTimer(nullptr, 0, 1000,
 				[](HWND hwnd, UINT message, UINT_PTR timer_id, DWORD time)
 				{
 					if (config_checker.check_update())
@@ -43,7 +43,7 @@ namespace apn::ease_select_ui
 		{
 			MY_TRACE_FUNC("");
 
-			::KillTimer(0, timer_id);
+			::KillTimer(nullptr, timer_id);
 
 			return TRUE;
 		}

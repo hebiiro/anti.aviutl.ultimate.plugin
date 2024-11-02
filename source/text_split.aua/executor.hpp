@@ -84,8 +84,8 @@ namespace apn::text_split
 			}
 		};
 
-		AviUtl::EditHandle* editp = 0;
-		AviUtl::FilterPlugin* fp = 0;
+		AviUtl::EditHandle* editp = nullptr;
+		AviUtl::FilterPlugin* fp = nullptr;
 
 		std::string temp_file_name;
 		std::string each_temp_file_name;

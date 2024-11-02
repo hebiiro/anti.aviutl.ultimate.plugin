@@ -226,7 +226,7 @@ namespace apn::image_export
 				}
 			}
 
-			return std::wstring();
+			return {};
 		}
 
 		//

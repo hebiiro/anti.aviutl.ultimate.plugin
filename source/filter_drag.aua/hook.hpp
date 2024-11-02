@@ -142,7 +142,7 @@ namespace apn::filter_drag
 				if (!filter.is_valid()) return ::DefSubclassProc(hwnd, message, wParam, lParam);
 
 				// マウスカーソルを変更します。
-				::SetCursor(::LoadCursor(0, IDC_SIZENS));
+				::SetCursor(::LoadCursor(nullptr, IDC_SIZENS));
 				return TRUE;
 			}
 
@@ -184,7 +184,7 @@ namespace apn::filter_drag
 		LRESULT on_l_button_up(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			// ドラッグを終了する前にフィルタをドラッグ中だったかチェックします。
-			BOOL is_dragging = ::GetCapture() == hwnd && is_filter_dragging;
+			auto is_dragging = ::GetCapture() == hwnd && is_filter_dragging;
 
 			// ドラッグを終了します。
 			end_drag();
@@ -356,7 +356,7 @@ namespace apn::filter_drag
 				else
 					orig_proc(object_index, filter_index, relative_index);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} swap_filter;
 	} hook_manager;
 }

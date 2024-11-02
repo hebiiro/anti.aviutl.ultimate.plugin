@@ -218,7 +218,7 @@ namespace apn::workspace
 			auto rc = my::get_client_rect(parent);
 
 			// クライント座標からスクリーン座標に変換します。
-			my::map_window_points(parent, 0, &rc);
+			my::map_window_points(parent, nullptr, &rc);
 
 			// 現在のコンテナのクライアント矩形をこのコンテナのウィンドウ矩形に変換します。
 			my::client_to_window(*this, &rc);

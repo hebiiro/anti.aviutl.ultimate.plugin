@@ -30,7 +30,7 @@ do \
 	int h = (xxx).bottom - (xxx).top; \
 	MY_TRACE(#xxx _T(" = {}, {}, {}, {}\n"), x, y, w, h); \
 } \
-while (0)
+while (false)
 
 #define MY_TRACE_HWND(xxx) \
 do \
@@ -40,7 +40,7 @@ do \
 	auto ___class_name = my::get_class_name(___hwnd); \
 	MY_TRACE(#xxx _T(" = {:#010x} = \"{}\" ({})\n"), ___hwnd, ___window_text, ___class_name); \
 } \
-while (0)
+while (false)
 
 #define MY_TRACE_COM_ERROR(hr) MY_TRACE("{:#010x} = {}\n", hr, _com_error(hr).ErrorMessage())
 
@@ -105,13 +105,13 @@ namespace my
 		inline static string replace(const string& orig, LPCTSTR old_string, LPCTSTR new_string)
 		{
 			string result;
-			string::size_type old_string_length = _tcslen(old_string);
-			string::size_type begin_pos = 0;
+			size_t old_string_length = _tcslen(old_string);
+			size_t begin_pos = 0;
 
-			while (1)
+			while (true)
 			{
 				// old_stringを検索します。
-				string::size_type end_pos = orig.find(old_string, begin_pos);
+				auto end_pos = orig.find(old_string, begin_pos);
 
 				if (end_pos != string::npos)
 				{
@@ -152,16 +152,16 @@ namespace my
 			func_name = replace(func_name, _T("unnamed-type-"), _T(""));
 
 			// 最初の'('を検索します。
-			size_t end = func_name.find_first_of(_T('('));
+			auto end = func_name.find_first_of(_T('('));
 
 			// 見つかった場合はリサイズして'('以降を削除します。
 			if (end != string::npos) func_name.resize(end);
 
 			// 最初の'<'を検索します。
-			size_t template_begin = func_name.find_first_of(_T('<'));
+			auto template_begin = func_name.find_first_of(_T('<'));
 
 			// 最初の'<'より前にある最後の' 'を検索します。
-			size_t begin = func_name.find_last_of(_T(' '), template_begin);
+			auto begin = func_name.find_last_of(_T(' '), template_begin);
 
 			// 見つかった場合は先頭から' 'までを削除します。
 			if (begin != string::npos) func_name.erase(0, begin + 1);
@@ -217,7 +217,7 @@ namespace my
 		//
 		inline static void output_binary(LPCTSTR file, int line, const void* buf, int c)
 		{
-			const BYTE* bytes = (const BYTE*)buf;
+			auto bytes = (const BYTE*)buf;
 
 			if (!bytes)
 			{

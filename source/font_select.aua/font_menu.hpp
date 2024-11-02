@@ -7,7 +7,7 @@ namespace apn::font_select
 	//
 	struct FontMenu
 	{
-		HMENU menu = 0;
+		HMENU menu = nullptr;
 		FontCollection fonts;
 
 		//

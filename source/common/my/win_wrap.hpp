@@ -272,7 +272,7 @@ namespace my
 
 		BOOL init(DWORD size, LPCTSTR name)
 		{
-			handle = ::CreateFileMapping(INVALID_HANDLE_VALUE, 0, PAGE_READWRITE, 0, size, name);
+			handle = ::CreateFileMapping(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, size, name);
 			if (!handle) return FALSE;
 
 			buffer = (BYTE*)::MapViewOfFile(handle, FILE_MAP_WRITE, 0, 0, 0);
@@ -315,7 +315,7 @@ namespace my
 	{
 		HANDLE handle;
 
-		FileMapping(DWORD size, LPCTSTR name) : handle(::CreateFileMapping(INVALID_HANDLE_VALUE, 0, PAGE_READWRITE, 0, size, name)) {}
+		FileMapping(DWORD size, LPCTSTR name) : handle(::CreateFileMapping(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, size, name)) {}
 		~FileMapping() { ::CloseHandle(handle), handle = nullptr; }
 		BYTE* alloc_buffer() { return (BYTE*)::MapViewOfFile(handle, FILE_MAP_WRITE, 0, 0, 0); }
 		void free_buffer(BYTE* buffer) { ::UnmapViewOfFile(buffer); }

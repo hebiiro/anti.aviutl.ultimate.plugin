@@ -21,7 +21,7 @@ namespace apn::workspace::hook
 
 				return orig_proc(menu);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} GetMenuItemCount;
 
 		//

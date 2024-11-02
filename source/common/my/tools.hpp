@@ -26,7 +26,7 @@ namespace my::tools
 	template <typename T>
 	inline T set_call(addr_t address, T hook_proc)
 	{
-		HANDLE process = ::GetCurrentProcess();
+		auto process = ::GetCurrentProcess();
 
 		struct {
 			BYTE call;
@@ -36,10 +36,10 @@ namespace my::tools
 		};
 
 		// 元の関数を取得します。
-		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), 0);
+		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), nullptr);
 
 		if (orig.call != 0xE8)
-			return 0; // 相対CALLではなかったので0を返します。
+			return {}; // 相対CALLではなかったので{}を返します。
 
 		struct {
 			BYTE call;
@@ -50,7 +50,7 @@ namespace my::tools
 		};
 
 		// 相対CALLを書き換えます。
-		::WriteProcessMemory(process, (LPVOID)address, &code, sizeof(code), 0);
+		::WriteProcessMemory(process, (LPVOID)address, &code, sizeof(code), nullptr);
 		::FlushInstructionCache(process, (LPVOID)address, sizeof(code));
 
 		// 元の関数を返します。
@@ -61,7 +61,7 @@ namespace my::tools
 	template <typename T>
 	inline T set_abs_call(addr_t address, T hook_proc)
 	{
-		HANDLE process = ::GetCurrentProcess();
+		auto process = ::GetCurrentProcess();
 
 		struct {
 			BYTE call[2];
@@ -69,10 +69,10 @@ namespace my::tools
 		} orig = {};
 
 		// 元の関数を取得します。
-		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), 0);
+		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), nullptr);
 
 		if (orig.call[0] != 0xFF || orig.call[1] != 0x15)
-			return 0; // 絶対CALLではなかったので0を返します。
+			return {}; // 絶対CALLではなかったので{}を返します。
 
 		struct {
 			BYTE call;
@@ -85,7 +85,7 @@ namespace my::tools
 		};
 
 		// 絶対CALLを書き換えます。
-		::WriteProcessMemory(process, (LPVOID)address, &code, sizeof(code), 0);
+		::WriteProcessMemory(process, (LPVOID)address, &code, sizeof(code), nullptr);
 		::FlushInstructionCache(process, (LPVOID)address, sizeof(code));
 
 		// 元の関数を返します。
@@ -96,14 +96,14 @@ namespace my::tools
 	template <typename T>
 	inline T set_abs_addr(addr_t address, T x)
 	{
-		HANDLE process = ::GetCurrentProcess();
+		auto process = ::GetCurrentProcess();
 
 		// 絶対アドレスから読み込みます。
-		T orig = 0;
-		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), 0);
+		T orig = {};
+		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), nullptr);
 
 		// 絶対アドレスを書き換えます。
-		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), 0);
+		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), nullptr);
 		::FlushInstructionCache(process, (LPVOID)address, sizeof(x));
 
 		// 元の値を返します。
@@ -114,14 +114,14 @@ namespace my::tools
 	template <typename T>
 	inline void set_abs_addr_block(addr_t address, const T& x)
 	{
-		HANDLE process = ::GetCurrentProcess();
+		auto process = ::GetCurrentProcess();
 
 		// 絶対アドレスから読み込みます。
 		T orig = {};
-		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), 0);
+		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), nullptr);
 
 		// 絶対アドレスを書き換えます。
-		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), 0);
+		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), nullptr);
 		::FlushInstructionCache(process, (LPVOID)address, sizeof(x));
 	}
 
@@ -130,17 +130,17 @@ namespace my::tools
 	inline void add_int32(addr_t address, T value)
 	{
 		// プロセスハンドルを取得します。
-		HANDLE process = ::GetCurrentProcess();
+		auto process = ::GetCurrentProcess();
 
 		// アドレスの値を取得します。
-		T x = 0;
-		::ReadProcessMemory(process, (LPVOID)address, &x, sizeof(x), 0);
+		T x = {};
+		::ReadProcessMemory(process, (LPVOID)address, &x, sizeof(x), nullptr);
 
 		// 指定された値を加算します。
 		x += value;
 
 		// アドレスの値を書き換えます。
-		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), 0);
+		::WriteProcessMemory(process, (LPVOID)address, &x, sizeof(x), nullptr);
 		::FlushInstructionCache(process, (LPVOID)address, sizeof(x));
 	}
 }

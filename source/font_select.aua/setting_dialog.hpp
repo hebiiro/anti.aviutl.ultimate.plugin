@@ -47,7 +47,7 @@ namespace apn::font_select
 
 			// メニューを表示します。
 			auto point = my::get_cursor_pos();
-			auto id = ::TrackPopupMenu(menu, TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, 0, hive.main_window, 0);
+			auto id = ::TrackPopupMenuEx(menu, TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, hive.main_window, nullptr);
 			if (id == 0) return FALSE;
 
 			// 選択されたフォントをフォントのコンボボックスに適用します。

@@ -43,12 +43,12 @@ namespace apn::text_split
 
 		struct App {
 			virtual BOOL split_text() = 0;
-		} *app = 0;
+		} *app = nullptr;
 
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -58,7 +58,7 @@ namespace apn::text_split
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// シフトモードです。

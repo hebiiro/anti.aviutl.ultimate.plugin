@@ -21,12 +21,12 @@ namespace apn::filer_ui
 			virtual void on_init_filer_window(HWND filer_window, BOOL full) = 0;
 			virtual void on_check_host_window() = 0;
 			virtual void on_check_config() = 0;
-		} *app = 0;
+		} *app = nullptr;
 
 		//
 		// このモジュールのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -36,12 +36,12 @@ namespace apn::filer_ui
 		//
 		// AviUtlプロセス内に存在するホストウィンドウです。
 		//
-		HWND host_window = 0;
+		HWND host_window = nullptr;
 
 		//
 		// このモジュールのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// メッセージボックスを表示します。

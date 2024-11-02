@@ -49,7 +49,7 @@ namespace apn::ease_select_ui
 				auto w = image.GetWidth() * scale / 100;
 				auto h = image.GetHeight() * scale / 100;
 
-				SetWindowPos(0, 0, 0, w, h,
+				SetWindowPos(nullptr, 0, 0, w, h,
 					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
 			}
 
@@ -310,7 +310,7 @@ namespace apn::ease_select_ui
 				return -1;
 			}
 
-			SetTimer(timer_id, 1000, 0);
+			SetTimer(timer_id, 1000, nullptr);
 
 			// ウィンドウの初期化が完了したので、
 			// このウィンドウをメインウィンドウに設定します。
@@ -381,8 +381,7 @@ namespace apn::ease_select_ui
 		{
 			if (timer_id == this->timer_id)
 			{
-				auto target = get_target();
-				if (target)
+				if (auto target = get_target())
 				{
 					show(target);
 					ease_window.show(target, *this);

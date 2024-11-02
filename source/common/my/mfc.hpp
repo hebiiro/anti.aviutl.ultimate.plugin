@@ -10,7 +10,7 @@ public:
 	CUxDC(CPaintDC& dc, BP_BUFFERFORMAT format = BPBF_COMPATIBLEBITMAP)
 	{
 		BP_PAINTPARAMS pp = { sizeof(pp) };
-		HDC mdc = 0;
+		HDC mdc = nullptr;
 		m_pb = ::BeginBufferedPaint(dc, &dc.m_ps.rcPaint, format, &pp, &mdc);
 		Attach(mdc);
 	}
@@ -67,7 +67,7 @@ public:
 
 	COffscreenDC()
 	{
-		m_oldBitmap = 0;
+		m_oldBitmap = nullptr;
 		m_w = 0;
 		m_h = 0;
 	}
@@ -125,9 +125,9 @@ class CDIBDC : public CDC
 public:
 
 	CBitmap m_bitmap;
-	CBitmap* m_oldBitmap = 0;
+	CBitmap* m_oldBitmap = nullptr;
 	int m_w = 0, m_h = 0;
-	void* m_bits = 0;
+	void* m_bits = nullptr;
 
 	CDIBDC(CDC* dc, int w, int h, int bitCount = 32)
 	{
@@ -145,7 +145,7 @@ public:
 		bmi.bmiHeader.biCompression = BI_RGB;
 		bmi.bmiHeader.biSizeImage = m_w * m_h * (bitCount / 8);
 
-		m_bitmap.Attach(::CreateDIBSection(GetSafeHdc(), &bmi, DIB_RGB_COLORS, &m_bits, 0, 0));
+		m_bitmap.Attach(::CreateDIBSection(GetSafeHdc(), &bmi, DIB_RGB_COLORS, &m_bits, nullptr, 0));
 		m_oldBitmap = SelectObject(&m_bitmap);
 	}
 

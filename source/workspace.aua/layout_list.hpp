@@ -105,8 +105,7 @@ namespace apn::workspace
 			MY_TRACE_HWND(tab);
 
 			auto index = (size_t)::SendMessage(tab, TCM_GETCURSEL, 0, 0);
-			if (index >= stems.size())
-				return std::wstring();
+			if (index >= stems.size()) return {};
 
 			return (folder_name / stems[index]).wstring() + extension;
 		}

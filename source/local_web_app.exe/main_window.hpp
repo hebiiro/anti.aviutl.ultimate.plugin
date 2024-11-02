@@ -225,7 +225,7 @@ namespace apn::local_web_app
 					::DragQueryFileW(drop, 0, file_name, std::size(file_name));
 					::DragFinish(drop);
 
-					if (wcslen(file_name))
+					if (::lstrlenW(file_name))
 						navigate(file_name);
 
 					break;

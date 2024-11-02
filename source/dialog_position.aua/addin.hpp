@@ -44,4 +44,3 @@ namespace apn::dialog_position
 		}
 	} addin;
 }
-#pragma once

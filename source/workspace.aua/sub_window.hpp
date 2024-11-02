@@ -132,7 +132,7 @@ namespace apn::workspace
 				WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-				parent, 0, wc.hInstance, 0);
+				parent, nullptr, wc.hInstance, nullptr);
 		}
 
 		//
@@ -151,8 +151,8 @@ namespace apn::workspace
 
 			// フローティングコンテナのシステムメニューに項目を追加します。
 			auto menu = ::GetSystemMenu(*float_container, FALSE);
-			::InsertMenu(menu, 0, MF_BYPOSITION | MF_STRING, CommandID::c_rename_sub_window, _T("名前を変更"));
-			::InsertMenu(menu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, 0);
+			::InsertMenu(menu, 0, MF_BYPOSITION | MF_STRING, c_command_id.c_rename_sub_window, _T("名前を変更"));
+			::InsertMenu(menu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, nullptr);
 
 			// ウィンドウ名の更新を促します。
 			// ただし、この時点では他のシャトルの作成が完了していないので、
@@ -244,7 +244,7 @@ namespace apn::workspace
 		//
 		void fire_update_interseptors()
 		{
-			::SetTimer(*this, c_timer_id.c_update_interseptors, 0, 0);
+			::SetTimer(*this, c_timer_id.c_update_interseptors, 0, nullptr);
 		}
 
 		//
@@ -252,7 +252,7 @@ namespace apn::workspace
 		//
 		void fire_update_window_text()
 		{
-			::SetTimer(*this, c_timer_id.c_update_window_text, 0, 0);
+			::SetTimer(*this, c_timer_id.c_update_window_text, 0, nullptr);
 		}
 
 		//
@@ -314,7 +314,7 @@ namespace apn::workspace
 				{
 					switch (wParam)
 					{
-					case CommandID::c_rename_sub_window:
+					case c_command_id.c_rename_sub_window:
 						{
 							// サブウィンドウの名前変更ダイアログを表示します。
 							shuttle_manager.show_rename_dialog(this, hwnd);

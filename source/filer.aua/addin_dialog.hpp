@@ -184,11 +184,11 @@ namespace apn::filer
 			};
 
 			auto dwp = ::BeginDeferWindowPos(5);
-			::DeferWindowPos(dwp, list, 0, cx, cy, cw, ch - base * 2, SWP_NOZORDER | SWP_NOACTIVATE);
+			::DeferWindowPos(dwp, list, nullptr, cx, cy, cw, ch - base * 2, SWP_NOZORDER | SWP_NOACTIVATE);
 			for (size_t i = 0; i < std::size(button); i++) {
-				::DeferWindowPos(dwp, button[i], 0, bx[i], ch - base * 2, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
+				::DeferWindowPos(dwp, button[i], nullptr, bx[i], ch - base * 2, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
 			}
-			::DeferWindowPos(dwp, checkbox[0], 0, cx, ch - base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
+			::DeferWindowPos(dwp, checkbox[0], nullptr, cx, ch - base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
 			::EndDeferWindowPos(dwp);
 		}
 

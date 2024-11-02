@@ -13,7 +13,7 @@ namespace apn::filter_drag
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。

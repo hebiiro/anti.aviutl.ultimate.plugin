@@ -15,7 +15,7 @@ namespace apn::output_check
 			MY_TRACE_FUNC("");
 
 			// AviUtlのモジュールハンドルを取得します。
-			auto aviutl = (uintptr_t)::GetModuleHandle(0);
+			auto aviutl = (uintptr_t)::GetModuleHandle(nullptr);
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
@@ -53,7 +53,7 @@ namespace apn::output_check
 			inline static BOOL __fastcall hook_proc(AviUtl::EditHandle* editp, uint32_t flags)
 			{
 				// 「編集RAMプレビュー」の場合はデフォルトの処理を行います。
-				if (flags == 0x10 && strcmp(editp->sav_3.name, "編集RAMプレビュー") == 0)
+				if (flags == 0x10 && ::lstrcmpA(editp->sav_3.name, "編集RAMプレビュー") == 0)
 					return orig_proc(editp, flags);
 
 				{
@@ -71,7 +71,7 @@ namespace apn::output_check
 				// よって、この関数の場合は__fastcallのまま返すことができます。
 				return orig_proc(editp, flags);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} output;
 	} hook_manager;
 }

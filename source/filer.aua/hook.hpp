@@ -407,10 +407,10 @@ namespace apn::filer
 						MY_TRACE("WM_DROPFILES\n");
 
 						clear_alias_file_names();
-						BOOL result = FALSE;
+						auto result = FALSE;
 
 						auto drop = (HDROP)wParam;
-						auto c = ::DragQueryFile(drop, 0xFFFFFFFF, 0, 0);
+						auto c = ::DragQueryFile(drop, 0xFFFFFFFF, nullptr, 0);
 						for (decltype(c) i = 0; i < c; i++)
 						{
 							std::string file_name(MAX_PATH, '\0');
@@ -420,7 +420,7 @@ namespace apn::filer
 							if (std::filesystem::path(file_name).extension() == ".exa")
 								result |= add_alias_file(file_name.c_str());
 						}
-						//::DragFinish(drop); // これを呼ぶとデフォルトの処理が実行できなくなる。
+						//::DragFinish(drop); // これを呼ぶとデフォルトの処理が実行できなくなります。
 
 						if (result)
 						{
@@ -450,7 +450,7 @@ namespace apn::filer
 					// フラグが立っている場合はエイリアスファイル名の配列を使用して
 					// アイテムに複数のエイリアスを追加します。
 
-					BOOL ret_value = FALSE;
+					auto ret_value = FALSE;
 
 					for (auto file_name : alias_file_names)
 					{
@@ -466,7 +466,7 @@ namespace apn::filer
 
 				return orig_proc(file_name, flag1, flag2, object_index);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} add_alias;
 	} hook_manager;
 }

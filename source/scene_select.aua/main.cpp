@@ -13,7 +13,7 @@ namespace apn::scene_select
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!::StrStrIW(args, L"debug")) my::Tracer::logger = 0;
+		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
 
 		return &addin;
 	}

@@ -237,7 +237,7 @@ namespace Gdiplus
 		if (width)
 			return Gdiplus::PenPtr(new Gdiplus::Pen(color, width));
 		else
-			return Gdiplus::PenPtr(0);
+			return {};
 	}
 
 	inline void set_line_join(Gdiplus::PenPtr& pen)

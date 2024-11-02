@@ -13,7 +13,7 @@ namespace apn::ease_select
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -23,7 +23,7 @@ namespace apn::ease_select
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// TRUEの場合は最終フレームを自動調整します。

@@ -188,7 +188,7 @@ namespace my::layout
 			auto w = get_width(rc);
 			auto h = get_height(rc);
 
-			::DeferWindowPos(dwp, hwnd, 0, x, y, w, h, SWP_NOZORDER);
+			::DeferWindowPos(dwp, hwnd, nullptr, x, y, w, h, SWP_NOZORDER);
 		}
 
 		//

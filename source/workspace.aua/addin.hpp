@@ -106,7 +106,7 @@ namespace apn::workspace
 
 		virtual my::addr_t on_get_address(LPCWSTR name) override
 		{
-			if (wcscmp(name, L"shuttle") == 0) return (my::addr_t)&exports.shuttle;
+			if (::lstrcmpW(name, L"shuttle") == 0) return (my::addr_t)&exports.shuttle;
 
 			return 0;
 		}

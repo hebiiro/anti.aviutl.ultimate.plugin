@@ -13,7 +13,7 @@ namespace apn::ease_select_ui
 		{
 			_tsetlocale(LC_ALL, _T(""));
 
-			my::tracer_to_file::init(0);
+			my::tracer_to_file::init(nullptr);
 
 			MY_TRACE_FUNC("");
 
@@ -63,7 +63,7 @@ namespace apn::ease_select_ui
 
 			{
 				// ホストウィンドウを取得します。
-				hive.host_window = (HWND)_tcstoul(::GetCommandLine(), 0, 0);
+				hive.host_window = (HWND)_tcstoul(::GetCommandLine(), nullptr, 0);
 				::GetWindowThreadProcessId(hive.host_window, &hive.host_process_id);
 				MY_TRACE_HWND(hive.host_window);
 				if (!::IsWindow(hive.host_window)) return FALSE;
@@ -82,7 +82,7 @@ namespace apn::ease_select_ui
 				WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_LAYERED,
 				AfxRegisterWndClass(0),
 				_T(""),
-				WS_POPUP, 0, 0, 0, 0, 0, 0))
+				WS_POPUP, 0, 0, 0, 0, nullptr, nullptr))
 			{
 				hive.message_box(L"メインウィンドウの作成に失敗しました");
 

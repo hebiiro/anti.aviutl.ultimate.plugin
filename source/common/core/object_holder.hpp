@@ -3,14 +3,14 @@
 #define MY_TRACE_OBJECT_HOLDER(object) \
 do { \
 	MY_TRACE(#object _T(" = {}\n"), object.get_object_index()); \
-} while (0)
+} while (false)
 
 namespace apn
 {
 	struct ObjectHolder
 	{
 		int32_t object_index = -1;
-		ExEdit::Object* object = 0;
+		ExEdit::Object* object = nullptr;
 
 		ObjectHolder()
 		{

@@ -93,7 +93,7 @@ public:
 			auto manifest_from = hive.module_folder_name / L"assets" / L"aviutl_dark.exe.manifest";
 			auto manifest_to = hive.aviutl_dir / L"aviutl_dark.exe.manifest";
 
-			BOOL succeeded = FALSE;
+			auto succeeded = FALSE;
 
 			try
 			{
@@ -107,7 +107,7 @@ public:
 					RT_MANIFEST,
 					MAKEINTRESOURCE(1),
 					MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT),
-					0, 0);
+					nullptr, 0);
 				std::filesystem::copy(manifest_from, manifest_to, options);
 
 				::EndUpdateResource(resource, FALSE);

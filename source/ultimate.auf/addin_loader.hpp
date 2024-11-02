@@ -51,7 +51,7 @@ namespace apn
 		{
 			MY_TRACE_FUNC("{}, {}", file_name, args);
 
-			auto instance = ::LoadLibraryExW(file_name.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+			auto instance = ::LoadLibraryExW(file_name.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
 			if (!instance)
 			{
 				std::wcout << std::format(L"\033[31m" L"{}の読み込みに失敗しました" L"\033[m", file_name) << std::endl;

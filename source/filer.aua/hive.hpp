@@ -18,12 +18,12 @@ namespace apn::filer
 			virtual BOOL on_create_filer() = 0;
 			virtual BOOL on_destroy_filer(size_t index) = 0;
 			virtual BOOL on_edit_filer(size_t index) = 0;
-		} *app = 0;
+		} *app = nullptr;
 
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -33,12 +33,12 @@ namespace apn::filer
 		//
 		// このアドインのウィンドウハンドルです。
 		//
-		HWND addin_window = 0;
+		HWND addin_window = nullptr;
 
 		//
 		// 現在アクティブなファイラウィンドウです。
 		//
-		HWND active_window = 0;
+		HWND active_window = nullptr;
 
 		//
 		// TRUEの場合はコモンダイアログ(ファイル選択ダイアログ)を使用するようにします。

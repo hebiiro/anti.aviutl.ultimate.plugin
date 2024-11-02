@@ -11,11 +11,11 @@
 
 namespace apn::dirty_check
 {
-	LPCSTR FILTER_NAME = "終了確認";
-	LPCSTR FILTER_INFORMATION = "Auls終了確認 v1.2 forked by karoterra";
+	inline constexpr auto FILTER_NAME = "終了確認";
+	inline constexpr auto FILTER_INFORMATION = "Auls終了確認 v1.2 forked by karoterra";
 
-	LPCSTR EXEDIT_NAME = "拡張編集";
-	LPCSTR EXEDIT_92 = "拡張編集(exedit) version 0.92 by ＫＥＮくん";
+	inline constexpr auto EXEDIT_NAME = "拡張編集";
+	inline constexpr auto EXEDIT_92 = "拡張編集(exedit) version 0.92 by ＫＥＮくん";
 
 	inline struct DirtyFlag
 	{
@@ -26,13 +26,18 @@ namespace apn::dirty_check
 		//
 		// 拡張編集のフィルタを返します。
 		//
-		static AviUtl::FilterPlugin* get_exedit(AviUtl::FilterPlugin* fp)
+		inline static AviUtl::FilterPlugin* get_exedit(AviUtl::FilterPlugin* fp)
 		{
-			AviUtl::SysInfo si;
+			AviUtl::SysInfo si = {};
 			fp->exfunc->get_sys_info(nullptr, &si);
-			for (int i = 0; i < si.filter_n; i++) {
+
+			for (decltype(si.filter_n) i = 0; i < si.filter_n; i++)
+			{
 				auto fp1 = static_cast<AviUtl::FilterPlugin*>(fp->exfunc->get_filterp(i));
-				if (strcmp(fp1->name, EXEDIT_NAME) == 0 && strcmp(fp1->information, EXEDIT_92) == 0) {
+
+				if (::lstrcmpA(fp1->name, EXEDIT_NAME) == 0 &&
+					::lstrcmpA(fp1->information, EXEDIT_92) == 0)
+				{
 					return fp1;
 				}
 			}
@@ -45,16 +50,19 @@ namespace apn::dirty_check
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
 			// 拡張編集を取得します。
-			auto exedit = get_exedit(fp);
-			if (exedit == nullptr) {
-				MessageBoxA(fp->hwnd, "対応する拡張編集が見つかりません。", FILTER_NAME, MB_OK | MB_ICONERROR);
+			if (auto exedit = get_exedit(fp))
+			{
+				// 拡張編集のアンドゥIDへのポインタを取得します。
+				g_undo_id_ptr = reinterpret_cast<int*>(reinterpret_cast<size_t>(exedit->dll_hinst) + 0x244E08 + 12);
+
+				return TRUE;
+			}
+			else
+			{
+				::MessageBoxA(fp->hwnd, "対応する拡張編集が見つかりません。", FILTER_NAME, MB_OK | MB_ICONERROR);
+
 				return FALSE;
 			}
-
-			// 拡張編集のアンドゥIDへのポインタを取得します。
-			g_undo_id_ptr = reinterpret_cast<int*>(reinterpret_cast<size_t>(exedit->dll_hinst) + 0x244E08 + 12);
-
-			return TRUE;
 		}
 
 		//
@@ -128,7 +136,7 @@ namespace apn::dirty_check
 			if (dirty_flag.is_trigger_message(message, wParam))
 			{
 				// メッセージボックスを表示します。
-				int id = ::MessageBoxA(hwnd, "変更された編集データがあります。保存しますか？",
+				auto id = ::MessageBoxA(hwnd, "変更された編集データがあります。保存しますか？",
 					FILTER_NAME, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
 
 				// ユーザーが「はい」を選択した場合は

@@ -24,12 +24,12 @@ namespace apn::image_export
 		struct App {
 			virtual std::wstring browse() = 0;
 			virtual BOOL export_image(const std::wstring& file_name, BOOL has_alpha, BOOL sel_item_only) = 0;
-		} *app = 0;
+		} *app = nullptr;
 
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -39,7 +39,7 @@ namespace apn::image_export
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// JPEGの出力品質です。

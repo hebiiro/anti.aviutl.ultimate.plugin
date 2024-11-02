@@ -138,8 +138,8 @@ public:
 
 		aviutl_file_name_edit.init();
 
-		HICON icon = nullptr;
-		::ExtractIconEx(_T("shell32.dll"), 3, 0, &icon, 1);
+		auto icon = HICON {};
+		::ExtractIconEx(_T("shell32.dll"), 3, nullptr, &icon, 1);
 		aviutl_file_name_edit.SetBrowseButtonImage(icon);
 
 		aviutl_file_name = hive.aviutl_file_name.c_str();

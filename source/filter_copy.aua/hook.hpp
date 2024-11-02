@@ -27,27 +27,27 @@ namespace apn::filter_copy
 			my::hook::attach(unknown1, magi.exin.address.function.unknown1);
 
 			// 設定ダイアログのコンテキストメニューを拡張します。
-			for (int32_t i = 0; i < magi.exin.get_setting_dialog_menu_count(); i++)
+			for (auto i = 0; i < magi.exin.get_setting_dialog_menu_count(); i++)
 			{
-				HMENU menu = magi.exin.get_setting_dialog_menu(i);
-				HMENU sub_menu = ::GetSubMenu(menu, 0);
+				auto menu = magi.exin.get_setting_dialog_menu(i);
+				auto sub_menu = ::GetSubMenu(menu, 0);
 
 				if (i == 2)
 				{
-					::AppendMenu(sub_menu, MF_SEPARATOR, 0, 0);
-					::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_create_clone, _T("完全な複製を下に作成"));
-					::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_create_same_above, _T("同じフィルタ効果を上に作成"));
-					::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_create_same_below, _T("同じフィルタ効果を下に作成"));
+					::AppendMenu(sub_menu, MF_SEPARATOR, 0, nullptr);
+					::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_create_clone, _T("完全な複製を下に作成"));
+					::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_create_same_above, _T("同じフィルタ効果を上に作成"));
+					::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_create_same_below, _T("同じフィルタ効果を下に作成"));
 				}
 
-				::AppendMenu(sub_menu, MF_SEPARATOR, 0, 0);
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_cut_filter, _T("このフィルタを切り取り"));
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_cut_filter_above, _T("このフィルタ以上を切り取り"));
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_cut_filter_below, _T("このフィルタ以下を切り取り"));
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_copy_filter, _T("このフィルタをコピー"));
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_copy_filter_above, _T("このフィルタ以上をコピー"));
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_copy_filter_below, _T("このフィルタ以下をコピー"));
-				::AppendMenu(sub_menu, MF_STRING, Magi::CommandID::SettingDialog::c_paste_filter, _T("フィルタを貼り付け"));
+				::AppendMenu(sub_menu, MF_SEPARATOR, 0, nullptr);
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_cut_filter, _T("このフィルタを切り取り"));
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_cut_filter_above, _T("このフィルタ以上を切り取り"));
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_cut_filter_below, _T("このフィルタ以下を切り取り"));
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_copy_filter, _T("このフィルタをコピー"));
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_copy_filter_above, _T("このフィルタ以上をコピー"));
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_copy_filter_below, _T("このフィルタ以下をコピー"));
+				::AppendMenu(sub_menu, MF_STRING, magi.c_command_id.c_setting_dialog.c_paste_filter, _T("フィルタを貼り付け"));
 			}
 
 			return DetourTransactionCommit() == NO_ERROR;
@@ -69,7 +69,7 @@ namespace apn::filter_copy
 		//
 		struct Prep {
 			int32_t object_index = -1;
-			ExEdit::Object* object = 0;
+			ExEdit::Object* object = nullptr;
 			std::string temp_folder_path;
 			DWORD pid = 0;
 
@@ -354,7 +354,7 @@ namespace apn::filter_copy
 				MY_TRACE_HEX(dst_filter);
 				if (!dst_filter) break;
 
-				if (create_filter_command_id == Magi::CommandID::SettingDialog::c_create_clone)
+				if (create_filter_command_id == magi.c_command_id.c_setting_dialog.c_create_clone)
 				{
 					// 拡張データをコピーします。
 					auto src_filter_exdata = magi.exin.get_exdata(object, src_filter_index);
@@ -398,7 +398,7 @@ namespace apn::filter_copy
 
 			switch (create_filter_command_id)
 			{
-			case Magi::CommandID::SettingDialog::c_create_same_above:
+			case magi.c_command_id.c_setting_dialog.c_create_same_above:
 				{
 					// コピー元のすぐ上に移動します。
 					auto c = dst_filter_index - src_filter_index;
@@ -407,8 +407,8 @@ namespace apn::filter_copy
 
 					break;
 				}
-			case Magi::CommandID::SettingDialog::c_create_clone:
-			case Magi::CommandID::SettingDialog::c_create_same_below:
+			case magi.c_command_id.c_setting_dialog.c_create_clone:
+			case magi.c_command_id.c_setting_dialog.c_create_same_below:
 				{
 					// コピー元のすぐ下に移動します。
 					auto c = dst_filter_index - src_filter_index - 1;
@@ -432,9 +432,9 @@ namespace apn::filter_copy
 					{
 						switch (wParam)
 						{
-						case Magi::CommandID::SettingDialog::c_create_clone:
-						case Magi::CommandID::SettingDialog::c_create_same_above:
-						case Magi::CommandID::SettingDialog::c_create_same_below:
+						case magi.c_command_id.c_setting_dialog.c_create_clone:
+						case magi.c_command_id.c_setting_dialog.c_create_same_above:
+						case magi.c_command_id.c_setting_dialog.c_create_same_below:
 							{
 								// オブジェクトを取得します。
 								ObjectHolder object(magi.exin.get_current_object_index());
@@ -462,63 +462,63 @@ namespace apn::filter_copy
 								hook_manager.create_filter_command_id = 0;
 								return result;
 							}
-						case Magi::CommandID::SettingDialog::c_cut_filter:
+						case magi.c_command_id.c_setting_dialog.c_cut_filter:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_cut_filter");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_cut_filter");
 
 								auto filter_index = magi.exin.get_current_filter_index();
 								if (filter_index >= 0)
 									hook_manager.copy_filter(filter_index, 0, TRUE);
 								break;
 							}
-						case Magi::CommandID::SettingDialog::c_cut_filter_above:
+						case magi.c_command_id.c_setting_dialog.c_cut_filter_above:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_cut_filter_above");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_cut_filter_above");
 
 								auto filter_index = magi.exin.get_current_filter_index();
 								if (filter_index >= 0)
 									hook_manager.copy_filter(filter_index, -1, TRUE);
 								break;
 							}
-						case Magi::CommandID::SettingDialog::c_cut_filter_below:
+						case magi.c_command_id.c_setting_dialog.c_cut_filter_below:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_cut_filter_below");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_cut_filter_below");
 
 								auto filter_index = magi.exin.get_current_filter_index();
 								if (filter_index >= 0)
 									hook_manager.copy_filter(filter_index, 1, TRUE);
 								break;
 							}
-						case Magi::CommandID::SettingDialog::c_copy_filter:
+						case magi.c_command_id.c_setting_dialog.c_copy_filter:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_copy_filter");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_copy_filter");
 
 								auto filter_index = magi.exin.get_current_filter_index();
 								if (filter_index >= 0)
 									hook_manager.copy_filter(filter_index, 0, FALSE);
 								break;
 							}
-						case Magi::CommandID::SettingDialog::c_copy_filter_above:
+						case magi.c_command_id.c_setting_dialog.c_copy_filter_above:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_copy_filter_above");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_copy_filter_above");
 
 								auto filter_index = magi.exin.get_current_filter_index();
 								if (filter_index >= 0)
 									hook_manager.copy_filter(filter_index, -1, FALSE);
 								break;
 							}
-						case Magi::CommandID::SettingDialog::c_copy_filter_below:
+						case magi.c_command_id.c_setting_dialog.c_copy_filter_below:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_copy_filter_below");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_copy_filter_below");
 
 								auto filter_index = magi.exin.get_current_filter_index();
 								if (filter_index >= 0)
 									hook_manager.copy_filter(filter_index, 1, FALSE);
 								break;
 							}
-						case Magi::CommandID::SettingDialog::c_paste_filter:
+						case magi.c_command_id.c_setting_dialog.c_paste_filter:
 							{
-								MY_TRACE_FUNC("Magi::CommandID::SettingDialog::c_paste_filter");
+								MY_TRACE_FUNC("magi.c_command_id.c_setting_dialog.c_paste_filter");
 
 								hook_manager.paste_filter();
 								break;
@@ -558,7 +558,7 @@ namespace apn::filter_copy
 				auto camera = object->flag & ExEdit::Object::Flag::Camera;
 
 				auto insert_pos = filter_index; // フィルタを挿入する位置です。
-				BOOL ret_value = FALSE; // 戻り値です。
+				auto ret_value = FALSE; // 戻り値です。
 
 				for (const auto& filter : hook_manager.order.filters)
 				{
@@ -572,7 +572,7 @@ namespace apn::filter_copy
 					// 末尾に追加されたフィルタを挿入位置まで移動します。
 					for (int32_t i = c - 1; i > insert_pos + 1; i--)
 					{
-						ExEdit::Filter* filter = magi.exin.get_filter(object, i);
+						auto filter = magi.exin.get_filter(object, i);
 
 						magi.exin.swap_filter(object_index, i, -1);
 					}
@@ -586,7 +586,7 @@ namespace apn::filter_copy
 
 				return ret_value;
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} add_alias;
 
 		//
@@ -602,7 +602,7 @@ namespace apn::filter_copy
 				if (hook_manager.create_filter_command_id)
 					hook_manager.create_filter(object_index, filter_index);
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} unknown1;
 	} hook_manager;
 }

@@ -45,7 +45,7 @@ namespace apn::dialog_position
 						auto w = my::get_width(rc);
 						auto h = my::get_height(rc);
 
-						::SetWindowPos(hwnd, 0, x, y, w, h, SWP_NOZORDER);
+						::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER);
 					}
 
 					return result;

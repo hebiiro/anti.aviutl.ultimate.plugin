@@ -35,7 +35,7 @@ namespace apn::image_export
 			}
 		};
 
-		inline static decltype(AviUtl::FilterPlugin::func_proc) true_exedit_func_proc = 0;
+		inline static decltype(AviUtl::FilterPlugin::func_proc) true_exedit_func_proc = nullptr;
 		static BOOL hook_exedit_func_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
 		{
 			MY_TRACE_FUNC("begin");
@@ -79,7 +79,7 @@ namespace apn::image_export
 
 			for(UINT j = 0; j < num; ++j)
 			{
-				if( wcscmp(pImageCodecInfo[j].MimeType, format) == 0 )
+				if (::lstrcmpW(pImageCodecInfo[j].MimeType, format) == 0)
 				{
 					*pClsid = pImageCodecInfo[j].Clsid;
 					free(pImageCodecInfo);
@@ -137,7 +137,7 @@ namespace apn::image_export
 			// フレームの映像サイズを取得します。
 			int32_t frame = fp->exfunc->get_frame(editp);
 			int32_t width = 0, height = 0;
-			fp->exfunc->get_pixel_filtered(editp, frame, 0, &width, &height);
+			fp->exfunc->get_pixel_filtered(editp, frame, nullptr, &width, &height);
 			int32_t stride = width * 3 + width % 4;
 
 			// 出力バッファを確保します。
@@ -148,7 +148,7 @@ namespace apn::image_export
 
 			// 入力バッファを確保します。
 			Bits<AviUtl::PixelBGR> input(width, height, stride);
-			fp->exfunc->get_pixel_filtered(editp, frame, input.get(), 0, 0);
+			fp->exfunc->get_pixel_filtered(editp, frame, input.get(), nullptr, nullptr);
 
 			if (exedit && has_alpha)
 			{
@@ -158,7 +158,7 @@ namespace apn::image_export
 
 				// アルファ算出用のサブ入力バッファを確保します。
 				Bits<AviUtl::PixelBGR> sub_input(width, height, stride);
-				fp->exfunc->get_pixel_filtered(editp, frame, sub_input.get(), 0, 0);
+				fp->exfunc->get_pixel_filtered(editp, frame, sub_input.get(), nullptr, nullptr);
 
 				// func_proc を元に戻す
 				exedit->func_proc = true_exedit_func_proc;

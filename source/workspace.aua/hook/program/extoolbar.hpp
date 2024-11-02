@@ -18,7 +18,7 @@ namespace apn::workspace::hook
 				if (result == -1) return 0;
 				return result;
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} GetMenuState;
 
 		//

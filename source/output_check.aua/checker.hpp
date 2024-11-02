@@ -7,8 +7,8 @@ namespace apn::output_check
 	//
 	struct Checker
 	{
-		AviUtl::FilterPlugin* fp = 0;
-		AviUtl::EditHandle* editp = 0;
+		AviUtl::FilterPlugin* fp = nullptr;
+		AviUtl::EditHandle* editp = nullptr;
 		int32_t s = 0; // 選択範囲の開始位置です。
 		int32_t e = 0; // 選択範囲の終了位置です。
 		int32_t frame_n = 0; // フレーム総数です。
@@ -143,7 +143,7 @@ namespace apn::output_check
 		BOOL check_frame_rate()
 		{
 			// メモリアドレスから[フレームレートの変更]を取得します。
-			auto aviutl_base = (my::addr_t)::GetModuleHandle(0);
+			auto aviutl_base = (my::addr_t)::GetModuleHandle(nullptr);
 			auto framerate_fp = (AviUtl::FilterPlugin*)(aviutl_base + 0x080b28);
 			auto framerate_config = framerate_fp->track_array[0];
 
@@ -185,7 +185,7 @@ namespace apn::output_check
 				text += _T("このまま出力を実行しますか？");
 
 				// ユーザーが出力を拒否した場合はFALSEを返します。
-				if (IDNO == hive.message_box(text, 0, MB_YESNO | MB_ICONEXCLAMATION))
+				if (IDNO == hive.message_box(text, nullptr, MB_YESNO | MB_ICONEXCLAMATION))
 					return FALSE;
 			}
 

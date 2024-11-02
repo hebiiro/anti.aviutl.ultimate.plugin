@@ -89,7 +89,7 @@ namespace my
 		//
 		static int32_t get_filter_plugin_count(AviUtl::FilterPlugin* fp)
 		{
-			AviUtl::SysInfo si;
+			AviUtl::SysInfo si = {};
 			fp->exfunc->get_sys_info(nullptr, &si);
 			return si.filter_n;
 		}
@@ -109,7 +109,7 @@ namespace my
 			{
 				auto filter_plugin = fp->exfunc->get_filterp(i);
 
-				if (!strcmp(filter_plugin->name, name)) return filter_plugin;
+				if (!::lstrcmpA(filter_plugin->name, name)) return filter_plugin;
 			}
 
 			return nullptr;

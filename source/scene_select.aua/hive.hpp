@@ -38,7 +38,7 @@ namespace apn::scene_select
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -48,7 +48,7 @@ namespace apn::scene_select
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// ウィンドウのサイズ変更モードです。

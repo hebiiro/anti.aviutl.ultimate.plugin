@@ -46,7 +46,7 @@ namespace apn::workspace::hook
 
 					return orig_proc(hwnd, message, wParam, lParam);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} script_param_dlg_proc;
 
 			//
@@ -70,13 +70,13 @@ namespace apn::workspace::hook
 					// すべてのモニタのすべての場所から色を抽出できるようにします。
 
 					auto point = my::get_cursor_pos();
-					::LogicalToPhysicalPointForPerMonitorDPI(0, &point);
+					::LogicalToPhysicalPointForPerMonitorDPI(nullptr, &point);
 
-					my::ClientDC dc(0);
+					my::ClientDC dc(nullptr);
 
 					return ::GetPixel(dc, point.x, point.y);
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} GetPixel;
 
 			//
@@ -134,7 +134,7 @@ namespace apn::workspace::hook
 
 					return active_window;
 				}
-				inline static decltype(&hook_proc) orig_proc = 0;
+				inline static decltype(&hook_proc) orig_proc = nullptr;
 			} GetActiveWindow;
 
 			//

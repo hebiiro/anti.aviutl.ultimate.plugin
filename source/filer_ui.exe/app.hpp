@@ -16,7 +16,7 @@ namespace apn::filer_ui
 		{
 			_tsetlocale(LC_ALL, _T(""));
 
-			my::tracer_to_file::init(0);
+			my::tracer_to_file::init(nullptr);
 
 			MY_TRACE_FUNC("");
 
@@ -50,7 +50,7 @@ namespace apn::filer_ui
 				arg = argv[1]; // 2 番目の引数を使用します。
 			MY_TRACE_STR(arg);
 
-			return (HWND)std::wcstoul(arg, 0, 0);
+			return (HWND)wcstoul(arg, nullptr, 0);
 		}
 
 		//

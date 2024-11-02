@@ -28,7 +28,7 @@ namespace apn::filer_ui
 			std::basic_string<TCHAR> path;
 			path.resize(buffer_length);
 			::SHGetPathFromIDList(idlist, path.data());
-			path.resize(wcslen(path.data()));
+			path.resize(::lstrlenW(path.data()));
 			return path;
 		}
 
@@ -56,7 +56,7 @@ namespace apn::filer_ui
 			}
 			else
 			{
-				*ppv = 0;
+				*ppv = nullptr;
 				return E_NOINTERFACE;
 			}
 
@@ -81,7 +81,7 @@ namespace apn::filer_ui
 				return this->QueryInterface(iid, ppv);
 			}
 
-			*ppv = 0;
+			*ppv = nullptr;
 			return E_NOINTERFACE;
 		}
 
@@ -111,7 +111,7 @@ namespace apn::filer_ui
 			folder_control.SetEditSel(0, -1);
 
 			IShellBrowserPtr browser = explorer;
-			HWND hwnd = 0; browser->GetWindow(&hwnd);
+			HWND hwnd = nullptr; browser->GetWindow(&hwnd);
 			::SetWindowText(hwnd, path.c_str());
 
 			return S_OK;
@@ -151,7 +151,7 @@ namespace apn::filer_ui
 		struct CoTaskMem
 		{
 			T p;
-			explicit CoTaskMem(T p = 0) : p(p) {}
+			explicit CoTaskMem(T p = {}) : p(p) {}
 			~CoTaskMem() { if (p) ::CoTaskMemFree(p); }
 			T* operator&() { return &p; }
 			operator T() { return p; }
@@ -163,12 +163,12 @@ namespace apn::filer_ui
 			__RPC__in PCUITEMID_CHILD pidlItem)
 		{
 			IShellItemPtr si;
-			HRESULT hr = ::SHCreateItemWithParent(0, psf, pidlItem, IID_PPV_ARGS(&si));
+			HRESULT hr = ::SHCreateItemWithParent(nullptr, psf, pidlItem, IID_PPV_ARGS(&si));
 
 			CoTaskMem<LPWSTR> display_name;
 			si->GetDisplayName(SIGDN_NORMALDISPLAY, &display_name);
 
-			SFGAOF attributes = 0;
+			SFGAOF attributes = {};
 			si->GetAttributes(SFGAO_FOLDER, &attributes);
 
 //			MY_TRACE_FUNC("{}, {:#010x}", (LPWSTR)display_name, attributes);
@@ -210,7 +210,7 @@ namespace apn::filer_ui
 			MY_TRACE_FUNC("");
 
 			// エクスプローラを作成します。
-			HRESULT hr = explorer.CreateInstance(CLSID_ExplorerBrowser);
+			auto hr = explorer.CreateInstance(CLSID_ExplorerBrowser);
 
 			{
 				// エクスプローラを初期化します。
@@ -248,7 +248,7 @@ namespace apn::filer_ui
 				// こうしないと次のbrowse_to_path(folder_name)でフリーズしてしまいます。
 
 				PIDLIST_ABSOLUTE idlist_desktop;
-				::SHGetKnownFolderIDList(FOLDERID_Desktop, 0, 0, &idlist_desktop);
+				::SHGetKnownFolderIDList(FOLDERID_Desktop, 0, nullptr, &idlist_desktop);
 				explorer->BrowseToIDList(idlist_desktop, SBSP_ABSOLUTE);
 				::ILFree(idlist_desktop);
 			}
@@ -265,10 +265,10 @@ namespace apn::filer_ui
 
 			if (!explorer) return;
 
-			shell_view = 0;
+			shell_view = nullptr;
 			explorer->Unadvise(cookie), cookie = 0;
-			::IUnknown_SetSite(explorer, 0);
-			explorer->Destroy(), explorer = 0;
+			::IUnknown_SetSite(explorer, nullptr);
+			explorer->Destroy(), explorer = nullptr;
 		}
 
 		void resize_explorer(CWnd* placeholder)
@@ -280,7 +280,7 @@ namespace apn::filer_ui
 
 			CRect rc; placeholder->GetWindowRect(&rc);
 			ScreenToClient(&rc);
-			explorer->SetRect(0, rc);
+			explorer->SetRect(nullptr, rc);
 		}
 
 		void browse_to_path(LPCTSTR path)
@@ -296,7 +296,7 @@ namespace apn::filer_ui
 
 				if (shell_view)
 				{
-					HRESULT hr = shell_view->Refresh();
+					auto hr = shell_view->Refresh();
 					MY_TRACE_COM_ERROR(hr);
 				}
 			}

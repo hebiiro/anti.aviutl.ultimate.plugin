@@ -292,7 +292,7 @@ namespace apn::dark::painter
 		{
 			auto old_bk_color = ::SetBkColor(dc,
 				(fill_color != CLR_NONE) ? fill_color : ::GetBkColor(dc));
-			hive.orig.ExtTextOutW(dc, 0, 0, ETO_OPAQUE, rc, 0, 0, 0);
+			hive.orig.ExtTextOutW(dc, 0, 0, ETO_OPAQUE, rc, nullptr, 0, nullptr);
 			::SetBkColor(dc, old_bk_color);
 		}
 
@@ -331,7 +331,7 @@ namespace apn::dark::painter
 			if (fill_color != CLR_NONE)
 				::SetBkColor(dc, fill_color);
 
-			hive.orig.ExtTextOutW(dc, x, y, options, rc, 0, 0, dx);
+			hive.orig.ExtTextOutW(dc, x, y, options, rc, nullptr, 0, dx);
 		}
 
 		if (text && c)

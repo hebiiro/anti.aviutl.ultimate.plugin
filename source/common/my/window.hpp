@@ -129,7 +129,7 @@ namespace my
 		{
 			auto window = from_handle(hwnd);
 			if (!window) return nullptr;
-			if (_tcscmp(id, window->get_window_id()) != 0) return nullptr;
+			if (::lstrcmp(id, window->get_window_id()) != 0) return nullptr;
 			return static_cast<T*>(window);
 		}
 

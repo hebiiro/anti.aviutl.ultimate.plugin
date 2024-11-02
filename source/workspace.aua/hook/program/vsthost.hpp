@@ -13,7 +13,7 @@ namespace apn::workspace::hook
 		{
 			MY_TRACE_FUNC("{:#010x}", parent);
 
-			const auto c_class_name = _T("apn::workspace::popup_window");
+			constexpr auto c_class_name = _T("apn::workspace::popup_window");
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
@@ -30,7 +30,7 @@ namespace apn::workspace::hook
 				WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-				parent, 0, hive.instance, 0);
+				parent, nullptr, hive.instance, nullptr);
 		}
 
 		//
@@ -53,7 +53,7 @@ namespace apn::workspace::hook
 
 				return result;
 			}
-			inline static decltype(&hook_proc) orig_proc = 0;
+			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} DialogBoxIndirectParamA;
 
 		//

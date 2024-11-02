@@ -13,7 +13,7 @@ namespace apn::namecage
 		//
 		// このアドインのインスタンスハンドルです。
 		//
-		HINSTANCE instance = 0;
+		HINSTANCE instance = nullptr;
 
 		//
 		// コンフィグのファイル名です。
@@ -23,7 +23,7 @@ namespace apn::namecage
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND main_window = 0;
+		HWND main_window = nullptr;
 
 		//
 		// アイテム名をずらすオフセットです。

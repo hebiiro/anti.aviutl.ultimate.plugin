@@ -8,12 +8,12 @@ namespace apn
 			: m_width(width)
 			, m_height(height)
 			, m_stride((width * 32 + 31) / 32 * 4)
-			, m_bits(0)
-			, m_dc(0)
-			, m_bitmap(0)
-			, m_oldBitmap(0)
+			, m_bits(nullptr)
+			, m_dc(nullptr)
+			, m_bitmap(nullptr)
+			, m_oldBitmap(nullptr)
 		{
-			m_dc = ::CreateCompatibleDC(0);
+			m_dc = ::CreateCompatibleDC(nullptr);
 			MY_TRACE_HEX(m_dc);
 
 			BITMAPINFO bitmapInfo = {};
@@ -24,7 +24,7 @@ namespace apn
 			bitmapInfo.bmiHeader.biBitCount = 32;
 			bitmapInfo.bmiHeader.biCompression = BI_RGB;
 			m_bitmap = ::CreateDIBSection(
-				0, &bitmapInfo, DIB_RGB_COLORS, &m_bits, 0, 0);
+				nullptr, &bitmapInfo, DIB_RGB_COLORS, &m_bits, nullptr, 0);
 			MY_TRACE_HEX(m_bitmap);
 
 			m_oldBitmap = (HBITMAP)::SelectObject(m_dc, m_bitmap);

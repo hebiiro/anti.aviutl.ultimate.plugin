@@ -80,7 +80,7 @@ namespace apn::dark::hook
 
 				if ((my::addr_t)name > 0x0000FFFF && !::IsBadReadPtr(name, 1))
 				{
-					if (instance == ::GetModuleHandle(0) && ::StrStrIA(name, "ICON_"))
+					if (instance == ::GetModuleHandle(nullptr) && ::StrStrIA(name, "ICON_"))
 					{
 						MY_TRACE("AviUtlのアイコンをアイコンマネージャに追加します {}, {:#010x}\n", name, flags);
 

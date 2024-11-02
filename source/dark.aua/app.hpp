@@ -392,7 +392,7 @@ namespace apn::dark
 		inline static std::wstring to_string(LPCWSTR name, LPCWSTR vsclass_name, int part_id, int state_id)
 		{
 			auto state = skin::theme::manager.get_state(vsclass_name, part_id, state_id);
-			if (!state) return std::wstring();
+			if (!state) return {};
 			return std::format(LR"(<NamedColor name="{}" fillColor="{}" edgeColor="{}" textForeColor="{}" textBackColor="{}" />)",
 				name,
 				to_string(state->stuff.fill.color),

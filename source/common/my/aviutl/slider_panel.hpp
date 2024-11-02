@@ -50,8 +50,8 @@ namespace my::aviutl
 		Slider slider;
 		EditBox editbox;
 
-		T min_value = 0;
-		T max_value = 0;
+		T min_value = {};
+		T max_value = {};
 
 		//
 		// パネルを初期化します。

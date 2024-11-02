@@ -26,12 +26,12 @@ namespace apn::ease_select
 			if (!::CreateProcessW(
 				path.c_str(),	// No module name (use command line)
 				args.data(),	// Command line
-				0,				// Process handle not inheritable
-				0,              // Thread handle not inheritable
+				nullptr,		// Process handle not inheritable
+				nullptr,		// Thread handle not inheritable
 				FALSE,			// Set handle inheritance to FALSE
 				0,				// No creation flags
-				0,				// Use parent's environment block
-				0,				// Use parent's starting directory 
+				nullptr,		// Use parent's environment block
+				nullptr,		// Use parent's starting directory 
 				&si,			// Pointer to STARTUPINFO structure
 				&pi))			// Pointer to PROCESS_INFORMATION structur
 			{

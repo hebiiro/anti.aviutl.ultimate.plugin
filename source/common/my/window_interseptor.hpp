@@ -12,7 +12,7 @@ namespace my
 		//
 		// コンストラクタです。
 		//
-		WindowInterseptor() : hwnd(0)
+		WindowInterseptor() : hwnd(nullptr)
 		{
 		}
 
@@ -44,7 +44,7 @@ namespace my
 			if (hwnd) return FALSE; // すでにウィンドウを作成済みの場合は失敗します。
 
 			associator.start(this);
-			HWND result = ::CreateWindowEx(ex_style, class_name, window_name, style, x, y, w, h, parent, menu, instance, param);
+			auto result = ::CreateWindowEx(ex_style, class_name, window_name, style, x, y, w, h, parent, menu, instance, param);
 			associator.stop();
 
 			return !!result;
@@ -56,8 +56,8 @@ namespace my
 		virtual BOOL destroy()
 		{
 			if (!hwnd) return FALSE;
-			BOOL result = ::DestroyWindow(hwnd);
-			hwnd = 0;
+			auto result = ::DestroyWindow(hwnd);
+			hwnd = nullptr;
 			return result;
 		}
 
@@ -77,8 +77,8 @@ namespace my
 		virtual BOOL unsubclass()
 		{
 			if (!hwnd) return FALSE;
-			BOOL result = ::RemoveWindowSubclass(hwnd, subclass_proc, get_subclass_id());
-			hwnd = 0;
+			auto result = ::RemoveWindowSubclass(hwnd, subclass_proc, get_subclass_id());
+			hwnd = nullptr;
 			return result;
 		}
 
@@ -100,7 +100,7 @@ namespace my
 			{
 			case WM_NCDESTROY:
 				{
-					LRESULT lr = ::DefSubclassProc(hwnd, message, wParam, lParam);
+					auto lr = ::DefSubclassProc(hwnd, message, wParam, lParam);
 					post_nc_destroy();
 					return lr;
 				}
@@ -141,7 +141,7 @@ namespace my
 			{
 				target = window;
 				if (hook) ::UnhookWindowsHookEx(hook);
-				hook = ::SetWindowsHookEx(WH_CBT, hook_proc, 0, ::GetCurrentThreadId());
+				hook = ::SetWindowsHookEx(WH_CBT, hook_proc, nullptr, ::GetCurrentThreadId());
 			}
 
 			//
@@ -150,8 +150,8 @@ namespace my
 			void stop()
 			{
 				if (hook) ::UnhookWindowsHookEx(hook);
-				hook = 0;
-				target = 0;
+				hook = nullptr;
+				target = nullptr;
 			}
 
 			//
@@ -179,7 +179,7 @@ namespace my
 					associator.stop();
 				}
 
-				return ::CallNextHookEx(0, code, wParam, lParam);
+				return ::CallNextHookEx(nullptr, code, wParam, lParam);
 			}
 		} associator = {};
 
