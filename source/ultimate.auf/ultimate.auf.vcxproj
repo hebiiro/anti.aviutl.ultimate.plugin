@@ -302,6 +302,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\namecage.aua\namecage.aua.vcxproj">
       <Project>{49e1e1e4-073b-42b9-921f-9084508c0610}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\optima.aua\optima.aua.vcxproj">
+      <Project>{2303a460-c69b-4106-bfb3-ebbfdb7cc247}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\output_check.aua\output_check.aua.vcxproj">
       <Project>{fe437241-1d58-452f-a97c-0ba437e9c4e7}</Project>
     </ProjectReference>

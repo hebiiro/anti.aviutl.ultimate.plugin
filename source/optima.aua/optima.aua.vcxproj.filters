@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="framework">
+      <UniqueIdentifier>{c31f6581-444d-4919-ab02-c712e696ce58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="part">
+      <UniqueIdentifier>{5dc6ffb2-e001-41ed-ba9e-9443535870c3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="part.hpp" />
+    <ClInclude Include="combobox.hpp" />
+    <ClInclude Include="part\animation_effect_manager.hpp">
+      <Filter>part</Filter>
+    </ClInclude>
+    <ClInclude Include="part\create_combobox.hpp">
+      <Filter>part</Filter>
+    </ClInclude>
+    <ClInclude Include="part\script_sort.hpp">
+      <Filter>part</Filter>
+    </ClInclude>
+    <ClInclude Include="part\set_current_object.hpp">
+      <Filter>part</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="optima.aua.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

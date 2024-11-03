@@ -8,6 +8,21 @@ namespace apn
 	inline struct ConfigIO : StdConfigIO
 	{
 		//
+		// アドイン情報をハイブに登録します。
+		//
+		void register_addin(
+			std::wstring size,
+			std::wstring name,
+			std::wstring display_name,
+			BOOL active,
+			std::wstring args,
+			std::vector<std::wstring> conflicts)
+		{
+			hive.addins.emplace_back(std::make_unique<Hive::Addin>(
+				size, name, display_name, active, args, conflicts));
+		}
+
+		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -16,34 +31,36 @@ namespace apn
 
 			hive.config_file_name = magi.get_config_file_name(hive.instance);
 
-			// アドインを登録します。
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"dark", L"ダークモード化", TRUE, L"", std::vector<std::wstring>{ L"DarkenWindow.aul" }));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"workspace", L"ワークスペース化", TRUE, L"", std::vector<std::wstring>{ L"SplitWindow.aul" }));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"filer", L"ファイラ", TRUE, L"", std::vector<std::wstring>{ L"ObjectExplorer.auf" }));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"audio_visualizer", L"音声視覚化", TRUE, L"", std::vector<std::wstring>{ L"LevelMeter.auf" }));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"item_wave", L"アイテム波形", TRUE, L"", std::vector<std::wstring>{ L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" }));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"L", L"settings_browser", L"設定ブラウザ", TRUE, L"", std::vector<std::wstring>{}));
+			// アドイン情報を登録します。
 
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", std::vector<std::wstring>({ L"CopyFilter.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", std::vector<std::wstring>({ L"DragFilter.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"color_code", L"カラーコード追加", TRUE, L"", std::vector<std::wstring>({ L"AddColorCode.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"last_frame", L"最終フレーム自動設定", TRUE, L"", std::vector<std::wstring>({ L"AdjustLastFrame.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"output_check", L"出力確認", TRUE, L"", std::vector<std::wstring>({ L"ConfigChecker.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"image_export", L"画像エクスポート", TRUE, L"", std::vector<std::wstring>({ L"SaveImage.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"text_split", L"テキスト分解", TRUE, L"", std::vector<std::wstring>({ L"SplitText.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"item_align", L"アイテム整列", TRUE, L"", std::vector<std::wstring>({ L"BuildStairs.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"font_preview", L"フォントプレビュー", TRUE, L"", std::vector<std::wstring>({ L"SelectFavoriteFont.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"font_select", L"フォント選択", TRUE, L"", std::vector<std::wstring>({ L"SelectFavoriteFont.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"scene_select", L"シーン選択", TRUE, L"", std::vector<std::wstring>({ L"SelectScene.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"ease_select", L"イージング選択", TRUE, L"", std::vector<std::wstring>({ L"SelectEasing.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"M", L"zoom_select", L"ズーム選択", TRUE, L"", std::vector<std::wstring>({ L"SetZoom.auf" })));
+			register_addin(L"L", L"dark", L"ダークモード化", TRUE, L"", { L"DarkenWindow.aul" });
+			register_addin(L"L", L"workspace", L"ワークスペース化", TRUE, L"", { L"SplitWindow.aul" });
+			register_addin(L"L", L"filer", L"ファイラ", TRUE, L"", { L"ObjectExplorer.auf" });
+			register_addin(L"L", L"item_wave", L"アイテム波形", TRUE, L"", { L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" });
+			register_addin(L"L", L"audio_visualizer", L"音声視覚化", TRUE, L"", { L"LevelMeter.auf" });
+			register_addin(L"L", L"settings_browser", L"設定ブラウザ", TRUE, L"", {});
 
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dirty_check", L"終了確認", TRUE, L"", std::vector<std::wstring>({ L"auls_confirmclose.auf", L"DirtyCheck.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"namecage", L"アイテム名常時表示", FALSE, L"", std::vector<std::wstring>({ L"NoScrollText.auf", L"ShowWaveform.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"editbox_tweaker", L"エディットボックス微調整", TRUE, L"", std::vector<std::wstring>({ L"OptimizeEditBox.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"exedit_tweaker", L"拡張編集微調整", FALSE, L"", std::vector<std::wstring>({ L"ExEditTweaker.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dialog_position", L"ダイアログ位置調整", TRUE, L"", std::vector<std::wstring>({ L"AdjustDialogPosition.auf" })));
-			hive.addins.emplace_back(std::make_unique<Hive::Addin>(L"S", L"dialog_size", L"ダイアログサイズ調整", TRUE, L"", std::vector<std::wstring>({ L"BigDialog.aul" })));
+			register_addin(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", { L"CopyFilter.auf" });
+			register_addin(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", { L"DragFilter.auf" });
+			register_addin(L"M", L"dirty_check", L"終了確認", TRUE, L"", { L"auls_confirmclose.auf", L"DirtyCheck.auf" });
+			register_addin(L"M", L"output_check", L"出力確認", TRUE, L"", { L"ConfigChecker.auf" });
+			register_addin(L"M", L"text_split", L"テキスト分解", TRUE, L"", { L"SplitText.auf" });
+			register_addin(L"M", L"item_align", L"アイテム整列", TRUE, L"", { L"BuildStairs.auf" });
+			register_addin(L"M", L"image_export", L"画像エクスポート", TRUE, L"", { L"SaveImage.auf" });
+			register_addin(L"M", L"scene_select", L"シーン選択", TRUE, L"", { L"SelectScene.auf" });
+			register_addin(L"M", L"ease_select", L"イージング選択", TRUE, L"", { L"SelectEasing.auf" });
+			register_addin(L"M", L"zoom_select", L"ズーム選択", TRUE, L"", { L"SetZoom.auf" });
+			register_addin(L"M", L"font_preview", L"フォントプレビュー", TRUE, L"", { L"SelectFavoriteFont.auf" });
+			register_addin(L"M", L"font_select", L"フォント選択", TRUE, L"", { L"SelectFavoriteFont.auf" });
+
+			register_addin(L"S", L"namecage", L"アイテム名常時表示", FALSE, L"", { L"NoScrollText.auf", L"ShowWaveform.auf" });
+			register_addin(L"S", L"last_frame", L"最終フレーム自動調整", TRUE, L"", { L"AdjustLastFrame.auf" });
+			register_addin(L"S", L"color_code", L"カラーコード追加", TRUE, L"", { L"AddColorCode.auf" });
+			register_addin(L"S", L"editbox_tweaker", L"エディットボックス微調整", TRUE, L"", { L"OptimizeEditBox.auf" });
+			register_addin(L"S", L"exedit_tweaker", L"拡張編集微調整", FALSE, L"", { L"ExEditTweaker.auf" });
+			register_addin(L"S", L"dialog_position", L"ダイアログ位置調整", TRUE, L"", { L"AdjustDialogPosition.auf" });
+			register_addin(L"S", L"dialog_size", L"ダイアログサイズ調整", TRUE, L"", { L"BigDialog.aul" });
+			register_addin(L"S", L"optima", L"最適化", TRUE, L"", { L"combobox_patch.auf" });
 
 			read_file(hive.config_file_name, hive);
 
