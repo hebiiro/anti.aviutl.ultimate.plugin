@@ -16,6 +16,7 @@
     <my_module_dir>$(my_core_dir)\module</my_module_dir>
     <my_config_dir>$(my_core_dir)\config</my_config_dir>
     <my_assets_dir>$(my_core_dir)\assets</my_assets_dir>
+    <my_ui_dir>$(my_core_dir)\ui</my_ui_dir>
     <my_debug_dir>$(my_source)\test</my_debug_dir>
     <my_debug_host_dir>$(my_debug_dir)\aviutl_テスト</my_debug_host_dir>
     <my_debug_host_exe>$(my_debug_host_dir)\aviutl.exe</my_debug_host_exe>
@@ -24,6 +25,7 @@
     <my_debug_module_dir>$(my_debug_core_dir)\module</my_debug_module_dir>
     <my_debug_config_dir>$(my_debug_core_dir)\config</my_debug_config_dir>
     <my_debug_assets_dir>$(my_debug_core_dir)\assets</my_debug_assets_dir>
+    <my_debug_ui_dir>$(my_debug_core_dir)\ui</my_debug_ui_dir>
     <my_root_dir>$(SolutionDir)\..</my_root_dir>
     <Force-Enable-cpprestsdk>true</Force-Enable-cpprestsdk>
   </PropertyGroup>
@@ -97,6 +99,9 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     <BuildMacro Include="my_assets_dir">
       <Value>$(my_assets_dir)</Value>
     </BuildMacro>
+    <BuildMacro Include="my_ui_dir">
+      <Value>$(my_ui_dir)</Value>
+    </BuildMacro>
     <BuildMacro Include="my_debug_dir">
       <Value>$(my_debug_dir)</Value>
     </BuildMacro>
@@ -120,6 +125,9 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     </BuildMacro>
     <BuildMacro Include="my_debug_assets_dir">
       <Value>$(my_debug_assets_dir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="my_debug_ui_dir">
+      <Value>$(my_debug_ui_dir)</Value>
     </BuildMacro>
     <BuildMacro Include="my_root_dir">
       <Value>$(my_root_dir)</Value>

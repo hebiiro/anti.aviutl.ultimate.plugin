@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="https://avatars.githubusercontent.com/u/96464759?v=4" />
+	<title>アルティメットプラグインの設定</title>
+	<!-- css -->
+	<style>
+body {
+	background: #ecf0f1;
+	font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+		"Hiragino Sans", "Noto Sans", Meiryo, sans-serif;
+}
+
+h1 {
+	margin: 0;
+}
+
+h1 > img {
+	height: 1em;
+	vertical-align: middle;
+	border: solid 1px #777;
+	border-radius: 50%;
+}
+
+.holder {
+  background: #fff;
+  border-radius:5px;  
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.1); 
+  padding: 0.5em 1em;
+}
+
+td {
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+label {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+}
+
+input[type=checkbox] {
+	cursor: pointer;
+	height: 30px;
+	margin: 4px 0 0;
+	position: absolute;
+	opacity: 0;
+	width: 30px;
+	z-index: 2;
+}
+
+input[type=checkbox] + span {
+	background: #e74c3c;
+	border-radius: 50%;
+	box-shadow: 0 2px 3px 0 rgba(0,0,0,.1);
+	display: inline-block;
+	height: 30px;
+	margin: 4px 0 0;
+	position: relative;
+	width: 30px;
+	transition: all .2s ease;
+}
+
+input[type=checkbox] + span::before, input[type=checkbox] + span::after {
+	background: #fff;
+	content: "";
+	display: block;
+	position: absolute;
+	width: 4px;
+	transition: all .2s ease;
+}
+
+input[type=checkbox] + span::before {
+	height: 16px;
+	left: 13px;
+	top: 7px;
+	-webkit-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+
+input[type=checkbox] + span::after {
+	height: 16px;
+	right: 13px;
+	top: 7px;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+input[type=checkbox]:checked + span {
+	background: #2ecc71;
+}
+
+input[type=checkbox]:checked + span::before {
+	height: 9px;
+	left: 9px;
+	top: 13px;
+	-webkit-transform: rotate(-47deg);
+	transform: rotate(-47deg);
+}
+
+input[type=checkbox]:checked + span::after {
+	height: 15px;
+	right: 11px;
+	top: 8px;
+}
+
+input[type=button] {
+	background-color: #2ecc71;
+	border: 0;
+	border-radius: 4px;
+	color: #FFF;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 16px;
+	text-align: center;
+	padding: 0.25em 0.5em;
+}
+
+input[type=text] {
+	padding: 0.3em;
+	transition: 0.3s;
+	letter-spacing: 1px;
+	color: #505050;
+	border: 1px solid #ffffff;
+	box-shadow: 1px 1px 2px 0 #707070 inset;
+	border-radius: 4px;
+	width: 24em;
+}
+
+#status {
+	margin-top: 0.5em;
+}
+
+.red {
+	background-color: #e74c3c !important;
+}
+
+.place-holder {
+	height: 6em;
+}
+
+.popup-window {
+	padding: 0.5em;
+	background-color: #fff;
+	border: solid 1px #999;
+	border-radius: 5px;  
+	box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1); 
+	position: fixed;
+	top: 1em;
+	left: 1em;
+	z-index: 1;
+}
+	</style>
+</head>
+<!-- html -->
+<body>
+	<div class="holder">
+		<div class="place-holder"></div>
+		<h1>
+			<img src="https://avatars.githubusercontent.com/u/96464759?v=4" />
+			<span style="display: inline-block;">アルティメットプラグインの設定</span>
+		</h1>
+		<div class="popup-overlay">
+			<div class="popup-window">
+				<div id="control_panel">
+					<input type="button" id="read" value="読み込み" />
+					<input type="button" id="write" value="書き込み" />
+					<input type="button" id="reset" value="リセット" />
+					<div id="status">ステータス...</div>
+				</div>
+			</div>
+		</div>
+		<div id="contents"></div>
+	</div>
+</body>
+<!-- javascript -->
+<script>
+//
+// 単一のセレクタを返します。
+//
+const $ = el => document.querySelector(el);
+
+//
+// 複数のセレクタを返します。
+//
+const $$ = el => document.querySelectorAll(el);
+
+//
+// valueがtrueの場合はtrueを返します。
+//
+function is_true(value) {
+	if (value == true) return true;
+	if (value == "true") return true;
+	return false;
+}
+
+//
+// objをディープコピーして返します。
+//
+function deep_copy(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}
+
+//
+// ダーティフラグをセットします。
+//
+function set_dirty() {
+	$("#write").classList.add("red");
+	$("#status").innerHTML = `『書き込み』ボタンを押すと変更が設定ファイルに反映されます`;
+}
+
+//
+// ダーティフラグをリセットします。
+//
+function reset_dirty() {
+	$("#write").classList.remove("red");
+}
+
+//
+// 編集対象のファイルパスです。
+// .html_localファイルが存在するフォルダからの相対パスです。
+//
+const c_config_file_path = "../config/ultimate.auf.json";
+
+//
+// デフォルトのデータです。
+//
+const c_default = {
+	"python_file_name": "ultimate/assets/python32/python312.dll",
+	"addin": [
+		{ "active": "true", "display_name": "ダークモード化", "name": "dark", "args": "" },
+		{ "active": "true", "display_name": "ワークスペース化", "name": "workspace", "args": "" },
+		{ "active": "true", "display_name": "ファイラ", "name": "filer", "args": "" },
+		{ "active": "true", "display_name": "アイテム波形", "name": "item_wave", "args": "" },
+		{ "active": "true", "display_name": "音声視覚化", "name": "audio_visualizer", "args": "" },
+		{ "active": "true", "display_name": "設定ブラウザ", "name": "settings_browser", "args": "" },
+		{ "name": "" },
+		{ "active": "true", "display_name": "フィルタコピー", "name": "filter_copy", "args": "" },
+		{ "active": "true", "display_name": "フィルタドラッグ", "name": "filter_drag", "args": "" },
+		{ "active": "true", "display_name": "終了確認", "name": "dirty_check", "args": "" },
+		{ "active": "true", "display_name": "出力確認", "name": "output_check", "args": "" },
+		{ "active": "true", "display_name": "テキスト分解", "name": "text_split", "args": "" },
+		{ "active": "true", "display_name": "アイテム整列", "name": "item_align", "args": "" },
+		{ "active": "true", "display_name": "画像エクスポート", "name": "image_export", "args": "" },
+		{ "active": "true", "display_name": "シーン選択", "name": "scene_select", "args": "" },
+		{ "active": "true", "display_name": "イージング選択", "name": "ease_select", "args": "" },
+		{ "active": "true", "display_name": "ズーム選択", "name": "zoom_select", "args": "" },
+		{ "active": "true", "display_name": "フォントプレビュー", "name": "font_preview", "args": "" },
+		{ "active": "true", "display_name": "フォント選択", "name": "font_select", "args": "" },
+		{ "name": "" },
+		{ "active": "true", "display_name": "アイテム名常時表示", "name": "namecage", "args": "" },
+		{ "active": "true", "display_name": "最終フレーム自動調整", "name": "last_frame", "args": "" },
+		{ "active": "true", "display_name": "カラーコード追加", "name": "color_code", "args": "" },
+		{ "active": "true", "display_name": "エディットボックス微調整", "name": "editbox_tweaker", "args": "" },
+		{ "active": "false", "display_name": "拡張編集微調整", "name": "exedit_tweaker", "args": "" },
+		{ "active": "true", "display_name": "ダイアログ位置調整", "name": "dialog_position", "args": "" },
+		{ "active": "true", "display_name": "ダイアログサイズ調整", "name": "dialog_size", "args": "" },
+		{ "active": "true", "display_name": "最適化", "name": "optima", "args": "" },
+		{ "name": "" }
+	]
+};
+
+//
+// カレントのデータです。
+//
+let current = deep_copy(c_default);
+
+//
+// データをコピーします。
+//
+function copy_data(src, dst) {
+	// 予めsrcのデータを連想配列にしておきます。
+	let src_dict = {};
+	for (const src_addin of src.addin) {
+		src_dict[src_addin.name] = src_addin;
+	}
+	// srcのデータをdstにコピーします。
+	dst.python_file_name = src.python_file_name;
+	for (let dst_addin of dst.addin) {
+		const src_addin = src_dict[dst_addin.name];
+		if (!src_addin) continue;
+		dst_addin.active = src_addin.active;
+		dst_addin.args = src_addin.args;
+	}
+}
+
+//
+// コンテンツデータでカレントデータを更新します。
+//
+function update_current() {
+	current.python_file_name = $("#python_file_name").value;
+	for (let addin of current.addin) {
+		let active = $(`#${addin.name}_active`);
+		if (active) addin.active = active.checked;
+		let args = $(`#${addin.name}_args`);
+		if (args) addin.args = args.value;
+	}
+}
+
+//
+// カレントデータでコンテンツを更新します。
+//
+function update_content() {
+	let html = ``;
+	html += `<p>Pythonのパス <input class="value" type="text" id="python_file_name" name="python_file_name" value="${current.python_file_name}"></p>`;
+	html += `<table>`;
+	html += `<tr>`;
+	html += `<th></th>`;
+	html += `<th>アドイン名</th>`;
+	html += `<th>内部名</th>`;
+	html += `<th>開発者用引数</th>`;
+	html += `</tr>`;
+	for (const addin of current.addin) {
+		if (addin.name != "") {
+			const checked = is_true(addin.active) ? "checked" : "";
+			html += `<tr>`;
+			html += `<td><input class="checkbox" type="checkbox" id="${addin.name}_active" name="${addin.name}_active" ${checked} ><span></span></input></td>`;
+			html += `<td><label for="${addin.name}_active">${addin.display_name}</label></td>`;
+			html += `<td>${addin.name}</td>`;
+			html += `<td><input class="value" type="text" id="${addin.name}_args" name="${addin.name}_args" value="${addin.args}"></td>`;
+			html += `</tr>`;
+		} else {
+			html += `<tr><td colspan="4"><hr/></td><tr>`;
+		}
+	}
+	html += `</table>`;
+	$("#contents").innerHTML = html;
+
+	// 入力時用のイベントリスナーを追加します。
+	$$("input").forEach(el => {
+		el.addEventListener("input", e => {
+			// ダーティフラグをセットします。
+			set_dirty();
+		});
+	});
+}
+
+//
+// 初期化処理を実行します。
+//
+window.addEventListener("load", event => {
+	// カレントデータでコンテンツを更新します。
+	update_content();
+	// 読み込み用のイベントリスナーを追加します。
+	$("#read").addEventListener("click", event => {
+		// 読み込みリクエスト用のjsonを構築します。
+		const json = {
+			"request_read_json": {
+				"path": c_config_file_path
+			}
+		};
+		// ホストにコンフィグファイルの読み込みをリクエストします。
+		window.chrome.webview.postMessage(json);
+	});
+	// 書き込み用のイベントリスナーを追加します。
+	$("#write").addEventListener("click", e => {
+		// コンテンツデータでカレントデータを更新します。
+		update_current();
+		// 書き込みリクエスト用のjsonを構築します。
+		const json = {
+			"request_write_json": {
+				"path": c_config_file_path,
+				"data": current
+			}
+		};
+		// ホストにカレントデータの書き込みをリクエストします。
+		window.chrome.webview.postMessage(json);
+	});
+	// リセット用のイベントリスナーを追加します。
+	$("#reset").addEventListener("click", event => {
+		// デフォルトデータをカレントデータにコピーします。
+		current = deep_copy(c_default);
+		// カレントデータでコンテンツを更新します。
+		update_content();
+		// ダーティフラグをセットします。
+		set_dirty();
+		// ステータスを更新します。
+		$("#status").innerHTML = `コンテンツをリセットしました`;
+	});
+	// ホストが存在する場合は
+	if (window.chrome.webview) {
+		// メッセージ用のイベントリスナーを追加します。
+		window.chrome.webview.addEventListener("message", event => {
+			// 読み込みレスポンスの場合は
+			if (event.data["response_read_json"]) {
+				// レスポンスデータ(json)を取得します。
+				const json = event.data["response_read_json"];
+				if (json["path"] == c_config_file_path) {
+					// ホストから受け取ったデータをカレントデータにコピーします。
+					copy_data(json["data"], current);
+					// カレントデータでコンテンツを更新します。
+					update_content();
+					// ダーティフラグをリセットします。
+					reset_dirty();
+					// ステータスを更新します。
+					$("#status").innerHTML = `${json["abs_path"]}を読み込みました`;
+				}
+			}
+			// 書き込みレスポンスの場合は
+			if (event.data["response_write_json"]) {
+				// レスポンスデータ(json)を取得します。
+				const json = event.data["response_write_json"];
+				if (json["path"] == c_config_file_path) {
+					// ダーティフラグをリセットします。
+					reset_dirty();
+					// ステータスを更新します。
+					$("#status").innerHTML = `${json["abs_path"]}に書き込みました`;
+				}
+			}
+		});
+		// ホストにコンフィグファイルの読み込みをリクエストします。
+		$("#read").dispatchEvent(new Event("click"));
+	}
+});
+</script>
+</html>
