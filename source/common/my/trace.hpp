@@ -9,7 +9,7 @@
 #ifdef MY_TRACE_ENABLED
 
 #define MY_TRACE(f, ...)			my::Tracer::output_text(_T(__FILE__), __LINE__, my::format(_T(f), __VA_ARGS__).c_str())
-#define MY_TRACE_FUNC(f, ...)		my::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCSIG__), my::format(_T(f), __VA_ARGS__).c_str())
+#define MY_TRACE_FUNC(f, ...)		my::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCTION__), _T(__FUNCSIG__), my::format(_T(f), __VA_ARGS__).c_str())
 #define MY_TRACE_BINARY(buf, c)		my::Tracer::output_binary(_T(__FILE__), __LINE__, buf, c)
 
 #define MY_TRACE_STR(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
@@ -144,9 +144,17 @@ namespace my
 		//
 		// __FUNCSIG__を整形して返します。
 		//
-		inline static string get_func_name(LPCTSTR func)
+		inline static string get_func_name(LPCTSTR func, LPCTSTR func_sig)
 		{
+#if 1
 			string func_name = func;
+
+			// "unnamed-type-"を削除します。
+			func_name = replace(func_name, _T("unnamed-type-"), _T(""));
+
+			return func_name;
+#else
+			string func_name = func_sig;
 
 			// "unnamed-type-"を削除します。
 			func_name = replace(func_name, _T("unnamed-type-"), _T(""));
@@ -167,6 +175,7 @@ namespace my
 			if (begin != string::npos) func_name.erase(0, begin + 1);
 
 			return func_name;
+#endif
 		}
 
 		//
@@ -192,10 +201,10 @@ namespace my
 		//
 		// 関数形式の文字列を出力します。
 		//
-		inline static void output_func(LPCTSTR file, int line, LPCTSTR func, LPCTSTR func_args)
+		inline static void output_func(LPCTSTR file, int line, LPCTSTR func, LPCTSTR func_sig, LPCTSTR func_args)
 		{
 			// funcからfunc_nameを構築します。
-			auto func_name = get_func_name(func);
+			auto func_name = get_func_name(func, func_sig);
 
 			// func_nameとfunc_argsを書式化して出力します。
 			output_text(file, line, std::format(_T("{}({})\n"), func_name, func_args));
