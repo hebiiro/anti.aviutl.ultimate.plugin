@@ -364,6 +364,16 @@ namespace my
 		}
 
 		//
+		// 指定されたオブジェクトのインデックスを返します。
+		//
+		int32_t get_object_index(ExEdit::Object* object)
+		{
+			if (!object) return -1;
+
+			return object - *address.variable.object_table;
+		}
+
+		//
 		// 指定されたフィルタIDに対応するフィルタのインデックスを返します。
 		//
 		// object [in]
