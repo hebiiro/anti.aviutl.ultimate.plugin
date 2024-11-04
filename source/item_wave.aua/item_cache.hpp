@@ -19,8 +19,9 @@ namespace apn::item_wave
 	{
 		//
 		// キャッシュのコレクションです。
+		// キーはオブジェクトのインデックスです。
 		//
-		std::map<ExEdit::Object*, std::shared_ptr<ItemCache>> collection;
+		std::map<int32_t, std::shared_ptr<ItemCache>> collection;
 
 		//
 		// ファイル名をノーマライズしてコピーします。
@@ -93,9 +94,9 @@ namespace apn::item_wave
 		//
 		// アイテムに対応するキャシュを返します。
 		//
-		std::shared_ptr<ItemCache> get_cache(ExEdit::Object* object)
+		std::shared_ptr<ItemCache> get_cache(int32_t object_index)
 		{
-			auto it = collection.find(object);
+			auto it = collection.find(object_index);
 			if (it == collection.end()) return nullptr;
 			return it->second;
 		}
@@ -110,7 +111,7 @@ namespace apn::item_wave
 			// 無効なキャッシュを削除します。
 			for (auto it = collection.begin(); it != collection.end();)
 			{
-				auto object = it->first;
+				auto object = magi.exin.get_object(it->first);
 
 				// アイテムが存在しない、または音声ではない場合は
 				if (!(object->flag & ExEdit::Object::Flag::Exist) ||
@@ -139,8 +140,11 @@ namespace apn::item_wave
 				if (!(object->flag & ExEdit::Object::Flag::Sound))
 					continue; // 音声波形を取得できるのは音声アイテムのみです。
 
+				// アイテムのインデックスを取得します。
+				auto object_index = magi.exin.get_object_index(object);
+
 				// 作成済みのキャッシュを取得します。
-				auto it = collection.find(object);
+				auto it = collection.find(object_index);
 
 				// すでにキャッシュが作成済みの場合は
 				if (it != collection.end())
@@ -153,7 +157,7 @@ namespace apn::item_wave
 				}
 
 				// キャッシュを更新します。
-				if (auto cache = update(send, object))
+				if (auto cache = update(send, object_index, object))
 				{
 					// アイテムが配置されているレイヤーを再描画します。
 					magi.exin.redraw_layer(object->layer_set);
@@ -166,9 +170,9 @@ namespace apn::item_wave
 		//
 		// 指定されたアイテムに対応するキャッシュを更新します。
 		//
-		std::shared_ptr<ItemCache> update(BOOL send, ExEdit::Object* object)
+		std::shared_ptr<ItemCache> update(BOOL send, int32_t object_index, ExEdit::Object* object)
 		{
-			MY_TRACE_FUNC("{}, {:#010x}", send, object);
+			MY_TRACE_FUNC("{}, {}, {:#010x}", send, object_index, object);
 
 			// 音声を取得します。
 			auto audio = get_audio(object);
@@ -183,7 +187,7 @@ namespace apn::item_wave
 
 			// アイテムキャッシュを作成します。
 			auto item_cache = std::make_shared<ItemCache>();
-			collection[object] = item_cache;
+			collection[object_index] = item_cache;
 
 			// アイテムのパラメータを保存しておきます。
 			item_cache->audio = audio;
