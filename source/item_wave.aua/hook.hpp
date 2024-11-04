@@ -8,9 +8,9 @@ namespace apn::item_wave
 	inline struct HookManager
 	{
 		//
-		// 現在描画中のアイテムです。
+		// 描画中のアイテムのインデックスです。
 		//
-		ExEdit::Object* current_item = nullptr;
+		int32_t current_object_index = -1;
 
 		//
 		// 初期化処理です。
@@ -68,163 +68,219 @@ namespace apn::item_wave
 			return FALSE;
 		}
 
+		//
+		// 指定された矩形内に波形を描画します。
+		//
 		void draw_wave(HDC dc, LPCRECT rc_clip, LPCRECT rc_item)
 		{
 			MY_TRACE_FUNC("");
 
-			if (!current_item) return;
+			// 数値の型です。
+			using num_t = decltype(rc_item->left);
 
-			auto cache = item_cache_manager.get_cache(current_item);
+			// 描画中のアイテムが無効の場合は何もしません。
+			if (current_object_index == -1) return;
+
+			// 描画中のアイテムを取得します。
+			auto object = magi.exin.get_object(current_object_index);
+			if (!object) return;
+
+			// 描画中のアイテムに関連付けられているキャッシュを取得します。
+			auto cache = item_cache_manager.get_cache(current_object_index);
 			if (!cache) return;
 
-			auto scale = hive.scale;
-			if (hive.wave_type == hive.c_wave_type.c_center) scale /= 2;
-			scale = std::max<int>(1, scale);
+			// 描画スケールを取得します。
+			auto scale = (num_t)hive.scale;
 
+			// 波形を中央に描画する場合は描画スケールを半分にします。
+			if (hive.wave_type == hive.c_wave_type.c_center) scale /= 2;
+
+			// 描画スケールを正規化します。
+			scale = std::max<num_t>(1, scale);
+
+			// 頻繁に使用する値を取得しておきます。
 			auto w = rc_item->right - rc_item->left;
 			auto h = rc_item->bottom - rc_item->top;
 			auto cy = (rc_item->top + rc_item->bottom) / 2;
 
-			auto c = (int)cache->volumes.size();
+			// 音量の数を取得します。
+			auto c = (num_t)cache->volumes.size();
 			MY_TRACE_INT(c);
 
+			// 描画する頂点のコレクションです。
 			std::vector<POINT> points;
 
+			//
+			// この関数は音量のインデックスをX座標に変換して返します。
+			//
+			auto x_from_index = [object](num_t index) {
+				return (num_t)magi.exin.frame_to_x(index + object->frame_begin);
+			};
+
+			//
+			// この関数は音量をボトムアップY座標に変換して返します。
+			//
+			auto bottom_up_y_from_volume = [scale](const auto& volume, num_t origin) {
+				return origin - (num_t)(volume.level * scale);
+			};
+
+			//
+			// この関数は音量をトップダウンY座標に変換して返します。
+			//
+			auto top_down_y_from_volume = [scale](const auto& volume, num_t origin) {
+				return origin + (num_t)(volume.level * scale);
+			};
+
+			//
+			// この関数はボトムアップ頂点を追加します。
+			//
+			auto add_bottom_up_point = [&points](num_t x, num_t y)
+			{
+				// 末尾の頂点を取得します。
+				auto& back = points.back();
+
+				// X座標が変動していない場合は
+				if (back.x == x)
+				{
+					// 末尾の頂点のY座標を更新します。
+					back.y = std::min<num_t>(back.y, y);
+				}
+				// X座標が変動している場合は
+				else
+				{
+					// 新しい頂点を追加します。
+					points.emplace_back(x, y);
+				}
+			};
+
+			//
+			// この関数はトップダウン頂点を追加します。
+			//
+			auto add_top_down_point = [&points](num_t x, num_t y)
+			{
+				// 末尾の頂点を取得します。
+				auto& back = points.back();
+
+				// X座標が変動していない場合は
+				if (back.x == x)
+				{
+					// 末尾の頂点のY座標を更新します。
+					back.y = std::max<num_t>(back.y, y);
+				}
+				// X座標が変動している場合は
+				else
+				{
+					// 新しい頂点を追加します。
+					points.emplace_back(x, y);
+				}
+			};
+
+			//
+			// この関数はポリゴン頂点群を構築します。
+			//
+			auto build_points = [&](num_t oy, const auto& y_from_volume, const auto& add_point, BOOL mirror)
+			{
+				// 原点を取得します。
+				auto origin = POINT {
+					.x = std::max<num_t>(rc_clip->left, rc_item->left),
+					.y = oy,
+				};
+
+				// 音量のインデックスです。
+				auto i = (num_t)0;
+
+				// 音量のインデックスを描画範囲まで進めます。
+				for (; i < c; i++) if (x_from_index(i) >= rc_clip->left) break;
+
+				// 音量のインデックスを一つ戻して描画範囲外にします。
+				i = std::max<num_t>(0, i - 1);
+
+				// X座標の初期値です。
+				auto x = x_from_index(i);
+
+				// Y座標の初期値です。
+				auto y = origin.y;
+
+				// 最初の頂点を追加します。
+				points.emplace_back(x, y);
+
+				// 音量を走査してボトムアップ頂点群を構築します。
+				for (; i < c; i++)
+				{
+					// 音量を取得します。
+					const auto& volume = cache->volumes[i];
+
+					// フレーム番号をX座標に変換します。
+					x = x_from_index(i);
+
+					// 音量をY座標に変換します。
+					y = y_from_volume(volume, origin.y);
+
+					// 頂点を追加します。
+					add_point(x, y);
+
+					// X座標がクリップ矩形外になった場合は音量の走査を終了します。
+					if (x >= rc_clip->right) break;
+				}
+
+				// フレーム番号をX座標に変換します。
+				x = x_from_index(i);
+
+				// X座標を正規化します。
+				x = std::min<num_t>(x, rc_clip->right);
+
+				// 最終頂点を追加します。
+				points.emplace_back(x, y);
+
+				// 右端頂点を追加します。
+				points.emplace_back(x, origin.y);
+
+				// ミラーリングが指定されている場合は
+				if (mirror)
+				{
+					// 頂点を逆順に走査してトップダウン頂点群を構築します。
+					for (num_t i = (num_t)points.size() - 1; i >= 0; i--)
+						points.emplace_back(points[i].x, origin.y * 2 - points[i].y);
+				}
+
+				// 原点頂点を追加します。
+				points.emplace_back(origin);
+			};
+
+			// 波形タイプ毎に分岐します。
 			switch (hive.wave_type)
 			{
+			// 中央から上下へ描画する場合は
 			case hive.c_wave_type.c_center:
 				{
-					// 中央から上下へ描画します。
-
-					points.emplace_back(std::max<int>(rc_clip->left, rc_item->left), cy);
-
-					decltype(c) i = 0;
-
-					for (; i < c; i++)
-					{
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-
-						if (x > rc_clip->left) break;
-					}
-
-					auto check_index = i = std::max<int>(0, i - 1);
-
-					for (; i < c; i++)
-					{
-						const auto& volume = cache->volumes[i];
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-						auto y = cy - (int)(volume.level * scale);
-
-						if (i != check_index && check_min(points, x, y))
-							points.emplace_back(x, y);
-
-						if (x > rc_clip->right) break;
-					}
-
-					auto lx = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-					lx = std::min<int>(lx, rc_clip->right);
-
-					points.emplace_back(lx, points.back().y);
-					points.emplace_back(lx, cy);
-					points.emplace_back(lx, points.back().y);
-
-					check_index = i = std::min<int>(i, c - 1);
-
-					for (; i >= 0; i--)
-					{
-						const auto& volume = cache->volumes[i];
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-						auto y = cy + (int)(volume.level * scale);
-
-						if (i != check_index && check_max(points, x, y))
-							points.emplace_back(x, y);
-
-						if (x < rc_clip->left) break;
-					}
+					build_points(cy, bottom_up_y_from_volume, add_bottom_up_point, TRUE);
 
 					break;
 				}
+			// 下から上へ描画する場合は
 			case hive.c_wave_type.c_bottom_up:
 				{
-					// 下から上へ描画します。
-
-					points.emplace_back(std::max<int>(rc_clip->left, rc_item->left), rc_item->bottom);
-
-					decltype(c) i = 0;
-
-					for (; i < c; i++)
-					{
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-
-						if (x > rc_clip->left) break;
-					}
-
-					auto check_index = i = std::max<int>(0, i - 1);
-
-					for (; i < c; i++)
-					{
-						const auto& volume = cache->volumes[i];
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-						auto y = rc_item->bottom - (int)(volume.level * scale);
-
-						if (i != check_index && check_min(points, x, y))
-							points.emplace_back(x, y);
-
-						if (x > rc_clip->right) break;
-					}
-
-					auto lx = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-					lx = std::min<int>(lx, rc_clip->right);
-
-					points.emplace_back(lx, points.back().y);
-					points.emplace_back(lx, rc_item->bottom);
+					build_points(rc_item->bottom, bottom_up_y_from_volume, add_bottom_up_point, FALSE);
 
 					break;
 				}
+			// 上から下へ描画する場合は
 			case hive.c_wave_type.c_top_down:
 				{
-					// 上から下へ描画します。
-
-					points.emplace_back(std::max<int>(rc_clip->left, rc_item->left), rc_item->top);
-
-					decltype(c) i = 0;
-
-					for (; i < c; i++)
-					{
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-
-						if (x > rc_clip->left) break;
-					}
-
-					auto check_index = i = std::max<int>(0, i - 1);
-
-					for (; i < c; i++)
-					{
-						const auto& volume = cache->volumes[i];
-						auto x = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-						auto y = rc_item->top + (int)(volume.level * scale);
-
-						if (i != check_index && check_max(points, x, y))
-							points.emplace_back(x, y);
-
-						if (x > rc_clip->right) break;
-					}
-
-					auto lx = (int)magi.exin.frame_to_x(i + current_item->frame_begin);
-					lx = std::min<int>(lx, rc_clip->right);
-
-					points.emplace_back(lx, points.back().y);
-					points.emplace_back(lx, rc_item->top);
+					build_points(rc_item->top, top_down_y_from_volume, add_top_down_point, FALSE);
 
 					break;
 				}
 			}
 
+			// ペンとブラシを作成します。
 			my::gdi::unique_ptr<HPEN> pen(hive.pen_color != CLR_NONE ?
 				::CreatePen(PS_SOLID, 1, hive.pen_color) : (HPEN)::GetStockObject(NULL_PEN));
 			my::gdi::unique_ptr<HBRUSH> brush(hive.brush_color != CLR_NONE ?
 				::CreateSolidBrush(hive.brush_color) : (HBRUSH)::GetStockObject(NULL_BRUSH));
+
 			{
+				// 頂点群をポリゴンとして描画します。
 				my::gdi::selector pen_selector(dc, pen.get());
 				my::gdi::selector brush_selector(dc, brush.get());
 				auto rop2 = ::GetROP2(dc);
@@ -233,29 +289,34 @@ namespace apn::item_wave
 				case hive.c_xor_mode.c_not_xor: ::SetROP2(dc, R2_NOTXORPEN); break;
 				case hive.c_xor_mode.c_not: ::SetROP2(dc, R2_NOT); break;
 				}
+				auto old_poly_fill_mode = ::SetPolyFillMode(dc, WINDING);
 				::Polygon(dc, points.data(), points.size());
+				::SetPolyFillMode(dc, old_poly_fill_mode);
 				::SetROP2(dc, rop2);
 			}
+
+			// ::GetStockObject()でGDIオブジェクトを取得した場合は
+			// 削除してはいけないので、ここでリリースしておきます。
 			if (hive.pen_color == CLR_NONE) pen.release();
 			if (hive.brush_color == CLR_NONE) brush.release();
 		}
 
 		//
-		// このクラスは拡張編集内の::ExtTextOutA()の呼び出しをフックします。
+		// このクラスは拡張編集内のアイテムを描画する関数をフックします。
 		//
 		inline static struct {
-			inline static void CDECL hook_proc(HDC dc, int object_index)
+			inline static void CDECL hook_proc(HDC dc, int32_t object_index)
 			{
 				MY_TRACE_FUNC("{}", object_index);
 
 				// 描画中のアイテムを取得しておきます。
-				hook_manager.current_item = magi.exin.get_object(object_index);
+				hook_manager.current_object_index = object_index;
 
 				// デフォルト処理を実行します。
 				orig_proc(dc, object_index);
 
 				// 描画中のアイテムを消去します。
-				hook_manager.current_item = nullptr;
+				hook_manager.current_object_index = -1;
 			}
 			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} draw_item;
@@ -278,8 +339,16 @@ namespace apn::item_wave
 					x = std::max<int>(70 + hive.namecage_offset, x);
 				}
 
+				// 描画中アイテムが無効の場合は何もしません。
+				if (hook_manager.current_object_index == -1)
+					return orig_proc(dc, x, y, options, rc, text, c, dx);
+
+				// 描画中アイテムを取得できなかった場合は何もしません。
+				auto object = magi.exin.get_object(hook_manager.current_object_index);
+				if (!object) return orig_proc(dc, x, y, options, rc, text, c, dx);
+
 				// 音声アイテム以外には何もしません。
-				if (!(hook_manager.current_item->flag & ExEdit::Object::Flag::Sound))
+				if (!(object->flag & ExEdit::Object::Flag::Sound))
 					return orig_proc(dc, x, y, options, rc, text, c, dx);
 
 				// フラグが立っている場合はここでテキストを描画します。
