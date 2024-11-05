@@ -157,6 +157,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{A65FDFA8-9
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "optima.aua", "optima.aua\optima.aua.vcxproj", "{2303A460-C69B-4106-BFB3-EBBFDB7CC247}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "note.aua", "note.aua\note.aua.vcxproj", "{9444E497-D2DA-4DDD-BC74-570F93BB9280}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -461,6 +463,14 @@ Global
 		{2303A460-C69B-4106-BFB3-EBBFDB7CC247}.Release|x64.Build.0 = Release|x64
 		{2303A460-C69B-4106-BFB3-EBBFDB7CC247}.Release|x86.ActiveCfg = Release|Win32
 		{2303A460-C69B-4106-BFB3-EBBFDB7CC247}.Release|x86.Build.0 = Release|Win32
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Debug|x64.ActiveCfg = Debug|x64
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Debug|x64.Build.0 = Debug|x64
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Debug|x86.ActiveCfg = Debug|Win32
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Debug|x86.Build.0 = Debug|Win32
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Release|x64.ActiveCfg = Release|x64
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Release|x64.Build.0 = Release|x64
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Release|x86.ActiveCfg = Release|Win32
+		{9444E497-D2DA-4DDD-BC74-570F93BB9280}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

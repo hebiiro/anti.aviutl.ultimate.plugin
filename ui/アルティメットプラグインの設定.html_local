@@ -249,6 +249,7 @@ const c_default = {
 		{ "active": "true", "display_name": "ズーム選択", "name": "zoom_select", "args": "" },
 		{ "active": "true", "display_name": "フォントプレビュー", "name": "font_preview", "args": "" },
 		{ "active": "true", "display_name": "フォント選択", "name": "font_select", "args": "" },
+		{ "active": "true", "display_name": "メモ帳", "name": "note", "args": "" },
 		{ "name": "" },
 		{ "active": "true", "display_name": "アイテム名常時表示", "name": "namecage", "args": "" },
 		{ "active": "true", "display_name": "最終フレーム自動調整", "name": "last_frame", "args": "" },

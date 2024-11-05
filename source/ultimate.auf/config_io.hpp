@@ -52,6 +52,7 @@ namespace apn
 			register_addin(L"M", L"zoom_select", L"ズーム選択", TRUE, L"", { L"SetZoom.auf" });
 			register_addin(L"M", L"font_preview", L"フォントプレビュー", TRUE, L"", { L"SelectFavoriteFont.auf" });
 			register_addin(L"M", L"font_select", L"フォント選択", TRUE, L"", { L"SelectFavoriteFont.auf" });
+			register_addin(L"M", L"note", L"メモ帳", TRUE, L"", {});
 
 			register_addin(L"S", L"namecage", L"アイテム名常時表示", FALSE, L"", { L"NoScrollText.auf", L"ShowWaveform.auf" });
 			register_addin(L"S", L"last_frame", L"最終フレーム自動調整", TRUE, L"", { L"AdjustLastFrame.auf" });
