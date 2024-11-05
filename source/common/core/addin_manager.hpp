@@ -29,6 +29,11 @@ namespace apn
 		BOOL update_config_file_locked = FALSE;
 
 		//
+		// プロジェクトファイルに保存するデータ文字列です。
+		//
+		std::wstring save_data;
+
+		//
 		// 指定されたアドインをコレクションに追加します。
 		//
 		BOOL add_addin(HINSTANCE instance, Addin* addin)
@@ -278,10 +283,41 @@ namespace apn
 		//
 		BOOL fire_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* data, int32_t* size)
 		{
-			BOOL result = FALSE;
+			// データバッファが無効の場合は
+			if (!data)
+			{
+				// 保存するデータを構築します。
+				{
+					save_data = L"{\"ultimate\":{}";
+
+					for (const auto& pair : addins.map)
+					{
+						const auto& addin = pair.second.addin;
+
+						if (auto s = addin->on_get_project_save_data(fp, editp))
+						{
+							// ```,"addin_name":s```の形式で追加します。
+							save_data += L",\""s + addin->get_addin_name() + L"\":"s + s;
+						}
+					}
+
+					save_data += L"}";
+				}
+
+				// データサイズを返します。
+				*size = save_data.length() * sizeof(WCHAR);
+			}
+			// データバッファが有効の場合は
+			else
+			{
+				// データを返します。
+				memcpy(data, save_data.data(), *size);
+			}
+
 			for (const auto& pair : addins.map)
-				result |= pair.second.addin->on_project_save(fp, editp, data, size);
-			return result;
+				pair.second.addin->on_project_save(fp, editp, data, size);
+
+			return TRUE;
 		}
 
 		//

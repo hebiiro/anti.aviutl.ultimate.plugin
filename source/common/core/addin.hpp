@@ -146,6 +146,15 @@ namespace apn
 		}
 
 		//
+		// プロジェクトファイルにデータを保存したい場合は
+		// そのデータをjson文字列にして返します。
+		//
+		virtual LPCWSTR on_get_project_save_data(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp)
+		{
+			return nullptr;
+		}
+
+		//
 		// タイトルを変更する必要があるときに呼び出されます。
 		//
 		virtual BOOL on_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int32_t frame, LPSTR title, int32_t max_title)
