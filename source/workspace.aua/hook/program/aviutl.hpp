@@ -331,6 +331,61 @@ namespace apn::workspace::hook
 		} draw_aviutl_button_as_stop;
 
 		//
+		// この関数は::ShowWindow()の処理を省略します。
+		//
+		inline static BOOL WINAPI omit_ShowWindow(HWND hwnd, int cmd_show)
+		{
+//			MY_TRACE_FUNC("{:#010x}, {}", hwnd, cmd_show);
+//			MY_TRACE_HWND(hwnd);
+
+			return TRUE;
+		}
+
+		//
+		// この関数は::UpdateWindow()の処理を省略します。
+		//
+		inline static BOOL WINAPI omit_UpdateWindow(HWND hwnd)
+		{
+//			MY_TRACE_FUNC("{:#010x}", hwnd);
+//			MY_TRACE_HWND(hwnd);
+
+			return TRUE;
+		}
+
+		//
+		// この関数は::SetWindowPos()の処理を省略します。
+		//
+		inline static BOOL WINAPI omit_SetWindowPos(HWND hwnd, HWND insert_after, int x, int y, int w, int h, UINT flags)
+		{
+//			MY_TRACE_FUNC("{:#010x}", hwnd);
+//			MY_TRACE_HWND(hwnd);
+
+			return TRUE;
+		}
+
+#pragma pack(push)
+#pragma pack(1)
+		template <typename T>
+		inline static void mov_ecx(auto address, T value)
+		{
+			struct {
+				BYTE mov;
+				T value;
+				BYTE nop;
+			} code = {
+				0xB9, // MOV ECX
+				value,
+				0x90, // NOP
+			};
+			static_assert(sizeof(code) == 6);
+
+			auto process = ::GetCurrentProcess();
+			auto result1 = ::WriteProcessMemory(process, (LPVOID)address, &code, sizeof(code), nullptr);
+			auto result2 = ::FlushInstructionCache(process, (LPVOID)address, sizeof(code));
+		}
+#pragma pack(pop)
+
+		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -363,6 +418,11 @@ namespace apn::workspace::hook
 			// フック用のアドレスを初期化します。
 			play_main::init(aviutl);
 			play_sub::init(aviutl);
+
+			// AviUtl内のウィンドウ初期化処理をフックします。
+			mov_ecx(aviutl + 0x2CBE8, omit_ShowWindow);
+			mov_ecx(aviutl + 0x2CBDC, omit_UpdateWindow);
+			mov_ecx(aviutl + 0x2CC3C, omit_SetWindowPos);
 
 			return TRUE;
 		}

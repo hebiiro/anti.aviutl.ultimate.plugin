@@ -8,7 +8,7 @@ namespace apn::workspace
 	inline struct HookManager
 	{
 		//
-		// 先制して初期化処理を実行します。
+		// 先行して初期化処理を実行します。
 		//
 		BOOL pre_init()
 		{
@@ -17,6 +17,7 @@ namespace apn::workspace
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
+			hook::aviutl.init();
 			hook::menu.init();
 			hook::window.init();
 			hook::get_message.init();
@@ -47,6 +48,7 @@ namespace apn::workspace
 			hook::get_message.exit();
 			hook::window.exit();
 			hook::menu.exit();
+			hook::aviutl.exit();
 
 			return TRUE;
 		}
@@ -61,7 +63,6 @@ namespace apn::workspace
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			hook::aviutl.init();
 			hook::exedit.init();
 			hook::vsthost.init();
 			hook::color_palette.init();
@@ -94,7 +95,6 @@ namespace apn::workspace
 			hook::color_palette.exit();
 			hook::vsthost.exit();
 			hook::exedit.exit();
-			hook::aviutl.exit();
 
 			return TRUE;
 		}
