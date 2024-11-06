@@ -161,7 +161,7 @@ namespace apn::workspace
 		}
 
 		//
-		// 指定されたメニューのコピーを作成して返します。
+		// 指定された座標にカレントシャトルのメニューをポップアップ表示します。
 		//
 		inline static BOOL show_shuttle_menu(const std::shared_ptr<Pane>& pane, POINT cursor_pos)
 		{
@@ -283,6 +283,7 @@ namespace apn::workspace
 			// タブのアイコンがクリックされた場合は
 			if (ht == pane->tav.c_icon_index)
 			{
+				// カレントシャトルのメニューをポップアップ表示します。
 				show_shuttle_menu(pane, cursor_pos);
 
 				return;
@@ -926,14 +927,19 @@ namespace apn::workspace
 
 					// タブ上でマウスホイールが発生した場合はカレントタブを切り替えます。
 
+					// デルタを取得します。
 					auto delta = (short)HIWORD(wParam);
+
+					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
 					my::map_window_points(nullptr, hwnd, &point);
+
+					// マウスカーソルの座標にある子ウィンドウを取得します。
 					auto child = ::ChildWindowFromPointEx(hwnd, point,
 						CWP_SKIPDISABLED | CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT);
 
-					auto pane = Pane::get_pane(child);
-					if (pane) // childがタブならペインを取得できます。
+					// childがタブならペインを取得できます。
+					if (auto pane = Pane::get_pane(child))
 					{
 						auto c = pane->get_tab_count();
 						auto current = pane->get_current_index();
