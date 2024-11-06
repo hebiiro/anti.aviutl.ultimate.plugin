@@ -311,11 +311,11 @@ namespace apn::workspace
 		}
 
 		//
-		// この仮想関数はクライアント矩形が必要なときに呼び出されます。
+		// この仮想関数はワークエリア矩形が必要なときに呼び出されます。
 		//
-		virtual RECT get_client_rect() override
+		virtual RECT get_workarea() override
 		{
-			auto rc = __super::get_client_rect();
+			auto rc = __super::get_workarea();
 
 			switch (hive.layout_list_mode)
 			{

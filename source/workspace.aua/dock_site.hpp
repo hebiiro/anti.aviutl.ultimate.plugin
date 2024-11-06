@@ -465,20 +465,21 @@ namespace apn::workspace
 		}
 
 		//
-		// クライアント矩形を返します。
+		// ワークエリア領域を返します。
 		//
-		virtual RECT get_client_rect()
+		virtual RECT get_workarea()
 		{
 			return my::get_client_rect(*this);
 		}
 
 		//
+		// 指定されたワークエリア領域を使用して
 		// すべてのペインのレイアウトを更新します。
 		//
-		virtual void update_dock_site(const RECT& rc)
+		virtual void update_dock_site(const RECT& workarea)
 		{
 			if (auto pane = get_top_level_pane(*this))
-				pane->update_origin(&rc, pane->c_update_flag.c_default);
+				pane->update_origin(&workarea, pane->c_update_flag.c_default);
 		}
 
 		//
@@ -486,7 +487,7 @@ namespace apn::workspace
 		//
 		void update_dock_site()
 		{
-			update_dock_site(get_client_rect());
+			update_dock_site(get_workarea());
 		}
 
 		//
@@ -629,8 +630,8 @@ namespace apn::workspace
 					auto root = get_top_level_pane(hwnd);
 					if (!root) return 0;
 
-					// 描画に適したクライアント領域を取得します。
-					rc = get_client_rect();
+					// 描画に適したワークエリア領域を取得します。
+					rc = get_workarea();
 
 					// 背景を塗りつぶします。
 					painter.fill_background(dc, &rc);
