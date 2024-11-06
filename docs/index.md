@@ -85,6 +85,7 @@ lang: ja_JP
 | [font_preview](./contents/addin/font_preview.html) | フォントプレビュー | フォントのプレビューを確認しながら選択できるようにします。 |
 | [font_select](./contents/addin/font_select.html) | フォント選択 | カスタムメニューからフォントを選択できるようにします。 |
 | [note](./contents/addin/note.html) | メモ帳 | aviutl内にリッチエディットコントロールを表示します。 |
+| [clipboard_viewer](./contents/addin/clipboard_viewer.html) | クリップボード画像表示 | クリップボードにコピーされた画像を表示します。 |
 |---|---|---|
 | [namecage](./contents/addin/namecage.html) | アイテム名常時表示 | アイテム名がタイムラインから出ないようにします。 |
 | [last_frame](./contents/addin/last_frame.html) | 最終フレーム自動調整 | 最終フレームを自動的に調整します。 |
