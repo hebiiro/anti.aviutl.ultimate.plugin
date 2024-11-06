@@ -56,6 +56,17 @@ namespace apn
 			}
 
 			{
+				// リストボックスの項目の幅を設定します。
+
+				// 項目の高さを取得します。
+				auto height = ::SendMessageW(listbox, LB_GETITEMHEIGHT, 0, 0);
+				MY_TRACE_INT(height);
+
+				// 項目の幅を項目の高さの10倍に設定します。
+				::SendMessageW(listbox, LB_SETCOLUMNWIDTH, height * 10, 0);
+			}
+
+			{
 				// リストボックスにアドインの一覧を構築します。
 
 				for (const auto& pair : addin_manager.addins.map)
