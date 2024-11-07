@@ -161,15 +161,17 @@
   <ItemGroup>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="dock\dock_site.hpp" />
+    <ClInclude Include="dock\layout_list.hpp" />
+    <ClInclude Include="dock\main_window.hpp" />
+    <ClInclude Include="dock\sub_window.hpp" />
     <ClInclude Include="hook\mouse.hpp" />
-    <ClInclude Include="layout_list.hpp" />
     <ClInclude Include="pane\tav.hpp" />
     <ClInclude Include="preference_loader.hpp" />
     <ClInclude Include="preference_saver.hpp" />
     <ClInclude Include="Container\container.hpp" />
     <ClInclude Include="Container\scroll_container.hpp" />
     <ClInclude Include="Container\spread_container.hpp" />
-    <ClInclude Include="dock_site.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="hook\window.hpp" />
     <ClInclude Include="hook\get_message.hpp" />
@@ -182,7 +184,6 @@
     <ClInclude Include="hook\program\vsthost.hpp" />
     <ClInclude Include="hook\program\z_ram_preview.hpp" />
     <ClInclude Include="preference_io.hpp" />
-    <ClInclude Include="main_window.hpp" />
     <ClInclude Include="painter.hpp" />
     <ClInclude Include="Pane\pane.hpp" />
     <ClInclude Include="Pane\root_pane.hpp" />
@@ -199,7 +200,6 @@
     <ClInclude Include="sub_process\psdtoolkit.hpp" />
     <ClInclude Include="sub_process\sub_process.hpp" />
     <ClInclude Include="sub_process\sub_process_manager.hpp" />
-    <ClInclude Include="sub_window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

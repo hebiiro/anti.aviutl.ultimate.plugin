@@ -29,6 +29,9 @@
     <Filter Include="hook\program">
       <UniqueIdentifier>{82fe53e3-4b3e-4559-a799-42a3fe02985e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="element\dock">
+      <UniqueIdentifier>{eff8b788-948f-4b49-9692-1649dce466cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -68,9 +71,6 @@
     <ClInclude Include="pane\tab.hpp">
       <Filter>element\pane</Filter>
     </ClInclude>
-    <ClInclude Include="main_window.hpp" />
-    <ClInclude Include="sub_window.hpp" />
-    <ClInclude Include="dock_site.hpp" />
     <ClInclude Include="preference_loader.hpp" />
     <ClInclude Include="preference_saver.hpp" />
     <ClInclude Include="addin.hpp" />
@@ -120,7 +120,6 @@
       <Filter>hook\program</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
-    <ClInclude Include="layout_list.hpp" />
     <ClInclude Include="sub_process\sub_process_manager.hpp">
       <Filter>element\sub_process</Filter>
     </ClInclude>
@@ -129,6 +128,18 @@
     </ClInclude>
     <ClInclude Include="hook\mouse.hpp">
       <Filter>hook</Filter>
+    </ClInclude>
+    <ClInclude Include="dock\dock_site.hpp">
+      <Filter>element\dock</Filter>
+    </ClInclude>
+    <ClInclude Include="dock\layout_list.hpp">
+      <Filter>element\dock</Filter>
+    </ClInclude>
+    <ClInclude Include="dock\main_window.hpp">
+      <Filter>element\dock</Filter>
+    </ClInclude>
+    <ClInclude Include="dock\sub_window.hpp">
+      <Filter>element\dock</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
