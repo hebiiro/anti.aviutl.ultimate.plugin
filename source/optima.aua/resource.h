@@ -4,7 +4,6 @@
 //
 #define IDD_MAIN_DIALOG                 100
 #define IDC_REUSE_COMBOBOX              1000
-#define IDC_NO_REDRAW_COMBOBOX          1001
 
 // Next default values for new objects
 // 

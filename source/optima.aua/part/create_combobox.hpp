@@ -51,83 +51,6 @@ namespace apn::optima
 		}
 
 		//
-		// オリジナルのウィンドウプロシージャを実行します。
-		// ただし、再描画しません。
-		//
-		inline static LRESULT WINAPI call_combobox_wnd_proc_no_redraw(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
-		{
-			if (hive.no_redraw_combobox)
-			{
-				//
-				// このクラスはウィンドウの再描画を一時的に無効化します。
-				//
-				struct Locker
-				{
-					//
-					// 再描画を無効化するウィンドウです。
-					//
-					HWND hwnd = nullptr;
-
-					//
-					// コンストラクタです。
-					//
-					Locker(HWND hwnd, UINT message)
-					{
-						MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, message);
-#if 1
-						switch (message)
-						{
-						case CB_RESETCONTENT:
-						case CB_INSERTSTRING:
-							{
-								// コントロールの親ウィンドウ(設定ダイアログ)を取得します。
-								hwnd = ::GetParent(hwnd);
-								MY_TRACE_HWND(hwnd);
-
-								// 再描画が有効の場合は
-								if (!::GetPropA(hwnd, "SysSetRedraw"))
-								{
-									// 再描画を無効にします。
-									this->hwnd = hwnd;
-									::DefWindowProcA(hwnd, WM_SETREDRAW, FALSE, 0);
-								}
-								// 再描画が無効の場合は
-								else
-								{
-									MY_TRACE("再描画はすでに無効化されています\n");
-								}
-
-								break;
-							}
-						}
-#endif
-					}
-
-					//
-					// デストラクタです。
-					//
-					~Locker()
-					{
-						MY_TRACE_FUNC("{:#010x}", hwnd);
-
-						// 再描画を無効化した場合は
-						if (hwnd)
-						{
-							// 再描画を有効に戻します。
-							::DefWindowProcA(hwnd, WM_SETREDRAW, TRUE, 0);
-						}
-					}
-				} locker(hwnd, message);
-
-				return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
-			}
-			else
-			{
-				return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
-			}
-		}
-
-		//
 		// ウィンドウプロシージャです。
 		//
 		inline static LRESULT CALLBACK combobox_wnd_proc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
@@ -150,7 +73,7 @@ namespace apn::optima
 					{
 						// カレントオブジェクトを取得します。
 						if (!object.init(magi.exin.get_current_object_index()))
-							return call_combobox_wnd_proc_no_redraw(hwnd, message, wparam, lparam);
+							return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
 
 						// アニメーション効果を取得します。
 						filter = object.get_animation_effect(hwnd);
@@ -173,13 +96,13 @@ namespace apn::optima
 							set_category_id(hwnd, 0);
 
 							// デフォルト処理を実行します。
-							return call_combobox_wnd_proc_no_redraw(hwnd, message, wparam, lparam);
+							return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
 						}
 					}
 					else
 					{
 						// デフォルト処理を実行します。
-						return call_combobox_wnd_proc_no_redraw(hwnd, message, wparam, lparam);
+						return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
 					}
 				}
 			case CB_INSERTSTRING:
@@ -258,14 +181,14 @@ namespace apn::optima
 							}
 
 							// スキップしていたコンテンツリセット処理をここで実行します。
-							call_combobox_wnd_proc_no_redraw(hwnd, CB_RESETCONTENT, 0, 0);
+							call_combobox_wnd_proc(hwnd, CB_RESETCONTENT, 0, 0);
 
 							// コンボボックスにカテゴリを関連付けます。
 							set_category_id(hwnd, filter_category_id);
 						}
 					}
 
-					return call_combobox_wnd_proc_no_redraw(hwnd, message, wparam, lparam);
+					return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
 				}
 			}
 
@@ -316,7 +239,7 @@ $+2F1B0   |.  FFD3           |CALL EBX
 				uint8_t call = 0xe8;
 				uint32_t hook_proc;
 			} code;
-			assert(sizeof(Code) == 9);
+			static_assert(sizeof(Code) == 9);
 #pragma pack(pop)
 
 			uint32_t address = magi.exin.exedit + 0x0002F1A9;

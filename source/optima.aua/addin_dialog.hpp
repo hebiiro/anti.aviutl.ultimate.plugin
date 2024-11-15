@@ -15,7 +15,6 @@ namespace apn::optima
 			MY_TRACE_FUNC("");
 
 			get_check(IDC_REUSE_COMBOBOX, hive.reuse_combobox);
-			get_check(IDC_NO_REDRAW_COMBOBOX, hive.no_redraw_combobox);
 		}
 
 		//
@@ -26,7 +25,6 @@ namespace apn::optima
 			MY_TRACE_FUNC("");
 
 			set_check(IDC_REUSE_COMBOBOX, hive.reuse_combobox);
-			set_check(IDC_NO_REDRAW_COMBOBOX, hive.no_redraw_combobox);
 		}
 
 		//
@@ -48,11 +46,6 @@ namespace apn::optima
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_REUSE_COMBOBOX));
 			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_NO_REDRAW_COMBOBOX));
-			}
 		}
 
 		//
@@ -65,8 +58,7 @@ namespace apn::optima
 			switch (id)
 			{
 			// その他
-			case IDC_REUSE_COMBOBOX:
-			case IDC_NO_REDRAW_COMBOBOX: update_config(); break;
+			case IDC_REUSE_COMBOBOX: update_config(); break;
 			}
 		}
 	} addin_dialog;

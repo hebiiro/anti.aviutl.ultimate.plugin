@@ -68,7 +68,6 @@ namespace apn::optima
 			MY_TRACE_FUNC("");
 
 			get_bool(root, "reuse_combobox", hive.reuse_combobox);
-			get_bool(root, "no_redraw_combobox", hive.no_redraw_combobox);
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -82,7 +81,6 @@ namespace apn::optima
 			MY_TRACE_FUNC("");
 
 			set_bool(root, "reuse_combobox", hive.reuse_combobox);
-			set_bool(root, "no_redraw_combobox", hive.no_redraw_combobox);
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;

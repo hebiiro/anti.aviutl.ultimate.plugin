@@ -38,11 +38,6 @@ namespace apn::optima
 		BOOL reuse_combobox = FALSE;
 
 		//
-		// TRUEの場合は設定ダイアログのコンボボックスを再描画しません。
-		//
-		BOOL no_redraw_combobox = TRUE;
-
-		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
