@@ -58,10 +58,68 @@ namespace apn::optima
 		{
 			if (hive.no_redraw_combobox)
 			{
-				::DefWindowProcA(hwnd, WM_SETREDRAW, FALSE, 0);
-				auto result = call_combobox_wnd_proc(hwnd, message, wparam, lparam);
-				::DefWindowProcA(hwnd, WM_SETREDRAW, TRUE, 0);
-				return result;
+				//
+				// このクラスはウィンドウの再描画を一時的に無効化します。
+				//
+				struct Locker
+				{
+					//
+					// 再描画を無効化するウィンドウです。
+					//
+					HWND hwnd = nullptr;
+
+					//
+					// コンストラクタです。
+					//
+					Locker(HWND hwnd, UINT message)
+					{
+						MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, message);
+#if 1
+						switch (message)
+						{
+						case CB_RESETCONTENT:
+						case CB_INSERTSTRING:
+							{
+								// コントロールの親ウィンドウ(設定ダイアログ)を取得します。
+								hwnd = ::GetParent(hwnd);
+								MY_TRACE_HWND(hwnd);
+
+								// 再描画が有効の場合は
+								if (!::GetPropA(hwnd, "SysSetRedraw"))
+								{
+									// 再描画を無効にします。
+									this->hwnd = hwnd;
+									::DefWindowProcA(hwnd, WM_SETREDRAW, FALSE, 0);
+								}
+								// 再描画が無効の場合は
+								else
+								{
+									MY_TRACE("再描画はすでに無効化されています\n");
+								}
+
+								break;
+							}
+						}
+#endif
+					}
+
+					//
+					// デストラクタです。
+					//
+					~Locker()
+					{
+						MY_TRACE_FUNC("{:#010x}", hwnd);
+
+						// 再描画を無効化した場合は
+						if (hwnd)
+						{
+							// 再描画を有効に戻します。
+							::DefWindowProcA(hwnd, WM_SETREDRAW, TRUE, 0);
+						}
+					}
+				} locker(hwnd, message);
+
+				return call_combobox_wnd_proc(hwnd, message, wparam, lparam);
 			}
 			else
 			{
