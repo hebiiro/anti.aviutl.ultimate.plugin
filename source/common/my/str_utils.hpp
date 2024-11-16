@@ -2,11 +2,6 @@
 
 namespace my
 {
-	//
-	// メモリアドレスの型です。
-	//
-	using addr_t = uintptr_t;
-
 	using tstring = std::basic_string<TCHAR>;
 	using tstring_view = std::basic_string_view<TCHAR>;
 

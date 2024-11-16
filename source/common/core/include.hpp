@@ -59,6 +59,7 @@ using namespace Gdiplus;
 
 #include "aviutl.hpp"
 #include "exedit.hpp"
+#include "common/my/utils.hpp"
 #include "common/my/str_utils.hpp"
 #include "common/my/win_utils.hpp"
 #include "common/my/win_wrap.hpp"
