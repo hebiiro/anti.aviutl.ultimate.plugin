@@ -303,7 +303,10 @@ namespace apn::workspace
 				auto shuttle = shuttle_manager.get(name);
 				if (!shuttle) return TRUE;
 
-				get_window(float_shuttle_node, "placement", *shuttle->float_container);
+				// ウィンドウ位置を読み込みます。
+				auto flags = SWP_NOSIZE;
+				if (my::get_style(*shuttle->float_container) & WS_THICKFRAME) flags = 0;
+				get_window(float_shuttle_node, "placement", *shuttle->float_container, flags);
 
 				// このシャトルはリサイズ済みなのでコレクションから除外します。
 				rest.erase(name);

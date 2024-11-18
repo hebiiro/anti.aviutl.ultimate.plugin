@@ -282,7 +282,7 @@ namespace apn::workspace::hook
 	{
 		//
 		// このクラスは::AdjustWindowRectEx()をフックします。
-		// カラーパレットがドッキングしているマイパレットを表示するのを防ぎます。
+		// NC領域が確保されないようにします。
 		//
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(LPRECT rc, DWORD style, BOOL menu, DWORD ex_style)
@@ -396,8 +396,8 @@ namespace apn::workspace::hook
 			auto aviutl = (my::addr_t)::GetModuleHandle(nullptr);
 			MY_TRACE_HEX(aviutl);
 
-			// AviUtl内の::AdjustWindowRectEx()のインポートをフックします。
-			my::hook::attach_import(AdjustWindowRectEx, (HMODULE)aviutl, "AdjustWindowRectEx");
+			// AviUtl内の::AdjustWindowRectEx()のコールをフックします。
+			my::hook::attach_abs_call(AdjustWindowRectEx, aviutl + 0x5CAA9);
 			MY_TRACE_HEX(AdjustWindowRectEx.orig_proc);
 
 			// AviUtl内のdraw_aviutl_button_as_play()のコールをフックします。
