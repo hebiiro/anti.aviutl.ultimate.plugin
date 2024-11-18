@@ -210,7 +210,7 @@ namespace my::json
 		get_color(get_child(node, name), value);
 	}
 
-	inline void get_window(const n_json& node, HWND hwnd, UINT show_cmd = -1)
+	inline void get_window(const n_json& node, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
 	{
 		if (show_cmd == -1)
 			get_int(node, "show_cmd", show_cmd);
@@ -225,15 +225,16 @@ namespace my::json
 		auto y = rc.top;
 		auto w = my::get_width(rc);
 		auto h = my::get_height(rc);
-		::SetWindowPos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
+		::SetWindowPos(hwnd, nullptr, x, y, w, h,
+			flags | SWP_NOZORDER | SWP_NOACTIVATE);
 
 		if (show_cmd != -1)
 			::ShowWindow(hwnd, show_cmd);
 	}
 
-	inline void get_window(const n_json& node, const std::string& name, HWND hwnd, UINT show_cmd = -1)
+	inline void get_window(const n_json& node, const std::string& name, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
 	{
-		get_window(get_child(node, name), hwnd, show_cmd);
+		get_window(get_child(node, name), hwnd, flags, show_cmd);
 	}
 
 	template <typename T, typename Labels>
