@@ -10,7 +10,7 @@
 ## ⚗️動作確認
 
 * (必須) aviutl 1.10 & 拡張編集 0.92 https://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r43 謎さうなフォーク版64 https://scrapbox.io/nazosauna/patch.aul
+* (共存確認) patch.aul r43 謎さうなフォーク版65 https://scrapbox.io/nazosauna/patch.aul
 
 ## 💳クレジット
 
