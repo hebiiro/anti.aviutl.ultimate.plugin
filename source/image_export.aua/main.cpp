@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "resource.h"
+#include "app_interface.hpp"
 #include "hive.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"

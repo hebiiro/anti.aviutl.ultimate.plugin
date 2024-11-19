@@ -21,11 +21,6 @@ namespace apn::image_export
 			};
 		} c_mode;
 
-		struct App {
-			virtual std::wstring browse() = 0;
-			virtual BOOL export_image(const std::wstring& file_name, BOOL has_alpha, BOOL sel_item_only) = 0;
-		} *app = nullptr;
-
 		//
 		// このアドインのインスタンスハンドルです。
 		//
@@ -65,6 +60,11 @@ namespace apn::image_export
 		// フレーム数やインデックスの文字数です。
 		//
 		int32_t number_width = 6;
+
+		//
+		// TRUEの場合は乗算済みアルファでクリップボードにコピーします。
+		//
+		BOOL use_pargb = FALSE;
 
 		//
 		// メッセージボックスを表示します。

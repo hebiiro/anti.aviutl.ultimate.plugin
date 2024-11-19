@@ -5,15 +5,12 @@ namespace apn::image_export
 	//
 	// このクラスはHive::Appの実装です。
 	//
-	inline struct App : Hive::App
+	inline struct App : AppInterface
 	{
 		//
 		// コンストラクタです。
 		//
-		App()
-		{
-			hive.app = this;
-		}
+		App() { app = this; }
 
 		virtual std::wstring browse() override
 		{
@@ -29,5 +26,10 @@ namespace apn::image_export
 		{
 			return Executor().export_image(file_name, has_alpha, sel_item_only);
 		}
-	} app;
+
+		virtual BOOL copy_image(BOOL has_alpha, BOOL sel_item_only) override
+		{
+			return Executor().copy_image(has_alpha, sel_item_only);
+		}
+	} app_impl;
 }

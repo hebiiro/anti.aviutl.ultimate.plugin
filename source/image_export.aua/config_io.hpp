@@ -72,6 +72,7 @@ namespace apn::image_export
 			get_string(root, "file_name", hive.file_name);
 			get_int(root, "index", hive.index);
 			get_int(root, "number_width", hive.number_width);
+			get_bool(root, "use_pargb", hive.use_pargb);
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -89,6 +90,7 @@ namespace apn::image_export
 			set_string(root, "file_name", hive.file_name);
 			set_int(root, "index", hive.index);
 			set_int(root, "number_width", hive.number_width);
+			set_bool(root, "use_pargb", hive.use_pargb);
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;

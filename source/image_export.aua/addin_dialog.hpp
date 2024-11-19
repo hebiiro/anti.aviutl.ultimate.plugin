@@ -21,6 +21,7 @@ namespace apn::image_export
 			set_text(IDC_FILE_NAME, hive.file_name);
 			set_int(IDC_INDEX, hive.index);
 			set_int(IDC_NUMBER_WIDTH, hive.number_width);
+			set_check(IDC_USE_PARGB, hive.use_pargb);
 		}
 
 		//
@@ -35,6 +36,7 @@ namespace apn::image_export
 			get_text(IDC_FILE_NAME, hive.file_name);
 			get_int(IDC_INDEX, hive.index);
 			get_int(IDC_NUMBER_WIDTH, hive.number_width);
+			get_check(IDC_USE_PARGB, hive.use_pargb);
 		}
 
 		//
@@ -59,33 +61,51 @@ namespace apn::image_export
 			auto row_size = base_size + margin_value * 2;
 			auto fixed_size = base_size * 3 + margin_value * 2;
 			auto row = std::make_shared<RelativePos>(row_size);
-			auto stat = std::make_shared<RelativePos>(fixed_size * 2);
-			auto fixed = std::make_shared<RelativePos>(fixed_size);
-			auto quarter = std::make_shared<AbsolutePos>(1, 4);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
-			auto center_left = std::make_shared<AbsolutePos>(1, 4);
-			auto center = std::make_shared<AbsolutePos>(2, 4);
-			auto center_right = std::make_shared<AbsolutePos>(3, 4);
-			auto right = std::make_shared<AbsolutePos>(4, 4);
+			auto s_control = std::make_shared<RelativePos>(fixed_size);
+			auto l_control = std::make_shared<RelativePos>(fixed_size * 2);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXPORT_FRAME_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_FRAME_RGBA));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_FRAME_RGB));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin);
+				node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin, ctrl(IDC_EXPORT_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin, ctrl(IDC_COPY_STAT));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXPORT_ITEM_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_ITEM_RGBA));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_EXPORT_ITEM_RGB));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_EXPORT_FRAME_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, half, {}, ctrl(IDC_EXPORT_FRAME_RGBA));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_EXPORT_FRAME_RGB));
+				}
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, half, {}, ctrl(IDC_COPY_FRAME_RGBA));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_COPY_FRAME_RGB));
+				}
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_EXPORT_ITEM_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, half, {}, ctrl(IDC_EXPORT_ITEM_RGBA));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_EXPORT_ITEM_RGB));
+				}
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, half, {}, ctrl(IDC_COPY_ITEM_RGBA));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_COPY_ITEM_RGB));
+				}
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_MODE_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_MODE));
 			}
 
@@ -99,19 +119,24 @@ namespace apn::image_export
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_INDEX_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_INDEX));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_NUMBER_WIDTH_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_NUMBER_WIDTH));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_INDEX_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_INDEX));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_NUMBER_WIDTH_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_NUMBER_WIDTH));
 			}
 
 			{
 				auto full = std::make_shared<RelativePos>(1, 1, -fixed_size);
 
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_QUALITY_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_QUALITY_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_QUALITY_SLIDER));
-				node->add_pane(c_axis.c_horz, c_align.c_left, fixed, margin, ctrl(IDC_QUALITY));
+				node->add_pane(c_axis.c_horz, c_align.c_left, s_control, margin, ctrl(IDC_QUALITY));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin, ctrl(IDC_USE_PARGB));
 			}
 		}
 
@@ -129,7 +154,14 @@ namespace apn::image_export
 			case IDC_EXPORT_FRAME_RGBA: export_image(TRUE, FALSE); break;
 			case IDC_EXPORT_ITEM_RGB: export_image(FALSE, TRUE); break;
 			case IDC_EXPORT_ITEM_RGBA: export_image(TRUE, TRUE); break;
+			case IDC_COPY_FRAME_RGB: copy_image(FALSE, FALSE); break;
+			case IDC_COPY_FRAME_RGBA: copy_image(TRUE, FALSE); break;
+			case IDC_COPY_ITEM_RGB: copy_image(FALSE, TRUE); break;
+			case IDC_COPY_ITEM_RGBA: copy_image(TRUE, TRUE); break;
 			case IDC_FILE_NAME_DIR: on_file_name_dir(); break;
+
+			// チェックボックス
+			case IDC_USE_PARGB: update_config(); break;
 
 			// エディットボックス
 			case IDC_FILE_NAME:
@@ -200,7 +232,7 @@ namespace apn::image_export
 			case hive.c_mode.c_manual:
 				{
 					// ユーザーが選択したファイル名を返します。
-					return hive.app->browse();
+					return app->browse();
 				}
 			case hive.c_mode.c_auto:
 			case hive.c_mode.c_overwrite:
@@ -230,13 +262,25 @@ namespace apn::image_export
 		}
 
 		//
-		// アクションに画像をエクスポートさせます。
+		// 画像をファイルにエクスポートします。
 		//
 		BOOL export_image(BOOL has_alpha, BOOL sel_item_only)
 		{
+			MY_TRACE_FUNC("{}, {}", has_alpha, sel_item_only);
+
 			auto file_name = get_file_name();
 			if (file_name.empty()) return FALSE;
-			return hive.app->export_image(file_name.c_str(), has_alpha, sel_item_only);
+			return app->export_image(file_name.c_str(), has_alpha, sel_item_only);
+		}
+
+		//
+		// 画像をクリップボードにコピーします。
+		//
+		BOOL copy_image(BOOL has_alpha, BOOL sel_item_only)
+		{
+			MY_TRACE_FUNC("{}, {}", has_alpha, sel_item_only);
+
+			return app->copy_image(has_alpha, sel_item_only);
 		}
 
 		//
@@ -246,7 +290,7 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			auto file_name = hive.app->browse();
+			auto file_name = app->browse();
 			if (file_name.empty()) return FALSE;
 
 			return set_text(IDC_FILE_NAME, file_name.c_str());
