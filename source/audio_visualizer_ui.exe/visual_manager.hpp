@@ -157,8 +157,16 @@ namespace apn::audio_visualizer::ui
 			// すべてのビジュアルを走査します。
 			for (const auto& pair : collection)
 			{
+				// ビジュアルを取得します。
+				auto& visual = pair.second;
+
+				// ビジュアルエディタが表示されている場合は何もしません。
+				// (何故か操作不能になってしまうので)
+				if (::IsWindowVisible(visual->editor))
+					continue;
+
 				// ウェブメッセージをビジュアルのスクリプトに送信します。
-				pair.second->browser.post_web_message_as_json(json);
+				visual->browser.post_web_message_as_json(json);
 			}
 
 			return TRUE;
