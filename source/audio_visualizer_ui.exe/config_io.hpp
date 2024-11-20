@@ -8,6 +8,27 @@ namespace apn::audio_visualizer::ui
 	inline struct ConfigIO : StdConfigIO
 	{
 		//
+		// ファイルパスを読み込みます。
+		// 相対パスだった場合は絶対パスに変換します。
+		//
+		inline static void get_file_name(const n_json& node, const std::string& name, std::filesystem::path& path)
+		{
+			my::json::get_file_name(node, name, path);
+			if (path.is_relative())
+				path = hive.assets_folder_name / path;
+		}
+
+		//
+		// ファイルパスを書き込みます。
+		// 可能ならアセットフォルダからの相対パスで書き込みます。
+		//
+		inline static void set_file_name(n_json& node, const std::string& name, const std::filesystem::path& path)
+		{
+			my::json::set_file_name(node, name,
+				path.lexically_proximate(hive.assets_folder_name));
+		}
+
+		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -16,6 +37,9 @@ namespace apn::audio_visualizer::ui
 
 			hive.config_file_name = magi.get_config_file_name(hive.instance);
 			MY_TRACE_STR(hive.config_file_name);
+
+			hive.assets_folder_name = magi.get_assets_file_name(hive.c_name);
+			MY_TRACE_STR(hive.assets_folder_name);
 
 			return TRUE;
 		}
