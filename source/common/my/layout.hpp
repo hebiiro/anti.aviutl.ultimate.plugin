@@ -179,7 +179,7 @@ namespace my::layout
 		//
 		// 保有しているウィンドウをリサイズします。
 		//
-		void resize_window(HDWP dwp, const RECT& rc)
+		void resize_window(my::DeferWindowPos& dwp, const RECT& rc)
 		{
 			if (!hwnd) return;
 
@@ -188,13 +188,13 @@ namespace my::layout
 			auto w = get_width(rc);
 			auto h = get_height(rc);
 
-			::DeferWindowPos(dwp, hwnd, nullptr, x, y, w, h, SWP_NOZORDER);
+			dwp.set_window_pos(hwnd, nullptr, x, y, w, h, SWP_NOZORDER);
 		}
 
 		//
 		// このペインのレイアウトを更新します。
 		//
-		void update(HDWP dwp, const RECT& base_rc)
+		BOOL update(my::DeferWindowPos& dwp, const RECT& base_rc)
 		{
 			// カレント矩形を取得します。
 			RECT current_rc = base_rc;
@@ -227,6 +227,8 @@ namespace my::layout
 				// 子要素を再帰的に更新します。
 				child->update(dwp, rc);
 			}
+
+			return TRUE;
 		}
 	};
 
@@ -259,9 +261,9 @@ namespace my::layout
 		//
 		virtual BOOL update_layout(const RECT& pane_rc, int init_count)
 		{
-			auto dwp = ::BeginDeferWindowPos(init_count);
-			root->update(dwp, pane_rc);
-			return ::EndDeferWindowPos(dwp);
+			my::DeferWindowPos dwp(init_count);
+
+			return root->update(dwp, pane_rc);
 		}
 
 		//

@@ -51,15 +51,17 @@ namespace apn::workspace
 			// 最大化ペインが有効の場合は
 			if (maximized_pane)
 			{
+				my::DeferWindowPos dwp(100);
+
 				// 他のペインを非表示にします。
-				hide_others(my::DeferWindowPos(100), shared_from_this());
+				hide_others(dwp, shared_from_this());
 			}
 		}
 
 		//
 		// 他のペインを非表示にします。
 		//
-		void hide_others(HDWP dwp, const std::shared_ptr<Pane>& pane)
+		void hide_others(my::DeferWindowPos& dwp, const std::shared_ptr<Pane>& pane)
 		{
 			if (pane == maximized_pane) return;
 
@@ -103,7 +105,7 @@ namespace apn::workspace
 		//
 		// ペインを更新します。
 		//
-		virtual void update(HDWP dwp, LPCRECT rc, uint32_t flags) override
+		virtual void update(my::DeferWindowPos& dwp, LPCRECT rc, uint32_t flags) override
 		{
 			MY_TRACE_FUNC("");
 

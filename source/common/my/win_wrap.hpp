@@ -407,5 +407,11 @@ namespace my
 		DeferWindowPos(int c = 0) : dwp(BeginDeferWindowPos(c)) {}
 		~DeferWindowPos() { if (dwp) ::EndDeferWindowPos(dwp); }
 		operator HDWP() { return dwp; }
+		BOOL set_window_pos(HWND hwnd, HWND insert_after, int x, int y, int w, int h, UINT flags) {
+			return !!(dwp = ::DeferWindowPos(dwp, hwnd, insert_after, x, y, w, h, flags));
+		}
+		BOOL set_window_pos(HWND hwnd, HWND insert_after, LPCRECT rc, UINT flags) {
+			return !!(dwp = my::defer_window_pos(dwp, hwnd, insert_after, rc, flags));
+		}
 	};
 }

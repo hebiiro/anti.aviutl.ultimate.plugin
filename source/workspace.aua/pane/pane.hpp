@@ -672,18 +672,18 @@ namespace apn::workspace
 		//
 		// 指定されたシャトルを表示します。
 		//
-		void show_shuttle(HDWP dwp, const auto& shuttle)
+		void show_shuttle(my::DeferWindowPos& dwp, const auto& shuttle)
 		{
 #if 1
 			// シャトルが格納されているドッキングコンテナを
 			// タブコントロールのすぐ後ろに表示にします。
-			::DeferWindowPos(dwp, *shuttle->dock_container,
+			dwp.set_window_pos(*shuttle->dock_container,
 				tav, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 			// SWP_SHOWWINDOWを使用してウィンドウを表示した場合は
 			// WM_SHOWWINDOWが送信されないので手動で送信しています。
 			::PostMessage(*shuttle->dock_container, WM_SHOWWINDOW, TRUE, 0);
 #else
-			::DeferWindowPos(dwp, *shuttle->dock_container,
+			dwp.set_window_pos(*shuttle->dock_container,
 				tav, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 			::ShowWindowAsync(*shuttle->dock_container, SW_SHOWNA);
 #endif
@@ -692,10 +692,10 @@ namespace apn::workspace
 		//
 		// 指定されたシャトルを非表示にします。
 		//
-		void hide_shuttle(HDWP dwp, const auto& shuttle)
+		void hide_shuttle(my::DeferWindowPos& dwp, const auto& shuttle)
 		{
 			// シャトルが格納されているドッキングコンテナを非表示にします。
-			::DeferWindowPos(dwp, *shuttle->dock_container,
+			dwp.set_window_pos(*shuttle->dock_container,
 				nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
 			// SWP_HIDEWINDOWを使用してウィンドウを非表示にした場合は
 			// WM_SHOWWINDOWが送信されないので手動で送信しています。
@@ -705,10 +705,10 @@ namespace apn::workspace
 		//
 		// タブコントロールを非表示にします。
 		//
-		void hide_tab(HDWP dwp)
+		void hide_tab(my::DeferWindowPos& dwp)
 		{
 			// タブコントロールを非表示にします。
-			::DeferWindowPos(dwp, tav, nullptr, 0, 0, 0, 0,
+			dwp.set_window_pos(tav, nullptr, 0, 0, 0, 0,
 				SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
 		};
 
@@ -731,14 +731,16 @@ namespace apn::workspace
 		{
 //			MY_TRACE_FUNC("{:#010x}", flags);
 
-			update(my::DeferWindowPos(100), rc, flags);
+			my::DeferWindowPos dwp(100);
+
+			update(dwp, rc, flags);
 		}
 
 		//
 		// このペインおよび子孫ペインの位置情報を更新します。
 		// rcはこのペインの新しい位置です。
 		//
-		virtual void update(HDWP dwp, LPCRECT rc, uint32_t flags)
+		virtual void update(my::DeferWindowPos& dwp, LPCRECT rc, uint32_t flags)
 		{
 //			MY_TRACE_FUNC("{:#010x}", flags);
 
@@ -797,7 +799,7 @@ namespace apn::workspace
 		// タブコントロールのウィンドウ位置を更新します。
 		// この関数はupdate()から呼び出されます。
 		//
-		void update_tab(HDWP dwp)
+		void update_tab(my::DeferWindowPos& dwp)
 		{
 //			MY_TRACE_FUNC("");
 
@@ -823,13 +825,13 @@ namespace apn::workspace
 			if (layout.show)
 			{
 				// タブコントロールを表示します。
-				my::defer_window_pos(dwp, tav, HWND_TOP,
+				dwp.set_window_pos(tav, HWND_TOP,
 					&layout.rc, SWP_NOACTIVATE | SWP_SHOWWINDOW);
 			}
 			else
 			{
 				// タブコントロールを非表示にします。
-				my::defer_window_pos(dwp, tav, nullptr,
+				dwp.set_window_pos(tav, nullptr,
 					&layout.rc, SWP_NOZORDER | SWP_HIDEWINDOW);
 			}
 		}
@@ -838,7 +840,7 @@ namespace apn::workspace
 		// シャトル(が格納されているドッキングコンテナ)のウィンドウ位置を更新します。
 		// この関数はupdate()から呼び出されます。
 		//
-		void update_shuttles(HDWP dwp, uint32_t flags)
+		void update_shuttles(my::DeferWindowPos& dwp, uint32_t flags)
 		{
 //			MY_TRACE_FUNC("{:#010x}", flags);
 
@@ -907,7 +909,7 @@ namespace apn::workspace
 		// 子ペインを更新します。
 		// update()から呼び出されます。
 		//
-		void update_children(HDWP dwp, uint32_t flags)
+		void update_children(my::DeferWindowPos& dwp, uint32_t flags)
 		{
 			switch (split_mode)
 			{

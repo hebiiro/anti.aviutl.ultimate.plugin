@@ -183,13 +183,12 @@ namespace apn::filer
 				::MulDiv(cw, 3, 3),
 			};
 
-			auto dwp = ::BeginDeferWindowPos(5);
-			::DeferWindowPos(dwp, list, nullptr, cx, cy, cw, ch - base * 2, SWP_NOZORDER | SWP_NOACTIVATE);
+			my::DeferWindowPos dwp(5);
+			dwp.set_window_pos(list, nullptr, cx, cy, cw, ch - base * 2, SWP_NOZORDER | SWP_NOACTIVATE);
 			for (size_t i = 0; i < std::size(button); i++) {
-				::DeferWindowPos(dwp, button[i], nullptr, bx[i], ch - base * 2, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
+				dwp.set_window_pos(button[i], nullptr, bx[i], ch - base * 2, bx[i + 1] - bx[i], base, SWP_NOZORDER | SWP_NOACTIVATE);
 			}
-			::DeferWindowPos(dwp, checkbox[0], nullptr, cx, ch - base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
-			::EndDeferWindowPos(dwp);
+			dwp.set_window_pos(checkbox[0], nullptr, cx, ch - base * 1, cw, base, SWP_NOZORDER | SWP_NOACTIVATE);
 		}
 
 		//
