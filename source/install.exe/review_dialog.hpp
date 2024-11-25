@@ -114,6 +114,13 @@ public:
 
 				succeeded = TRUE;
 			}
+			catch (const std::exception& error)
+			{
+				AfxMessageBox(std::format(
+					L"マニフェストの作成に失敗しました" L"\n"
+					L"{}",
+					my::ws(error.what())).c_str());
+			}
 			catch (...)
 			{
 			}

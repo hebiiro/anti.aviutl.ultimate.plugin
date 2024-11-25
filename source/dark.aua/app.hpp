@@ -11,7 +11,7 @@ namespace apn::dark
 	}
 
 	//
-	// このクラスはHive::Appの実装です。
+	// このクラスはアプリケーションです。
 	//
 	inline struct App : AppInterface, my::FileUpdateChecker2::Handler
 	{
