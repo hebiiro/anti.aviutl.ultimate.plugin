@@ -50,8 +50,9 @@ namespace apn
 			register_addin(L"M", L"scene_select", L"シーン選択", TRUE, L"", { L"SelectScene.auf" });
 			register_addin(L"M", L"ease_select", L"イージング選択", TRUE, L"", { L"SelectEasing.auf" });
 			register_addin(L"M", L"zoom_select", L"ズーム選択", TRUE, L"", { L"SetZoom.auf" });
-			register_addin(L"M", L"font_preview", L"フォントプレビュー", TRUE, L"", { L"SelectFavoriteFont.auf" });
-			register_addin(L"M", L"font_select", L"フォント選択", TRUE, L"", { L"SelectFavoriteFont.auf" });
+			register_addin(L"M", L"font_tree", L"フォントツリー", TRUE, L"", { L"SelectFavoriteFont.auf" });
+			register_addin(L"M", L"font_preview", L"フォントプレビュー", TRUE, L"", {});
+			register_addin(L"M", L"font_select", L"フォント選択", TRUE, L"", {});
 			register_addin(L"M", L"note", L"メモ帳", TRUE, L"", {});
 			register_addin(L"M", L"clipboard_viewer", L"クリップボード画像表示", TRUE, L"", {});
 

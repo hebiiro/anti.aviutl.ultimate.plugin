@@ -224,6 +224,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\audio_visualizer_ui.exe\audio_visualizer_ui.exe.vcxproj">
       <Project>{9d0669ff-1846-4979-8b2d-ea24a39b2733}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\clipboard_viewer.aua\clipboard_viewer.aua.vcxproj">
+      <Project>{6ff9c1ce-e78e-472c-bd7a-4655b52eede7}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\color_code.aua\color_code.aua.vcxproj">
       <Project>{e80e8462-911f-4eab-b83b-d4b2dfe2010d}</Project>
     </ProjectReference>
@@ -274,6 +277,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     </ProjectReference>
     <ProjectReference Include="..\font_select.aua\font_select.aua.vcxproj">
       <Project>{6738ba93-5f7c-40a7-9407-fbf6525ffa04}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\font_tree.aua\font_tree.aua.vcxproj">
+      <Project>{335a485d-8033-470f-883c-a6711851c963}</Project>
     </ProjectReference>
     <ProjectReference Include="..\image_export.aua\image_export.aua.vcxproj">
       <Project>{b14f4a09-5ac5-4fb5-9e73-441964eb32bc}</Project>
