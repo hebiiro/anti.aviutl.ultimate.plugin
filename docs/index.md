@@ -82,6 +82,7 @@ lang: ja_JP
 | [scene_select](./contents/addin/scene_select.html) | シーン選択 | シーンをボタンで選択できるようにします。 |
 | [ease_select](./contents/addin/ease_select.html) | イージング選択 | イージングをGUIで選択できるようにします。 |
 | [zoom_select](./contents/addin/zoom_select.html) | ズーム選択 | タイムラインのズーム値をボタンで選択できるようにします。 |
+| [font_tree](./contents/addin/font_tree.html) | フォントツリー | フォントをツリーコントロールから選択できるようにします。 |
 | [font_preview](./contents/addin/font_preview.html) | フォントプレビュー | フォントのプレビューを確認しながら選択できるようにします。 |
 | [font_select](./contents/addin/font_select.html) | フォント選択 | カスタムメニューからフォントを選択できるようにします。 |
 | [note](./contents/addin/note.html) | メモ帳 | aviutl内にリッチエディットコントロールを表示します。 |
