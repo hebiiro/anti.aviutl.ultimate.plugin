@@ -81,6 +81,40 @@ namespace apn
 		}
 
 		//
+		// カラー配列を読み込みます。
+		//
+		inline static void get_color_array(const n_json& node, const std::string& name, auto& color_array)
+		{
+			size_t i = 0;
+			get_child_nodes(node, name,
+				[&](const n_json& color_node)
+			{
+				if (i >= std::size(color_array))
+					return FALSE;
+
+				get_color(color_node, color_array[i]);
+
+				i++;
+
+				return TRUE;
+			});
+		}
+
+		//
+		// カラー配列を書き込みます。
+		//
+		inline static void set_color_array(n_json& node, const std::string& name, const auto& color_array)
+		{
+			set_child_nodes(node, name, color_array,
+				[&](n_json& color_node, const auto& color)
+			{
+				set_color(color_node, color);
+
+				return TRUE;
+			});
+		}
+
+		//
 		// コンフィグを読み込みます。
 		//
 		virtual BOOL read_node(n_json& root) override
@@ -88,6 +122,7 @@ namespace apn
 			MY_TRACE_FUNC("");
 
 			get_string(root, "python_file_name", hive.python_file_name);
+			get_color_array(root, "custom_color", magi.custom_colors);
 
 			// アドイン情報を読み込みます。
 			get_child_nodes(root, "addin",
@@ -126,6 +161,7 @@ namespace apn
 			MY_TRACE_FUNC("");
 
 			set_string(root, "python_file_name", hive.python_file_name);
+			set_color_array(root, "custom_color", magi.custom_colors);
 
 			set_child_nodes(root, "addin", hive.addins,
 				[&](n_json& addin_node, const auto& addin)

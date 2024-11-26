@@ -9,11 +9,6 @@ namespace apn::workspace
 	struct MainWindow : DockSite<my::Window>
 	{
 		//
-		// カラー選択ダイアログのカスタムカラーです。
-		//
-		inline static COLORREF custom_colors[16] = {};
-
-		//
 		// メインメニューに独自に追加したポップアップメニューです。
 		//
 		HMENU extra_menu = nullptr;
@@ -29,9 +24,6 @@ namespace apn::workspace
 		MainWindow()
 		{
 			MY_TRACE_FUNC("");
-
-			// カラー選択ダイアログで使用するカスタムカラーを初期化します。
-			std::fill(std::begin(custom_colors), std::end(custom_colors), RGB(0xff, 0xff, 0xff));
 		}
 
 		//
@@ -747,16 +739,18 @@ namespace apn::workspace
 						case IDC_INACTIVE_CAPTION_COLOR:
 						case IDC_INACTIVE_CAPTION_TEXT_COLOR:
 							{
-								CHOOSECOLOR cc { sizeof(cc) };
-								cc.hwndOwner = hwnd;
-								cc.lpCustColors = custom_colors;
-								cc.rgbResult = get_uint(id);
-								cc.Flags = CC_RGBINIT | CC_FULLOPEN;
-								if (!::ChooseColor(&cc)) return TRUE;
+								try
+								{
+									// カラー選択ダイアログを表示してカラーを取得します。
+									auto color = magi.choose_color(hwnd, get_uint(id));
 
-								set_uint(id, cc.rgbResult);
-
-								my::invalidate(control);
+									// 取得した色をコントロールに適用します。
+									set_uint(id, color);
+									my::invalidate(control);
+								}
+								catch (...)
+								{
+								}
 
 								return TRUE;
 							}

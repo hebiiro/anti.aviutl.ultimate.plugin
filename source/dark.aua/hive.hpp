@@ -180,11 +180,6 @@ namespace apn::dark
 		BOOL dont_write_bytecode = FALSE;
 
 		//
-		// カラーピッカーダイアログで使用するカスタムカラーの配列です。
-		//
-		COLORREF custom_colors[16] = {};
-
-		//
 		// レンダラを使用するかどうかのフラグです。
 		// レンダラの使用を停止したい場合はTRUEに設定します。
 		//
@@ -228,14 +223,6 @@ namespace apn::dark
 			HRESULT (WINAPI *DrawThemeIcon)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, HIMAGELIST image_list, int iImageIndex) = nullptr;
 			HRESULT (WINAPI *DrawThemeEdge)(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT dest_rect, UINT edge, UINT flags, LPRECT content_rect) = nullptr;
 		} orig;
-
-		//
-		// コンストラクタです。
-		//
-		Hive()
-		{
-			std::fill(std::begin(custom_colors), std::end(custom_colors), RGB(255, 255, 255));
-		}
 
 		//
 		// メッセージボックスを表示します。

@@ -34,6 +34,39 @@ namespace apn
 		my::ExEditInternal exin; // 拡張編集にアクセスするためのオブジェクトです。
 
 		//
+		// カラー選択ダイアログのカスタムカラーです。
+		//
+		COLORREF custom_colors[16] = {};
+
+		//
+		// コンストラクタです。
+		//
+		Magi()
+		{
+			MY_TRACE_FUNC("");
+
+			// カスタムカラーを初期化します。
+			std::fill(std::begin(custom_colors), std::end(custom_colors), RGB(255, 255, 255));
+		}
+
+		//
+		// カラー選択ダイアログを表示します。
+		//
+		COLORREF choose_color(HWND hwnd, COLORREF color)
+		{
+			MY_TRACE_FUNC("");
+
+			CHOOSECOLOR cc { sizeof(cc) };
+			cc.hwndOwner = hwnd;
+			cc.lpCustColors = custom_colors;
+			cc.rgbResult = color;
+			cc.Flags = CC_RGBINIT | CC_FULLOPEN;
+			if (!::ChooseColor(&cc))
+				throw std::exception("dialog canceled");
+			return cc.rgbResult;
+		}
+
+		//
 		// AviUtlプロセス内の場合はTRUEを返します。
 		//
 		auto in_aviutl() const

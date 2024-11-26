@@ -171,18 +171,21 @@ namespace apn::font_preview
 			case IDC_SELECT_PREVIEW_COLOR:
 			case IDC_SELECT_FONT_NAME_COLOR:
 				{
-					CHOOSECOLOR cc { sizeof(cc) };
-					cc.hwndOwner = hwnd;
-					cc.lpCustColors = hive.custom_colors;
-					cc.rgbResult = get_uint(id);
-					cc.Flags = CC_RGBINIT | CC_FULLOPEN;
-					if (!::ChooseColor(&cc)) return;
+					try
+					{
+						// カラー選択ダイアログを表示してカラーを取得します。
+						auto color = magi.choose_color(hwnd, get_uint(id));
 
-					set_uint(id, cc.rgbResult);
+						// 取得した色をコントロールに適用します。
+						set_uint(id, color);
+						my::invalidate(control);
 
-					my::invalidate(control);
-
-					update_config();
+						// コンフィグを更新します。
+						update_config();
+					}
+					catch (...)
+					{
+					}
 
 					break;
 				}

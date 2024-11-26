@@ -105,40 +105,6 @@ namespace apn::dark
 		}
 
 		//
-		// カラー配列を読み込みます。
-		//
-		inline static void get_color_array(const n_json& node, const std::string& name, auto& color_array)
-		{
-			size_t i = 0;
-			get_child_nodes(node, name,
-				[&](const n_json& color_node)
-			{
-				if (i >= std::size(color_array))
-					return FALSE;
-
-				get_color(color_node, color_array[i]);
-
-				i++;
-
-				return TRUE;
-			});
-		}
-
-		//
-		// カラー配列を書き込みます。
-		//
-		inline static void set_color_array(n_json& node, const std::string& name, const auto& color_array)
-		{
-			set_child_nodes(node, name, color_array,
-				[&](n_json& color_node, const auto& color)
-			{
-				set_color(color_node, color);
-
-				return TRUE;
-			});
-		}
-
-		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(n_json& root) override
@@ -165,7 +131,6 @@ namespace apn::dark
 			get_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
 			get_color_set_array(root, "dark_color", hive.dark_color);
 			get_color_set_array(root, "light_color", hive.light_color);
-			get_color_array(root, "custom_color", hive.custom_colors);
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -198,7 +163,6 @@ namespace apn::dark
 			set_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
 			set_color_set_array(root, "dark_color", hive.dark_color);
 			set_color_set_array(root, "light_color", hive.light_color);
-			set_color_array(root, "custom_color", hive.custom_colors);
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;

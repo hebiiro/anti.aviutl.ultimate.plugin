@@ -55,11 +55,6 @@ namespace apn::font_preview
 		BOOL singleline = FALSE;
 
 		//
-		// カラー選択ダイアログで使用するカスタムカラーの配列です。
-		//
-		COLORREF custom_colors[16] = {};
-
-		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {

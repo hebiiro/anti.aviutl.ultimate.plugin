@@ -204,6 +204,16 @@ function deep_copy(obj) {
 }
 
 //
+// jsonデータ内のカラー文字列をhtmlカラーに変換して返します。
+//
+function to_html_color(color) {
+	const array = color.split(',');
+	if (array.length < 3) return color;
+	function to_hex(v) { return ('00' + (v - 0).toString(16)).substr(-2); }
+	return '#' + to_hex(array[0]) + to_hex(array[1]) + to_hex(array[2]);
+}
+
+//
 // ダーティフラグをセットします。
 //
 function set_dirty() {
@@ -225,10 +235,16 @@ function reset_dirty() {
 const c_config_file_path = "../config/ultimate.auf.json";
 
 //
-// デフォルトのデータです。
+// デフォルトのjsonデータです。
 //
-const c_default = {
+const c_default_json = {
 	"python_file_name": "ultimate/assets/python32/python312.dll",
+	"custom_color": [
+		"#ffffff", "#ffffff", "#ffffff", "#ffffff",
+		"#ffffff", "#ffffff", "#ffffff", "#ffffff",
+		"#ffffff", "#ffffff", "#ffffff", "#ffffff",
+		"#ffffff", "#ffffff", "#ffffff", "#ffffff"
+	],
 	"addin": [
 		{ "active": "true", "display_name": "ダークモード化", "name": "dark", "args": "" },
 		{ "active": "true", "display_name": "ワークスペース化", "name": "workspace", "args": "" },
@@ -247,6 +263,7 @@ const c_default = {
 		{ "active": "true", "display_name": "シーン選択", "name": "scene_select", "args": "" },
 		{ "active": "true", "display_name": "イージング選択", "name": "ease_select", "args": "" },
 		{ "active": "true", "display_name": "ズーム選択", "name": "zoom_select", "args": "" },
+		{ "active": "true", "display_name": "フォントツリー", "name": "font_tree", "args": "" },
 		{ "active": "true", "display_name": "フォントプレビュー", "name": "font_preview", "args": "" },
 		{ "active": "true", "display_name": "フォント選択", "name": "font_select", "args": "" },
 		{ "active": "true", "display_name": "メモ帳", "name": "note", "args": "" },
@@ -265,14 +282,14 @@ const c_default = {
 };
 
 //
-// カレントのデータです。
+// カレントのjsonデータです。
 //
-let current = deep_copy(c_default);
+let current_json = deep_copy(c_default_json);
 
 //
-// データをコピーします。
+// jsonデータをコピーします。
 //
-function copy_data(src, dst) {
+function copy_json_data(src, dst) {
 	// 予めsrcのデータを連想配列にしておきます。
 	let src_dict = {};
 	for (const src_addin of src.addin) {
@@ -280,6 +297,7 @@ function copy_data(src, dst) {
 	}
 	// srcのデータをdstにコピーします。
 	dst.python_file_name = src.python_file_name;
+	dst.custom_color = src.custom_color;
 	for (let dst_addin of dst.addin) {
 		const src_addin = src_dict[dst_addin.name];
 		if (!src_addin) continue;
@@ -289,11 +307,15 @@ function copy_data(src, dst) {
 }
 
 //
-// コンテンツデータでカレントデータを更新します。
+// htmlデータでカレントのjsonデータを更新します。
 //
-function update_current() {
-	current.python_file_name = $("#python_file_name").value;
-	for (let addin of current.addin) {
+function update_current_json() {
+	current_json.python_file_name = $("#python_file_name").value;
+	for (let i = 0; i < current_json.custom_color.length; i++) {
+		const color = $(`#custom_color_${i}`);
+		current_json.custom_color[i] = color.value;
+	}
+	for (let addin of current_json.addin) {
 		let active = $(`#${addin.name}_active`);
 		if (active) addin.active = active.checked;
 		let args = $(`#${addin.name}_args`);
@@ -302,11 +324,17 @@ function update_current() {
 }
 
 //
-// カレントデータでコンテンツを更新します。
+// カレントのjsonデータでhtmlデータを更新します。
 //
-function update_content() {
+function update_html() {
 	let html = ``;
-	html += `<p>Pythonのパス <input class="value" type="text" id="python_file_name" name="python_file_name" value="${current.python_file_name}"></p>`;
+	html += `<p>Pythonのパス <input class="value" type="text" id="python_file_name" name="python_file_name" value="${current_json.python_file_name}"></p>`;
+	html += `<span>カスタムカラー</span><br>`;
+	for (let i = 0; i < current_json.custom_color.length; i++) {
+		if (i == 8) html += `<br>`;
+		const custom_color = current_json.custom_color[i];
+		html += `<input class="color" type="color" id="custom_color_${i}" value="${to_html_color(custom_color)}">`;
+	}
 	html += `<table>`;
 	html += `<tr>`;
 	html += `<th></th>`;
@@ -314,7 +342,7 @@ function update_content() {
 	html += `<th>内部名</th>`;
 	html += `<th>開発者用引数</th>`;
 	html += `</tr>`;
-	for (const addin of current.addin) {
+	for (const addin of current_json.addin) {
 		if (addin.name != "") {
 			const checked = is_true(addin.active) ? "checked" : "";
 			html += `<tr>`;
@@ -343,8 +371,8 @@ function update_content() {
 // 初期化処理を実行します。
 //
 window.addEventListener("load", event => {
-	// カレントデータでコンテンツを更新します。
-	update_content();
+	// カレントのjsonデータでhtmlデータを更新します。
+	update_html();
 	// 読み込み用のイベントリスナーを追加します。
 	$("#read").addEventListener("click", event => {
 		// 読み込みリクエスト用のjsonを構築します。
@@ -359,12 +387,12 @@ window.addEventListener("load", event => {
 	// 書き込み用のイベントリスナーを追加します。
 	$("#write").addEventListener("click", e => {
 		// コンテンツデータでカレントデータを更新します。
-		update_current();
+		update_current_json();
 		// 書き込みリクエスト用のjsonを構築します。
 		const json = {
 			"request_write_json": {
 				"path": c_config_file_path,
-				"data": current
+				"data": current_json
 			}
 		};
 		// ホストにカレントデータの書き込みをリクエストします。
@@ -373,9 +401,9 @@ window.addEventListener("load", event => {
 	// リセット用のイベントリスナーを追加します。
 	$("#reset").addEventListener("click", event => {
 		// デフォルトデータをカレントデータにコピーします。
-		current = deep_copy(c_default);
-		// カレントデータでコンテンツを更新します。
-		update_content();
+		current_json = deep_copy(c_default_json);
+		// カレントのjsonデータでhtmlデータを更新します。
+		update_html();
 		// ダーティフラグをセットします。
 		set_dirty();
 		// ステータスを更新します。
@@ -391,9 +419,9 @@ window.addEventListener("load", event => {
 				const json = event.data["response_read_json"];
 				if (json["path"] == c_config_file_path) {
 					// ホストから受け取ったデータをカレントデータにコピーします。
-					copy_data(json["data"], current);
-					// カレントデータでコンテンツを更新します。
-					update_content();
+					copy_json_data(json["data"], current_json);
+					// カレントのjsonデータでhtmlデータを更新します。
+					update_html();
 					// ダーティフラグをリセットします。
 					reset_dirty();
 					// ステータスを更新します。

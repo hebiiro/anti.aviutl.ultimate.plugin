@@ -14,8 +14,6 @@ namespace apn::font_preview
 		{
 			MY_TRACE_FUNC("");
 
-			std::fill(std::begin(hive.custom_colors), std::end(hive.custom_colors), RGB(0xff, 0xff, 0xff));
-
 			hive.config_file_name = magi.get_config_file_name(hive.instance);
 			MY_TRACE_STR(hive.config_file_name);
 

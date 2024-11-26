@@ -373,21 +373,22 @@ namespace apn::dark
 			case IDC_LIGHT_3_BORDER_COLOR:
 			case IDC_LIGHT_3_TEXT_COLOR:
 				{
-					// 色選択ダイアログを表示します。
-					CHOOSECOLOR cc { sizeof(cc) };
-					cc.hwndOwner = hwnd;
-					cc.lpCustColors = hive.custom_colors;
-					cc.rgbResult = get_uint(id);
-					cc.Flags = CC_RGBINIT | CC_FULLOPEN;
-					if (!::ChooseColor(&cc)) break;
+					try
+					{
+						// カラー選択ダイアログを表示してカラーを取得します。
+						auto color = magi.choose_color(hwnd, get_uint(id));
 
-					// 取得した色をコントロールに適用します。
-					set_uint(id, cc.rgbResult);
-					my::invalidate(control);
+						// 取得した色をコントロールに適用します。
+						set_uint(id, color);
+						my::invalidate(control);
 
-					// コントロールが変更されたことをアプリに通知します。
-					app->on_change_controls();
-//					app->update_skin();
+						// コントロールが変更されたことをアプリに通知します。
+						app->on_change_controls();
+//						app->update_skin();
+					}
+					catch (...)
+					{
+					}
 
 					break;
 				}
