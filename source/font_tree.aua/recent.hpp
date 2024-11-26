@@ -98,7 +98,8 @@ namespace apn::font_tree
 			// ポップアップメニューのアイテムIDです。
 			constexpr uint32_t c_insert_recent = 1;
 			constexpr uint32_t c_erase_recent = 2;
-			constexpr uint32_t c_read_xml = 1000;
+			constexpr uint32_t c_show_config_dialog = 1000;
+			constexpr uint32_t c_read_xml = 1001;
 
 			// ポップアップメニューを作成します。
 			my::menu::unique_ptr<> menu(::CreatePopupMenu());
@@ -123,8 +124,8 @@ namespace apn::font_tree
 
 			if (::GetMenuItemCount(menu.get()))
 				::AppendMenu(menu.get(), MF_SEPARATOR, 0, nullptr);
-			::AppendMenu(menu.get(), MF_STRING, c_read_xml,
-				my::format(_T("xmlファイル(旧形式データ)を読み込む")).c_str());
+			::AppendMenu(menu.get(), MF_STRING, c_show_config_dialog, _T("フォントツリーの設定"));
+			::AppendMenu(menu.get(), MF_STRING, c_read_xml, _T("xmlファイル(旧形式データ)を読み込む"));
 
 			auto id = ::TrackPopupMenuEx(menu.get(),
 				TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, hwnd, nullptr);
@@ -141,6 +142,12 @@ namespace apn::font_tree
 			case c_erase_recent:
 				{
 					erase(recent_font_name.c_str());
+
+					break;
+				}
+			case c_show_config_dialog:
+				{
+					app->show_config_dialog();
 
 					break;
 				}

@@ -42,6 +42,10 @@ namespace apn::font_tree
 		{
 			MY_TRACE_FUNC("");
 
+			// 既存の設定を消去します。
+			recent_manager.clear();
+			favorite_manager.clear();
+
 			return is_read = read_file(hive.config_file_name, hive);
 		}
 
@@ -75,10 +79,6 @@ namespace apn::font_tree
 		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
-
-			// 既存の設定を消去します。
-			recent_manager.clear();
-			favorite_manager.clear();
 
 			get_string(root, "display_name_format", hive.display_name_format);
 			get_string(root, "separator_format", hive.separator_format);
