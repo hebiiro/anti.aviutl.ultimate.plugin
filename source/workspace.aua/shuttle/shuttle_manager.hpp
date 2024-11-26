@@ -116,20 +116,19 @@ namespace apn::workspace
 			{
 				create(hive.instance, MAKEINTRESOURCE(IDD_RENAME_SHUTTLE), parent);
 
-				set_text(IDC_NEW_NAME, shuttle->name.c_str());
+				auto name = shuttle->name;
+				set_text(IDC_NEW_NAME, name);
 
 				auto ret_value = __super::do_modal2(parent);
 
 				if (IDOK != ret_value)
 					return ret_value;
 
-				auto new_name = get_text(IDC_NEW_NAME);
-
 				// 古い名前と新しい名前が違うなら
-				if (shuttle->name != new_name)
+				if (shuttle->name != name)
 				{
 					// シャトルの名前を変更します。
-					shuttle_manager.rename(shuttle, new_name);
+					shuttle_manager.rename(shuttle, name);
 				}
 
 				return ret_value;

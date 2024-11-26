@@ -9,6 +9,17 @@ namespace my
 		};
 
 		template <typename T>
+		struct Text : Prop {
+			UINT id; T& value;
+			Text(Dialog* dialog, UINT id, T& value) : id(id), value(value) {
+				dialog->set_text(id, value);
+			}
+			void apply(Dialog* dialog) override {
+				value = dialog->get_text(id);
+			}
+		};
+
+		template <typename T>
 		struct Int : Prop {
 			UINT id; T& value;
 			Int(Dialog* dialog, UINT id, T& value) : id(id), value(value) {
@@ -69,6 +80,11 @@ namespace my
 		};
 
 		std::vector<std::shared_ptr<Prop>> props;
+
+		template <typename T>
+		void set_text(UINT id, T& value) {
+			props.emplace_back(std::make_shared<Text<T>>(this, id, value));
+		};
 
 		template <typename T>
 		void set_int(UINT id, T& value) {
