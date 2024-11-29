@@ -62,7 +62,7 @@ namespace apn::filer_ui
 				filers[my::get_window_text(*filer_dialog)] = filer_dialog;
 
 			get_child_nodes(root, "filer",
-				[&](const n_json& filer_node)
+				[&](const n_json& filer_node, size_t i)
 			{
 				std::wstring name;
 				get_string(filer_node, "name", name);
@@ -89,7 +89,7 @@ namespace apn::filer_ui
 			MY_TRACE_FUNC("");
 
 			set_child_nodes(root, "filer", FilerDialog::collection,
-				[&](n_json& filer_node, const auto& filer_dialog)
+				[&](n_json& filer_node, const auto& filer_dialog, size_t i)
 			{
 				auto name = my::get_window_text(*filer_dialog);
 				set_string(filer_node, "name", name);

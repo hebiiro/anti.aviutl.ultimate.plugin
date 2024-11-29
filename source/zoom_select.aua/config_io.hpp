@@ -67,16 +67,13 @@ namespace apn::zoom_select
 		{
 			MY_TRACE_FUNC("");
 
-			size_t i = 0;
 			get_child_nodes(root, "zoom_value",
-				[&](const n_json& zoom_value_node)
+				[&](const n_json& zoom_value_node, size_t i)
 			{
 				if (i >= std::size(hive.zoom_values))
 					return FALSE;
 
 				get_int(zoom_value_node, hive.zoom_values[i]);
-
-				i++;
 
 				return TRUE;
 			});
@@ -94,7 +91,7 @@ namespace apn::zoom_select
 			MY_TRACE_FUNC("");
 
 			set_child_nodes(root, "zoom_value", hive.zoom_values,
-				[&](n_json& zoom_value_node, const auto& zoom_value)
+				[&](n_json& zoom_value_node, const auto& zoom_value, size_t i)
 			{
 				set_int(zoom_value_node, zoom_value);
 

@@ -83,7 +83,7 @@ namespace apn::filer
 			workspace::share::get_window(root, "addin_window", addin_window);
 
 			get_child_nodes(root, "filer",
-				[&](const n_json& filer_node)
+				[&](const n_json& filer_node, size_t i)
 			{
 				// ファイラの名前を読み込みます。
 				std::wstring name;
@@ -117,7 +117,7 @@ namespace apn::filer
 			workspace::share::set_window(root, "addin_window", addin_window);
 
 			set_child_nodes(root, "filer", FilerWindow::collection,
-				[&](n_json& filer_node, const auto& filer_window)
+				[&](n_json& filer_node, const auto& filer_window, size_t i)
 			{
 				// ファイラの名前を書き込みます。
 				auto name = my::get_window_text(*filer_window);

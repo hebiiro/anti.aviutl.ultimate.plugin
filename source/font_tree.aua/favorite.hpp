@@ -328,7 +328,7 @@ namespace apn::font_tree
 
 			// お気に入りを読み込みます。
 			get_child_nodes(node, "favorite",
-				[&](const n_json& favorite_node)
+				[&](const n_json& favorite_node, size_t i)
 			{
 				// ノードを新規作成します。
 				auto node = create_node();
@@ -384,7 +384,7 @@ namespace apn::font_tree
 
 			// お気に入りを書き込みます。
 			set_child_nodes(node, "favorite", favorites,
-				[&](n_json& favorite_node, const auto& favorite)
+				[&](n_json& favorite_node, const auto& favorite, size_t i)
 			{
 				// ツリー要素に該当するノードを取得します。
 				const auto& node = get_node(favorite);

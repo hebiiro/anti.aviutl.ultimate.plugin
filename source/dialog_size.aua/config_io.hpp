@@ -67,17 +67,14 @@ namespace apn::dialog_size
 		{
 			MY_TRACE_FUNC("");
 
-			size_t i = 0;
 			get_child_nodes(root, "custom_template",
-				[&](const n_json& custom_template_node)
+				[&](const n_json& custom_template_node, size_t i)
 			{
 				if (i >= std::size(hive.custom_templates))
 					return FALSE;
 
 				get_bool(custom_template_node, "active", hive.custom_templates[i].active);
 //				get_string(custom_template_node, "name", hive.custom_templates[i].target_display_name);
-
-				i++;
 
 				return TRUE;
 			});
@@ -95,7 +92,7 @@ namespace apn::dialog_size
 			MY_TRACE_FUNC("");
 
 			set_child_nodes(root, "custom_template", hive.custom_templates,
-				[&](n_json& custom_template_node, const auto& custom_template)
+				[&](n_json& custom_template_node, const auto& custom_template, size_t i)
 			{
 				set_bool(custom_template_node, "active", custom_template.active);
 				set_string(custom_template_node, "name", custom_template.target_display_name);

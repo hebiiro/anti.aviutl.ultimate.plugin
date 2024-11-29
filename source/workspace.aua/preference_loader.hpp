@@ -123,7 +123,7 @@ namespace apn::workspace
 
 			// ドッキングシャトルを読み込みます。
 			get_child_nodes(node, "dock_shuttle",
-				[&](const n_json& dock_shuttle_node)
+				[&](const n_json& dock_shuttle_node, size_t i)
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
@@ -144,9 +144,8 @@ namespace apn::workspace
 			pane->set_current_index(current);
 
 			// 子ペインを読み込みます。
-			size_t i = 0;
 			get_child_nodes(node, "pane",
-				[&](const n_json& pane_node)
+				[&](const n_json& pane_node, size_t i)
 			{
 				if (i >= 2) return FALSE; // 子ペインは最大2個までです。
 				if (pane_node.is_null()) return FALSE;
@@ -154,8 +153,6 @@ namespace apn::workspace
 				pane->children[i] = std::make_shared<Pane>(pane->owner);
 
 				read_pane(pane_node, pane->children[i]);
-
-				i++;
 
 				return TRUE;
 			});
@@ -210,7 +207,7 @@ namespace apn::workspace
 
 			// サブウィンドウを読み込みます。
 			get_child_nodes(node, "sub_window",
-				[&](const n_json& sub_window_node)
+				[&](const n_json& sub_window_node, size_t i)
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
@@ -262,7 +259,7 @@ namespace apn::workspace
 
 			// サブウィンドウを読み込みます。
 			get_child_nodes(node, "sub_window",
-				[&](const n_json& sub_window_node)
+				[&](const n_json& sub_window_node, size_t i)
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;
@@ -292,7 +289,7 @@ namespace apn::workspace
 
 			// フローティングシャトルを読み込みます。
 			get_child_nodes(node, "float_shuttle",
-				[&](const n_json& float_shuttle_node)
+				[&](const n_json& float_shuttle_node, size_t i)
 			{
 				// シャトル名を読み込みます。
 				std::wstring name;

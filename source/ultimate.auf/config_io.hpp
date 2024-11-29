@@ -85,16 +85,13 @@ namespace apn
 		//
 		inline static void get_color_array(const n_json& node, const std::string& name, auto& color_array)
 		{
-			size_t i = 0;
 			get_child_nodes(node, name,
-				[&](const n_json& color_node)
+				[&](const n_json& color_node, size_t i)
 			{
 				if (i >= std::size(color_array))
 					return FALSE;
 
 				get_color(color_node, color_array[i]);
-
-				i++;
 
 				return TRUE;
 			});
@@ -106,7 +103,7 @@ namespace apn
 		inline static void set_color_array(n_json& node, const std::string& name, const auto& color_array)
 		{
 			set_child_nodes(node, name, color_array,
-				[&](n_json& color_node, const auto& color)
+				[&](n_json& color_node, const auto& color, size_t i)
 			{
 				set_color(color_node, color);
 
@@ -126,7 +123,7 @@ namespace apn
 
 			// アドイン情報を読み込みます。
 			get_child_nodes(root, "addin",
-				[&](const n_json& addin_node)
+				[&](const n_json& addin_node, size_t i)
 			{
 				// アドインの名前を取得します。
 				std::wstring name;
@@ -164,7 +161,7 @@ namespace apn
 			set_color_array(root, "custom_color", magi.custom_colors);
 
 			set_child_nodes(root, "addin", hive.addins,
-				[&](n_json& addin_node, const auto& addin)
+				[&](n_json& addin_node, const auto& addin, size_t i)
 			{
 				set_string(addin_node, "name", addin->name);
 				set_bool(addin_node, "active", addin->active);

@@ -167,7 +167,7 @@ public:
 				auto op = std::wstring(L"移動");
 
 				get_child_nodes(root, "rename",
-					[&](const n_json& rename_node)
+					[&](const n_json& rename_node, size_t i)
 				{
 					std::filesystem::path from;
 					get_file_name(rename_node, "from", from);
@@ -191,7 +191,7 @@ public:
 				});
 
 				get_child_nodes(root, "erase",
-					[&](const n_json& erase_node)
+					[&](const n_json& erase_node, size_t i)
 				{
 					std::wstring path;
 					get_string(erase_node, "path", path);
@@ -216,7 +216,7 @@ public:
 				auto op = std::wstring(L"コピー");
 
 				get_child_nodes(root, "deploy",
-					[&](const n_json& deploy_node)
+					[&](const n_json& deploy_node, size_t i)
 				{
 					std::filesystem::path from;
 					get_file_name(deploy_node, "from", from);

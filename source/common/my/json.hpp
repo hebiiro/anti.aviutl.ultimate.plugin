@@ -22,8 +22,9 @@ namespace my::json
 
 	inline void get_child_nodes(const n_json& node, const std::string& name, auto func)
 	{
+		size_t index = 0;
 		for (auto child_node : get_child(node, name))
-			if (!func(child_node)) break;
+			if (!func(child_node, index++)) break;
 	}
 
 	inline void get_string(const n_json& node, std::wstring& value)
@@ -292,10 +293,11 @@ namespace my::json
 
 	inline void set_child_nodes(n_json& node, const std::string& name, const auto& collection, auto func)
 	{
+		size_t index = 0;
 		for (const auto& value : collection)
 		{
 			n_json child_node;
-			if (!func(child_node, value)) break;
+			if (!func(child_node, value, index++)) break;
 			node[name].emplace_back(child_node);
 		}
 	}

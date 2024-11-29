@@ -203,7 +203,7 @@ namespace apn::font_tree
 
 			// 使用履歴を読み込みます。
 			get_child_nodes(node, "recent",
-				[&](const n_json& recent_node)
+				[&](const n_json& recent_node, size_t i)
 			{
 				// フォント名を読み込みます。
 				std::wstring font_name;
@@ -235,7 +235,7 @@ namespace apn::font_tree
 
 			// 使用履歴を書き込みます。
 			set_child_nodes(node, "recent", recents,
-				[](n_json& recent_node, const auto& recent)
+				[](n_json& recent_node, const auto& recent, size_t i)
 			{
 				// フォント名を書き込みます。
 				set_string(recent_node, "font_name", recent);

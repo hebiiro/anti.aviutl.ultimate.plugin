@@ -75,16 +75,13 @@ namespace apn::dark
 		//
 		inline static void get_color_set_array(const n_json& node, const std::string& name, auto& color_set_array)
 		{
-			size_t i = 0;
 			get_child_nodes(node, name,
-				[&](const n_json& color_set_node)
+				[&](const n_json& color_set_node, size_t i)
 			{
 				if (i >= std::size(color_set_array))
 					return FALSE;
 
 				get_color_set(color_set_node, color_set_array[i]);
-
-				i++;
 
 				return TRUE;
 			});
@@ -96,7 +93,7 @@ namespace apn::dark
 		inline static void set_color_set_array(n_json& node, const std::string& name, const auto& color_set_array)
 		{
 			set_child_nodes(node, name, color_set_array,
-				[&](n_json& color_set_node, const auto& color_set)
+				[&](n_json& color_set_node, const auto& color_set, size_t i)
 			{
 				set_color_set(color_set_node, color_set);
 

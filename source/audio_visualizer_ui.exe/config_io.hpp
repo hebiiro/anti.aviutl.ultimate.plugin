@@ -97,7 +97,7 @@ namespace apn::audio_visualizer::ui
 
 			// ビジュアルを読み込みます。
 			get_child_nodes(root, "visual",
-				[&](const n_json& visual_node)
+				[&](const n_json& visual_node, size_t i)
 			{
 				// ビジュアルの名前を取得します。
 				std::wstring name;
@@ -138,7 +138,7 @@ namespace apn::audio_visualizer::ui
 
 			// ビジュアルを書き込みます。
 			set_child_nodes(root, "visual", visuals,
-				[&](n_json& visual_node, const auto& pair)
+				[&](n_json& visual_node, const auto& pair, size_t i)
 			{
 				const auto& name = pair.first;
 				const auto& visual = pair.second;

@@ -119,7 +119,7 @@ namespace apn::workspace
 
 			// ドッキングシャトルを書き込みます。
 			set_child_nodes(node, "dock_shuttle", dock_shuttles,
-				[&](n_json& dock_shuttle_node, const auto& shuttle)
+				[&](n_json& dock_shuttle_node, const auto& shuttle, size_t i)
 			{
 				write_shuttle_name(dock_shuttle_node, "name", shuttle->name);
 
@@ -128,7 +128,7 @@ namespace apn::workspace
 
 			// 子ペインを書き込みます。
 			set_child_nodes(node, "pane", pane->children,
-				[&](n_json& pane_node, const auto& child)
+				[&](n_json& pane_node, const auto& child, size_t i)
 			{
 				if (!child) return FALSE;
 
@@ -174,7 +174,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			set_child_nodes(node, "sub_window", SubWindow::collection,
-				[&](n_json& sub_window_node, const auto& sub_window)
+				[&](n_json& sub_window_node, const auto& sub_window, size_t i)
 			{
 				write_shuttle_name(sub_window_node, "name", sub_window->name);
 				write_root_pane(sub_window_node, *sub_window);
@@ -191,9 +191,9 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			set_child_nodes(node, "float_shuttle", shuttle_manager.collection,
-				[&](n_json& float_shuttle_node, const auto& x)
+				[&](n_json& float_shuttle_node, const auto& pair, size_t i)
 			{
-				const auto& shuttle = x.second;
+				const auto& shuttle = pair.second;
 
 				write_shuttle_name(float_shuttle_node, "name", shuttle->name);
 				set_window(float_shuttle_node, "placement", *shuttle->float_container);

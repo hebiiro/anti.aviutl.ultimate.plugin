@@ -92,7 +92,7 @@ namespace apn::filer_ui
 
 			// ブックマークを読み込みます。
 			get_child_nodes(node, "bookmarks",
-				[&](const n_json& bookmark_node)
+				[&](const n_json& bookmark_node, size_t i)
 			{
 				std::wstring path;
 				get_string(bookmark_node, path);
@@ -130,7 +130,7 @@ namespace apn::filer_ui
 			}
 
 			set_child_nodes(node, "bookmarks", bookmarks,
-				[&](n_json& bookmark_node, const auto& bookmark)
+				[&](n_json& bookmark_node, const auto& bookmark, size_t i)
 			{
 				set_string(bookmark_node, bookmark);
 

@@ -101,7 +101,7 @@ namespace apn::audio_visualizer
 
 			// コウィンドウを読み込みます。
 			get_child_nodes(root, "co_window",
-				[&](const n_json& co_window_node)
+				[&](const n_json& co_window_node, size_t i)
 			{
 				// 名前を読み込みます。
 				std::wstring name;
@@ -138,7 +138,7 @@ namespace apn::audio_visualizer
 
 			// コウィンドウを書き込みます。
 			set_child_nodes(root, "co_window", co_window_manager.collection,
-				[&](n_json& co_window_node, const auto& co_window)
+				[&](n_json& co_window_node, const auto& co_window, size_t i)
 			{
 				// 名前を書き込みます。
 				auto name = co_window->name;
