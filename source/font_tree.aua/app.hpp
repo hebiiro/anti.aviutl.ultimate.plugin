@@ -24,16 +24,16 @@ namespace apn::font_tree
 			if (!dialog.init(hive.instance, hive.main_window))
 				return FALSE;
 
-			// ダイアログに変数の参照をセットします。
-			dialog.set_text(IDC_DISPLAY_NAME_FORMAT, hive.display_name_format);
-			dialog.set_text(IDC_SEPARATOR_FORMAT, hive.separator_format);
-			dialog.set_check(IDC_PREVIEW_ENABLED, preview_manager.enabled);
-			dialog.set_check(IDC_PREVIEW_LEFT_SIDE, preview_manager.left_side);
-			dialog.set_int(IDC_PREVIEW_ITEM_SIZE_W, preview_manager.item_size.cx);
-			dialog.set_int(IDC_PREVIEW_ITEM_SIZE_H, preview_manager.item_size.cy);
-			dialog.set_text(IDC_PREVIEW_SAMPLE_FORMAT, preview_manager.sample_format);
-			dialog.set_uint(IDC_PREVIEW_FILL_COLOR, preview_manager.fill_color);
-			dialog.set_uint(IDC_PREVIEW_TEXT_COLOR, preview_manager.text_color);
+			// ダイアログに変数をバインドします。
+			dialog.bind_text(IDC_DISPLAY_NAME_FORMAT, hive.display_name_format);
+			dialog.bind_text(IDC_SEPARATOR_FORMAT, hive.separator_format);
+			dialog.bind_check(IDC_PREVIEW_ENABLED, preview_manager.enabled);
+			dialog.bind_check(IDC_PREVIEW_LEFT_SIDE, preview_manager.left_side);
+			dialog.bind_int(IDC_PREVIEW_ITEM_SIZE_W, preview_manager.item_size.cx);
+			dialog.bind_int(IDC_PREVIEW_ITEM_SIZE_H, preview_manager.item_size.cy);
+			dialog.bind_text(IDC_PREVIEW_SAMPLE_FORMAT, preview_manager.sample_format);
+			dialog.bind_uint(IDC_PREVIEW_FILL_COLOR, preview_manager.fill_color);
+			dialog.bind_uint(IDC_PREVIEW_TEXT_COLOR, preview_manager.text_color);
 
 			// コンフィグダイアログを表示します。
 			if (IDOK != dialog.do_modal2(hive.main_window))

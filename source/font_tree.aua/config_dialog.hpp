@@ -102,7 +102,7 @@ namespace apn::font_tree
 					try
 					{
 						// カラー選択ダイアログを表示してカラーを取得します。
-						auto color = magi.choose_color(hwnd, get_uint(id));
+						auto color = magi.choose_color(*this, get_uint(id));
 
 						// 取得した色をコントロールに適用します。
 						set_uint(id, color);

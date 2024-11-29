@@ -2,6 +2,9 @@
 
 namespace my
 {
+	//
+	// このクラスは変数をバインドできるダイアログです。
+	//
 	struct Dialog2 : Dialog
 	{
 		struct Prop {
@@ -82,37 +85,37 @@ namespace my
 		std::vector<std::shared_ptr<Prop>> props;
 
 		template <typename T>
-		void set_text(UINT id, T& value) {
+		void bind_text(UINT id, T& value) {
 			props.emplace_back(std::make_shared<Text<T>>(this, id, value));
 		};
 
 		template <typename T>
-		void set_int(UINT id, T& value) {
+		void bind_int(UINT id, T& value) {
 			props.emplace_back(std::make_shared<Int<T>>(this, id, value));
 		};
 
 		template <typename T>
-		void set_uint(UINT id, T& value) {
+		void bind_uint(UINT id, T& value) {
 			props.emplace_back(std::make_shared<UInt<T>>(this, id, value));
 		};
 
 		template <typename T>
-		void set_float(UINT id, T& value, LPCTSTR format) {
+		void bind_float(UINT id, T& value, LPCTSTR format) {
 			props.emplace_back(std::make_shared<Float<T>>(this, id, value, format));
 		};
 
 		template <typename T>
-		void set_check(UINT id, T& value) {
+		void bind_check(UINT id, T& value) {
 			props.emplace_back(std::make_shared<Check<T>>(this, id, value));
 		};
 
 		template <typename T>
-		void set_combobox_index(UINT id, T& value) {
+		void bind_combobox_index(UINT id, T& value) {
 			props.emplace_back(std::make_shared<ComboBox<T>>(this, id, value));
 		};
 
 		template <typename T, typename... Tail>
-		void set_combobox_index(UINT id, T& value, LPCTSTR text, Tail&&... tail) {
+		void bind_combobox_index(UINT id, T& value, LPCTSTR text, Tail&&... tail) {
 			props.emplace_back(std::make_shared<ComboBox<T>>(this, id, value, text, std::forward<Tail>(tail)...));
 		};
 

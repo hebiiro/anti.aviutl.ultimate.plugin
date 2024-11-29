@@ -117,7 +117,7 @@ namespace apn::workspace
 				create(hive.instance, MAKEINTRESOURCE(IDD_RENAME_SHUTTLE), parent);
 
 				auto name = shuttle->name;
-				set_text(IDC_NEW_NAME, name);
+				bind_text(IDC_NEW_NAME, name);
 
 				auto ret_value = __super::do_modal2(parent);
 

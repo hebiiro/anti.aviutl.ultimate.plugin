@@ -679,34 +679,34 @@ namespace apn::workspace
 				create(hive.instance, MAKEINTRESOURCE(IDD_CONFIG), parent);
 
 				// 配色
-				set_uint(IDC_FILL_COLOR, hive.fill_color);
-				set_uint(IDC_BORDER_COLOR, hive.border_color);
-				set_uint(IDC_HOT_BORDER_COLOR, hive.hot_border_color);
-				set_uint(IDC_ACTIVE_CAPTION_COLOR, hive.active_caption_color);
-				set_uint(IDC_ACTIVE_CAPTION_TEXT_COLOR, hive.active_caption_text_color);
-				set_uint(IDC_INACTIVE_CAPTION_COLOR, hive.inactive_caption_color);
-				set_uint(IDC_INACTIVE_CAPTION_TEXT_COLOR, hive.inactive_caption_text_color);
+				bind_uint(IDC_FILL_COLOR, hive.fill_color);
+				bind_uint(IDC_BORDER_COLOR, hive.border_color);
+				bind_uint(IDC_HOT_BORDER_COLOR, hive.hot_border_color);
+				bind_uint(IDC_ACTIVE_CAPTION_COLOR, hive.active_caption_color);
+				bind_uint(IDC_ACTIVE_CAPTION_TEXT_COLOR, hive.active_caption_text_color);
+				bind_uint(IDC_INACTIVE_CAPTION_COLOR, hive.inactive_caption_color);
+				bind_uint(IDC_INACTIVE_CAPTION_TEXT_COLOR, hive.inactive_caption_text_color);
 
 				// タブの設定
-				set_combobox_index(IDC_TAV_DISPLAY_MODE, tav_display_mode, _T("手動"), _T("半自動"), _T("自動"), _T("全自動"));
-				set_combobox_index(IDC_TAV_SELECT_MODE, tav_select_mode, _T("クリック"), _T("ホバー"));
-				set_combobox_index(IDC_TAV_STRETCH_MODE, tav_stretch_mode, _T("内側"), _T("外側"));
-				set_combobox_index(IDC_TAV_LOCATION, tav_location, _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
-				set_combobox_index(IDC_TAV_NODE_ALIGN, tav_node_align, _T("左または上"), _T("右または下"), _T("中央"));
-				set_uint(IDC_TAB_HEIGHT, hive.tab_height);
+				bind_combobox_index(IDC_TAV_DISPLAY_MODE, tav_display_mode, _T("手動"), _T("半自動"), _T("自動"), _T("全自動"));
+				bind_combobox_index(IDC_TAV_SELECT_MODE, tav_select_mode, _T("クリック"), _T("ホバー"));
+				bind_combobox_index(IDC_TAV_STRETCH_MODE, tav_stretch_mode, _T("内側"), _T("外側"));
+				bind_combobox_index(IDC_TAV_LOCATION, tav_location, _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
+				bind_combobox_index(IDC_TAV_NODE_ALIGN, tav_node_align, _T("左または上"), _T("右または下"), _T("中央"));
+				bind_uint(IDC_TAB_HEIGHT, hive.tab_height);
 
 				// その他の設定
-				set_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
-				set_uint(IDC_BORDER_WIDTH, hive.border_width);
-				set_uint(IDC_CAPTION_HEIGHT, hive.caption_height);
+				bind_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
+				bind_uint(IDC_BORDER_WIDTH, hive.border_width);
+				bind_uint(IDC_CAPTION_HEIGHT, hive.caption_height);
 
 				// チェックボックス
-				set_check(IDC_USE_THEME, hive.use_theme);
-				set_check(IDC_SCROLL_FORCE, hive.scroll_force);
-				set_check(IDC_SHOW_PLAYER, hive.use_fullscreen_preview);
-				set_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
-				set_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
-				set_check(IDC_IGNORE_CTRL_KEY_UP, hive.ignore_ctrl_key_up);
+				bind_check(IDC_USE_THEME, hive.use_theme);
+				bind_check(IDC_SCROLL_FORCE, hive.scroll_force);
+				bind_check(IDC_SHOW_PLAYER, hive.use_fullscreen_preview);
+				bind_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
+				bind_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
+				bind_check(IDC_IGNORE_CTRL_KEY_UP, hive.ignore_ctrl_key_up);
 
 				auto result = do_modal2(parent);
 				if (result != IDOK) return result;

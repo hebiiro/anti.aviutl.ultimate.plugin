@@ -190,7 +190,7 @@ namespace apn::audio_visualizer
 			{
 				create(hive.instance, MAKEINTRESOURCE(IDD_WINDOW_CONFIG), parent);
 
-				set_text(IDC_NEW_NAME, new_name);
+				bind_text(IDC_NEW_NAME, new_name);
 
 				auto ret_value = __super::do_modal2(parent);
 				if (IDOK != ret_value) return ret_value;

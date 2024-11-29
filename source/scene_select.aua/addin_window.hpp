@@ -658,12 +658,12 @@ namespace apn::scene_select
 				init_combobox(IDC_SIZE_MODE, _T("可変サイズ"), _T("固定サイズ"));
 				init_combobox(IDC_LAYOUT_MODE, _T("水平方向"), _T("垂直方向"));
 
-				set_combobox_index(IDC_SIZE_MODE, hive.size_mode);
-				set_combobox_index(IDC_LAYOUT_MODE, hive.layout_mode);
-				set_int(IDC_WRAP, hive.wrap);
-				set_int(IDC_BUTTON_COUNT, hive.button_count);
-				set_int(IDC_BUTTON_SIZE_W, hive.button_size.cx);
-				set_int(IDC_BUTTON_SIZE_H, hive.button_size.cy);
+				bind_combobox_index(IDC_SIZE_MODE, hive.size_mode);
+				bind_combobox_index(IDC_LAYOUT_MODE, hive.layout_mode);
+				bind_int(IDC_WRAP, hive.wrap);
+				bind_int(IDC_BUTTON_COUNT, hive.button_count);
+				bind_int(IDC_BUTTON_SIZE_W, hive.button_size.cx);
+				bind_int(IDC_BUTTON_SIZE_H, hive.button_size.cy);
 
 				return do_modal2(parent);
 			}
