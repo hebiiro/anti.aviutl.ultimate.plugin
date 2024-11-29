@@ -15,7 +15,7 @@
 //
 // エントリポイントです。
 //
-int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmdLine, int show_cmd)
+int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int show_cmd)
 {
 	using namespace apn::audio_visualizer::ui;
 

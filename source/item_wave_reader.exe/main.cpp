@@ -6,7 +6,7 @@
 
 namespace apn::item_wave::reader
 {
-	int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPTSTR cmdLine, int cmdShow)
+	int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
 	{
 		struct Initializer
 		{
