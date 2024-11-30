@@ -114,6 +114,13 @@ namespace my
 			old_bitmap = (HBITMAP)::SelectObject(dc, bitmap);
 		}
 
+		MemDC(HDC orig, int w, int h) : w(w), h(h)
+		{
+			dc = ::CreateCompatibleDC(orig);
+			bitmap = ::CreateCompatibleBitmap(orig, w, h);
+			old_bitmap = (HBITMAP)::SelectObject(dc, bitmap);
+		}
+
 		~MemDC()
 		{
 			::SelectObject(dc, old_bitmap);
