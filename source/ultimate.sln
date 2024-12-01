@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{0BBEBC9E
 		common\share\filer.hpp = common\share\filer.hpp
 		common\share\font_preview.hpp = common\share\font_preview.hpp
 		common\share\item_wave.hpp = common\share\item_wave.hpp
+		common\share\reboot.hpp = common\share\reboot.hpp
 		common\share\workspace.hpp = common\share\workspace.hpp
 	EndProjectSection
 EndProject
@@ -163,6 +164,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "clipboard_viewer.aua", "clipboard_viewer.aua\clipboard_viewer.aua.vcxproj", "{6FF9C1CE-E78E-472C-BD7A-4655B52EEDE7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "font_tree.aua", "font_tree.aua\font_tree.aua.vcxproj", "{335A485D-8033-470F-883C-A6711851C963}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reboot.aua", "reboot.aua\reboot.aua.vcxproj", "{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reboot.exe", "reboot.exe\reboot.exe.vcxproj", "{F3010617-7A4C-4424-AA4F-00F55E1ABB96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -492,6 +497,22 @@ Global
 		{335A485D-8033-470F-883C-A6711851C963}.Release|x64.Build.0 = Release|x64
 		{335A485D-8033-470F-883C-A6711851C963}.Release|x86.ActiveCfg = Release|Win32
 		{335A485D-8033-470F-883C-A6711851C963}.Release|x86.Build.0 = Release|Win32
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Debug|x64.ActiveCfg = Debug|x64
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Debug|x64.Build.0 = Debug|x64
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Debug|x86.ActiveCfg = Debug|Win32
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Debug|x86.Build.0 = Debug|Win32
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Release|x64.ActiveCfg = Release|x64
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Release|x64.Build.0 = Release|x64
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Release|x86.ActiveCfg = Release|Win32
+		{28EC0984-87C7-41AE-8D7D-6B5A4E8247AA}.Release|x86.Build.0 = Release|Win32
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Debug|x64.ActiveCfg = Debug|x64
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Debug|x64.Build.0 = Debug|x64
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Debug|x86.ActiveCfg = Debug|Win32
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Debug|x86.Build.0 = Debug|Win32
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x64.ActiveCfg = Release|x64
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x64.Build.0 = Release|x64
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x86.ActiveCfg = Release|Win32
+		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -249,6 +249,7 @@ const c_default_json = {
 		{ "active": "true", "display_name": "ダークモード化", "name": "dark", "args": "" },
 		{ "active": "true", "display_name": "ワークスペース化", "name": "workspace", "args": "" },
 		{ "active": "true", "display_name": "ファイラ", "name": "filer", "args": "" },
+		{ "active": "true", "display_name": "リブート", "name": "reboot", "args": "" },
 		{ "active": "true", "display_name": "アイテム波形", "name": "item_wave", "args": "" },
 		{ "active": "true", "display_name": "音声視覚化", "name": "audio_visualizer", "args": "" },
 		{ "active": "true", "display_name": "設定ブラウザ", "name": "settings_browser", "args": "" },

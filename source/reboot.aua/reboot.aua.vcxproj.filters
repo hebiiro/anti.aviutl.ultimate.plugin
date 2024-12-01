@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="framework">
+      <UniqueIdentifier>{c612840c-5985-4e9c-979f-f5e06a7440c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="part">
+      <UniqueIdentifier>{c6b398e5-6e8a-4e5f-84b9-56f1b7d1eef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\launcher">
+      <UniqueIdentifier>{b33232d1-1534-4fc0-b0de-51c9b45cd029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\spreader">
+      <UniqueIdentifier>{f1fa14c9-9c30-4c9e-8a75-c0e980f9e7e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\outputs">
+      <UniqueIdentifier>{09ac9d84-b998-4d7a-aa9f-64e369417101}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\reloader">
+      <UniqueIdentifier>{fcb2fb59-1496-4d4e-ad81-af716c49e049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\manipulator">
+      <UniqueIdentifier>{cef84580-ce70-4c71-9497-2a9d63f8c772}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="part\launcher\agit.hpp">
+      <Filter>part\launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="part\launcher\duty_option_dialog.hpp">
+      <Filter>part\launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="part\launcher\part.hpp">
+      <Filter>part\launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="part\spreader\agit.hpp">
+      <Filter>part\spreader</Filter>
+    </ClInclude>
+    <ClInclude Include="part\spreader\part.hpp">
+      <Filter>part\spreader</Filter>
+    </ClInclude>
+    <ClInclude Include="part\spreader\hook.hpp">
+      <Filter>part\spreader</Filter>
+    </ClInclude>
+    <ClInclude Include="part\outputs\agit.hpp">
+      <Filter>part\outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="part\outputs\part.hpp">
+      <Filter>part\outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="part.hpp" />
+    <ClInclude Include="addin_dialog_interface.hpp" />
+    <ClInclude Include="part\reloader\agit.hpp">
+      <Filter>part\reloader</Filter>
+    </ClInclude>
+    <ClInclude Include="part\reloader\part.hpp">
+      <Filter>part\reloader</Filter>
+    </ClInclude>
+    <ClInclude Include="part\manipulator\agit.hpp">
+      <Filter>part\manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="part\manipulator\part.hpp">
+      <Filter>part\manipulator</Filter>
+    </ClInclude>
+    <ClInclude Include="part\spreader\player.hpp">
+      <Filter>part\spreader</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="reboot.aua.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+</Project>

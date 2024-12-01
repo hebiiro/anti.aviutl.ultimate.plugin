@@ -36,6 +36,7 @@ namespace apn
 			register_addin(L"L", L"dark", L"ダークモード化", TRUE, L"", { L"DarkenWindow.aul" });
 			register_addin(L"L", L"workspace", L"ワークスペース化", TRUE, L"", { L"SplitWindow.aul" });
 			register_addin(L"L", L"filer", L"ファイラ", TRUE, L"", { L"ObjectExplorer.auf" });
+			register_addin(L"L", L"reboot", L"リブート", TRUE, L"", {});
 			register_addin(L"L", L"item_wave", L"アイテム波形", TRUE, L"", { L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" });
 			register_addin(L"L", L"audio_visualizer", L"音声視覚化", TRUE, L"", { L"LevelMeter.auf" });
 			register_addin(L"L", L"settings_browser", L"設定ブラウザ", TRUE, L"", {});

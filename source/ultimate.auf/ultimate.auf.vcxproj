@@ -317,6 +317,12 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\output_check.aua\output_check.aua.vcxproj">
       <Project>{fe437241-1d58-452f-a97c-0ba437e9c4e7}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\reboot.aua\reboot.aua.vcxproj">
+      <Project>{28ec0984-87c7-41ae-8d7d-6b5a4e8247aa}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\reboot.exe\reboot.exe.vcxproj">
+      <Project>{f3010617-7a4c-4424-aa4f-00f55e1abb96}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\scene_select.aua\scene_select.aua.vcxproj">
       <Project>{5e20f31e-26e3-4c79-a24d-dab459915e8c}</Project>
     </ProjectReference>
