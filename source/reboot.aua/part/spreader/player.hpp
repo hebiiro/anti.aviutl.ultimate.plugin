@@ -55,28 +55,6 @@ namespace apn::reboot::spreader
 		}
 
 		//
-		// https://makiuchi-d.github.io/mksoft/doc/aviutlyc.html
-		// YC48->RGB
-		//
-		inline static void yc48_to_rgb(const AviUtl::PixelYC& yc, AviUtl::PixelBGR& bgr)
-		{
-			bgr.r = ( 255*yc.y + ( ((22881*yc.cr>>16)+3) <<10) ) >>12;
-			bgr.g = ( 255*yc.y + ( ((-5616*yc.cb>>16)+(-11655*yc.cr>>16)+3) <<10) ) >>12;
-			bgr.b = ( 255*yc.y + ( ((28919*yc.cb>>16)+3) <<10) ) >>12;
-		}
-
-		//
-		// https://makiuchi-d.github.io/mksoft/doc/aviutlyc.html
-		// RGB->YC48
-		//
-		inline static void rgb_to_yc48(const AviUtl::PixelBGR& bgr, AviUtl::PixelYC& yc)
-		{
-			yc.y  = (( 4918*bgr.r+354)>>10) + (( 9655*bgr.g+585)>>10) + (( 1875*bgr.b+523)>>10);
-			yc.cb = ((-2775*bgr.r+240)>>10) + ((-5449*bgr.g+515)>>10) + (( 8224*bgr.b+256)>>10);
-			yc.cr = (( 8224*bgr.r+256)>>10) + ((-6887*bgr.g+110)>>10) + ((-1337*bgr.b+646)>>10);
-		}
-
-		//
 		// 表示する映像を更新します。
 		//
 		virtual BOOL update(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const Addin::ProcState& proc_state)
@@ -125,6 +103,9 @@ namespace apn::reboot::spreader
 			auto* dst = bits;
 			auto* src = (AviUtl::PixelYC*)fpip->ycp_edit;
 
+			// aviutlの色変換関数を取得します。
+			auto yc_to_rgb = magi.fp->exfunc->yc2rgb;
+
 			#pragma omp parallel for
 			for (auto y = 0; y < height; y++)
 			{
@@ -134,8 +115,7 @@ namespace apn::reboot::spreader
 				auto* dst_line = dst + dst_y * dst_stride;
 				auto* src_line = src + src_y * src_stride;
 
-				for (auto x = 0; x < width; x++)
-					yc48_to_rgb(src_line[x], dst_line[x]);
+				yc_to_rgb(dst_line, src_line, width);
 			}
 
 			// 映像信号をウィンドウに出力します。
