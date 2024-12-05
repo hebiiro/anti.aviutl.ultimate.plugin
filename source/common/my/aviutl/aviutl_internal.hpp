@@ -20,21 +20,20 @@ namespace my
 		//
 		// このクラスはAviUtlのアドレスを保有します。
 		//
-		struct Address
-		{
+		struct Address {
 			//
 			// このクラスは変数のアドレスを保有します。
 			//
-			struct Variable
-			{
+			struct Variable {
 				AviUtl::ExFunc* exfunc = nullptr;
+				BOOL* is_playing = nullptr;
+				BOOL* is_playing_main = nullptr;
 			} variable;
 
 			//
 			// このクラスは関数のアドレスを保有します。
 			//
-			struct Function
-			{
+			struct Function {
 				BOOL (CDECL* get_sys_info)(AviUtl::EditHandle* editp, AviUtl::SysInfo* sip) = nullptr;
 			} function;
 		} address;
@@ -48,30 +47,30 @@ namespace my
 			if (!aviutl) return FALSE;
 
 			tools::assign(address.variable.exfunc, aviutl + 0x000A8C78);
+			tools::assign(address.variable.is_playing, aviutl + 0x002C4DBC);
+			tools::assign(address.variable.is_playing_main, aviutl + 0x002E0698);
 			tools::assign(address.function.get_sys_info, aviutl + 0x00022120);
 
 			return TRUE;
 		}
 
 		//
-		// AviUtlのexfuncを取得します。
-		//
-		// 戻り値
 		// AviUtlのexfuncを返します。
 		//
 		AviUtl::ExFunc* get_exfunc() const { return address.variable.exfunc; }
 
 		//
-		// AviUtlシステム情報を取得します。
+		// 再生中の場合はTRUEを返します。
 		//
-		// edip [in]
-		// AviUtlの編集ハンドルです。
+		BOOL is_playing() const { return *address.variable.is_playing; }
+
 		//
-		// sip [out]
-		// 取得したシステム情報を格納するポインタです。
+		// メインウィンドウで再生中の場合はTRUEを返します。
 		//
-		// 戻り値
-		// 成功した場合、TRUEを返すと思われます。
+		BOOL is_playing_main() const { return *address.variable.is_playing_main; }
+
+		//
+		// AviUtlのシステム情報を返します。
 		//
 		BOOL get_sys_info(AviUtl::EditHandle* editp, AviUtl::SysInfo* sip) const
 		{
@@ -81,13 +80,7 @@ namespace my
 		//
 		// フィルタプラグインの数を返します。
 		//
-		// fp [in]
-		// AviUtlのAPIにアクセスするためのフィルタプラグインです。
-		//
-		// 戻り値
-		// フィルタプラグインの数です。
-		//
-		static int32_t get_filter_plugin_count(AviUtl::FilterPlugin* fp)
+		inline static int32_t get_filter_plugin_count(AviUtl::FilterPlugin* fp)
 		{
 			AviUtl::SysInfo si = {};
 			fp->exfunc->get_sys_info(nullptr, &si);
@@ -97,13 +90,7 @@ namespace my
 		//
 		// 指定された名前のフィルタプラグインを返します。
 		//
-		// fp [in]
-		// AviUtlのAPIにアクセスするためのフィルタプラグインです。
-		//
-		// 戻り値
-		// フィルタプラグインです。
-		//
-		static AviUtl::FilterPlugin* get_filter_plugin(AviUtl::FilterPlugin* fp, LPCSTR name)
+		inline static AviUtl::FilterPlugin* get_filter_plugin(AviUtl::FilterPlugin* fp, LPCSTR name)
 		{
 			for (int32_t i = get_filter_plugin_count(fp) - 1; i >= 0; i--)
 			{
