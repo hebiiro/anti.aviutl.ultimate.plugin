@@ -96,7 +96,7 @@ namespace my
 	};
 
 	//
-	// このクラスはメモリDC(バックバッファ)です。
+	// このクラスはDDBのオフスクリーンDCです。
 	//
 	struct MemDC
 	{
@@ -122,6 +122,42 @@ namespace my
 		}
 
 		~MemDC()
+		{
+			::SelectObject(dc, old_bitmap);
+			::DeleteObject(bitmap);
+			::DeleteDC(dc);
+		}
+
+		operator HDC() { return dc; }
+	};
+
+	//
+	// このクラスはDIBのオフスクリーンDCです。
+	//
+	template <typename T>
+	struct DIBDC
+	{
+		HDC dc = nullptr;
+		HBITMAP bitmap = nullptr;
+		HBITMAP old_bitmap = nullptr;
+		BITMAPINFOHEADER header = { sizeof(header) };
+		T* bits = nullptr;
+
+		DIBDC(HDC orig, int w, int h)
+		{
+			header.biWidth = w;
+			header.biHeight = h;
+			header.biPlanes = 1;
+			header.biBitCount = sizeof(T) * 8;
+			header.biCompression = BI_RGB;
+
+			dc = ::CreateCompatibleDC(orig);
+			bitmap = ::CreateDIBSection(orig, (BITMAPINFO*)&header,
+				DIB_RGB_COLORS, (void**)&bits, nullptr, 0);
+			old_bitmap = (HBITMAP)::SelectObject(dc, bitmap);
+		}
+
+		~DIBDC()
 		{
 			::SelectObject(dc, old_bitmap);
 			::DeleteObject(bitmap);
