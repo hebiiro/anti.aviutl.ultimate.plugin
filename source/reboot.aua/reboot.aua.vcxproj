@@ -173,6 +173,7 @@
     <ClInclude Include="part\spreader\hook.hpp" />
     <ClInclude Include="part\spreader\part.hpp" />
     <ClInclude Include="part\spreader\player.hpp" />
+    <ClInclude Include="part\spreader\option_dialog.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils.hpp" />

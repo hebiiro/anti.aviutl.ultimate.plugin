@@ -2,29 +2,11 @@
 
 namespace apn::reboot::spreader
 {
+	//
+	// naked関数を使用するのでクラスは使用できません。
+	//
 	inline namespace
 	{
-		//
-		// ウィンドウが表示されているスクリーンの矩形を返します。
-		//
-		inline auto get_screen_rect(HWND hwnd)
-		{
-			auto monitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-			MONITORINFOEX monitor_info = {};
-			monitor_info.cbSize = sizeof(monitor_info);
-			::GetMonitorInfo(monitor, &monitor_info);
-			return monitor_info.rcMonitor;
-		}
-
-		//
-		// 指定されたメッセージをメッセージキューから取り除きます。
-		//
-		inline void remove_message(HWND hwnd, uint32_t message)
-		{
-			auto msg = MSG {};
-			while (::PeekMessage(&msg, hwnd, message, message, PM_REMOVE)) {}
-		}
-
 		//
 		// このクラスはプレイヤーを一時的に表示します。
 		//
@@ -35,11 +17,7 @@ namespace apn::reboot::spreader
 			//
 			ShowPlayer(HWND hwnd)
 			{
-				// スクリーン矩形を取得します。
-				auto rc = get_screen_rect(hwnd);
-
-				remove_message(player, agit.c_message.c_show_window);
-				my::set_window_pos(player, HWND_TOP, &rc, SWP_SHOWWINDOW);
+				player.show(hwnd);
 			}
 
 			//
@@ -47,7 +25,7 @@ namespace apn::reboot::spreader
 			//
 			~ShowPlayer()
 			{
-				::PostMessage(player, agit.c_message.c_show_window, SW_HIDE, 0);
+				player.hide();
 			}
 		};
 
@@ -70,7 +48,7 @@ namespace apn::reboot::spreader
 		//
 		// aviutlウィンドウで再生する場合の処理です。
 		//
-		namespace play_main
+		namespace main_play_start
 		{
 			//
 			// オリジナルの関数です。
@@ -81,7 +59,7 @@ namespace apn::reboot::spreader
 			// オリジナルの関数を実行します。
 			//
 			inline __declspec(naked) uint32_t __fastcall call_orig_proc(
-				uint32_t u1, uint32_t u2, uint32_t u3, uint32_t u4, uint32_t u5, uint32_t u6)
+				HWND preview_window, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp, int32_t play_frame_begin, int32_t play_frame_end, uint32_t command_id)
 			{
 				// orig_procは__fastcallで始まり、__cdeclで終わるので、それに合わせてアセンブラで調整します。
 
@@ -89,22 +67,22 @@ namespace apn::reboot::spreader
 					push ebp
 					mov ebp, esp
 					sub esp, __LOCAL_SIZE
-					mov u1, ecx
-					mov u2, edx
+					mov preview_window, ecx
+					mov editp, edx
 				}
 
 				__asm {
 					// __fastcallとして引数を積み直します。
-					MOV EAX, u6
+					MOV EAX, command_id
 					PUSH EAX
-					MOV EAX, u5
+					MOV EAX, play_frame_end
 					PUSH EAX
-					MOV EAX, u4
+					MOV EAX, play_frame_begin
 					PUSH EAX
-					MOV EAX, u3
+					MOV EAX, fp
 					PUSH EAX
-					MOV EDX, u2
-					MOV ECX, u1
+					MOV EDX, editp
+					MOV ECX, preview_window
 					CALL orig_proc
 					ADD ESP, 0x10 // orig_proc()は__cdeclで終わります。
 				}
@@ -120,18 +98,27 @@ namespace apn::reboot::spreader
 			// フック処理を実行します。
 			//
 			inline uint32_t __fastcall do_hook(
-				uint32_t u1, uint32_t u2, uint32_t u3, uint32_t u4, uint32_t u5, uint32_t u6)
+				HWND preview_window, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp,
+				int32_t play_frame_begin, int32_t play_frame_end, uint32_t command_id)
 			{
 				MY_TRACE_FUNC("");
 
-				return play([&](){ return call_orig_proc(u1, u2, u3, u4, u5, u6); });
+				// 選択範囲だけを再生する場合は
+				if (agit.play_select_frame)
+				{
+					// 再生範囲を選択範囲に変更します。
+					fp->exfunc->get_select_frame(editp, &play_frame_begin, &play_frame_end);
+				}
+
+				return play([&](){ return call_orig_proc(preview_window, editp, fp, play_frame_begin, play_frame_end, command_id); });
 			}
 
 			//
 			// フック関数です。
 			//
 			inline __declspec(naked) uint32_t __fastcall hook_proc(
-				uint32_t u1, uint32_t u2, uint32_t u3, uint32_t u4, uint32_t u5, uint32_t u6)
+				HWND preview_window, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp,
+				int32_t play_frame_begin, int32_t play_frame_end, uint32_t command_id)
 			{
 				// この関数は__fastcallで始まり、__cdeclで終わります。
 
@@ -139,22 +126,22 @@ namespace apn::reboot::spreader
 					push ebp
 					mov ebp, esp
 					sub esp, __LOCAL_SIZE
-					mov u1, ecx
-					mov u2, edx
+					mov preview_window, ecx
+					mov editp, edx
 				}
 
 				__asm {
 					// 引数を積み直します。
-					MOV EAX, u6
+					MOV EAX, command_id
 					PUSH EAX
-					MOV EAX, u5
+					MOV EAX, play_frame_end
 					PUSH EAX
-					MOV EAX, u4
+					MOV EAX, play_frame_begin
 					PUSH EAX
-					MOV EAX, u3
+					MOV EAX, fp
 					PUSH EAX
-					MOV EDX, u2
-					MOV ECX, u1
+					MOV EDX, editp
+					MOV ECX, preview_window
 					CALL do_hook
 				}
 
@@ -174,35 +161,16 @@ namespace apn::reboot::spreader
 
 				orig_proc = aviutl + 0x00053320;
 				MY_TRACE_HEX(orig_proc);
+				return DetourAttach(&(PVOID&)orig_proc, hook_proc);
 
 				return TRUE;
-			}
-
-			//
-			// フックを有効化します。
-			//
-			inline LONG enable_hook()
-			{
-				MY_TRACE_FUNC("");
-
-				return DetourAttach(&(PVOID&)orig_proc, hook_proc);
-			}
-
-			//
-			// フックを無効化します。
-			//
-			inline LONG disable_hook()
-			{
-				MY_TRACE_FUNC("");
-
-				return DetourDetach(&(PVOID&)orig_proc, hook_proc);
 			}
 		}
 
 		//
 		// 再生ウィンドウで再生する場合の処理です。
 		//
-		namespace play_sub
+		namespace sub_play_start
 		{
 			//
 			// オリジナルの関数です。
@@ -213,7 +181,8 @@ namespace apn::reboot::spreader
 			// オリジナルの関数を実行します。
 			//
 			inline __declspec(naked) uint32_t __fastcall call_orig_proc(
-				uint32_t u1, uint32_t u2, uint32_t u3, uint32_t u4, uint32_t u5)
+				HWND preview_window, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp,
+				int32_t play_frame_begin, int32_t play_frame_end)
 			{
 				// orig_procは__fastcallで始まり、__cdeclで終わるので、それに合わせてアセンブラで調整します。
 
@@ -221,20 +190,20 @@ namespace apn::reboot::spreader
 					push ebp
 					mov ebp, esp
 					sub esp, __LOCAL_SIZE
-					mov u1, ecx
-					mov u2, edx
+					mov preview_window, ecx
+					mov editp, edx
 				}
 
 				__asm {
 					// __fastcallとして引数を積み直します。
-					MOV EAX, u5
+					MOV EAX, play_frame_end
 					PUSH EAX
-					MOV EAX, u4
+					MOV EAX, play_frame_begin
 					PUSH EAX
-					MOV EAX, u3
+					MOV EAX, fp
 					PUSH EAX
-					MOV EDX, u2
-					MOV ECX, u1
+					MOV EDX, editp
+					MOV ECX, preview_window
 					CALL orig_proc
 					ADD ESP, 0x0C // orig_proc()は__cdeclで終わります。
 				}
@@ -250,18 +219,20 @@ namespace apn::reboot::spreader
 			// フック処理を実行します。
 			//
 			inline uint32_t __fastcall do_hook(
-				uint32_t u1, uint32_t u2, uint32_t u3, uint32_t u4, uint32_t u5)
+				HWND preview_window, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp,
+				int32_t play_frame_begin, int32_t play_frame_end)
 			{
 				MY_TRACE_FUNC("");
 
-				return play([&](){ return call_orig_proc(u1, u2, u3, u4, u5); });
+				return play([&](){ return call_orig_proc(preview_window, editp, fp, play_frame_begin, play_frame_end); });
 			}
 
 			//
 			// フック関数です。
 			//
 			inline __declspec(naked) uint32_t __fastcall hook_proc(
-				uint32_t u1, uint32_t u2, uint32_t u3, uint32_t u4, uint32_t u5)
+				HWND preview_window, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp,
+				int32_t play_frame_begin, int32_t play_frame_end)
 			{
 				// この関数は__fastcallで始まり、__cdeclで終わります。
 
@@ -269,20 +240,20 @@ namespace apn::reboot::spreader
 					push ebp
 					mov ebp, esp
 					sub esp, __LOCAL_SIZE
-					mov u1, ecx
-					mov u2, edx
+					mov preview_window, ecx
+					mov editp, edx
 				}
 
 				__asm {
 					// 引数を積み直します。
-					MOV EAX, u5
+					MOV EAX, play_frame_end
 					PUSH EAX
-					MOV EAX, u4
+					MOV EAX, play_frame_begin
 					PUSH EAX
-					MOV EAX, u3
+					MOV EAX, fp
 					PUSH EAX
-					MOV EDX, u2
-					MOV ECX, u1
+					MOV EDX, editp
+					MOV ECX, preview_window
 					CALL do_hook
 				}
 
@@ -302,28 +273,50 @@ namespace apn::reboot::spreader
 
 				orig_proc = aviutl + 0x00051150;
 				MY_TRACE_HEX(orig_proc);
+				return DetourAttach(&(PVOID&)orig_proc, hook_proc);
 
 				return TRUE;
 			}
+		}
+
+		//
+		// aviutlウィンドウで再生を停止する関数をフックします。
+		//
+		namespace main_play_stop
+		{
+			inline struct {
+				inline static uint32_t __fastcall hook_proc(HWND preview_window)
+				{
+					MY_TRACE_FUNC("{:#010x}", preview_window);
+
+					auto is_playing = magi.auin.is_playing();
+					auto is_playing_main = magi.auin.is_playing_main();
+
+					if (magi.auin.is_playing())
+					{
+						// ループ再生する場合は
+						if (agit.play_loop)
+						{
+							// 再生ウィンドウに再生コマンドをポストします。
+							::PostMessage(preview_window, WM_COMMAND, 100, 0);
+						}
+					}
+
+					return orig_proc(preview_window);
+				}
+				inline static decltype(&hook_proc) orig_proc = nullptr;
+			} hook;
 
 			//
-			// フックを有効化します。
+			// フックを初期化します。
 			//
-			inline LONG enable_hook()
+			inline BOOL init(my::addr_t aviutl)
 			{
-				MY_TRACE_FUNC("");
+				MY_TRACE_FUNC("{:#010x}", aviutl);
 
-				return DetourAttach(&(PVOID&)orig_proc, hook_proc);
-			}
+				my::hook::attach_call(hook, aviutl + 0x00053629);
 
-			//
-			// フックを無効化します。
-			//
-			inline LONG disable_hook()
-			{
-				MY_TRACE_FUNC("");
-
-				return DetourDetach(&(PVOID&)orig_proc, hook_proc);
+				return TRUE;
 			}
 		}
 	}

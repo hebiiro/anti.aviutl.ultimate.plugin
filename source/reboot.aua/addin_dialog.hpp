@@ -69,21 +69,21 @@ namespace apn::reboot
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_MANIPULATOR_WRITE_AS));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DANGER_TIME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_MANIPULATOR_PLAY));
 				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LAUNCHER_DUTY_3));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_MANIPULATOR_OPEN));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_WORK_TIME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_DANGER_TIME));
 				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LAUNCHER_DUTY_4));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_MANIPULATOR_CLOSE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, nullptr);
+				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_WORK_TIME));
 				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_LAUNCHER_DUTY_5));
 			}
 		}

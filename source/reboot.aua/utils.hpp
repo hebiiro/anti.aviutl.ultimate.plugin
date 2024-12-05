@@ -97,4 +97,18 @@ namespace apn::reboot::project
 
 		return TRUE;
 	}
+
+	//
+	// プロジェクトを再生します。
+	//
+	inline BOOL play()
+	{
+		// プロジェクトを開いていない場合は何もしません。
+		if (!is_editing()) return FALSE;
+
+		// プロジェクトを再生します。
+		::SendMessage(hive.aviutl_window, WM_COMMAND, 1099, 0);
+
+		return TRUE;
+	}
 }

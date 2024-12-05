@@ -11,6 +11,7 @@
 #include "part/spreader/agit.hpp"
 #include "part/spreader/player.hpp"
 #include "part/spreader/hook.hpp"
+#include "part/spreader/option_dialog.hpp"
 #include "part/spreader/part.hpp"
 #include "part/outputs/agit.hpp"
 #include "part/outputs/part.hpp"

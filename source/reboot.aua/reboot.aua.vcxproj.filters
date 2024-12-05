@@ -83,6 +83,9 @@
     <ClInclude Include="part\spreader\player.hpp">
       <Filter>part\spreader</Filter>
     </ClInclude>
+    <ClInclude Include="part\spreader\option_dialog.hpp">
+      <Filter>part\launcher</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

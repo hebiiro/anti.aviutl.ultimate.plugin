@@ -78,6 +78,7 @@ namespace apn::reboot::manipulator
 			case IDC_MANIPULATOR_WRITE_AS: return project::write_as();
 			case IDC_MANIPULATOR_OPEN: return project::open();
 			case IDC_MANIPULATOR_CLOSE: return project::close();
+			case IDC_MANIPULATOR_PLAY: return project::play();
 			case IDC_MANIPULATOR_OPEN_AVIUTL_FOLDER: return open_aviutl_folder();
 			case IDC_MANIPULATOR_SHOW_PSD_TOOL_KIT: return show_psd_tool_kit();
 			}
