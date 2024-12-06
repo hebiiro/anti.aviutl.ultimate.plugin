@@ -8,6 +8,16 @@ namespace apn::reboot::spreader
 	inline namespace
 	{
 		//
+		// 関数フックをセットします。
+		//
+		template <typename HookProc, typename OrigProc, typename A>
+		LONG attach(HookProc& hook_proc, OrigProc& orig_proc, A address)
+		{
+			orig_proc = reinterpret_cast<decltype(orig_proc)>(address);
+			return DetourAttach(&(PVOID&)orig_proc, hook_proc);
+		}
+
+		//
 		// このクラスはプレイヤーを一時的に表示します。
 		//
 		struct ShowPlayer
@@ -103,6 +113,15 @@ namespace apn::reboot::spreader
 			{
 				MY_TRACE_FUNC("");
 
+				auto orig_proc = [&](){ return call_orig_proc(preview_window, editp, fp, play_frame_begin, play_frame_end, command_id); };
+
+				// 保存中の場合は
+				if (fp->exfunc->is_saving(editp))
+				{
+					// デフォルト処理を実行します。
+					return orig_proc();
+				}
+
 				// 選択範囲だけを再生する場合は
 				if (agit.play_select_frame)
 				{
@@ -110,7 +129,7 @@ namespace apn::reboot::spreader
 					fp->exfunc->get_select_frame(editp, &play_frame_begin, &play_frame_end);
 				}
 
-				return play([&](){ return call_orig_proc(preview_window, editp, fp, play_frame_begin, play_frame_end, command_id); });
+				return play(orig_proc);
 			}
 
 			//
@@ -159,9 +178,7 @@ namespace apn::reboot::spreader
 			{
 				MY_TRACE_FUNC("{:#010x}", aviutl);
 
-				orig_proc = aviutl + 0x00053320;
-				MY_TRACE_HEX(orig_proc);
-				return DetourAttach(&(PVOID&)orig_proc, hook_proc);
+				attach(hook_proc, orig_proc, aviutl + 0x00053320);
 
 				return TRUE;
 			}
@@ -224,7 +241,16 @@ namespace apn::reboot::spreader
 			{
 				MY_TRACE_FUNC("");
 
-				return play([&](){ return call_orig_proc(preview_window, editp, fp, play_frame_begin, play_frame_end); });
+				auto orig_proc = [&](){ return call_orig_proc(preview_window, editp, fp, play_frame_begin, play_frame_end); };
+
+				// 保存中の場合は
+				if (fp->exfunc->is_saving(editp))
+				{
+					// デフォルト処理を実行します。
+					return orig_proc();
+				}
+
+				return play(orig_proc);
 			}
 
 			//
@@ -271,9 +297,7 @@ namespace apn::reboot::spreader
 			{
 				MY_TRACE_FUNC("{:#010x}", aviutl);
 
-				orig_proc = aviutl + 0x00051150;
-				MY_TRACE_HEX(orig_proc);
-				return DetourAttach(&(PVOID&)orig_proc, hook_proc);
+				attach(hook_proc, orig_proc, aviutl + 0x00051150);
 
 				return TRUE;
 			}
@@ -292,6 +316,7 @@ namespace apn::reboot::spreader
 					auto is_playing = magi.auin.is_playing();
 					auto is_playing_main = magi.auin.is_playing_main();
 
+					// 再生が中止されていない場合は
 					if (magi.auin.is_playing())
 					{
 						// ループ再生する場合は
