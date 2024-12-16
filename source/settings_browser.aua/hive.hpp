@@ -38,7 +38,7 @@ namespace apn::settings_browser
 		//
 		// コンテンツのURLです。
 		//
-		std::wstring url = L"default.html";
+		std::wstring url = L"inspector.html";
 
 		//
 		// コンテンツとして表示するjsonです。
