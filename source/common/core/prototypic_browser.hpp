@@ -8,7 +8,7 @@ namespace apn
 	struct PrototypicBrowser : my::Window
 	{
 		wil::com_ptr<ICoreWebView2Environment12> env;
-		wil::com_ptr<ICoreWebView2Controller> controller;
+		wil::com_ptr<ICoreWebView2Controller4> controller;
 		wil::com_ptr<ICoreWebView2_17> webview;
 		EventRegistrationToken navigation_completed_token = {};
 		EventRegistrationToken favicon_changed_token = {};
@@ -47,7 +47,7 @@ namespace apn
 				{
 					MY_TRACE_FUNC("{:#010x}, {:#010x}", result, _controller);
 
-					controller = _controller;
+					_controller->QueryInterface(&controller);
 					MY_TRACE_HEX(controller.get());
 					if (!controller) return E_FAIL;
 
