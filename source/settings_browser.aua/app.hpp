@@ -8,21 +8,21 @@ namespace apn::settings_browser
 	inline struct App : AppInterface
 	{
 		//
-		// コンストラクタです。
-		//
-		App() { app = this; }
-
-		//
 		// 選択アイテムの設定からjsonを生成します。
 		//
 		virtual BOOL generate_settings_json() override
 		{
 			MY_TRACE_FUNC("");
 
+			auto message_box = [](auto text)
+			{
+//				hive.message_box(text);
+			};
+
 			auto object_index = magi.exin.get_current_object_index();
 			if (object_index < 0)
 			{
-				hive.message_box(L"アイテムを選択してください");
+				message_box(L"アイテムを選択してください");
 
 				return FALSE;
 			}
@@ -30,85 +30,20 @@ namespace apn::settings_browser
 			auto object = magi.exin.get_object(object_index);
 			if (!object)
 			{
-				hive.message_box(L"オブジェクトが無効です");
+				message_box(L"アイテムが無効です");
 
 				return FALSE;
 			}
 
 			if (!(object->flag & ExEdit::Object::Flag::Exist))
 			{
-				hive.message_box(L"オブジェクトの状態が無効です");
+				message_box(L"アイテムの状態が無効です");
 
 				return FALSE;
 			}
 
-			n_json root;
-			{
-				n_json node;
-				{
-					n_json filter_nodes;
-					{
-						for (int32_t filter_index = 0; filter_index < ExEdit::Object::MAX_FILTER; filter_index++)
-						{
-							// フィルタを取得します。
-							auto filter = magi.exin.get_filter(object, filter_index);
-							if (!filter) break;
-
-							n_json filter_node;
-							{
-								set_string(filter_node, "name", my::ws(filter->name));
-
-								n_json track_nodes;
-								{
-									for (int32_t track_index = 0; track_index < filter->track_n; track_index++)
-									{
-										if (filter->track_default[track_index] < 0) continue;
-
-										n_json track_node;
-										{
-											set_string(track_node, "name", my::ws(filter->track_name[track_index]));
-											set_int(track_node, "default", filter->track_default[track_index]);
-											set_int(track_node, "s", filter->track_s[track_index]);
-											set_int(track_node, "e", filter->track_e[track_index]);
-											set_int(track_node, "scale", filter->track_scale[track_index]);
-											if (filter->track_drag_min) set_int(track_node, "drag_min", filter->track_drag_min[track_index]);
-											if (filter->track_drag_max) set_int(track_node, "drag_max", filter->track_drag_max[track_index]);
-											if (filter->track) set_int(track_node, "track", filter->track[track_index]);
-											if (filter->track_value_left) set_int(track_node, "value_left", filter->track_value_left[track_index]);
-											if (filter->track_value_right) set_int(track_node, "value_right", filter->track_value_right[track_index]);
-										}
-										track_nodes.emplace_back(track_node);
-									}
-								}
-								set_child(filter_node, "track", track_nodes);
-
-								n_json check_nodes;
-								{
-									for (int32_t check_index = 0; check_index < filter->check_n; check_index++)
-									{
-										if (filter->check_default[check_index] < 0) continue;
-
-										n_json check_node;
-										{
-											set_string(check_node, "name", my::ws(filter->check_name[check_index]));
-											set_int(check_node, "default", filter->check_default[check_index]);
-											if (filter->check) set_int(check_node, "check", filter->check[check_index]);
-											if (filter->check_value) set_int(check_node, "value", filter->check_value[check_index]);
-										}
-										check_nodes.emplace_back(check_node);
-									}
-								}
-								set_child(filter_node, "check", check_nodes);
-
-								// ここでexdataも解析する。
-							}
-							filter_nodes.emplace_back(filter_node);
-						}
-					}
-					set_child(node, "filter", filter_nodes);
-				}
-				set_child(root, "show_settings", node);
-			}
+			// 選択アイテムからjsonを作成します。
+			auto root = create_root_node(object, object_index);
 
 			// jsonを文字列に変換します。
 			hive.settings_json = my::cp_to_wide(root.dump(1, '\t'), CP_UTF8);
@@ -128,12 +63,285 @@ namespace apn::settings_browser
 
 			::SetTimer(nullptr, 0, 100,
 				[](HWND hwnd, UINT message, UINT_PTR timer_id, DWORD time)
-				{
-					if (browser.navigate(hive.url))
-						::KillTimer(nullptr, timer_id);
-				});
+			{
+				if (browser.navigate(hive.url))
+					::KillTimer(nullptr, timer_id);
+			});
 
 			return TRUE;
+		}
+
+		//
+		// ルートノードを作成して返します。
+		//
+		n_json create_root_node(ExEdit::Object* object, int32_t object_index)
+		{
+			MY_TRACE_FUNC("");
+
+			return { { "response_settings", create_response_settings_node(object, object_index) } };
+		}
+
+		//
+		// 設定表示ノードを作成して返します。
+		//
+		n_json create_response_settings_node(ExEdit::Object* object, int32_t object_index)
+		{
+			MY_TRACE_FUNC("");
+
+			return {
+				{ "midpt", create_midpt_nodes(object, object_index) },
+				{ "exdata", create_exdata_nodes(object, object_index) },
+			};
+		}
+
+		//
+		// 中間点ノードを作成して返します。
+		//
+		n_json create_midpt_nodes(ExEdit::Object* object, int32_t object_index)
+		{
+			MY_TRACE_FUNC("");
+
+			n_json midpt_nodes;
+
+			// 中間点リーダーのインデックスを取得します。
+			auto midpt_leader = object->index_midpt_leader;
+
+			// 中間点リーダーが存在しない場合は
+			if (midpt_leader < 0)
+			{
+				do
+				{
+					// 中間点ノードを作成します。
+					n_json midpt_node = create_midpt_node(midpt_leader, object_index);
+					if (midpt_node.is_null()) break;
+
+					// 中間点ノードを追加します。
+					midpt_nodes.emplace_back(midpt_node);
+				}
+				while (false);
+			}
+			// 中間点リーダーが存在する場合は
+			else
+			{
+				auto midpt_object_index = midpt_leader;
+
+				while (midpt_object_index >= 0)
+				{
+					// 中間点ノードを作成します。
+					n_json midpt_node = create_midpt_node(midpt_leader, midpt_object_index);
+					if (midpt_node.is_null()) break;
+
+					// 中間点ノードを追加します。
+					midpt_nodes.emplace_back(midpt_node);
+
+					// 次の中間点に進めます。
+					midpt_object_index = magi.exin.get_next_object_index(midpt_object_index);
+				}
+			}
+
+			return midpt_nodes;
+		}
+
+		//
+		// 中間点ノードを作成して返します。
+		//
+		n_json create_midpt_node(int32_t midpt_leader, int32_t midpt_object_index)
+		{
+			MY_TRACE_FUNC("");
+
+			// 中間点オブジェクトを取得します。
+			auto midpt_object = magi.exin.get_object(midpt_object_index);
+			if (!midpt_object) {};
+
+			// 中間点元が異なる場合は処理を中止します。
+			if (midpt_object->index_midpt_leader != midpt_leader) {};
+
+			n_json midpt_node;
+			set_string(midpt_node, "flag", my::format(_T("{:#010x}"), (uint32_t)midpt_object->flag));
+			set_string(midpt_node, "display_name", my::ws(midpt_object->dispname));
+			set_int(midpt_node, "index", midpt_object_index);
+			set_int(midpt_node, "index_midpt_leader", midpt_object->index_midpt_leader);
+			set_int(midpt_node, "frame_begin", midpt_object->frame_begin);
+			set_int(midpt_node, "frame_end", midpt_object->frame_end);
+			set_int(midpt_node, "layer_set", midpt_object->layer_set);
+			set_int(midpt_node, "scene_set", midpt_object->scene_set);
+			set_int(midpt_node, "group_belong", midpt_object->group_belong);
+			set_child(midpt_node, "filter", create_filter_nodes(midpt_object));
+			return midpt_node;
+		}
+
+		//
+		// フィルタノードを作成して返します。
+		//
+		n_json create_filter_nodes(ExEdit::Object* midpt_object)
+		{
+			MY_TRACE_FUNC("");
+
+			n_json filter_nodes;
+
+			// すべてのフィルタを走査します。
+			for (int32_t i = 0; i < ExEdit::Object::MAX_FILTER; i++)
+			{
+				// フィルタパラメータを取得します。
+				auto filter_param = midpt_object->filter_param + i;
+				if (filter_param->id < 0) break;
+
+				// フィルタを取得します。
+				auto filter = magi.exin.get_filter(filter_param->id);
+				if (!filter) break;
+
+				n_json filter_node;
+				set_int(filter_node, "id", filter_param->id);
+				set_string(filter_node, "name", my::ws(filter->name));
+				set_string(filter_node, "flag", my::format(_T("{:#010x}"), (uint32_t)filter->flag));
+				set_child(filter_node, "track", create_track_nodes(midpt_object, filter_param, filter));
+				set_child(filter_node, "check", create_check_nodes(midpt_object, filter_param, filter));
+				filter_nodes.emplace_back(filter_node);
+			}
+
+			return filter_nodes;
+		}
+
+		//
+		// トラックノードを作成して返します。
+		//
+		n_json create_track_nodes(ExEdit::Object* midpt_object, ExEdit::Object::FilterParam* filter_param, ExEdit::Filter* filter)
+		{
+			MY_TRACE_FUNC("");
+
+			n_json track_nodes;
+
+			for (int32_t i = 0; i < filter->track_n; i++)
+			{
+				if (!filter->track_name ||
+					!filter->track_default ||
+					!filter->track_s ||
+					!filter->track_e)
+				{
+					MY_TRACE("フィルタ情報を取得できませんでした\n");
+
+					continue;
+				}
+
+				auto track_index = filter_param->track_begin + i;
+				auto track_scale = filter->track_scale ? filter->track_scale[i] : 1;
+
+				track_nodes.emplace_back(n_json {
+					{ "name", u8(filter->track_name[i]) },
+					{ "default", u8(filter->track_default[i], track_scale) },
+					{ "s", u8(filter->track_s[i], track_scale) },
+					{ "e", u8(filter->track_e[i], track_scale) },
+					{ "value_left", u8(midpt_object->track_value_left[track_index], track_scale) },
+					{ "value_right", u8(midpt_object->track_value_right[track_index], track_scale) },
+					{ "param", midpt_object->track_param[track_index] },
+				});
+			}
+
+			return track_nodes;
+		}
+
+		//
+		// チェックノードを作成して返します。
+		//
+		n_json create_check_nodes(ExEdit::Object* midpt_object, ExEdit::Object::FilterParam* filter_param, ExEdit::Filter* filter)
+		{
+			MY_TRACE_FUNC("");
+
+			n_json check_nodes;
+
+			for (int32_t i = 0; i < filter->check_n; i++)
+			{
+				auto check_index = filter_param->check_begin + i;
+
+				n_json check_node;
+				if (filter->check_name && filter->check_default)
+				{
+					auto check_default = filter->check_default[i];
+					auto check_name = filter->check_name[i];
+
+					set_int(check_node, "default", check_default);
+
+					switch (check_default)
+					{
+					// コンボボックスの場合は
+					case -2:
+						{
+							n_json name_node;
+							auto name = check_name;
+							while (*name)
+							{
+								name_node.emplace_back(u8(name));
+
+								name += ::lstrlenA(name) + 1;
+							}
+							set_child_node(check_node, "name", name_node);
+
+							break;
+						}
+					// ボタンの場合は
+					case -1:
+						{
+							set_string(check_node, "name", my::ws(check_name));
+
+							break;
+						}
+					// チェックボックスの場合は
+					default:
+						{
+							set_string(check_node, "name", my::ws(check_name));
+
+							break;
+						}
+					}
+				}
+				set_int(check_node, "value", midpt_object->check_value[check_index]);
+				check_nodes.emplace_back(check_node);
+			}
+
+			return check_nodes;
+		}
+
+		//
+		// 拡張データノードを作成して返します。
+		//
+		n_json create_exdata_nodes(ExEdit::Object* object, int32_t object_index)
+		{
+			MY_TRACE_FUNC("");
+
+			// 中間点リーダーが存在する場合は
+			// 中間点リーダーの拡張データを使用します。
+			auto midpt_leader = object->index_midpt_leader;
+			if (midpt_leader >= 0)
+			{
+				object_index = midpt_leader;
+				object = magi.exin.get_object(object_index);
+			}
+
+			n_json exdata_nodes;
+
+			// すべてのフィルタを走査します。
+			for (int32_t i = 0; i < ExEdit::Object::MAX_FILTER; i++)
+			{
+				// フィルタパラメータを取得します。
+				auto filter_param = object->filter_param + i;
+				if (filter_param->id < 0) break;
+
+				// フィルタを取得します。
+				auto filter = magi.exin.get_filter(filter_param->id);
+				if (!filter) break;
+
+				auto exdata = magi.exin.get_exdata(object, i);
+				auto exdata_ptr = filter->exdata_ptr; // この変数はここでは使用できません。
+				auto exdata_def = filter->exdata_def;
+
+				n_json exdata_node;
+				set_string(exdata_node, "name", my::ws(filter->name));
+				set_child(exdata_node, "exdata_ptr", exdata_node_creator(filter_param->id, exdata));
+				set_child(exdata_node, "exdata_def", exdata_node_creator(filter_param->id, filter->exdata_def));
+				exdata_nodes.emplace_back(exdata_node);
+			}
+
+			return exdata_nodes;
 		}
 	} app_impl;
 }

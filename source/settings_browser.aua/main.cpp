@@ -7,6 +7,7 @@
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
 #include "config_io.hpp"
+#include "exdata_node_creator.hpp"
 #include "app.hpp"
 #include "addin.hpp"
 

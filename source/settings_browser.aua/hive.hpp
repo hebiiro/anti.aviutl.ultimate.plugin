@@ -31,6 +31,11 @@ namespace apn::settings_browser
 		HWND main_window = nullptr;
 
 		//
+		// TRUEの場合はセッティングを自動的に取得します。
+		//
+		BOOL auto_get = FALSE;
+
+		//
 		// コンテンツのURLです。
 		//
 		std::wstring url = L"default.html";

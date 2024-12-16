@@ -35,6 +35,40 @@ namespace apn::settings_browser
 		} url;
 
 		//
+		// 『取得』のオプションメニューを表示します。
+		//
+		BOOL show_get_settings_option(const POINT& point)
+		{
+			MY_TRACE_FUNC("");
+
+			// ポップアップメニューのアイテムIDです。
+			constexpr uint32_t c_auto_get = 1;
+
+			// ポップアップメニューを作成します。
+			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+
+			::AppendMenu(menu.get(), MF_STRING, c_auto_get, _T("自動的に取得"));
+			if (hive.auto_get)
+				::CheckMenuItem(menu.get(), c_auto_get, MF_CHECKED);
+
+			auto id = ::TrackPopupMenuEx(menu.get(),
+				TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this, nullptr);
+			if (!id) return FALSE;
+
+			switch (id)
+			{
+			case c_auto_get:
+				{
+					hive.auto_get = !hive.auto_get;
+
+					break;
+				}
+			}
+
+			return TRUE;
+		}
+
+		//
 		// コントロールを更新します。
 		//
 		virtual void on_update_controls() override
@@ -164,6 +198,21 @@ namespace apn::settings_browser
 					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
 
 					browser.exit();
+
+					break;
+				}
+			case WM_CONTEXTMENU:
+				{
+					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
+
+					auto control = (HWND)wParam;
+					auto control_id = ::GetDlgCtrlID(control);
+					auto point = my::lp_to_pt(lParam);
+
+					switch (control_id)
+					{
+					case IDC_GET_SETTINGS: return show_get_settings_option(point);
+					}
 
 					break;
 				}

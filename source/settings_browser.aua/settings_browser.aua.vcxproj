@@ -152,6 +152,7 @@
     <ClInclude Include="app_interface.hpp" />
     <ClInclude Include="browser.hpp" />
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="exdata_node_creator.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />

@@ -23,7 +23,7 @@ namespace apn::settings_browser
 
 			WNDCLASSEXW wc = { sizeof(wc) };
 			wc.style = CS_HREDRAW | CS_VREDRAW;
-			wc.lpfnWndProc = ::DefWindowProc;
+			wc.lpfnWndProc = ::DefWindowProcW;
 			wc.hInstance = hive.instance;
 			wc.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 			wc.lpszClassName = L"settings_browser.browser";
@@ -60,6 +60,9 @@ namespace apn::settings_browser
 		//
 		BOOL navigate(const std::wstring& file_name)
 		{
+			// 先にコントローラーをリサイズしておきます。
+			__super::resize_controller();
+
 			contents_file_name = file_name;
 			if (contents_file_name.is_relative())
 				contents_file_name = hive.assets_folder_name / contents_file_name;
@@ -69,13 +72,25 @@ namespace apn::settings_browser
 		}
 
 		//
+		// この仮想関数は、初期化が完了したあとに呼ばれます。
+		//
+		virtual BOOL on_post_init() override
+		{
+			MY_TRACE_FUNC("");
+
+			controller->put_IsVisible(TRUE);
+
+			return __super::on_post_init();
+		}
+
+		//
 		// コンテンツから送られてきたメッセージ(文字列)を処理します。
 		//
 		virtual BOOL on_web_message_as_string(const std::wstring& s) override
 		{
 			MY_TRACE_FUNC("{}", s);
 
-			if (s == L"fire_show_settings")
+			if (s == L"request_settings")
 			{
 				if (!hive.settings_json.empty())
 					post_web_message_as_json(hive.settings_json);

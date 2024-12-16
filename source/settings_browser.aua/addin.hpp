@@ -90,5 +90,24 @@ namespace apn::settings_browser
 
 			return FALSE;
 		}
+
+		//
+		// この仮想関数は、映像を処理するときに呼ばれます。
+		//
+		virtual BOOL on_video_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state) override
+		{
+			MY_TRACE_FUNC("");
+
+			if (proc_state.is_playing)
+				return FALSE; // 再生中の場合は何もしません。
+
+			if (proc_state.is_saving)
+				return FALSE; // 保存中の場合は何もしません。
+
+			if (!hive.auto_get)
+				return FALSE; // 自動取得が無効の場合は何もしません。
+
+			return app->generate_settings_json();
+		}
 	} addin;
 }
