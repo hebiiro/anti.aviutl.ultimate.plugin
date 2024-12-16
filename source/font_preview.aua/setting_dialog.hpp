@@ -124,6 +124,80 @@ namespace apn::font_preview
 		}
 
 		//
+		// コンテキストメニューを表示します。
+		//
+		BOOL show_context_menu(const POINT& point)
+		{
+			MY_TRACE_FUNC("");
+
+			// ポップアップメニューのアイテムIDです。
+			constexpr uint32_t c_copy_font_name = 1;
+
+			// ポップアップメニューを作成します。
+			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+
+			::AppendMenu(menu.get(), MF_STRING, c_copy_font_name, _T("フォント名をコピー"));
+
+			auto id = ::TrackPopupMenuEx(menu.get(),
+				TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this, nullptr);
+			if (!id) return FALSE;
+
+			switch (id)
+			{
+			case c_copy_font_name: return copy_font_name();
+			}
+
+			return TRUE;
+		}
+
+		//
+		// 選択中のフォント名をクリップボードにコピーします。
+		//
+		BOOL copy_font_name()
+		{
+			// クリップボードを開きます。
+			struct ClipboardLocker {
+				ClipboardLocker(HWND hwnd = nullptr) {
+					::OpenClipboard(hwnd);
+				}
+				~ClipboardLocker() {
+					::CloseClipboard();
+				}
+			} clipboard_locker;
+
+			// フォントコンボボックスを取得します。
+			auto combobox = magi.exin.get_font_combobox();
+
+			// 選択中のフォントを取得します。
+			auto index = ::SendMessageW(combobox, CB_GETCURSEL, 0, 0);
+
+			// フォント名の長さを取得します。
+			auto text_length = ::SendMessageW(combobox, CB_GETLBTEXTLEN, index, 0);
+			if (text_length == CB_ERR) return FALSE;
+
+			// クリップボードを空にします。
+			::EmptyClipboard();
+
+			// メモリハンドルを作成します。
+			auto handle = ::GlobalAlloc(GHND, (text_length + 1) * sizeof(WCHAR));
+
+			// メモリハンドルをロックしてメモリバッファを取得します。
+			auto buffer = (LPWSTR)::GlobalLock(handle);
+
+			// フォント名を取得します。
+			::SendMessageW(combobox, CB_GETLBTEXT, index, (LPARAM)buffer);
+
+			// メモリハンドルのロックを解除します。
+			::GlobalUnlock(handle);
+
+			// メモリハンドルをクリップボードにセットします。
+			// (メモリハンドルをセットしたあとは開放できません)
+			::SetClipboardData(CF_UNICODETEXT, handle);
+
+			return TRUE;
+		}
+
+		//
 		// ウィンドウプロシージャです。
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
@@ -148,6 +222,16 @@ namespace apn::font_preview
 					auto dis = (DRAWITEMSTRUCT*)lParam;
 					if (dis->CtlType == ODT_COMBOBOX && dis->CtlID == hive.c_control_id.c_font_combobox)
 						on_draw_item(dis);
+
+					break;
+				}
+			case WM_CONTEXTMENU:
+				{
+					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
+
+					auto control = (HWND)wParam;
+					if (control == magi.exin.get_font_combobox())
+						return show_context_menu(my::lp_to_pt(lParam));
 
 					break;
 				}
