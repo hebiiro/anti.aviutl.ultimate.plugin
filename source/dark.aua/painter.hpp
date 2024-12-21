@@ -425,6 +425,10 @@ namespace apn::dark::painter
 					auto window_org = POINT {};
 					::GetWindowOrgEx(dc, &window_org);
 					::OffsetRect(&rc_base, -window_org.x, -window_org.y);
+
+					auto viewport_org = POINT {};
+					::GetViewportOrgEx(dc, &viewport_org);
+					::OffsetRect(&rc_base, viewport_org.x, viewport_org.y);
 				}
 
 				this->rc = rc_base;

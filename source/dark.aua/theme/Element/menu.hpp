@@ -21,7 +21,7 @@ namespace apn::dark::theme
 
 			~Clipper()
 			{
-//				::SelectClipRgn(dc, 0);
+//				::SelectClipRgn(dc, nullptr);
 			}
 		};
 
@@ -84,6 +84,8 @@ namespace apn::dark::theme
 
 			{
 				Clipper clipper(dc, rc_clip);
+
+				painter::gdiplus::FixOrg fix_org(hive.fix_dpi_scaling);
 
 				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
 					return S_OK;
