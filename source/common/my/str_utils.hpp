@@ -206,6 +206,28 @@ namespace my
 	}
 
 	//
+	// エラーメッセージを返します。
+	//
+	inline auto get_error_message(HRESULT hr)
+	{
+		LPTSTR text = nullptr;
+		::FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			nullptr,
+			hr,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR)&text,
+			0,
+			nullptr);
+		if (!text) return tstring {};
+		tstring result(text);
+		::LocalFree(text);
+		return result;
+	}
+
+	//
 	// テンポラリフォルダ名を返します。
 	//
 	inline auto get_temp_path()
