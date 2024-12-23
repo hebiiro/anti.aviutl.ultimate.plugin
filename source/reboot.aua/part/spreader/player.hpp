@@ -7,16 +7,49 @@ namespace apn::reboot::spreader
 	//
 	inline struct Player : my::Window
 	{
-		using DIB = my::DIBDC<AviUtl::PixelBGR>;
+#ifdef _DEBUG
+		struct Clocker {
+			LPCTSTR label = nullptr;
+			DWORD start_time = 0;
+			DWORD end_time = 0;
+			Clocker(LPCTSTR label) : label(label) { start_time = ::timeGetTime(); }
+			~Clocker() { end_time = ::timeGetTime(); MY_TRACE("{} = {}ms\n", label, end_time - start_time); }
+		};
+#else
+		struct Clocker {
+			Clocker(LPCTSTR label) {}
+			~Clocker() {}
+		};
+#endif
+		//
+		// この構造体はビットマップのピクセルデータです。
+		//
+		struct PixelBGRA { uint8_t b, g, r, a; };
 
-		// 表示する映像信号です。
-		std::unique_ptr<DIB> video;
-
+		//
 		// フレーム情報です。
+		//
 		int32_t current_frame = 0;
 		int32_t start_frame = 0;
 		int32_t end_frame = 0;
 		AviUtl::FileInfo file_info = {};
+
+		//
+		// Direct2D関連の変数です。
+		//
+		ComPtr<ID2D1Factory> d2d_factory;
+		ComPtr<ID2D1HwndRenderTarget> render_target;
+		ComPtr<ID2D1Bitmap> d2d_bitmap;
+
+		//
+		// DirectWrite関連の変数です。
+		//
+		ComPtr<IDWriteFactory> dw_factory;
+
+		//
+		// 映像信号情報です。
+		//
+		SIZE video_size = {};
 
 		//
 		// 初期化処理を実行します。
@@ -24,6 +57,29 @@ namespace apn::reboot::spreader
 		BOOL init()
 		{
 			MY_TRACE_FUNC("");
+
+			// Direct2Dを初期化します。
+			auto hr = ::D2D1CreateFactory(
+				D2D1_FACTORY_TYPE_SINGLE_THREADED,
+				d2d_factory.GetAddressOf());
+			if (FAILED(hr))
+			{
+				MY_TRACE_STR(my::get_error_message(hr));
+
+				return FALSE;
+			}
+
+			// DirectWriteを初期化します。
+			hr = ::DWriteCreateFactory(
+				DWRITE_FACTORY_TYPE_SHARED,
+				__uuidof(IDWriteFactory),
+				(IUnknown**)dw_factory.GetAddressOf());
+			if (FAILED(hr))
+			{
+				MY_TRACE_STR(my::get_error_message(hr));
+
+				return FALSE;
+			}
 
 			// ウィンドウクラスを登録します。
 			WNDCLASSEXW wc = { sizeof(wc) };
@@ -36,7 +92,7 @@ namespace apn::reboot::spreader
 
 			struct DpiSetter {
 				DPI_AWARENESS_CONTEXT context;
-				DpiSetter() { context = ::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ); }
+				DpiSetter() { context = ::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2); }
 				~DpiSetter() { ::SetThreadDpiAwarenessContext(context); }
 			} dpi_setter;
 
@@ -82,6 +138,14 @@ namespace apn::reboot::spreader
 		}
 
 		//
+		// DPIで補正した値を返します。
+		//
+		inline static auto mul_dpi(auto value, auto dpi)
+		{
+			return ::MulDiv(value, dpi, USER_DEFAULT_SCREEN_DPI);
+		}
+
+		//
 		// 指定された矩形のDPIを調整して返します。
 		//
 		RECT get_dpi_rect(const RECT& rc)
@@ -106,12 +170,6 @@ namespace apn::reboot::spreader
 			// スクリーン矩形を取得します。
 			auto rc = get_screen_rect(hwnd);
 
-			// DPI調整されたサイズを取得します。
-			auto dpi_rc = get_dpi_rect(rc);
-			auto w = my::get_width(dpi_rc);
-			auto h = my::get_height(dpi_rc);
-
-			update_back_buffer(w, h);
 			remove_message(*this, agit.c_message.c_show_window);
 			my::set_window_pos(*this, HWND_TOP, &rc, SWP_SHOWWINDOW);
 		}
@@ -121,6 +179,29 @@ namespace apn::reboot::spreader
 		//
 		void update_back_buffer(int32_t w, int32_t h)
 		{
+			// ファクトリが作成されていない場合は何もしません。
+			if (!d2d_factory) return;
+
+			// バックバッファが作成されていない場合は
+			if (!render_target)
+			{
+				// バックバッファを作成します。
+				auto hr = d2d_factory->CreateHwndRenderTarget(
+					D2D1::RenderTargetProperties(
+						D2D1_RENDER_TARGET_TYPE_DEFAULT,
+						D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
+						96.0f, 96.0f),
+					D2D1::HwndRenderTargetProperties(*this, D2D1::SizeU(w, h)),
+					render_target.GetAddressOf());
+				MY_TRACE_STR(my::get_error_message(hr));
+			}
+
+			// バックバッファが作成済みの場合は
+			if (render_target)
+			{
+				// バックバッファをリサイズします。
+				render_target->Resize(D2D1::SizeU(w, h));
+			}
 		}
 
 		//
@@ -144,51 +225,88 @@ namespace apn::reboot::spreader
 			// 保存中のときは何もしません。
 			if (proc_state.is_saving) return FALSE;
 
+			// バックバッファが作成されていない場合は何もしません。
+			if (!render_target) return FALSE;
+
+			{
+				// 前回の映像信号サイズを取得しておきます。
+				auto old_video_size = video_size;
+
+				// 映像信号サイズを更新します。
+				video_size = { fpip->w, fpip->h };
+
+				// 映像信号サイズが異なる場合は
+				if (video_size.cx != old_video_size.cx || video_size.cy != old_video_size.cy)
+				{
+					Clocker clocker(_T("create bitmap"));
+
+					// Direct2Dビットマップを作成します。
+					auto bitmap_props = D2D1::BitmapProperties(
+						D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE));
+					auto hr = render_target->CreateBitmap(
+						D2D1::SizeU(video_size.cx, video_size.cy),
+						nullptr,
+						0,
+						&bitmap_props,
+						d2d_bitmap.ReleaseAndGetAddressOf());
+//					MY_TRACE_STR(my::get_error_message(hr));
+				}
+
+				// ビットマップが作成できなかった場合は何もしません。
+				if (!d2d_bitmap) return FALSE;
+			}
+
 			// フレーム情報を取得します。
 			current_frame = fpip->frame;
 			start_frame = 0;
 			end_frame = fpip->frame_n;
 			fp->exfunc->get_file_info(fpip->editp, &file_info);
 
-			my::ClientDC dc(*this);
-
-			// 映像信号情報を取得します。
-			auto width = fpip->w;
-			auto height = fpip->h;
-			auto stride = width * 3 + width % 4;
-			auto byte_count = sizeof(AviUtl::PixelBGR);
-
-			// 映像サイズが異なる場合はビットマップを作り直します。
-			if (!video || video->header.biWidth != width || video->header.biHeight != height)
-				video = std::make_unique<DIB>(dc, width, height);
-
-			// ビットマップが作成できなかった場合は何もしません。
-			if (!video->bits) return FALSE;
-
-			// 映像信号をDIBitsに変換します。
-			auto dst_stride = stride / byte_count;
-			auto src_stride = fpip->max_w;
-
-			auto* dst = video->bits;
-			auto* src = (AviUtl::PixelYC*)fpip->ycp_edit;
-
-			// aviutlの色変換関数を取得します。
-			auto yc_to_rgb = magi.fp->exfunc->yc2rgb;
-
-			#pragma omp parallel for
-			for (auto y = 0; y < height; y++)
 			{
-				auto dst_y = height - y - 1;
-				auto src_y = y;
+				Clocker clocker(_T("update bitmap"));
 
-				auto* dst_line = dst + dst_y * dst_stride;
-				auto* src_line = src + src_y * src_stride;
+				// ビットマップデータのバッファを確保します。
+				std::vector<PixelBGRA> bits(video_size.cx * video_size.cy, {});
 
-				yc_to_rgb(dst_line, src_line, width);
+				auto dst = bits.data();
+				auto dst_stride = video_size.cx;
+
+				auto src = (AviUtl::PixelYC*)fpip->ycp_edit;
+				auto src_stride = fpip->max_w;
+
+				// aviutlの色変換関数を取得します。
+				auto yc_to_rgb = magi.fp->exfunc->yc2rgb;
+
+				// ピクセルデータを変換します。
+				// OpenMPを使用して並列化しています。
+				#pragma omp parallel for
+				for (auto y = 0; y < video_size.cy; y++)
+				{
+					auto dst_y = y;
+					auto src_y = y;
+
+					auto dst_line = dst + dst_y * dst_stride;
+					auto src_line = src + src_y * src_stride;
+
+					#pragma omp parallel for
+					for (auto x = 0; x < video_size.cx; x++)
+					{
+						auto dst_p = dst_line + x;
+						auto src_p = src_line + x;
+
+						yc_to_rgb((AviUtl::PixelBGR*)dst_p, src_p, 1);
+					}
+				}
+
+				// ピクセルデータをビットマップにコピーします。
+				auto hr = d2d_bitmap->CopyFromMemory(
+					nullptr, dst, dst_stride * sizeof(PixelBGRA));
+//				MY_TRACE_STR(my::get_error_message(hr));
 			}
 
 			// 映像信号をウィンドウに出力します。
-			paint(dc);
+			my::invalidate(*this);
+			::UpdateWindow(*this);
 
 			return TRUE;
 		}
@@ -211,18 +329,18 @@ namespace apn::reboot::spreader
 			{
 			case agit.c_size_mode.c_relative:
 				return {
-					::MulDiv(video->header.biWidth, agit.relative_size, 100),
-					::MulDiv(video->header.biHeight, agit.relative_size, 100),
+					::MulDiv(video_size.cx, agit.relative_size, 100),
+					::MulDiv(video_size.cy, agit.relative_size, 100),
 				};
 			case agit.c_size_mode.c_absolute:
 				return {
-					agit.absolute_size.cx ? agit.absolute_size.cx : video->header.biWidth,
-					agit.absolute_size.cy ? agit.absolute_size.cy : video->header.biHeight,
+					agit.absolute_size.cx ? agit.absolute_size.cx : video_size.cx,
+					agit.absolute_size.cy ? agit.absolute_size.cy : video_size.cy,
 				};
 			}
 
 			// それ以外の場合は映像信号のサイズをそのまま返します。
-			return { video->header.biWidth, video->header.biHeight };
+			return video_size;
 		}
 
 		//
@@ -232,7 +350,6 @@ namespace apn::reboot::spreader
 		void get_none_blt(Blt& blt)
 		{
 			auto display_size = get_display_size();
-			auto video_size = SIZE { video->header.biWidth, video->header.biHeight };
 
 			blt.src.x = 0;
 			blt.src.y = 0;
@@ -251,8 +368,6 @@ namespace apn::reboot::spreader
 		//
 		void get_fit_blt(Blt& blt)
 		{
-			auto video_size = SIZE { video->header.biWidth, video->header.biHeight };
-
 			blt.src.x = 0;
 			blt.src.y = 0;
 			blt.src.w = video_size.cx;
@@ -277,8 +392,6 @@ namespace apn::reboot::spreader
 		//
 		void get_crop_blt(Blt& blt)
 		{
-			auto video_size = SIZE { video->header.biWidth, video->header.biHeight };
-
 			blt.src.x = 0;
 			blt.src.y = 0;
 			blt.src.w = video_size.cx;
@@ -303,8 +416,6 @@ namespace apn::reboot::spreader
 		//
 		void get_full_blt(Blt& blt)
 		{
-			auto video_size = SIZE { video->header.biWidth, video->header.biHeight };
-
 			blt.src.x = 0;
 			blt.src.y = 0;
 			blt.src.w = video_size.cx;
@@ -332,30 +443,166 @@ namespace apn::reboot::spreader
 			}
 		}
 
-		int32_t need_time = 0;
-
 		//
-		// 映像信号を描画します。
+		// テキストを描画します。
 		//
-		LRESULT paint(HDC dc)
+		BOOL draw_text(const RECT& rc)
 		{
-			// 描画範囲を取得します。
-			auto rc = my::get_client_rect(*this);
-			rc = get_dpi_rect(rc);
+			auto dpi = ::GetDpiForWindow(*this);
+
 			auto rc_x = rc.left;
 			auto rc_y = rc.top;
 			auto rc_w = my::get_width(rc);
 			auto rc_h = my::get_height(rc);
 
-			// 映像信号が有効の場合は
-			if (video)
+			auto current_frame = this->current_frame - this->start_frame;
+			auto end_frame = this->end_frame - this->start_frame;
+
+			std::wstring text;
+
+			// フレームを表示する場合は
+			if (agit.show_frame)
 			{
+				text += my::format(_T("{} / {}"), current_frame, end_frame);
+			}
+
+			// 時間を表示する場合は
+			if (agit.show_time && file_info.video_rate && file_info.video_scale)
+			{
+				if (text.length()) text += _T("\n");
+
+				auto ratio = file_info.video_scale / (double)file_info.video_rate;
+				auto current_time = current_frame * ratio;
+				auto end_time = end_frame * ratio;
+
+				text += my::format(_T("{:02d}:{:02d}:{:06.3f} / {:02d}:{:02d}:{:06.3f}"),
+					(int32_t)(current_time / 3600), (int32_t)(current_time / 60), std::fmod(current_time, 60),
+					(int32_t)(end_time / 3600), (int32_t)(end_time / 60), std::fmod(end_time, 60));
+			}
+
+			// テキストが空の場合は何もしません。
+			if (text.empty()) return FALSE;
+
+			// 背景のブラシを作成します。
+			ComPtr<ID2D1SolidColorBrush> fill_brush;
+			auto hr = render_target->CreateSolidColorBrush(
+				D2D1::ColorF(D2D1::ColorF::White), &fill_brush);
+//			MY_TRACE_STR(my::get_error_message(hr));
+			if (!fill_brush) return FALSE;
+
+			// テキストのブラシを作成します。
+			ComPtr<ID2D1SolidColorBrush> text_brush;
+			hr = render_target->CreateSolidColorBrush(
+				D2D1::ColorF(D2D1::ColorF::Black), &text_brush);
+//			MY_TRACE_STR(my::get_error_message(hr));
+			if (!text_brush) return FALSE;
+
+			// フォントを取得します。
+			AviUtl::SysInfo si = {};
+			magi.fp->exfunc->get_sys_info(nullptr, &si);
+
+			// フォント情報を取得します。
+			LOGFONTW lf = {};
+			::GetObject(si.hfont, sizeof(lf), &lf);
+
+			// テキストフォーマットを作成します。
+			ComPtr<IDWriteTextFormat> text_format;
+			hr = dw_factory->CreateTextFormat(
+				lf.lfFaceName,
+				nullptr,
+				DWRITE_FONT_WEIGHT_NORMAL,
+				DWRITE_FONT_STYLE_NORMAL,
+				DWRITE_FONT_STRETCH_NORMAL,
+				(float)mul_dpi(std::abs(lf.lfHeight), dpi),
+				L"",
+				&text_format);
+//			MY_TRACE_STR(my::get_error_message(hr));
+			if (!text_format) return FALSE;
+
+			// テキストレイアウトを作成します。
+			ComPtr<IDWriteTextLayout> text_layout;
+			hr = dw_factory->CreateTextLayout(
+				text.c_str(),
+				text.length(),
+				text_format.Get(),
+				(float)rc_w,
+				(float)rc_h,
+				&text_layout);
+//			MY_TRACE_STR(my::get_error_message(hr));
+			if (!text_layout) return FALSE;
+
+			// テキストの寸法を取得します。
+			DWRITE_TEXT_METRICS tm = {};
+			text_layout->GetMetrics(&tm);
+
+			float origin = 8.0f;
+			float padding = 4.0f;
+
+			float left = origin + tm.left;
+			float top = origin + tm.top;
+			float right = left + tm.width + padding * 2;
+			float bottom = top + tm.height + padding * 2;
+
+			auto fill_rc = D2D1::RoundedRect(D2D1::RectF(left, top, right, bottom), 4.0f, 4.0f);
+
+			// 背景矩形を描画します。
+			render_target->FillRoundedRectangle(fill_rc, fill_brush.Get());
+			render_target->DrawRoundedRectangle(fill_rc, text_brush.Get());
+
+			// テキストを描画します。
+			render_target->DrawTextLayout(
+				D2D1::Point2F(left + padding, top + padding),
+				text_layout.Get(),
+				text_brush.Get(),
+				D2D1_DRAW_TEXT_OPTIONS_NONE);
+
+			return TRUE;
+		}
+
+		//
+		// WM_PAINTを処理します。
+		//
+		LRESULT on_paint(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		{
+			auto rc = my::get_client_rect(*this);
+			auto rc_x = rc.left;
+			auto rc_y = rc.top;
+			auto rc_w = my::get_width(rc);
+			auto rc_h = my::get_height(rc);
+			my::PaintDC dc(*this);
+
+			if (!render_target)
+				return 0;
+
+			Clocker clocker(_T("paint"));
+
+			render_target->BeginDraw();
+			render_target->Clear(D2D1::ColorF(D2D1::ColorF::Black));
+
+			// ビットマップが有効の場合は
+			if (d2d_bitmap)
+			{
+				Blt blt;
+				blt.base.x = rc_x;
+				blt.base.y = rc_y;
+				blt.base.w = rc_w;
+				blt.base.h = rc_h;
+				get_blt(blt);
+
+				D2D1_RECT_F bitmap_rc = D2D1::RectF(
+					static_cast<float>(blt.dst.x),
+					static_cast<float>(blt.dst.y),
+					static_cast<float>(blt.dst.x + blt.dst.w),
+					static_cast<float>(blt.dst.y + blt.dst.h));
+
+				// ビットマップを描画します。
+				render_target->DrawBitmap(d2d_bitmap.Get(), bitmap_rc);
+
+				// サムネイルを表示する場合は
 				if (agit.show_thumbnail)
 				{
-					::SetStretchBltMode(*video, HALFTONE);
-
-					auto w = video->header.biWidth;
-					auto h = video->header.biHeight;
+					auto w = video_size.cx;
+					auto h = video_size.cy;
 					auto scale = 0;
 
 					for (auto thumbnail_scale : agit.thumbnail_scale)
@@ -364,92 +611,39 @@ namespace apn::reboot::spreader
 
 						scale += thumbnail_scale + 100;
 
-						auto tw = ::MulDiv(w, 100, scale);
-						auto th = ::MulDiv(h, 100, scale);
+						auto tw = (float)::MulDiv(w, 100, scale);
+						auto th = (float)::MulDiv(h, 100, scale);
 
-						// 映像信号を縮小して重ねます。
-						::StretchBlt(*video, 0, 0 + h - th, tw, th, *video, 0, 0, w, h, SRCCOPY);
+						auto x = (float)rc_x;
+						auto y = (float)rc_y + (float)rc_h - th;
+						D2D1_RECT_F bitmap_rc = D2D1::RectF(x, y, x + tw, y + th);
+
+						// ビットマップを縮小して描画します。
+						render_target->DrawBitmap(d2d_bitmap.Get(), bitmap_rc);
 					}
-				}
-
-				// 文字列を描画します。
-				{
-					auto current_frame = this->current_frame - this->start_frame;
-					auto end_frame = this->end_frame - this->start_frame;
-
-					std::wstring text;
-
-					// フレームを表示する場合は
-					if (agit.show_frame)
-					{
-						text += my::format(_T("{} / {}"), current_frame, end_frame);
-					}
-
-					// 時間を表示する場合は
-					if (agit.show_time && file_info.video_rate && file_info.video_scale)
-					{
-						if (text.length()) text += _T("\n");
-
-						auto ratio = file_info.video_scale / (double)file_info.video_rate;
-						auto current_time = current_frame * ratio;
-						auto end_time = end_frame * ratio;
-
-						text += my::format(_T("{:02d}:{:02d}:{:06.3f} / {:02d}:{:02d}:{:06.3f}"),
-							(int32_t)(current_time / 3600), (int32_t)(current_time / 60), std::fmod(current_time, 60),
-							(int32_t)(end_time / 3600), (int32_t)(end_time / 60), std::fmod(end_time, 60));
-					}
-
-					// 文字列を描画します。
-					if (text.length())
-						::DrawTextW(*video, text.c_str(), text.length(), &rc, DT_LEFT | DT_TOP);
-				}
-
-				// 映像信号を描画します。
-				{
-					// ストレッチモードを変更します。
-					// ※このコードを使用すると描画が非常に低速になるのでコメントアウトしています。
-					//::SetStretchBltMode(dc, HALFTONE);
-
-					Blt blt;
-					blt.base.x = rc_x;
-					blt.base.y = rc_y;
-					blt.base.w = rc_w;
-					blt.base.h = rc_h;
-					get_blt(blt);
-
-					// ビットマップを描画します。
-					::StretchBlt(dc, blt.dst.x, blt.dst.y, blt.dst.w, blt.dst.h,
-						*video, blt.src.x, blt.src.y, blt.src.w, blt.src.h, SRCCOPY);
 				}
 			}
-			// 映像信号が無効の場合は
-			else
-			{
-				// 背景を描画します。
-				::FillRect(dc, &rc, (HBRUSH)(COLOR_WINDOW + 1));
-			}
+
+			// テキストを描画します。
+			draw_text(rc);
+
+			render_target->EndDraw();
 
 			return 0;
 		}
 
 		//
-		// WM_PAINTを処理します。
+		// WM_SIZEを処理します。
 		//
-		LRESULT on_paint(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		LRESULT on_size(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			// 描画DCを用意します。
-			my::PaintDC dc(*this);
+			auto w = LOWORD(lParam);
+			auto h = HIWORD(lParam);
 
-			// クライアント矩形を取得します。
-			auto rc = my::get_client_rect(*this);
+			// バックバッファをリサイズします。
+			update_back_buffer(w, h);
 
-			// DPI調整された矩形を取得します。
-			auto dpi_rc = get_dpi_rect(rc);
-
-			// 背景を描画します。
-			::FillRect(dc, &dpi_rc, (HBRUSH)(COLOR_WINDOW + 1));
-
-			return 0;
+			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
 
 		//
@@ -516,6 +710,7 @@ namespace apn::reboot::spreader
 					return ::SendMessage(hive.aviutl_window, WM_KEYDOWN, VK_SPACE, 0);
 				}
 			case WM_PAINT: return on_paint(hwnd, message, wParam, lParam);
+			case WM_SIZE: return on_size(hwnd, message, wParam, lParam);
 			case agit.c_message.c_post_init: return on_post_init(hwnd, message, wParam, lParam);
 			case agit.c_message.c_show_window: return on_show_window(hwnd, message, wParam, lParam);
 			}
