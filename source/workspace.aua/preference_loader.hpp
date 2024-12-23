@@ -29,7 +29,7 @@ namespace apn::workspace
 
 			if (flags & hive.c_preference_flag.c_config)
 			{
-				read_tav(node, hive.tav);
+				read_tav(node, "tav", hive.tav);
 				get_int(node, "tab_height", hive.tab_height);
 				get_int(node, "tab_space", hive.tab_space);
 				get_int(node, "caption_height", hive.caption_height);
@@ -78,18 +78,48 @@ namespace apn::workspace
 		//
 		// タブを読み込みます。
 		//
-		void read_tav(const n_json& node, Hive::Tav& tav)
+		BOOL read_tav(const n_json& node, const std::string& name, Hive::Tav& tav)
+		{
+			MY_TRACE_FUNC("");
+
+			// タブノードを読み込みます。
+			n_json tav_node;
+			get_child_node(node, name, tav_node);
+			if (tav_node.is_null()) return FALSE;
+
+			// タブの属性を読み込みます。
+			return read_tav(tav_node, tav);
+		}
+
+		//
+		// タブを読み込みます。
+		//
+		BOOL read_tav(const n_json& tav_node, Hive::Tav& tav)
 		{
 			MY_TRACE_FUNC("");
 
 			// タブの属性を読み込みます。
-			n_json tav_node;
-			get_child_node(node, "tav", tav_node);
 			get_label(tav_node, "display_mode", tav.display_mode, tav.c_display_mode.labels);
 			get_label(tav_node, "select_mode", tav.select_mode, tav.c_select_mode.labels);
 			get_label(tav_node, "stretch_mode", tav.stretch_mode, tav.c_stretch_mode.labels);
 			get_label(tav_node, "location", tav.location, tav.c_location.labels);
 			get_label(tav_node, "node_align", tav.node_align, tav.c_node_align.labels);
+
+			return TRUE;
+		}
+
+		//
+		// ドロワーを読み込みます。
+		//
+		BOOL read_drawer(const n_json& drawer_node, Drawer& drawer)
+		{
+			MY_TRACE_FUNC("");
+
+			// ドロワーの属性を読み込みます。
+			get_bool(drawer_node, "inside", drawer.inside);
+
+			// タブの属性を読み込みます。
+			return read_tav(drawer_node, drawer);
 		}
 
 		//
@@ -100,7 +130,60 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// タブを読み込みます。
-			read_tav(node, pane->tav);
+			read_tav(node, "tav", pane->tav);
+
+			// ドロワーを読み込みます。
+			{
+				get_child_nodes(node, "drawer",
+					[&](const n_json& drawer_node, size_t i)
+				{
+					// インデックスが無効の場合はループを終了します。
+					if (i >= std::size(pane->drawers)) return FALSE;
+
+					// ドロワーノードが無効の場合は何もしません。
+					if (drawer_node.is_null()) return TRUE;
+
+					// ドロワーを作成します。
+					auto drawer = pane->create_drawer(i);
+
+					// ドロワーの属性を読み込みます。
+					read_drawer(drawer_node, *drawer);
+
+					// タブ項目を読み込みます。
+					get_child_nodes(drawer_node, "shuttle",
+						[&](const n_json& shuttle_node, size_t i)
+					{
+						// シャトル名を読み込みます。
+						std::wstring name;
+						read_shuttle_name(shuttle_node, "name", name);
+						MY_TRACE_STR(name);
+
+						// シャトルを取得します。
+						auto shuttle = shuttle_manager.get(name);
+						if (!shuttle) return TRUE;
+
+						// タブ項目を追加します。
+						drawer->insert_node(*shuttle, name.c_str(), -1);
+
+						return TRUE;
+					});
+
+					return TRUE;
+				});
+
+				n_json drawer_node;
+				get_child_node(node, "drawer", drawer_node);
+
+				for (const auto& drawer : pane->drawers)
+				{
+					// タブの属性を読み込みます。
+					Hive::Tav tav;
+					if (read_tav(drawer_node, std::format("{}", &drawer - pane->drawers).c_str(), tav))
+					{
+						(Hive::Tav&)*drawer = tav;
+					}
+				}
+			}
 
 			// ペインの属性を読み込みます。
 			auto current = -1;

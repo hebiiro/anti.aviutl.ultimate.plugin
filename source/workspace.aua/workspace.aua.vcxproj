@@ -162,10 +162,15 @@
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="dock\dock_site.hpp" />
+    <ClInclude Include="dock\drawer_manager.hpp" />
     <ClInclude Include="dock\layout_list.hpp" />
     <ClInclude Include="dock\main_window.hpp" />
     <ClInclude Include="dock\sub_window.hpp" />
-    <ClInclude Include="hook\mouse.hpp" />
+    <ClInclude Include="hook\hide_window.hpp" />
+    <ClInclude Include="hook\move_cursor.hpp" />
+    <ClInclude Include="pane\drawer.hpp" />
+    <ClInclude Include="pane\drawer_config_dialog.hpp" />
+    <ClInclude Include="pane\pane_config_dialog.hpp" />
     <ClInclude Include="pane\tav.hpp" />
     <ClInclude Include="preference_loader.hpp" />
     <ClInclude Include="preference_saver.hpp" />

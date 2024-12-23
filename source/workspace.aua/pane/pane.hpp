@@ -6,48 +6,104 @@ namespace apn::workspace
 	{
 		inline static constexpr auto c_prop_name = _T("apn::workspace::pane");
 
-		inline static struct UpdateFlag {
+		inline static constexpr struct UpdateFlag {
 			inline static constexpr uint32_t c_deep = 0x00000001;
 			inline static constexpr uint32_t c_invalidate = 0x00000002;
 			inline static constexpr uint32_t c_set_focus = 0x00000004;
 			inline static constexpr uint32_t c_normalize = 0x00000008;
 			inline static constexpr uint32_t c_show_current_shuttle = 0x00000010;
 			inline static constexpr uint32_t c_show_tab = 0x00000020;
-			inline static constexpr uint32_t c_origin = 0x00000040;
+			inline static constexpr uint32_t c_show_drawers = 0x00000040;
+			inline static constexpr uint32_t c_origin = 0x00000080;
 			inline static constexpr uint32_t c_default =
 				c_deep | c_invalidate | c_set_focus | c_normalize |
-				c_show_current_shuttle | c_show_tab | c_origin;
+				c_show_current_shuttle | c_show_tab | c_show_drawers | c_origin;
 		} c_update_flag;
 
-		HWND owner = nullptr;
-		RECT position = {};
-		int32_t split_mode = c_split_mode.c_none;
-		int32_t origin = c_origin.c_bottom_right;
-		int32_t caption_mode = c_caption_mode.c_show;
-		int32_t caption_location = c_caption_location.c_top;
-		BOOL is_border_locked = FALSE;
-		int32_t border = 0; // ボーダーの位置です。
-		int32_t drag_offset = 0; // ドラッグ処理に使用します。
+		inline static constexpr struct DrawerIndex {
+			inline static constexpr size_t c_none = -1;
+			inline static constexpr size_t c_top = 0;
+			inline static constexpr size_t c_bottom = 1;
+			inline static constexpr size_t c_left = 2;
+			inline static constexpr size_t c_right = 3;
+		} c_drawer_index;
 
-		Tav tav; // タブコントロールです。
-		std::shared_ptr<Pane> children[2]; // 子ペインです。
+		//
+		// このペインを保有するウィンドウです。
+		//
+		HWND owner = nullptr;
+
+		//
+		// このペインの表示位置です。
+		//
+		RECT position = {};
+
+		//
+		// 分割モードです。
+		//
+		int32_t split_mode = c_split_mode.c_none;
+
+		//
+		// セパレータの原点です。
+		//
+		int32_t origin = c_origin.c_bottom_right;
+
+		//
+		// キャプションのモードです。
+		//
+		int32_t caption_mode = c_caption_mode.c_show;
+
+		//
+		// キャプションの位置モードです。
+		//
+		int32_t caption_location = c_caption_location.c_top;
+
+		//
+		// TRUEの場合はセパレータをロックします。
+		//
+		BOOL is_border_locked = FALSE;
+
+		//
+		// セパレータの位置です。
+		//
+		int32_t border = 0;
+
+		//
+		// ドラッグ処理に使用します。
+		//
+		int32_t drag_offset = 0;
+
+		//
+		// タブコントロールです。
+		//
+		Tav tav;
+
+		//
+		// ドロワーコントロールです。
+		//
+		std::shared_ptr<Drawer> drawers[4];
+
+		//
+		// 子ペインです。
+		//
+		std::shared_ptr<Pane> children[2];
 
 		//
 		// このクラスはファセットのインターフェイスです。
 		//
-		struct Facet {
-			virtual RECT get_exclude_rect(Pane* pane) = 0;
+		struct CaptionFacet {
+			virtual RECT get_exclude_rect(Pane* pane, LPCRECT base_rc) = 0;
 			virtual RECT get_caption_rect(Pane* pane) = 0;
-			virtual RECT get_caption_text_rect(Pane* pane, LPCRECT caption_rect) = 0;
-			virtual RECT get_menu_rect(Pane* pane, LPCRECT caption_rect) = 0;
+			virtual RECT get_caption_text_rect(Pane* pane, LPCRECT caption_rc) = 0;
+			virtual RECT get_menu_rect(Pane* pane, LPCRECT caption_rc) = 0;
 		};
 
 		//
 		// このクラスはファセットのテンプレートです。
-		// コメントはタブコントロールを上側に配置する場合を前提にして記述しています。
+		// コメントはキャプションを上側に配置する場合を前提にして記述しています。
 		//
 		template <LONG RECT::* left, LONG RECT::* top, LONG RECT::* right, LONG RECT::* bottom>
-		struct FacetT : Facet {
+		struct CaptionFacetT : CaptionFacet {
 			//
 			// 指定されたメンバ変数のオフセットを返します。
 			//
@@ -73,12 +129,12 @@ namespace apn::workspace
 			}
 
 			//
-			// ペイン領域からキャプションの領域を取り除いた領域を返します。
+			// 指定された領域からキャプションの領域を取り除いた領域を返します。
 			//
-			virtual RECT get_exclude_rect(Pane* pane) override
+			virtual RECT get_exclude_rect(Pane* pane, LPCRECT base_rc) override
 			{
-				// ペイン領域の上辺部分を除外して返します。
-				auto rc = pane->position;
+				// ワークエリア領域の上辺部分を除外して返します。
+				auto rc = *base_rc;
 				rc.*top += hive.caption_height * vert_sign();
 				return rc;
 			}
@@ -88,11 +144,11 @@ namespace apn::workspace
 			//
 			virtual RECT get_caption_rect(Pane* pane) override
 			{
-				// ペイン領域を基準にします。
-				auto caption_rc = pane->position;
+				// ペイン領域からドロワー領域を除外した領域を基準にします。
+				auto caption_rc = pane->exclude_drawers(&pane->position);
 
 				// キャプションとタブコントロールが同じ辺に存在する場合は
-				if (pane->is_tab_same_location())
+				if (pane->is_tab_same_location(pane->tav))
 				{
 					// タブコントロールが全自動モードではなく、
 					// なおかつタブコントロールが外側に展開する場合は
@@ -115,10 +171,10 @@ namespace apn::workspace
 			//
 			// キャプションの文字領域を返します。
 			//
-			virtual RECT get_caption_text_rect(Pane* pane, LPCRECT caption_rect) override
+			virtual RECT get_caption_text_rect(Pane* pane, LPCRECT caption_rc) override
 			{
 				// キャプション領域からメニュー領域を除外します。
-				auto text_rc = *caption_rect;
+				auto text_rc = *caption_rc;
 				text_rc.*right -= hive.caption_height * horz_sign();
 				return text_rc;
 			}
@@ -126,10 +182,10 @@ namespace apn::workspace
 			//
 			// メニュー領域を返します。
 			//
-			virtual RECT get_menu_rect(Pane* pane, LPCRECT caption_rect) override
+			virtual RECT get_menu_rect(Pane* pane, LPCRECT caption_rc) override
 			{
 				// キャプションの右端を返します。
-				auto menu_rc = *caption_rect;
+				auto menu_rc = *caption_rc;
 				menu_rc.*left = menu_rc.*right - hive.caption_height * horz_sign();
 				return menu_rc;
 			}
@@ -138,31 +194,31 @@ namespace apn::workspace
 		//
 		// このクラスは左側のファセットです。
 		//
-		inline static struct LeftFacet : FacetT<&RECT::top, &RECT::left, &RECT::bottom, &RECT::right> {
-		} left_facet;
+		inline static struct LeftCaptionFacet : CaptionFacetT<&RECT::top, &RECT::left, &RECT::bottom, &RECT::right> {
+		} left_caption_facet;
 
 		//
 		// このクラスは上側のファセットです。
 		//
-		inline static struct TopFacet : FacetT<&RECT::left, &RECT::top, &RECT::right, &RECT::bottom> {
-		} top_facet;
+		inline static struct TopCaptionFacet : CaptionFacetT<&RECT::left, &RECT::top, &RECT::right, &RECT::bottom> {
+		} top_caption_facet;
 
 		//
 		// このクラスは右側のファセットです。
 		//
-		inline static struct RightFacet : FacetT<&RECT::top, &RECT::right, &RECT::bottom, &RECT::left> {
-		} right_facet;
+		inline static struct RightCaptionFacet : CaptionFacetT<&RECT::top, &RECT::right, &RECT::bottom, &RECT::left> {
+		} right_caption_facet;
 
 		//
 		// このクラスは下側のファセットです。
 		//
-		inline static struct BottomFacet : FacetT<&RECT::left, &RECT::bottom, &RECT::right, &RECT::top> {
-		} bottom_facet;
+		inline static struct BottomCaptionFacet : CaptionFacetT<&RECT::left, &RECT::bottom, &RECT::right, &RECT::top> {
+		} bottom_caption_facet;
 
 		//
 		// ファセットを返します。
 		//
-		Facet* get_facet()
+		CaptionFacet* get_caption_facet()
 		{
 			// キャプションを表示する場合は
 			if (caption_mode == c_caption_mode.c_show)
@@ -170,10 +226,10 @@ namespace apn::workspace
 				// 各辺のファセットを返します。
 				switch (caption_location)
 				{
-				case c_caption_location.c_left: return &left_facet;
-				case c_caption_location.c_top: return &top_facet;
-				case c_caption_location.c_right: return &right_facet;
-				case c_caption_location.c_bottom: return &bottom_facet;
+				case c_caption_location.c_left: return &left_caption_facet;
+				case c_caption_location.c_top: return &top_caption_facet;
+				case c_caption_location.c_right: return &right_caption_facet;
+				case c_caption_location.c_bottom: return &bottom_caption_facet;
 				}
 			}
 
@@ -200,6 +256,23 @@ namespace apn::workspace
 		//
 		virtual ~Pane()
 		{
+			// ドロワーを走査します。
+			for (auto& drawer : drawers)
+			{
+				// ドロワーが有効の場合は
+				if (drawer)
+				{
+					// このペインとドロワーの関連付けを解除します。
+					set_pane(*drawer, nullptr);
+
+					// ドロワーコントロールを終了します。
+					drawer->exit();
+				}
+			}
+
+			// このペインとタブの関連付けを解除します。
+			set_pane(tav, nullptr);
+
 			// タブコントロールを終了します。
 			tav.exit();
 		}
@@ -302,14 +375,7 @@ namespace apn::workspace
 		//
 		int32_t find_tab(Shuttle* shuttle)
 		{
-			auto c = get_tab_count();
-			for (decltype(c) i = 0; i < c; i++)
-			{
-				if (get_shuttle(i) == shuttle)
-					return i;
-			}
-
-			return -1;
+			return tav.find_node(*shuttle);
 		}
 
 		//
@@ -332,19 +398,54 @@ namespace apn::workspace
 		}
 
 		//
-		// このペインがタブを持つ(表示する)場合はTRUEを返します。
+		// タブがキャプションと同じ位置モードの場合はTRUEを返します。
 		//
-		BOOL has_tab()
+		BOOL is_tab_same_location(Tav& tav)
 		{
-			return tav.need_deploy();
+			return get_caption_location() == tav.get_location();
 		}
 
 		//
-		// タブがキャプションと同じ位置モードの場合はTRUEを返します。
+		// ドロワーを作成して返します。
 		//
-		BOOL is_tab_same_location()
+		auto create_drawer(size_t drawer_index)
 		{
-			return get_caption_location() == tav.get_location();
+			// ドロワーを作成します。
+			auto& drawer = drawers[drawer_index] = std::make_unique<Drawer>();
+
+			// ドロワーを初期化します。
+			drawer->init(owner);
+
+			// このペインをドロワーに関連付けます。
+			set_pane(*drawer, this);
+
+			// 作成したドロワーを返します。
+			return drawer;
+		}
+
+		//
+		// ドロワーを削除します。
+		//
+		BOOL erase_drawer(size_t drawer_index)
+		{
+			auto& drawer = drawers[drawer_index];
+			if (!drawer) return FALSE;
+			drawer = nullptr;
+			return TRUE;
+		}
+
+		//
+		// ドロワーのインデックスを返します。
+		//
+		size_t get_drawer_index(HWND hwnd)
+		{
+			for (const auto& drawer : drawers)
+			{
+				if (drawer && *drawer == hwnd)
+					return &drawer - drawers;
+			}
+
+			return c_drawer_index.c_none;
 		}
 
 		//
@@ -448,16 +549,48 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			// すべてのシャトルをフローティング状態にします。
+			// タブ項目を走査します。
 			auto c = get_tab_count();
 			for (decltype(c) i = 0; i < c; i++)
 			{
+				// タブ項目からシャトルを取得できた場合は
 				if (auto shuttle = get_shuttle(i))
+				{
+					// シャトルをフローティング状態にします。
 					float_shuttle(shuttle);
+				}
 			}
 
 			// すべてのタブを削除します。
 			clear_all_tabs();
+		}
+
+		//
+		// ドロワーにシャトルを追加します。
+		//
+		int32_t insert_shuttle(const std::shared_ptr<Drawer>& drawer, Shuttle* shuttle, int32_t index = -1)
+		{
+			MY_TRACE_FUNC("{:#010x}, {}", shuttle, index);
+
+			// 指定されたシャトルはすでにドロワー内に存在するので何もしません。
+			if (drawer->find_node(*shuttle) != -1) return -1;
+
+			// シャトルのウィンドウテキストを取得します。
+			auto text = my::get_window_text(*shuttle);
+
+			// ドロワーにタブ項目を追加します。
+			return drawer->insert_node(*shuttle, text.c_str(), index);
+		}
+
+		//
+		// ドロワーからシャトルを削除します。
+		//
+		BOOL erase_shuttle(const std::shared_ptr<Drawer>& drawer, int32_t index)
+		{
+			MY_TRACE_FUNC("{}", index);
+
+			// ドロワーからタブ項目を削除します。
+			return drawer->erase_node(index);
 		}
 
 		//
@@ -617,19 +750,65 @@ namespace apn::workspace
 		}
 
 		//
-		// ワークエリア領域を返します。
+		// 指定された領域からタブ領域を除外した領域を返します。
 		//
-		RECT get_workarea()
+		RECT exclude_tab(LPCRECT base_rc)
 		{
-			if (auto facet = get_facet())
+			// 指定された領域です。
+			auto rc = *base_rc;
+
+			// タブを配置する必要がある場合は
+			if (tav.need_deploy())
 			{
-				// ペイン領域からキャプション領域を除外します。
-				return facet->get_exclude_rect(this);
+				// タブ領域を除外します。
+				rc = tav.get_facet()->get_exclude_rect(&tav, &rc);
+			}
+
+			// 除外後の領域を返します。
+			return rc;
+		}
+
+		//
+		// 指定された領域からドロワー領域を除外した領域を返します。
+		//
+		RECT exclude_drawers(LPCRECT base_rc)
+		{
+			// 指定された領域です。
+			auto rc = *base_rc;
+
+			// ドロワーを走査します。
+			for (const auto& drawer : drawers)
+			{
+				// ドロワーが有効の場合は
+				if (drawer)
+				{
+					// ドロワーを配置する必要がある場合は
+					if (drawer->need_deploy())
+					{
+						// ドロワー領域を除外します。
+						rc = drawer->get_facet()->get_exclude_rect(drawer.get(), &rc);
+					}
+				}
+			}
+
+			// 除外後の領域を返します。
+			return rc;
+		}
+
+		//
+		// 指定された領域からキャプション領域を除外した領域を返します。
+		//
+		RECT exclude_caption(LPCRECT base_rc)
+		{
+			if (auto caption_facet = get_caption_facet())
+			{
+				// 指定された領域からキャプション領域を除外して返します。
+				return caption_facet->get_exclude_rect(this, base_rc);
 			}
 			else
 			{
-				// ペイン領域を返します。
-				return position;
+				// 指定された領域をそのまま返します。
+				return *base_rc;
 			}
 		}
 
@@ -638,21 +817,20 @@ namespace apn::workspace
 		//
 		RECT get_dock_rect()
 		{
-			// ワークエリア領域を取得します。
-			auto workarea = get_workarea();
+			// ペイン領域を基準にします。
+			auto rc = position;
 
-			// タブを表示する場合は
-			if (has_tab())
-			{
-				// ワークエリア領域からタブを除外した領域を返します。
-				return tav.get_facet()->get_exclude_rect(&tav, &workarea);
-			}
-			// タブを表示しない場合は
-			else
-			{
-				// ワークエリア領域全体を返します。
-				return workarea;
-			}
+			// ドロワー領域を除外します。
+			rc = exclude_drawers(&rc);
+
+			// キャプション領域を除外します。
+			rc = exclude_caption(&rc);
+
+			// タブ領域を除外します。
+			rc = exclude_tab(&rc);
+
+			// 残りの領域を返します。
+			return rc;
 		}
 
 		//
@@ -713,6 +891,22 @@ namespace apn::workspace
 		};
 
 		//
+		// ドロワーコントロールを非表示にします。
+		//
+		void hide_drawers(HDWP dwp)
+		{
+			for (const auto& drawer : drawers)
+			{
+				if (drawer)
+				{
+					// ドロワーコントロールを非表示にします。
+					::DeferWindowPos(dwp, *drawer, nullptr, 0, 0, 0, 0,
+						SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_HIDEWINDOW);
+				}
+			}
+		};
+
+		//
 		// このペインを起点にして、
 		// このペインおよび子孫ペインの位置情報を更新します。
 		//
@@ -757,10 +951,35 @@ namespace apn::workspace
 				invalidate();
 			}
 
+			// 基準領域です。
+			auto base_rc = position;
+
+			if (flags & c_update_flag.c_show_drawers)
+			{
+				// ドロワーを走査します。
+				for (const auto& drawer : drawers)
+				{
+					// ドロワーが有効の場合は
+					if (drawer)
+					{
+						// ドロワーを更新します。
+						update_tab(dwp, &base_rc, *drawer, FALSE);
+
+						// 基準領域からドロワー領域を除外していきます。
+						base_rc = drawer->get_facet()->get_exclude_rect(drawer.get(), &base_rc);
+					}
+				}
+			}
+			else
+			{
+				// ドロワーコントロールを非表示にします。
+				hide_drawers(dwp);
+			}
+
 			if (flags & c_update_flag.c_show_tab)
 			{
 				// タブコントロールを更新します。
-				update_tab(dwp);
+				update_tab(dwp, &base_rc);
 			}
 			else
 			{
@@ -799,25 +1018,32 @@ namespace apn::workspace
 		// タブコントロールのウィンドウ位置を更新します。
 		// この関数はupdate()から呼び出されます。
 		//
-		void update_tab(my::DeferWindowPos& dwp)
+		void update_tab(my::DeferWindowPos& dwp, LPCRECT base_rc)
 		{
 //			MY_TRACE_FUNC("");
 
-			// ワークエリアを取得します。
-			auto workarea = get_workarea();
+			return update_tab(dwp, base_rc, tav, TRUE);
+		}
+
+		//
+		// 指定されたタブコントロールのウィンドウ位置を更新します。
+		//
+		void update_tab(my::DeferWindowPos& dwp, LPCRECT base_rc, Tav& tav, BOOL integral)
+		{
+//			MY_TRACE_FUNC("");
 
 			// タブコントロールに追加領域をリセットします。
 			tav.addional_height = 0;
 
 			// キャプションとタブコントロールが同じ辺に配置されている場合は
-			if (is_tab_same_location())
+			if (integral && is_tab_same_location(tav))
 			{
 				// タブコントロールに追加領域を設定します。
 				tav.addional_height = hive.caption_height;
 			}
 
 			// タブコントロールのレイアウトを更新します。
-			tav.update(&workarea);
+			tav.update(base_rc);
 
 			// タブコントロールのレイアウトを取得します。
 			auto layout = tav.get_layout();
@@ -1211,10 +1437,10 @@ namespace apn::workspace
 		void draw_caption(HDC paint_dc, Shuttle* shuttle, auto get_mem_rect)
 		{
 			// ファセットが取得できない場合はキャプションは描画されないので何もしません。
-			auto facet = get_facet(); if (!facet) return;
+			auto caption_facet = get_caption_facet(); if (!caption_facet) return;
 
 			// キャプション領域を取得します。
-			auto caption_rc = facet->get_caption_rect(this);
+			auto caption_rc = caption_facet->get_caption_rect(this);
 			if (caption_rc.top < position.top ||
 				caption_rc.bottom > position.bottom)
 			{
@@ -1244,7 +1470,7 @@ namespace apn::workspace
 			caption_rc = rc;
 
 			// メニュー領域を取得します。
-			auto menu_rc = facet->get_menu_rect(this, &base_rc);
+			auto menu_rc = caption_facet->get_menu_rect(this, &base_rc);
 
 			// メニュー領域をメモリDC用に変換します。
 			menu_rc = get_mem_rect(menu_rc, rc);
@@ -1273,7 +1499,7 @@ namespace apn::workspace
 				if (has_menu)
 				{
 					// キャプションの文字領域を取得します。
-					caption_rc = facet->get_caption_text_rect(this, &base_rc);
+					caption_rc = caption_facet->get_caption_text_rect(this, &base_rc);
 
 					// キャプションの文字領域をメモリDC用に変換します。
 					caption_rc = get_mem_rect(caption_rc, rc);
@@ -1319,7 +1545,7 @@ namespace apn::workspace
 				if (has_menu)
 				{
 					// キャプションの文字領域を取得します。
-					caption_rc = facet->get_caption_text_rect(this, &base_rc);
+					caption_rc = caption_facet->get_caption_text_rect(this, &base_rc);
 
 					// キャプションの文字領域をメモリDC用に変換します。
 					caption_rc = get_mem_rect(caption_rc, rc);
@@ -1376,6 +1602,23 @@ namespace apn::workspace
 		void invalidate()
 		{
 			my::invalidate(owner, &position, FALSE);
+		}
+
+		//
+		// グローバルなマウスムーブメッセージを処理します。
+		//
+		LRESULT on_global_mouse_move(HWND hwnd, const POINT& point)
+		{
+			if (tav == hwnd)
+				return tav.on_global_mouse_move(point);
+
+			for (const auto& drawer : drawers)
+			{
+				if (drawer && *drawer == hwnd)
+					drawer->on_global_mouse_move(point);
+			}
+
+			return 0;
 		}
 
 		//

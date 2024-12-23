@@ -22,6 +22,40 @@ namespace apn::workspace
 			virtual BOOL revise_content_position(LPRECT rc) = 0;
 		};
 
+		//
+		// コンテナのプロパティ名です。
+		//
+		inline static constexpr struct PropName {
+			inline static constexpr auto c_type = _T("apn::workspace::container::type");
+		} c_prop_name;
+
+		//
+		// コンテナのタイプです。
+		//
+		inline static constexpr struct Type {
+			inline static constexpr int32_t c_dock = 1;
+			inline static constexpr int32_t c_float = 2;
+		} c_type;
+
+		//
+		// ウィンドウに関連付けられているコンテナタイプを返します。
+		//
+		inline static int32_t get_type(HWND hwnd)
+		{
+			return (int32_t)::GetProp(hwnd, c_prop_name.c_type);
+		}
+
+		//
+		// 指定されたコンテナタイプをウィンドウに関連付けます。
+		//
+		inline static int32_t set_type(HWND hwnd, int32_t type)
+		{
+			return (int32_t)::SetProp(hwnd, c_prop_name.c_type, (HANDLE)type);
+		}
+
+		//
+		// コンテナのウィンドウクラス名です。
+		//
 		inline static constexpr auto c_class_name = _T("apn::workspace::container");
 
 		//

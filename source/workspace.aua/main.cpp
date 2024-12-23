@@ -12,12 +12,16 @@
 #include "shuttle/shuttle_manager.hpp"
 #include "pane/tab.hpp"
 #include "pane/tav.hpp"
+#include "pane/drawer.hpp"
 #include "pane/pane.hpp"
 #include "pane/root_pane.hpp"
+#include "pane/pane_config_dialog.hpp"
+#include "pane/drawer_config_dialog.hpp"
 #include "sub_process/sub_process.hpp"
 #include "sub_process/console.hpp"
 #include "sub_process/psdtoolkit.hpp"
 #include "sub_process/sub_process_manager.hpp"
+#include "dock/drawer_manager.hpp"
 #include "dock/dock_site.hpp"
 #include "dock/sub_window.hpp"
 #include "dock/layout_list.hpp"
@@ -25,7 +29,8 @@
 #include "hook/menu.hpp"
 #include "hook/window.hpp"
 #include "hook/get_message.hpp"
-#include "hook/mouse.hpp"
+#include "hook/move_cursor.hpp"
+#include "hook/hide_window.hpp"
 #include "hook/program/aviutl.hpp"
 #include "hook/program/exedit.hpp"
 #include "hook/program/vsthost.hpp"
@@ -48,7 +53,7 @@ namespace apn::workspace
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		if (!my::contains(args, L"debug")) my::reset(my::Tracer::logger);
 
 		return &addin;
 	}

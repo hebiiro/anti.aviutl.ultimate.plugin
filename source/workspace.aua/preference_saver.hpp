@@ -29,7 +29,7 @@ namespace apn::workspace
 
 //			if (flags & hive.c_preference_flag.c_config)
 			{
-				write_tav(node, hive.tav);
+				write_tav(node, "tav", hive.tav);
 				set_int(node, "tab_height", hive.tab_height);
 				set_int(node, "tab_space", hive.tab_space);
 				set_int(node, "caption_height", hive.caption_height);
@@ -71,20 +71,43 @@ namespace apn::workspace
 		}
 
 		//
-		// タブを書き込みます。
+		// タブの属性を書き込みます。
 		//
-		void write_tav(n_json& node, Hive::Tav& tav)
+		void write_tav(n_json& tav_node, Hive::Tav& tav)
 		{
 			MY_TRACE_FUNC("");
 
-			// タブの属性を書き込みます。
-			n_json tav_node;
 			set_label(tav_node, "display_mode", tav.display_mode, tav.c_display_mode.labels);
 			set_label(tav_node, "select_mode", tav.select_mode, tav.c_select_mode.labels);
 			set_label(tav_node, "stretch_mode", tav.stretch_mode, tav.c_stretch_mode.labels);
 			set_label(tav_node, "location", tav.location, tav.c_location.labels);
 			set_label(tav_node, "node_align", tav.node_align, tav.c_node_align.labels);
-			set_child_node(node, "tav", tav_node);
+		}
+
+		//
+		// タブの属性を書き込みます。
+		//
+		void write_tav(n_json& node, const std::string& name, Hive::Tav& tav)
+		{
+			MY_TRACE_FUNC("");
+
+			n_json tav_node;
+			write_tav(tav_node, tav);
+			set_child_node(node, name, tav_node);
+		}
+
+		//
+		// ドロワーを読み込みます。
+		//
+		void write_drawer(n_json& drawer_node, Drawer& drawer)
+		{
+			MY_TRACE_FUNC("");
+
+			// ドロワーの属性を書き込みます。
+			set_bool(drawer_node, "inside", drawer.inside);
+
+			// タブの属性を書き込みます。
+			return write_tav(drawer_node, drawer);
 		}
 
 		//
@@ -95,7 +118,36 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// タブの属性を書き込みます。
-			write_tav(node, pane->tav);
+			write_tav(node, "tav", pane->tav);
+
+			// ドロワーを書き込みます。
+			{
+				set_child_nodes(node, "drawer", pane->drawers,
+					[&](n_json& drawer_node, const auto& drawer, size_t i)
+				{
+					// ドロワーが無効の場合は何もしません。
+					if (!drawer) return TRUE;
+
+					// ドロワーの属性を書き込みます。
+					write_drawer(drawer_node, *drawer);
+
+					// タブ項目を書き込みます。
+					set_child_nodes(drawer_node, "shuttle", drawer->nodes,
+						[&](n_json& shuttle_node, const auto& node, size_t i)
+					{
+						// シャトルが取得できる場合は
+						if (auto shuttle = Shuttle::get_pointer(node->hwnd))
+						{
+							// シャトル名を書き込みます。
+							write_shuttle_name(shuttle_node, "name", shuttle->name);
+						}
+
+						return TRUE;
+					});
+
+					return TRUE;
+				});
+			}
 
 			// ペインの属性を書き込みます。
 			auto current = pane->get_current_index();

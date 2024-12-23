@@ -117,6 +117,13 @@ namespace apn::workspace
 		BOOL update_posted = FALSE;
 
 		//
+		// TRUEの場合はトグル選択になります。
+		// トグル選択の場合は選択項目をクリックすると
+		// その項目は非選択状態になります。
+		//
+		BOOL toggle_select = FALSE;
+
+		//
 		// 選択ノードのインデックスです。
 		//
 		int32_t selected_node_index = -1;
@@ -562,7 +569,7 @@ namespace apn::workspace
 		//
 		// タブコントロールが有効の場合はTRUEを返します。
 		//
-		BOOL is_enabled()
+		virtual BOOL is_enabled()
 		{
 			// タブを強制表示する場合は
 			if (hive.show_tab_force)
@@ -837,6 +844,14 @@ namespace apn::workspace
 		}
 
 		//
+		// ノードの数を返します。
+		//
+		int32_t get_node_count() const
+		{
+			return (int32_t)nodes.size();
+		}
+
+		//
 		// 指定されたノードのインデックスを返します。
 		//
 		int32_t get_node_index(const std::shared_ptr<Node>& node) const
@@ -869,6 +884,14 @@ namespace apn::workspace
 			post_update_message();
 
 			return TRUE;
+		}
+
+		//
+		// 選択項目を返します。
+		//
+		std::shared_ptr<Node> get_selected_node()
+		{
+			return (selected_node_index >= 0) ? nodes[selected_node_index] : nullptr;
 		}
 
 		//
@@ -1392,55 +1415,64 @@ namespace apn::workspace
 			// マウス座標にあるタブ項目のインデックスを取得します。
 			auto ht = hittest(point);
 
-			// 選択モードがクリックの場合は
-			if (get_select_mode() == c_select_mode.c_click)
+			// マウスキャプチャ中の場合は
+			if (::GetCapture() == hwnd)
 			{
-				// マウス座標にあるタブ項目がホット状態ではない場合は
-				if (hot_node_index != ht)
-				{
-					// マウス座標にあるタブ項目をホット状態にします。
-					hot_node_index = ht;
-
-					// 再描画します。
-					my::invalidate(hwnd);
-
-					// ホットノードが有効の場合は
-					if (hot_node_index != -1)
-					{
-						// WM_MOUSELEAVEが発行されるようにします。
-						my::track_mouse_event(hwnd);
-					}
-				}
+				// 何もしません。
 			}
-			// 選択モードがホバーの場合は
+			// マウスキャプチャ中ではない場合は
 			else
 			{
-				// マウス座標にタブ項目がある場合は
-				if (ht >= 0)
+				// 選択モードがクリックの場合は
+				if (get_select_mode() == c_select_mode.c_click)
 				{
-					// マウス座標にあるタブ項目が選択状態ではない場合は
-					if (selected_node_index != ht)
+					// マウス座標にあるタブ項目がホット状態ではない場合は
+					if (hot_node_index != ht)
 					{
-						// マウス座標にあるタブ項目を選択状態にします。
-						selected_node_index = ht;
+						// マウス座標にあるタブ項目をホット状態にします。
+						hot_node_index = ht;
 
 						// 再描画します。
 						my::invalidate(hwnd);
 
-						// 親ウィンドウに通知します。
-						notify(TCN_SELCHANGE);
+						// ホットノードが有効の場合は
+						if (hot_node_index != -1)
+						{
+							// WM_MOUSELEAVEが発行されるようにします。
+							my::track_mouse_event(hwnd);
+						}
 					}
 				}
-			}
-
-			// タブコントロールが収縮状態でマウス座標にアイコンがある場合は
-			if (!expanded && ht == c_icon_index)
-			{
-				// 半自動モードの場合は
-				if (get_display_mode() == c_display_mode.c_semi_auto)
+				// 選択モードがホバーの場合は
+				else
 				{
-					// タブコントロールを展開します。
-					expand();
+					// マウス座標にタブ項目がある場合は
+					if (ht >= 0)
+					{
+						// マウス座標にあるタブ項目が選択状態ではない場合は
+						if (selected_node_index != ht)
+						{
+							// マウス座標にあるタブ項目を選択状態にします。
+							selected_node_index = ht;
+
+							// 再描画します。
+							my::invalidate(hwnd);
+
+							// 親ウィンドウに通知します。
+							notify(TCN_SELCHANGE);
+						}
+					}
+				}
+
+				// タブコントロールが収縮状態でマウス座標にアイコンがある場合は
+				if (!expanded && ht == c_icon_index)
+				{
+					// 半自動モードの場合は
+					if (get_display_mode() == c_display_mode.c_semi_auto)
+					{
+						// タブコントロールを展開します。
+						expand();
+					}
 				}
 			}
 
@@ -1527,27 +1559,14 @@ namespace apn::workspace
 			// マウス座標にあるタブ項目のインデックスを取得します。
 			auto ht = hittest(point);
 
-			// マウス座標にタブ項目がある場合は
-			if (ht >= 0)
-			{
-				if (selected_node_index != ht)
-				{
-					// マウス座標にあるタブ項目を選択状態にします。
-					selected_node_index = ht;
+			// マウス座標にあるタブ項目をホット状態にします。
+			hot_node_index = ht;
 
-					// 再描画します。
-					my::invalidate(hwnd);
+			// 再描画します。
+			my::invalidate(hwnd);
 
-					// 親ウィンドウに通知します。
-					notify(TCN_SELCHANGE);
-				}
-			}
-			// マウス座標にアイコンがある場合は
-			else if (ht == c_icon_index)
-			{
-				// 展開・収縮を切り替えます。
-				expanded ? collapse() : expand();
-			}
+			// マウスキャプチャを開始します。
+			::SetCapture(hwnd);
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
@@ -1558,6 +1577,61 @@ namespace apn::workspace
 		LRESULT on_l_button_up(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			MY_TRACE_FUNC("WM_LBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
+
+			// マウスキャプチャを終了します。
+			::ReleaseCapture();
+
+			// マウス座標を取得します。
+			auto point = my::lp_to_pt(lParam);
+
+			// マウス座標にあるタブ項目のインデックスを取得します。
+			auto ht = hittest(point);
+
+			// ホットノード上でマウスアップした場合は
+			if (ht == hot_node_index)
+			{
+				// マウス座標にアイコンがある場合は
+				if (ht == c_icon_index)
+				{
+					// 展開・収縮を切り替えます。
+					expanded ? collapse() : expand();
+				}
+				else
+				{
+					if (toggle_select)
+					{
+						if (ht == selected_node_index) ht = -1;
+
+						// 選択項目とマウス座標にあるタブ項目が異なる場合は
+						if (selected_node_index != ht)
+						{
+							// マウス座標にあるタブ項目を選択状態にします。
+							selected_node_index = ht;
+
+							// 再描画します。
+							my::invalidate(hwnd);
+
+							// 親ウィンドウに通知します。
+							notify(TCN_SELCHANGE);
+						}
+					}
+					else
+					{
+						// マウス座標にタブ項目がある場合は
+						if (ht >= 0 && selected_node_index != ht)
+						{
+							// マウス座標にあるタブ項目を選択状態にします。
+							selected_node_index = ht;
+
+							// 再描画します。
+							my::invalidate(hwnd);
+
+							// 親ウィンドウに通知します。
+							notify(TCN_SELCHANGE);
+						}
+					}
+				}
+			}
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}

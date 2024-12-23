@@ -3,9 +3,9 @@
 namespace apn::workspace::hook
 {
 	//
-	// このクラスはWH_MOUSE_LLをフックします。
+	// このクラスはマウスカーソル移動イベントをフックします。
 	//
-	inline struct Mouse
+	inline struct MoveCursor
 	{
 		my::win_event_hook::unique_ptr<> hook;
 
@@ -43,12 +43,11 @@ namespace apn::workspace::hook
 		//
 		// フックプロシージャです。
 		//
-		static void CALLBACK hook_proc(HWINEVENTHOOK hook, DWORD event, HWND hwnd,
-			LONG object_id, LONG child_id, DWORD event_thread_id, DWORD event_time)
+		inline static void CALLBACK hook_proc(HWINEVENTHOOK hook, DWORD event,
+			HWND hwnd, LONG object_id, LONG child_id, DWORD event_thread_id, DWORD event_time)
 		{
 			if (event == EVENT_OBJECT_LOCATIONCHANGE && object_id == OBJID_CURSOR)
 			{
-#if 1
 				// マウスカーソルの座標を取得します。
 				auto point = my::get_cursor_pos();
 //				MY_TRACE_POINT(point);
@@ -57,13 +56,26 @@ namespace apn::workspace::hook
 				auto hwnd = ::WindowFromPoint(point);
 //				MY_TRACE_HWND(hwnd);
 
+				// ウィンドウのプロセスIDを取得します。
+				auto pid = DWORD {};
+				auto tid = ::GetWindowThreadProcessId(hwnd, &pid);
+//				MY_TRACE_INT(pid);
+
+				// プロセス外のウィンドウの場合は何もしません。
+				if (pid != ::GetCurrentProcessId())
+				{
+//					MY_TRACE("プロセス外ウィンドウなので無視します\n");
+
+					return;
+				}
+
 				// ウィンドウがタブコントロールの場合は
 				if (auto pane = Pane::get_pane(hwnd))
 				{
 //					MY_TRACE_HEX(pane);
 
 					// そのタブコントロールに処理させます。
-					pane->tav.on_global_mouse_move(point);
+					pane->on_global_mouse_move(hwnd, point);
 				}
 				// ウィンドウがタブコントロールではない場合は
 				else
@@ -71,23 +83,7 @@ namespace apn::workspace::hook
 					// すべてのタブコントロールに処理させます。
 					Tav::process_global_mouse_move(point);
 				}
-#else
-				long x = 0, y = 0, w = 0, h = 0;
-
-				IAccessible* acc = nullptr;
-				VARIANT child = {};
-				auto hr = ::AccessibleObjectFromEvent(hwnd, object_id, child_id, &acc, &child);
-				if (acc)
-				{
-					hr = acc->accLocation(&x, &y, &w, &h, child);
-
-					acc->Release();
-				}
-
-				Tav::process_global_mouse_move(hwnd,
-					SUCCEEDED(hr) ? POINT { x, y } : my::get_cursor_pos());
-#endif
 			}
 		}
-	} mouse;
+	} move_cursor;
 }

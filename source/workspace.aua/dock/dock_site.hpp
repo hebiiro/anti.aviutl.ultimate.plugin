@@ -33,16 +33,34 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_undock = 1106;
 			inline static constexpr uint32_t c_is_solid = 1107;
 			inline static constexpr uint32_t c_pane_config = 1108;
+			inline static constexpr struct DrawerConfig {
+				inline static constexpr uint32_t c_begin = 1110;
+				inline static constexpr uint32_t c_top = 1110;
+				inline static constexpr uint32_t c_bottom = 1111;
+				inline static constexpr uint32_t c_left = 1112;
+				inline static constexpr uint32_t c_right = 1113;
+				inline static constexpr uint32_t c_end = 1113;
+			} c_drawer_config;
 			inline static constexpr struct Shuttle {
 				inline static constexpr uint32_t c_begin = 2000;
 				inline static constexpr uint32_t c_end = 3000;
 			} c_shuttle;
 		} c_command_id;
 
+		//
+		// ルートペインを取得するためのプロパティ名です。
+		//
 		inline static constexpr auto c_prop_name = _T("apn::dock_site::root_pane");
+
+		//
+		// ホットボーダーを持つペインです。
+		//
 		inline static std::shared_ptr<Pane> hot_border_pane;
 
-		LPARAM mouse_move_pos = -1; // WM_MOUSEMOVEのLPARAMです。
+		//
+		// WM_MOUSEMOVEのLPARAMです。
+		//
+		LPARAM mouse_move_pos = -1;
 
 		//
 		// ルートペインを作成し、ウィンドウに関連付けます。
@@ -301,21 +319,21 @@ namespace apn::workspace
 			// メニューにシャトルの一覧を追加します。
 			add_shuttle_list(menu.get(), c_command_id.c_shuttle.c_begin,
 				[&](HMENU sub_menu, UINT_PTR id, auto shuttle)
+			{
+				// シャトルのタブが存在するなら
+				if (pane->find_tab(shuttle.get()) != -1)
 				{
-					// シャトルのタブが存在するなら
-					if (pane->find_tab(shuttle.get()) != -1)
-					{
-						// メニューアイテムにチェックを入れます。
-						::CheckMenuItem(sub_menu, id, MF_CHECKED);
-					}
+					// メニューアイテムにチェックを入れます。
+					::CheckMenuItem(sub_menu, id, MF_CHECKED);
+				}
 
-					// ドッキング不可能なら
-					if (!can_docking(dock_site, *shuttle))
-					{
-						// メニューアイテムを無効にします。
-						::EnableMenuItem(sub_menu, id, MF_DISABLED | MF_GRAYED);
-					}
-				});
+				// ドッキング不可能なら
+				if (!can_docking(dock_site, *shuttle))
+				{
+					// メニューアイテムを無効にします。
+					::EnableMenuItem(sub_menu, id, MF_DISABLED | MF_GRAYED);
+				}
+			});
 
 			auto append_separator = [&]() {
 				::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
@@ -366,10 +384,17 @@ namespace apn::workspace
 			append_disable_menu(is_front, c_command_id.c_move_to_left, _T("左に移動する"));
 			append_disable_menu(is_back, c_command_id.c_move_to_right, _T("右に移動する"));
 			append_check_menu(pane->is_border_locked, c_command_id.c_is_border_locked, _T("ボーダーをロックする"));
-			// // ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
+			// ペインのオーナーがサブウィンドウではない場合はこのメニューアイテムを無効化します。
 			append_disable_menu(!is_sub_window, c_command_id.c_rename_sub_window, _T("名前を変更"));
 			append_check_menu(root->is_solid, c_command_id.c_is_solid, _T("レイアウトを固定化"));
 			append_menu(c_command_id.c_pane_config, _T("ペインとタブの設定"));
+			// ドロワーの設定メニューを作成します。
+			my::menu::unique_ptr<> drawer_config_menu(::CreatePopupMenu());
+			::AppendMenu(menu.get(), MF_POPUP, (UINT_PTR)drawer_config_menu.get(), _T("ドロワーの設定"));
+			::AppendMenu(drawer_config_menu.get(), MF_STRING, c_command_id.c_drawer_config.c_top, _T("上側"));
+			::AppendMenu(drawer_config_menu.get(), MF_STRING, c_command_id.c_drawer_config.c_bottom, _T("下側"));
+			::AppendMenu(drawer_config_menu.get(), MF_STRING, c_command_id.c_drawer_config.c_left, _T("左側"));
+			::AppendMenu(drawer_config_menu.get(), MF_STRING, c_command_id.c_drawer_config.c_right, _T("右側"));
 			append_separator();
 			// ドッキングしているシャトルが存在しない場合はこのメニューアイテムを無効化します。
 			append_disable_menu(c == 0, c_command_id.c_undock, _T("ドッキングを解除"));
@@ -407,11 +432,11 @@ namespace apn::workspace
 					auto index = ht;
 
 					// インデックスが無効の場合はカレントインデックスを使用します。
-					if (index == -1)
+					if (index < 0)
 						index = pane->get_current_index();
 
 					// インデックスが有効の場合は
-					if (index != -1)
+					if (index >= 0)
 					{
 						// ドッキングしているシャトルが存在する場合は
 						if (auto shuttle = pane->get_shuttle(index))
@@ -430,7 +455,13 @@ namespace apn::workspace
 				}
 			}
 
-			if (id >= c_command_id.c_shuttle.c_begin && id <= c_command_id.c_shuttle.c_end)
+			if (id >= c_command_id.c_drawer_config.c_begin && id <= c_command_id.c_drawer_config.c_end)
+			{
+				DrawerConfigDialog dialog(pane, id - c_command_id.c_drawer_config.c_begin, dock_site);
+
+				dialog.do_modal();
+			}
+			else if (id >= c_command_id.c_shuttle.c_begin && id <= c_command_id.c_shuttle.c_end)
 			{
 				// ユーザーが指定したシャトルをクリックされたペインにドッキングさせます。
 
@@ -454,6 +485,136 @@ namespace apn::workspace
 
 			// ペインの状態が変更されたのでレイアウトを更新します。
 			pane->update_origin();
+		}
+
+		//
+		// ドロワー操作用のメニューを表示します。
+		//
+		inline static void show_drawer_menu(HWND dock_site, const std::shared_ptr<Pane>& pane, const std::shared_ptr<Drawer>& drawer)
+		{
+			// ドロワーのインデックスを取得します。
+			auto drawer_index = pane->get_drawer_index(*drawer);
+			if (drawer_index == pane->c_drawer_index.c_none) return;
+
+			// タブ項目の数を取得します。
+			auto c = drawer->get_node_count();
+
+			// マウスカーソル座標を取得します。
+			auto cursor_pos = my::get_cursor_pos();
+
+			// マウスカーソル座標をクライアント座標に変換します。
+			auto point = cursor_pos;
+			my::map_window_points(nullptr, *drawer, &point);
+
+			// マウスカーソル位置にあるタブ項目を取得します。
+			auto ht = drawer->hittest(point);
+
+			// メニューを作成します。
+			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+
+			// メニューにシャトルの一覧を追加します。
+			add_shuttle_list(menu.get(), c_command_id.c_shuttle.c_begin,
+				[&](HMENU sub_menu, UINT_PTR id, auto shuttle)
+			{
+				// シャトルのタブ項目が存在するなら
+				if (drawer->find_node(*shuttle) != -1)
+				{
+					// メニューアイテムにチェックを入れます。
+					::CheckMenuItem(sub_menu, id, MF_CHECKED);
+				}
+
+				// シャトルがドッキングしている場合は
+				if (shuttle->is_docking())
+				{
+					// メニューアイテムを無効にします。
+					::EnableMenuItem(sub_menu, id, MF_DISABLED | MF_GRAYED);
+				}
+			});
+
+			auto append_separator = [&]() {
+				::AppendMenu(menu.get(), MF_SEPARATOR, -1, nullptr);
+			};
+
+			auto append_menu = [&](uint32_t id, LPCTSTR text) {
+				::AppendMenu(menu.get(), MF_STRING, id, text);
+			};
+
+			auto check_menu = [&](uint32_t id) {
+				::CheckMenuItem(menu.get(), id, MF_CHECKED);
+			};
+
+			auto disable_menu = [&](uint32_t id) {
+				::EnableMenuItem(menu.get(), id, MF_GRAYED | MF_DISABLED);
+			};
+
+			auto append_disable_menu = [&](BOOL disable, uint32_t id, LPCTSTR text) {
+				append_menu(id, text); if (disable) disable_menu(id);
+			};
+
+			auto append_check_menu = [&](BOOL check, uint32_t id, LPCTSTR text) {
+				append_menu(id, text); if (check) check_menu(id);
+			};
+
+			auto is_front = ht <= 0 || ht > c - 1;
+			auto is_back = ht < 0 || ht >= c - 1;
+
+			append_separator();
+			append_disable_menu(is_front, c_command_id.c_move_to_front, _T("先頭に移動"));
+			append_disable_menu(is_back, c_command_id.c_move_to_back, _T("末尾に移動"));
+			append_disable_menu(is_front, c_command_id.c_move_to_left, _T("左に移動"));
+			append_disable_menu(is_back, c_command_id.c_move_to_right, _T("右に移動"));
+			append_disable_menu(ht < 0, c_command_id.c_undock, _T("削除"));
+			append_separator();
+			append_menu(c_command_id.c_drawer_config.c_begin + drawer_index, _T("ドロワーの設定"));
+
+			auto id = ::TrackPopupMenuEx(menu.get(),
+				TPM_NONOTIFY | TPM_RETURNCMD,
+				cursor_pos.x, cursor_pos.y, dock_site, nullptr);
+			if (!id) return;
+
+			switch (id)
+			{
+			case c_command_id.c_move_to_front: drawer->move_node(ht, 0); break;
+			case c_command_id.c_move_to_back: drawer->move_node(ht, c - 1); break;
+			case c_command_id.c_move_to_left: drawer->move_node(ht, ht - 1); break;
+			case c_command_id.c_move_to_right: drawer->move_node(ht, ht + 1); break;
+			case c_command_id.c_undock:
+				{
+					// カーソルの位置にあるタブ項目のインデックスを取得します。
+					auto index = ht;
+
+					// インデックスが有効の場合は
+					if (index >= 0)
+					{
+						// タブ項目を削除します。
+						drawer->erase_node(index);
+					}
+
+					break;
+				}
+			}
+
+			if (id >= c_command_id.c_drawer_config.c_begin && id <= c_command_id.c_drawer_config.c_end)
+			{
+				DrawerConfigDialog dialog(pane, id - c_command_id.c_drawer_config.c_begin, dock_site);
+
+				dialog.do_modal();
+			}
+			else if (id >= c_command_id.c_shuttle.c_begin && id <= c_command_id.c_shuttle.c_end)
+			{
+				// メニューアイテムのテキストを取得します。
+				auto text = my::get_menu_item_text(menu.get(), id, MF_BYCOMMAND);
+				MY_TRACE_STR(text);
+
+				// テキストからシャトルを取得します。
+				if (auto shuttle = shuttle_manager.get(text))
+				{
+					// シャトルをドロワーに追加します。
+					auto index = pane->insert_shuttle(drawer, shuttle.get());
+				}
+			}
+
+			my::invalidate(*drawer);
 		}
 
 		//
@@ -489,6 +650,54 @@ namespace apn::workspace
 		void update_dock_site()
 		{
 			update_dock_site(get_workarea());
+		}
+
+		//
+		// コントロールからドロワーを取得して返します。
+		//
+		inline static std::shared_ptr<Drawer> get_drawer(Pane* pane, HWND control)
+		{
+			// ドロワーインデックスが取得できた場合は
+			auto drawer_index = pane->get_drawer_index(control);
+			if (drawer_index != pane->c_drawer_index.c_none)
+			{
+				// ドロワーを返します。
+				return pane->drawers[drawer_index];
+			}
+
+			// それ以外の場合はnullptrを返します。
+			return nullptr;
+		}
+
+		//
+		// ドロワーの選択項目からシャトルを取得して返します。
+		//
+		inline static Shuttle* get_shuttle(const std::shared_ptr<Drawer>& drawer)
+		{
+			// ドロワーの選択項目が有効の場合は
+			if (drawer->selected_node_index >= 0)
+			{
+				// ドロワーの選択項目からシャトルを取得して返します。
+				return Shuttle::get_pointer(drawer->nodes[drawer->selected_node_index]->hwnd);
+			}
+
+			// それ以外の場合はnullptrを返します。
+			return nullptr;
+		}
+
+		//
+		// ドロワーの選択項目が切り替わったときの処理です。
+		//
+		BOOL on_drawer_sel_change(const std::shared_ptr<Drawer>& drawer)
+		{
+			// シャトルを取得します。
+			auto shuttle = get_shuttle(drawer);
+			if (!shuttle) return FALSE;
+
+			// シャトルがドッキング状態の場合は何もしません。
+			if (shuttle->is_docking()) return FALSE;
+
+			return TRUE;
 		}
 
 		//
@@ -546,23 +755,44 @@ namespace apn::workspace
 						}
 					case NM_RCLICK:
 						{
-							// タブからペインを取得します。
+							// コントロールに関連付けられているペインを取得します。
 							auto pane = Pane::get_pane(header->hwndFrom);
 							if (!pane) break;
 
-							// タブ上で右クリックが発生した場合はペインメニューを表示します。
-							show_pane_menu(hwnd, pane->shared_from_this());
+							// コントロールがタブコントロールの場合は
+							if (pane->tav == header->hwndFrom)
+							{
+								// タブコントロール上で右クリックが発生した場合は
+								// ペインメニューを表示します。
+								show_pane_menu(hwnd, pane->shared_from_this());
+							}
+							// コントロールがドロワーコントロールの場合は
+							else if (auto drawer = get_drawer(pane, header->hwndFrom))
+							{
+								// ドロワーメニューを表示します。
+								show_drawer_menu(hwnd, pane->shared_from_this(), drawer);
+							}
 
 							break;
 						}
 					case TCN_SELCHANGE:
 						{
-							// タブからペインを取得します。
+							// コントロールに関連付けられているペインを取得します。
 							auto pane = Pane::get_pane(header->hwndFrom);
 							if (!pane) break;
 
-							// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
-							pane->update_origin();
+							// コントロールがタブコントロールの場合は
+							if (pane->tav == header->hwndFrom)
+							{
+								// カレントシャトルが切り替わったので、ペインの表示状態を更新します。
+								pane->update_origin();
+							}
+							// コントロールがドロワーコントロールの場合は
+							else if (auto drawer = get_drawer(pane, header->hwndFrom))
+							{
+								// ドロワーの選択項目が切り替わったので、専用ハンドラで処理します。
+								drawer_manager.on_drawer_sel_change(drawer);
+							}
 
 							break;
 						}
@@ -719,13 +949,13 @@ namespace apn::workspace
 					if (!pane) break;
 
 					// ペインのファセットを取得します。
-					if (auto facet = pane->get_facet())
+					if (auto caption_facet = pane->get_caption_facet())
 					{
 						// キャプション領域を取得します。
-						auto caption_rc = facet->get_caption_rect(pane.get());
+						auto caption_rc = caption_facet->get_caption_rect(pane.get());
 
 						// メニュー領域を取得します。
-						auto menu_rc = facet->get_menu_rect(pane.get(), &caption_rc);
+						auto menu_rc = caption_facet->get_menu_rect(pane.get(), &caption_rc);
 
 						// メニュー領域で左クリックした場合は
 						if (::PtInRect(&menu_rc, point))
@@ -819,11 +1049,11 @@ namespace apn::workspace
 						if (!pane) break;
 
 						// ペインのファセットを取得します。
-						auto facet = pane->get_facet();
-						if (!facet) break;
+						auto caption_facet = pane->get_caption_facet();
+						if (!caption_facet) break;
 
 						// ペインのキャプション領域を取得します。
-						auto caption_rc = facet->get_caption_rect(pane.get());
+						auto caption_rc = caption_facet->get_caption_rect(pane.get());
 						if (::PtInRect(&caption_rc, point))
 						{
 							// ペインのキャプションが
@@ -968,150 +1198,5 @@ namespace apn::workspace
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
-
-		//
-		// このクラスはペインの設定を変更するためのダイアログです。
-		//
-		struct PaneConfigDialog : my::Dialog
-		{
-			//
-			// 編集対象のペインです。
-			//
-			std::shared_ptr<Pane> pane;
-
-			//
-			// コンストラクタです。
-			//
-			PaneConfigDialog(const std::shared_ptr<Pane>& pane, HWND parent)
-				: pane(pane)
-			{
-				create(hive.instance, MAKEINTRESOURCE(IDD_PANE_CONFIG), parent);
-			}
-
-			//
-			// ペインのサイズ(エディットボックス)を更新します。
-			//
-			void update_pane_size_editbox()
-			{
-				auto origin = get_combobox_index(IDC_PANE_ORIGIN);
-				auto border_pos = get_int(IDC_PANE_BORDER_POS);
-
-				auto top_left = int32_t {};
-				auto bottom_right = int32_t {};
-
-				auto w = (pane->split_mode == pane->c_split_mode.c_vert) ?
-					my::get_width(pane->position) : my::get_height(pane->position);
-
-				if (origin == pane->c_origin.c_top_left)
-				{
-					top_left = border_pos;
-					bottom_right = w - (border_pos + hive.border_width);
-				}
-				else
-				{
-					top_left = w - (border_pos - hive.border_width);
-					bottom_right = border_pos;
-				}
-
-				set_int(IDC_PANE_TOP_LEFT, top_left);
-				set_int(IDC_PANE_BOTTOM_RIGHT, bottom_right);
-			}
-
-			//
-			// ダイアログを表示します。
-			//
-			int do_modal()
-			{
-				auto x = pane->position.left;
-				auto y = pane->position.top;
-				auto w = my::get_width(pane->position);
-				auto h = my::get_height(pane->position);
-
-				init_combobox(IDC_PANE_ORIGIN, _T("左上"), _T("右下"));
-				init_combobox(IDC_CAPTION_MODE, _T("非表示"), _T("表示"));
-				init_combobox(IDC_CAPTION_LOCATION, _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
-				init_combobox(IDC_TAV_DISPLAY_MODE, _T("デフォルト"), _T("手動"), _T("半自動"), _T("自動"), _T("全自動"));
-				init_combobox(IDC_TAV_SELECT_MODE, _T("デフォルト"), _T("クリック"), _T("ホバー"));
-				init_combobox(IDC_TAV_STRETCH_MODE, _T("デフォルト"), _T("内側"), _T("外側"));
-				init_combobox(IDC_TAV_LOCATION, _T("デフォルト"), _T("左辺"), _T("上辺"), _T("右辺"), _T("下辺"));
-				init_combobox(IDC_TAV_NODE_ALIGN, _T("デフォルト"), _T("左または上"), _T("右または下"), _T("中央"));
-
-				set_int(IDC_PANE_X, x);
-				set_int(IDC_PANE_Y, y);
-				set_int(IDC_PANE_W, w);
-				set_int(IDC_PANE_H, h);
-				set_combobox_index(IDC_PANE_ORIGIN, pane->origin);
-				set_combobox_index(IDC_CAPTION_MODE, pane->caption_mode);
-				set_combobox_index(IDC_CAPTION_LOCATION, pane->caption_location - 1);
-				set_int(IDC_PANE_BORDER_POS, pane->border);
-				set_combobox_index(IDC_TAV_DISPLAY_MODE, pane->tav.display_mode);
-				set_combobox_index(IDC_TAV_SELECT_MODE, pane->tav.select_mode);
-				set_combobox_index(IDC_TAV_STRETCH_MODE, pane->tav.stretch_mode);
-				set_combobox_index(IDC_TAV_LOCATION, pane->tav.location);
-				set_combobox_index(IDC_TAV_NODE_ALIGN, pane->tav.node_align);
-
-				auto result = __super::do_modal();
-				if (result != IDOK) return result;
-
-				auto origin = pane->origin;
-				auto caption_mode = pane->caption_mode;
-				auto caption_location = pane->caption_location;
-				auto border = pane->border;
-				get_combobox_index(IDC_PANE_ORIGIN, origin);
-				get_combobox_index(IDC_CAPTION_MODE, caption_mode);
-				get_combobox_index(IDC_CAPTION_LOCATION, caption_location);
-				get_int(IDC_PANE_BORDER_POS, border);
-				get_combobox_index(IDC_TAV_DISPLAY_MODE, pane->tav.display_mode);
-				get_combobox_index(IDC_TAV_SELECT_MODE, pane->tav.select_mode);
-				get_combobox_index(IDC_TAV_STRETCH_MODE, pane->tav.stretch_mode);
-				get_combobox_index(IDC_TAV_LOCATION, pane->tav.location);
-				get_combobox_index(IDC_TAV_NODE_ALIGN, pane->tav.node_align);
-
-				pane->set_origin(origin);
-				pane->set_caption_mode(caption_mode);
-				pane->set_caption_location(caption_location + 1);
-				pane->border = border;
-
-				return result;
-			}
-
-			//
-			// ダイアログプロシージャです。
-			//
-			virtual INT_PTR on_dlg_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
-			{
-				switch (message)
-				{
-				case WM_COMMAND:
-					{
-						auto id = LOWORD(wParam);
-						auto code = HIWORD(wParam);
-						auto control = (HWND)lParam;
-
-						switch (id)
-						{
-						case IDC_PANE_ORIGIN:
-							{
-								if (code == CBN_SELCHANGE)
-									update_pane_size_editbox();
-
-								break;
-							}
-						case IDC_PANE_BORDER_POS:
-							{
-								if (code == EN_CHANGE)
-									update_pane_size_editbox();
-
-								break;
-							}
-						}
-
-						break;
-					}
-				}
-
-				return __super::on_dlg_proc(hwnd, message, wParam, lParam);
-			}
-		};
 	};
 }

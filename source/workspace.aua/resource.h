@@ -5,6 +5,7 @@
 #define IDD_CONFIG                      101
 #define IDD_RENAME_SHUTTLE              102
 #define IDD_PANE_CONFIG                 103
+#define IDD_DRAWER_CONFIG               104
 #define IDC_NEW_NAME                    1000
 #define IDC_FILL_COLOR                  1018
 #define IDC_BORDER_COLOR                1019
@@ -57,7 +58,8 @@
 #define IDC_CAPTION_LOCATION            2030
 #define IDC_CAPTION_MODE_STAT           2031
 #define IDC_CAPTION_MODE                2032
-#define IDC_CAPTION_HEIGHT_STAT         3003
+#define IDC_DRAWER_ENABLED              2033
+#define IDC_DRAWER_INSIDE               2034
 
 // Next default values for new objects
 // 
@@ -66,7 +68,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         3004
+#define _APS_NEXT_CONTROL_VALUE         3005
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

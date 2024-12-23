@@ -126,7 +126,7 @@
     <ClInclude Include="pane\tav.hpp">
       <Filter>element\pane</Filter>
     </ClInclude>
-    <ClInclude Include="hook\mouse.hpp">
+    <ClInclude Include="hook\move_cursor.hpp">
       <Filter>hook</Filter>
     </ClInclude>
     <ClInclude Include="dock\dock_site.hpp">
@@ -140,6 +140,21 @@
     </ClInclude>
     <ClInclude Include="dock\sub_window.hpp">
       <Filter>element\dock</Filter>
+    </ClInclude>
+    <ClInclude Include="pane\drawer.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="dock\drawer_manager.hpp">
+      <Filter>element\dock</Filter>
+    </ClInclude>
+    <ClInclude Include="pane\drawer_config_dialog.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="pane\pane_config_dialog.hpp">
+      <Filter>element\pane</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\hide_window.hpp">
+      <Filter>hook</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
