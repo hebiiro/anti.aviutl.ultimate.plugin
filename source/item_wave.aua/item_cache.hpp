@@ -130,7 +130,7 @@ namespace apn::item_wave
 			}
 
 			// ソート済みアイテムを走査します。
-			auto c = magi.exin.get_current_scene_object_count();
+			auto c = magi.exin.get_sorted_object_count();
 			for (decltype(c) i = 0; i < c; i++)
 			{
 				// アイテムを取得します。

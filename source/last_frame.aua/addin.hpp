@@ -107,7 +107,7 @@ namespace apn::last_frame
 			auto frame_end_number = -1000;
 			{
 				// オブジェクトの個数を取得します。
-				auto c = magi.exin.get_current_scene_object_count();
+				auto c = magi.exin.get_sorted_object_count();
 
 				for (decltype(c) i = 0; i < c; i++)
 				{

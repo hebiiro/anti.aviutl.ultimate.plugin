@@ -198,7 +198,7 @@ namespace apn::text_split
 		//
 		inline static int32_t get_sorted_object_index(auto object)
 		{
-			auto c = magi.exin.get_current_scene_object_count();
+			auto c = magi.exin.get_sorted_object_count();
 
 			for (decltype(c) i = 0; i < c; i++)
 			{
