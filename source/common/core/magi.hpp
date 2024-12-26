@@ -106,6 +106,14 @@ namespace apn
 		}
 
 		//
+		// 指定されたモジュールに対応するデフォルトのコンフィグのフルパスを返します。
+		//
+		std::wstring get_default_config_file_name(HINSTANCE instance)
+		{
+			return get_assets_file_name(L"default" / my::get_module_file_name(instance).filename() += L".json");
+		}
+
+		//
 		// 指定されたコンフィグのフルパスを返します。
 		//
 		std::wstring get_config_file_name(const std::wstring& name) const
