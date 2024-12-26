@@ -269,6 +269,7 @@ const c_default_json = {
 		{ "active": "true", "display_name": "フォント選択", "name": "font_select", "args": "" },
 		{ "active": "true", "display_name": "メモ帳", "name": "note", "args": "" },
 		{ "active": "true", "display_name": "クリップボード画像表示", "name": "clipboard_viewer", "args": "" },
+		{ "active": "true", "display_name": "テキスト一括編集", "name": "one_for_text", "args": "" },
 		{ "name": "" },
 		{ "active": "true", "display_name": "アイテム名常時表示", "name": "namecage", "args": "" },
 		{ "active": "true", "display_name": "最終フレーム自動調整", "name": "last_frame", "args": "" },

@@ -169,6 +169,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reboot.aua", "reboot.aua\re
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reboot.exe", "reboot.exe\reboot.exe.vcxproj", "{F3010617-7A4C-4424-AA4F-00F55E1ABB96}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "one_for_text.aua", "one_for_text.aua\one_for_text.aua.vcxproj", "{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -513,6 +515,14 @@ Global
 		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x64.Build.0 = Release|x64
 		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x86.ActiveCfg = Release|Win32
 		{F3010617-7A4C-4424-AA4F-00F55E1ABB96}.Release|x86.Build.0 = Release|Win32
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Debug|x64.ActiveCfg = Debug|x64
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Debug|x64.Build.0 = Debug|x64
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Debug|x86.ActiveCfg = Debug|Win32
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Debug|x86.Build.0 = Debug|Win32
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Release|x64.ActiveCfg = Release|x64
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Release|x64.Build.0 = Release|x64
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Release|x86.ActiveCfg = Release|Win32
+		{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
