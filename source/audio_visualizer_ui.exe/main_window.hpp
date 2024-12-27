@@ -181,6 +181,13 @@ namespace apn::audio_visualizer::ui
 					MY_TRACE_HEX(file_mapping.get());
 					if (!file_mapping) break;
 
+					if (hive.lock_count)
+					{
+						MY_TRACE("ロック中なのでスキップします\n");
+
+						break;
+					}
+
 					// 音声アーティファクトを取得します。
 					my::SharedMemory<share::AudioArtifact> audio_artifact(file_mapping.get());
 					MY_TRACE_HEX(audio_artifact.get());

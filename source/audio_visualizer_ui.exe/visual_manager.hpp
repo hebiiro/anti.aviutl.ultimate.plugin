@@ -160,9 +160,8 @@ namespace apn::audio_visualizer::ui
 				// ビジュアルを取得します。
 				auto& visual = pair.second;
 
-				// ビジュアルエディタが表示されている場合は何もしません。
-				// (何故か操作不能になってしまうので)
-				if (::IsWindowVisible(visual->editor))
+				// ビジュアルが非表示の場合は何もしません。
+				if (!::IsWindowVisible(*visual))
 					continue;
 
 				// ウェブメッセージをビジュアルのスクリプトに送信します。

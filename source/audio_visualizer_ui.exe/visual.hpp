@@ -109,6 +109,112 @@ namespace apn::audio_visualizer::ui
 					}));
 			}
 
+			void add_menu_items(HMENU hPopupMenu, wil::com_ptr<ICoreWebView2ContextMenuItemCollection> items)
+			{
+				auto item_count = UINT32 {};
+				items->get_Count(&item_count);
+				for (decltype(item_count) i = 0; i < item_count; i++)
+				{
+					wil::com_ptr<ICoreWebView2ContextMenuItem> current;
+					items->GetValueAtIndex(i, &current);
+
+					auto kind = COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND {};
+					current->get_Kind(&kind);
+
+					wil::unique_cotaskmem_string label;
+					current->get_Label(&label);
+					std::wstring label_string = label.get();
+
+					wil::unique_cotaskmem_string shortcut;
+					current->get_ShortcutKeyDescription(&shortcut);
+					std::wstring shortcut_string = shortcut.get();
+
+					if (!shortcut_string.empty())
+					{
+						// L"\t" will right align the shortcut string
+						label_string = label_string + L"\t" + shortcut_string;
+					}
+
+					auto is_enabled = BOOL {};
+					current->get_IsEnabled(&is_enabled);
+
+					auto is_checked = BOOL {};
+					current->get_IsChecked(&is_checked);
+
+					auto command_id = INT32 {};
+					current->get_CommandId(&command_id);
+
+					// セパレータの場合は
+					if (kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR)
+					{
+						::AppendMenu(hPopupMenu, MF_SEPARATOR, 0, nullptr);
+					}
+					// サブメニューの場合は
+					else if (kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SUBMENU)
+					{
+						wil::com_ptr<ICoreWebView2ContextMenuItemCollection> sub_menu_items;
+						current->get_Children(&sub_menu_items);
+
+						auto sub_menu = ::CreatePopupMenu();
+						add_menu_items(sub_menu, sub_menu_items);
+
+						::AppendMenu(hPopupMenu, MF_POPUP, (UINT_PTR)sub_menu, label_string.c_str());
+					}
+					// それ以外の場合は
+					else if (
+						kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND ||
+						kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX ||
+						kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_RADIO)
+					{
+						auto flags = UINT {};
+						if (!is_enabled) flags |= MF_GRAYED;
+						if (is_checked) flags |= MF_CHECKED;
+
+						::AppendMenu(hPopupMenu, flags, command_id, label_string.c_str());
+					}
+#if 0
+					else if (kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND)
+					{
+						if (is_enabled)
+						{
+							::AppendMenu(hPopupMenu, MF_BYPOSITION | MF_STRING, command_id, label_string.c_str());
+						}
+						else
+						{
+							::AppendMenu(hPopupMenu, MF_GRAYED | MF_STRING, command_id, label_string.c_str());
+						}
+					}
+					else if (
+						kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX ||
+						kind == COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_RADIO)
+					{
+						if (is_enabled)
+						{
+							if (is_checked)
+							{
+								::AppendMenu(hPopupMenu, MF_CHECKED | MF_STRING, command_id, label_string.c_str());
+							}
+							else
+							{
+								::AppendMenu(hPopupMenu, MF_BYPOSITION | MF_STRING, command_id, label_string.c_str());
+							}
+						}
+						else
+						{
+							if (is_checked)
+							{
+								::AppendMenu(hPopupMenu, MF_CHECKED | MF_GRAYED | MF_STRING, command_id, label_string.c_str());
+							}
+							else
+							{
+								::AppendMenu(hPopupMenu, MF_GRAYED | MF_STRING, command_id, label_string.c_str());
+							}
+						}
+					}
+#endif
+				}
+			}
+
 			//
 			// この仮想関数は、スクリプトからメッセージが発行されたときに呼ばれます。
 			//
@@ -151,7 +257,7 @@ namespace apn::audio_visualizer::ui
 					wil::com_ptr<ICoreWebView2ContextMenuItemCollection> items;
 					args->get_MenuItems(&items);
 
-					UINT32 item_count = 0;
+					auto item_count = UINT32 {};
 					items->get_Count(&item_count);
 
 					wil::com_ptr<ICoreWebView2ContextMenuItem> separator_menu_item;
@@ -173,8 +279,10 @@ namespace apn::audio_visualizer::ui
 						Callback<ICoreWebView2CustomItemSelectedEventHandler>(
 						[this](ICoreWebView2ContextMenuItem* sender, IUnknown* args) -> HRESULT
 					{
-						::PostMessage(visual, hive.c_message.c_select_scheme, 0, 0);
-
+						run_async([this] {
+							// ユーザーにスキームの選択を促します。
+							visual.select_scheme();
+						});
 						return S_OK;
 					}).Get(), nullptr);
 					items->InsertValueAtIndex(item_count++, select_contents_file_menu_item.get());
@@ -190,25 +298,46 @@ namespace apn::audio_visualizer::ui
 						Callback<ICoreWebView2CustomItemSelectedEventHandler>(
 						[this](ICoreWebView2ContextMenuItem* sender, IUnknown* args) -> HRESULT
 					{
-
-						::PostMessage(visual, hive.c_message.c_show_visual_editor, 0, 0);
-
+						run_async([this] {
+							// ビジュアルエディタを表示します。
+							visual.show_visual_editor();
+						});
 						return S_OK;
 					}).Get(), nullptr);
 					items->InsertValueAtIndex(item_count++, show_visual_editor_menu_item.get());
 
+					auto show_menu = [this, args = wil::com_ptr<ICoreWebView2ContextMenuRequestedEventArgs>(args)]
+					{
+						MY_TRACE("コンテキストメニューを表示します\n");
+
+						Hive::Locker locker;
+
+						args->put_Handled(TRUE);
+
+						wil::com_ptr<ICoreWebView2ContextMenuItemCollection> items;
+						args->get_MenuItems(&items);
+
+						my::menu::unique_ptr<> menu(::CreatePopupMenu());
+						add_menu_items(menu.get(), items);
+
+						auto point = my::get_cursor_pos();
+						auto id = ::TrackPopupMenuEx(menu.get(),
+							TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this, nullptr);
+						if (id) args->put_SelectedCommandId(id);
+
+						MY_TRACE("コンテキストメニューが非表示になりました\n");
+					};
+
+					wil::com_ptr<ICoreWebView2Deferral> deferral;
+					args->GetDeferral(&deferral);
+
+					run_async([deferral, show_menu] () {
+						show_menu();
+						deferral->Complete();
+					});
+
 					return S_OK;
 				}).Get(), &context_menu_requested_token);
-
-				MY_TRACE_STR(hive.config_file_name);
-				MY_TRACE_INT(!std::filesystem::exists(hive.config_file_name));
-
-				// コンフィグファイルが存在しない場合は
-				if (!std::filesystem::exists(hive.config_file_name))
-				{
-					// デフォルトのコンフィグを適用します。
-					visual.apply_default_config();
-				}
 
 				// デフォルト処理を実行します。
 				return __super::on_post_init();
@@ -378,6 +507,8 @@ namespace apn::audio_visualizer::ui
 		//
 		BOOL select_scheme()
 		{
+			Hive::Locker locker;
+
 			// ファイル選択ダイアログ用のバッファを確保します。
 			auto file_name = scheme_file_name.wstring();
 			file_name.resize(MAX_PATH, L'\0');
@@ -414,10 +545,12 @@ namespace apn::audio_visualizer::ui
 		}
 
 		//
-		// ファイル選択ダイアログを表示してスキームを切り替えます。
+		// ビジュアルエディタをモーダル表示します。
 		//
 		BOOL show_visual_editor()
 		{
+			Hive::Locker locker;
+
 			// ビジュアルエディタの表示位置を算出します。
 			auto editor_rc = my::get_window_rect(editor);
 			auto editor_w = my::get_width(editor_rc);
@@ -433,48 +566,38 @@ namespace apn::audio_visualizer::ui
 			if (x + editor_w > monitor_rc.right) x = monitor_rc.right - editor_w;
 			if (y + editor_h > monitor_rc.bottom) y = monitor_rc.bottom - editor_h;
 
+			// ビジュアルのオーナーウィンドウを取得します。
+			auto parent = ::GetWindow(*this, GW_OWNER);
+			MY_TRACE_HWND(parent);
+
+			// ビジュアルエディタの親ウィンドウを設定します。
+			// (この処理はデバッグバージョンでは有効ですが
+			// リリースバージョンでは何故か無効になります)
+			::SetParent(editor, parent);
+
 			// ビジュアルエディタを表示します。
 			::SetWindowPos(editor, HWND_TOP,
 				x, y, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
 
+			// オーナーウィンドウを無効化します。
+			::EnableWindow(parent, FALSE);
+
+			// モーダルループを開始します。
+			MSG msg = {};
+			while (::IsWindowVisible(editor) &&
+				::GetMessage(&msg, 0, 0, 0) > 0)
+			{
+				::TranslateMessage(&msg);
+				::DispatchMessage(&msg);
+			}
+
+			// オーナーウィンドウを有効化します。
+			::EnableWindow(parent, TRUE);
+
+			// オーナーウィンドウを最前面にします。
+			::SetForegroundWindow(parent);
+
 			return TRUE;
-		}
-
-		//
-		// 既定のコンフィグを適用します。
-		//
-		BOOL apply_default_config()
-		{
-			MY_TRACE_FUNC("");
-
-			auto assets_folder_name = std::filesystem::path(magi.get_assets_file_name(hive.c_name));
-			MY_TRACE_STR(assets_folder_name);
-
-			auto name = my::get_window_text(::GetParent(*this));
-
-			if (name == L"左右Lv")
-			{
-				scheme_file_name = assets_folder_name / L"simple_bar.json";
-				editor.preference = { { "channel_mode", "both" } };
-			}
-			else if (name == L"左Lv")
-			{
-				scheme_file_name = assets_folder_name / L"simple_bar.json";
-				editor.preference = { { "channel_mode", "left" } };
-			}
-			else if (name == L"右Lv")
-			{
-				scheme_file_name = assets_folder_name / L"simple_bar.json";
-				editor.preference = { { "channel_mode", "right" } };
-			}
-			else if (name == L"パワースペクトル")
-			{
-				scheme_file_name = assets_folder_name / L"simple_spectre.json";
-				editor.preference = { { "channel_mode", "both" } };
-			}
-
-			// スキームを読み込みます。
-			return read_scheme();
 		}
 
 		//

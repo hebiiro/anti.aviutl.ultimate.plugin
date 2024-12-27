@@ -17,6 +17,17 @@ namespace apn::audio_visualizer::ui
 			inline static constexpr uint32_t c_notify_change_preference = WM_APP + 4;
 		} c_message;
 
+		struct Locker {
+			Locker() { ::InterlockedIncrement(&hive.lock_count); }
+			~Locker() { ::InterlockedDecrement(&hive.lock_count); }
+		};
+
+		//
+		// ロックカウントです。
+		// 0以外の場合はメッセージを処理しないようにします。
+		//
+		LONG lock_count = 0;
+
 		//
 		// このモジュールのインスタンスハンドルです。
 		//

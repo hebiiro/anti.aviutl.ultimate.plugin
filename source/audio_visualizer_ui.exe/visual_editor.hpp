@@ -237,7 +237,7 @@ namespace apn::audio_visualizer::ui
 			::RegisterClassEx(&wc);
 
 			return __super::create(
-				WS_EX_NOPARENTNOTIFY | WS_EX_TOOLWINDOW,
+				WS_EX_NOPARENTNOTIFY,
 				wc.lpszClassName,
 				wc.lpszClassName,
 				WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
