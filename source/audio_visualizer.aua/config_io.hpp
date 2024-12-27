@@ -37,30 +37,10 @@ namespace apn::audio_visualizer
 		{
 			MY_TRACE_FUNC("");
 
-			// コンフィグファイルが存在しない場合は
-			if (!std::filesystem::exists(hive.config_file_name))
-			{
-				// デフォルトのコウィンドウを作成します。
-
-				std::wstring names[] = {
-					L"左右Lv",
-					L"左Lv",
-					L"右Lv",
-					L"パワースペクトル",
-				};
-
-				for (const auto& name : names)
-				{
-					// コウィンドウを作成します。
-					auto co_window = co_window_manager.create_co_window(name);
-				}
-
-				return TRUE;
-			}
-			else
-			{
-				return read_file(hive.config_file_name, hive);
-			}
+			auto config_file_name = hive.config_file_name;
+			if(!std::filesystem::exists(config_file_name))
+				config_file_name = magi.get_default_config_file_name(hive.instance);
+			return read_file(config_file_name, hive);
 		}
 
 		//

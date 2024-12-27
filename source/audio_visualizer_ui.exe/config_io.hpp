@@ -61,7 +61,10 @@ namespace apn::audio_visualizer::ui
 		{
 			MY_TRACE_FUNC("");
 
-			return read_file(hive.config_file_name, hive);
+			auto config_file_name = hive.config_file_name;
+			if(!std::filesystem::exists(config_file_name))
+				config_file_name = magi.get_default_config_file_name(hive.instance);
+			return read_file(config_file_name, hive);
 		}
 
 		//
