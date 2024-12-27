@@ -46,17 +46,6 @@ namespace apn::audio_visualizer::ui
 		}
 
 		//
-		// ハンドルを複製して返します。
-		//
-		HANDLE duplicate_handle(HANDLE src)
-		{
-			HANDLE dst = nullptr;
-			::DuplicateHandle(hive.host_process.get(), src, ::GetCurrentProcess(), &dst,
-				0, FALSE, DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE);
-			return dst;
-		}
-
-		//
 		// 音声を表示するまでの待機時間を返します。
 		//
 		BOOL wait(const share::AudioArtifact* audio_artifact)
@@ -169,17 +158,12 @@ namespace apn::audio_visualizer::ui
 					auto visual = (HWND)wParam;
 
 					// ファイルマッピングを取得します。
-					auto src = (HANDLE)lParam;
-					MY_TRACE_HEX(src);
-					if (!src) break;
-
-					// ファイルマッピングを複製します。
-					my::handle::unique_ptr<> dst(duplicate_handle(src));
-					MY_TRACE_HEX(dst.get());
-					if (!dst) break;
+					my::handle::unique_ptr<> file_mapping((HANDLE)lParam);
+					MY_TRACE_HEX(file_mapping.get());
+					if (!file_mapping) break;
 
 					// オプションを取得します。
-					my::SharedMemory<share::Option> option(dst.get());
+					my::SharedMemory<share::Option> option(file_mapping.get());
 					MY_TRACE_HEX(option.get());
 					if (!option) break;
 
@@ -193,17 +177,12 @@ namespace apn::audio_visualizer::ui
 					MY_TRACE_FUNC("c_update_audio, {:#010x}, {:#010x}", wParam, lParam);
 
 					// ファイルマッピングを取得します。
-					auto src = (HANDLE)lParam;
-					MY_TRACE_HEX(src);
-					if (!src) break;
-
-					// ファイルマッピングを複製します。
-					my::handle::unique_ptr<> dst(duplicate_handle(src));
-					MY_TRACE_HEX(dst.get());
-					if (!dst) break;
+					my::handle::unique_ptr<> file_mapping((HANDLE)lParam);
+					MY_TRACE_HEX(file_mapping.get());
+					if (!file_mapping) break;
 
 					// 音声アーティファクトを取得します。
-					my::SharedMemory<share::AudioArtifact> audio_artifact(dst.get());
+					my::SharedMemory<share::AudioArtifact> audio_artifact(file_mapping.get());
 					MY_TRACE_HEX(audio_artifact.get());
 					if (!audio_artifact) break;
 

@@ -194,6 +194,19 @@ namespace apn::audio_visualizer
 			}
 
 			//
+			// ハンドルを複製して返します。
+			//
+			inline static HANDLE duplicate_handle(HANDLE src)
+			{
+				auto dst = HANDLE {};
+				::DuplicateHandle(
+					::GetCurrentProcess(), src,
+					outer.pi.hProcess, &dst,
+					0, FALSE, DUPLICATE_SAME_ACCESS);
+				return dst;
+			}
+
+			//
 			// メッセージループです。
 			//
 			DWORD message_loop()
@@ -255,21 +268,13 @@ namespace apn::audio_visualizer
 			}
 
 			//
-			// 外部プロセスに音声アーティファクトを送信します。
+			// オプションを構築します。
 			//
-			BOOL post_option(HWND visual, const share::Option* option)
+			BOOL make_option(const share::Option* option, HANDLE file_mapping)
 			{
-				MY_TRACE_FUNC("{:#010x}", visual);
-
-				if (!hive.ui_window) return FALSE;
-				auto file_mapping = create_option(option);
-				if (!file_mapping) return FALSE;
-
-				MY_TRACE_HEX(file_mapping);
-
-				// 外部プロセスにオプションを送信します。
-				::PostMessage(hive.ui_window, share::c_message.c_update_option, (WPARAM)visual, (LPARAM)file_mapping);
-
+				my::SharedMemory<share::Option> shared(file_mapping);
+				if (!shared) return FALSE;
+				*shared = *option;
 				return TRUE;
 			}
 
@@ -292,32 +297,54 @@ namespace apn::audio_visualizer
 			}
 
 			//
-			// オプションを構築します。
+			// 外部プロセスに音声アーティファクトを送信します。
 			//
-			BOOL make_option(const share::Option* option, HANDLE file_mapping)
+			BOOL post_option(HWND visual, const share::Option* option)
 			{
-				my::SharedMemory<share::Option> shared(file_mapping);
-				if (!shared) return FALSE;
-				*shared = *option;
+				MY_TRACE_FUNC("{:#010x}", visual);
+
+				// 外部プロスが無効の場合は何もしません。
+				if (!hive.ui_window) return FALSE;
+
+				// オプションを作成します。
+				my::handle::unique_ptr<> file_mapping(create_option(option));
+				if (!file_mapping) return FALSE;
+
+				// オプションを複製します。
+				auto handle = duplicate_handle(file_mapping.get());
+
+				// 外部プロセスにオプションの複製を送信します。
+				::PostMessage(hive.ui_window, share::c_message.c_update_option, (WPARAM)visual, (LPARAM)handle);
+
 				return TRUE;
 			}
 
 			//
-			// 外部プロセスに音声アーティファクトを送信します。
+			// 音声アーティファクトを構築します。
 			//
-			BOOL post_audio_artifact(const AudioSample* audio_sample)
+			BOOL make_audio_artifact(const AudioSample* audio_sample, HANDLE file_mapping)
 			{
-//				MY_TRACE_FUNC("");
+				my::SharedMemory<share::AudioArtifact> shared(file_mapping);
+				if (!shared) return FALSE;
+				return calc(audio_sample, shared);
+			}
 
-				if (!hive.ui_window) return FALSE;
-				if (is_late(audio_sample)) return FALSE;
-				auto file_mapping = create_audio_artifact(audio_sample);
-				if (!file_mapping) return FALSE;
+			//
+			// 音声アーティファクトを作成して返します。
+			//
+			HANDLE create_audio_artifact(const AudioSample* audio_sample)
+			{
+				auto file_mapping = ::CreateFileMapping(
+					INVALID_HANDLE_VALUE,
+					nullptr,
+					PAGE_READWRITE,
+					0,
+					sizeof(share::AudioArtifact),
+					nullptr);
 
-				// 外部プロセスに音声アーティファクトを送信します。
-				::PostMessage(hive.ui_window, share::c_message.c_update_audio, 0, (LPARAM)file_mapping);
+				make_audio_artifact(audio_sample, file_mapping);
 
-				return TRUE;
+				return file_mapping;
 			}
 
 			//
@@ -345,49 +372,120 @@ namespace apn::audio_visualizer
 			}
 
 			//
-			// 音声アーティファクトを作成して返します。
+			// 外部プロセスに音声アーティファクトを送信します。
 			//
-			HANDLE create_audio_artifact(const AudioSample* audio_sample)
+			BOOL post_audio_artifact(const AudioSample* audio_sample)
 			{
-				auto file_mapping = ::CreateFileMapping(
-					INVALID_HANDLE_VALUE,
-					nullptr,
-					PAGE_READWRITE,
-					0,
-					sizeof(share::AudioArtifact),
-					nullptr);
+//				MY_TRACE_FUNC("");
 
-				make_audio_artifact(audio_sample, file_mapping);
+				// 外部プロスが無効の場合は何もしません。
+				if (!hive.ui_window) return FALSE;
 
-				return file_mapping;
-			}
+				// 音声サンプルの解析処理が遅れている場合は何もしません。
+				if (is_late(audio_sample)) return FALSE;
 
-			//
-			// 音声アーティファクトを構築します。
-			//
-			BOOL make_audio_artifact(const AudioSample* audio_sample, HANDLE file_mapping)
-			{
-				my::SharedMemory<share::AudioArtifact> shared(file_mapping);
-				if (!shared) return FALSE;
-				return calc(audio_sample, shared);
-			}
+				// 音声アーティファクトを作成します。
+				my::handle::unique_ptr<> file_mapping(create_audio_artifact(audio_sample));
+				if (!file_mapping) return FALSE;
 
-			//
-			// 音声サンプルを元に音声アーティファクトを構築します。
-			//
-			BOOL calc(const AudioSample* audio_sample, share::AudioArtifact* audio_artifact)
-			{
-				audio_artifact->frame = audio_sample->frame;
-				audio_artifact->time = audio_sample->time;
-				audio_artifact->spectre_option = audio_sample->option.spectre_option;
-				audio_artifact->spectre_option.div = std::min(
-					audio_artifact->spectre_option.div,
-					std::size(audio_artifact->channels->spectre));
+				// 音声アーティファクトを複製します。
+				auto handle = duplicate_handle(file_mapping.get());
 
-				for (int32_t ch = 0; ch < audio_sample->audio_ch; ch++)
-					calc(audio_sample, audio_artifact, ch);
+				// 外部プロセスに音声アーティファクトの複製を送信します。
+				::PostMessage(hive.ui_window, share::c_message.c_update_audio, 0, (LPARAM)handle);
 
 				return TRUE;
+			}
+
+			//
+			// 受け取った音声信号を-1.0～1.0に正規化して返します。
+			//
+			inline static double normalize(short pcm)
+			{
+				return pcm / 32768.0;
+			}
+
+			//
+			// 指定されたデータ列に窓関数を適用します。
+			//
+			inline static void apply_hann_window(std::vector<double>& data)
+			{
+				size_t N = data.size();
+				for (size_t i = 0; i < N; i++)
+					data[i] *= 0.5 * (1 - cos(2 * M_PI * i / (N - 1)));
+			}
+
+			//
+			// 指定された個数の周波数帯域を返します。
+			//
+			inline static std::vector<Band> create_frequency_bands(const share::SpectreOption& option)
+			{
+				std::vector<Band> bands(option.div);
+				auto range = Range<double> { option.freq_min, option.freq_max };
+				auto step = (range.end - range.start) / option.div;
+
+				for (size_t i = 0; i < option.div; i++)
+				{
+					bands[i] = {
+						range.start + (i + 0) * step,
+						range.start + (i + 1) * step,
+					};
+				}
+
+				return bands;
+			}
+
+			//
+			// 対数スケールで指定された個数の周波数帯域を返します。
+			//
+			inline static std::vector<Band> create_log_frequency_bands(const share::SpectreOption& option)
+			{
+				std::vector<Band> bands(option.div);
+				auto range = Range<double> { log10(option.freq_min), log10(option.freq_max) };
+				auto step = (range.end - range.start) / option.div;
+
+				for (size_t i = 0; i < option.div; i++)
+				{
+					bands[i] = {
+						pow(10, range.start + (i + 0) * step),
+						pow(10, range.start + (i + 1) * step),
+					};
+				}
+
+				return bands;
+			}
+
+			//
+			// 指定された周波数帯域の振幅を返します。
+			//
+			double get_band_amplitude(const std::vector<double>& amplitude, const Band& band, size_t N, size_t audio_rate)
+			{
+				auto limit = N / 2 - 1;
+				auto range = Range<double> { band.start * N / audio_rate, band.end * N / audio_rate };
+				auto index_range = Range<size_t> { (size_t)range.start, (size_t)range.end };
+
+				if (index_range.start > limit)
+				{
+					range.start = limit;
+					index_range.start = limit;
+				}
+
+				if (index_range.end > limit)
+				{
+					range.end = limit;
+					index_range.end = limit;
+				}
+
+				if (index_range.start == index_range.end)
+					return amplitude[index_range.start] * (range.end - range.start);
+
+				auto sum_amplitude = 0.0;
+				sum_amplitude += amplitude[index_range.start] * (index_range.start + 1 - range.start);
+				for (size_t i = index_range.start + 1; i < index_range.end - 1; i++)
+					sum_amplitude += amplitude[i];
+				sum_amplitude += amplitude[index_range.end - 1] * (range.end - index_range.end);
+
+				return sum_amplitude / (range.end - range.start);
 			}
 
 			//
@@ -486,94 +584,21 @@ namespace apn::audio_visualizer
 			}
 
 			//
-			// 受け取った音声信号を-1.0～1.0に正規化して返します。
+			// 音声サンプルを元に音声アーティファクトを構築します。
 			//
-			inline static double normalize(short pcm)
+			BOOL calc(const AudioSample* audio_sample, share::AudioArtifact* audio_artifact)
 			{
-				return pcm / 32768.0;
-			}
+				audio_artifact->frame = audio_sample->frame;
+				audio_artifact->time = audio_sample->time;
+				audio_artifact->spectre_option = audio_sample->option.spectre_option;
+				audio_artifact->spectre_option.div = std::min(
+					audio_artifact->spectre_option.div,
+					std::size(audio_artifact->channels->spectre));
 
-			//
-			// 指定されたデータ列に窓関数を適用します。
-			//
-			inline static void apply_hann_window(std::vector<double>& data)
-			{
-				size_t N = data.size();
-				for (size_t i = 0; i < N; i++)
-					data[i] *= 0.5 * (1 - cos(2 * M_PI * i / (N - 1)));
-			}
+				for (int32_t ch = 0; ch < audio_sample->audio_ch; ch++)
+					calc(audio_sample, audio_artifact, ch);
 
-			//
-			// 指定された個数の周波数帯域を返します。
-			//
-			inline static std::vector<Band> create_frequency_bands(const share::SpectreOption& option)
-			{
-				std::vector<Band> bands(option.div);
-				auto range = Range<double> { option.freq_min, option.freq_max };
-				auto step = (range.end - range.start) / option.div;
-
-				for (size_t i = 0; i < option.div; i++)
-				{
-					bands[i] = {
-						range.start + (i + 0) * step,
-						range.start + (i + 1) * step,
-					};
-				}
-
-				return bands;
-			}
-
-			//
-			// 対数スケールで指定された個数の周波数帯域を返します。
-			//
-			inline static std::vector<Band> create_log_frequency_bands(const share::SpectreOption& option)
-			{
-				std::vector<Band> bands(option.div);
-				auto range = Range<double> { log10(option.freq_min), log10(option.freq_max) };
-				auto step = (range.end - range.start) / option.div;
-
-				for (size_t i = 0; i < option.div; i++)
-				{
-					bands[i] = {
-						pow(10, range.start + (i + 0) * step),
-						pow(10, range.start + (i + 1) * step),
-					};
-				}
-
-				return bands;
-			}
-
-			//
-			// 指定された周波数帯域の振幅を返します。
-			//
-			double get_band_amplitude(const std::vector<double>& amplitude, const Band& band, size_t N, size_t audio_rate)
-			{
-				auto limit = N / 2 - 1;
-				auto range = Range<double> { band.start * N / audio_rate, band.end * N / audio_rate };
-				auto index_range = Range<size_t> { (size_t)range.start, (size_t)range.end };
-
-				if (index_range.start > limit)
-				{
-					range.start = limit;
-					index_range.start = limit;
-				}
-
-				if (index_range.end > limit)
-				{
-					range.end = limit;
-					index_range.end = limit;
-				}
-
-				if (index_range.start == index_range.end)
-					return amplitude[index_range.start] * (range.end - range.start);
-
-				auto sum_amplitude = 0.0;
-				sum_amplitude += amplitude[index_range.start] * (index_range.start + 1 - range.start);
-				for (size_t i = index_range.start + 1; i < index_range.end - 1; i++)
-					sum_amplitude += amplitude[i];
-				sum_amplitude += amplitude[index_range.end - 1] * (range.end - index_range.end);
-
-				return sum_amplitude / (range.end - range.start);
+				return TRUE;
 			}
 		};
 	} worker;
