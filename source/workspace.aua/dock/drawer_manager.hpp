@@ -148,10 +148,10 @@ namespace apn::workspace
 			auto dock_site = ::GetParent(*drawer);
 
 			// ノードを走査します。
-			for(const auto& node : nodes)
+			for (const auto& node : nodes)
 			{
 				// 同じドロワーの場合は
-				if(node.drawer == drawer)
+				if (node.drawer == drawer)
 					return TRUE; // 関連があります。
 
 				// 表示中のシャトルがドックサイトの場合は

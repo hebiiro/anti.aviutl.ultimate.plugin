@@ -75,16 +75,16 @@ namespace apn::image_export
 			ImageCodecInfo* pImageCodecInfo = NULL;
 
 			GetImageEncodersSize(&num, &size);
-			if(size == 0)
+			if (size == 0)
 				return -1;  // Failure
 
 			pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
-			if(pImageCodecInfo == NULL)
+			if (pImageCodecInfo == NULL)
 				return -1;  // Failure
 
 			GetImageEncoders(num, size, pImageCodecInfo);
 
-			for(UINT j = 0; j < num; ++j)
+			for (UINT j = 0; j < num; ++j)
 			{
 				if (::lstrcmpW(pImageCodecInfo[j].MimeType, format) == 0)
 				{

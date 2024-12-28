@@ -91,7 +91,7 @@ namespace apn
 
 						{
 							wil::unique_cotaskmem_string json;
-							if(SUCCEEDED(args->get_WebMessageAsJson(&json)))
+							if (SUCCEEDED(args->get_WebMessageAsJson(&json)))
 							{
 								if (on_web_message_as_json(json.get()))
 									return S_OK;
