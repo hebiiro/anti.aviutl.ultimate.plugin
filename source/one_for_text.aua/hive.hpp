@@ -41,11 +41,6 @@ namespace apn::one_for_text
 		std::wstring text_editor_path;
 
 		//
-		// TRUEの場合は現在のシーンに配置されているテキストオブジェクトのみに限定されます。
-		//
-		int32_t current_scene_only = TRUE;
-
-		//
 		// 適用範囲の先頭レイヤー番号です。
 		//
 		int32_t layer_front = 1;

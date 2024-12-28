@@ -16,7 +16,6 @@ namespace apn::one_for_text
 
 			get_text(IDC_TEXT_FILE_NAME, hive.text_file_name);
 			get_text(IDC_TEXT_EDITOR_PATH, hive.text_editor_path);
-			get_check(IDC_CURRENT_SCENE_ONLY, hive.current_scene_only);
 			get_int(IDC_LAYER_FRONT, hive.layer_front);
 			get_int(IDC_LAYER_BACK, hive.layer_back);
 		}
@@ -30,7 +29,6 @@ namespace apn::one_for_text
 
 			set_text(IDC_TEXT_FILE_NAME, hive.text_file_name);
 			set_text(IDC_TEXT_EDITOR_PATH, hive.text_editor_path);
-			set_check(IDC_CURRENT_SCENE_ONLY, hive.current_scene_only);
 			set_int(IDC_LAYER_FRONT, hive.layer_front);
 			set_int(IDC_LAYER_BACK, hive.layer_back);
 		}
@@ -64,15 +62,23 @@ namespace apn::one_for_text
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LAYER_FRONT_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_LAYER_FRONT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LAYER_BACK_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_LAYER_BACK));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_TEXT_FILE_NAME_STAT));
 			}
 
 			{
 				auto full = std::make_shared<RelativePos>(1, 1, -row_size);
 
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_TEXT_FILE_NAME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, row, margin, ctrl(IDC_TEXT_FILE_NAME_REF));
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row, margin);
+				node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_TEXT_FILE_NAME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, row, {}, ctrl(IDC_TEXT_FILE_NAME_REF));
 			}
 
 			{
@@ -83,24 +89,9 @@ namespace apn::one_for_text
 			{
 				auto full = std::make_shared<RelativePos>(1, 1, -row_size);
 
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_TEXT_EDITOR_PATH));
-				node->add_pane(c_axis.c_horz, c_align.c_left, row, margin, ctrl(IDC_TEXT_EDITOR_PATH_REF));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_WRITE_FILE_LIMITED));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_READ_FILE_LIMITED));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_CURRENT_SCENE_ONLY));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LAYER_FRONT_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_LAYER_FRONT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_LAYER_BACK_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_LAYER_BACK));
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row, margin);
+				node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_TEXT_EDITOR_PATH));
+				node->add_pane(c_axis.c_horz, c_align.c_left, row, {}, ctrl(IDC_TEXT_EDITOR_PATH_REF));
 			}
 		}
 
@@ -117,8 +108,6 @@ namespace apn::one_for_text
 			case IDC_WRITE_FILE: app->write_file(); break;
 			case IDC_SHOW_FILE: app->show_file(); break;
 			case IDC_READ_FILE: app->read_file(); break;
-			case IDC_WRITE_FILE_LIMITED: app->write_file_limited(); break;
-			case IDC_READ_FILE_LIMITED: app->read_file_limited(); break;
 			case IDC_TEXT_FILE_NAME_REF:
 				{
 					auto file_name = get_save_file_name(

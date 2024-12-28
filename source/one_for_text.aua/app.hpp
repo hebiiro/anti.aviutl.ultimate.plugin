@@ -10,7 +10,7 @@ namespace apn::one_for_text
 		//
 		// 保存先テキストファイルのファイル名を返します。
 		//
-		std::wstring get_text_file_name()
+		inline static std::wstring get_text_file_name()
 		{
 			// 保存先テキストファイルのファイル名が無効の場合は
 			if (hive.text_file_name.empty())
@@ -29,14 +29,10 @@ namespace apn::one_for_text
 		//
 		// テキストオブジェクトの拡張データを返します。
 		//
-		ExEdit::Exdata::efText* get_text_exdata(ExEdit::Object* object, int32_t layer_front, int32_t layer_back)
+		inline static ExEdit::Exdata::efText* get_text_exdata(ExEdit::Object* object)
 		{
 			// オブジェクトが無効の場合は除外します。
 			if (!(object->flag & ExEdit::Object::Flag::Exist))
-				return {};
-
-			// レイヤー番号が範囲外の場合は除外します。
-			if (object->layer_set < layer_front || object->layer_set > layer_back)
 				return {};
 
 			// テキストオブジェクトではない場合は除外します。
@@ -50,9 +46,9 @@ namespace apn::one_for_text
 		//
 		// テキストオブジェクトのテキストを一括して返します。
 		//
-		std::wstring get_mix_text(BOOL current_scene_only, int32_t layer_front, int32_t layer_back)
+		inline static std::wstring get_mix_text(int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("{}, {}, {}", current_scene_only, layer_front, layer_back);
+			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
 
 			// 末尾レイヤー番号を調整します。
 			if (layer_back < layer_front) layer_back = layer_front;
@@ -60,15 +56,20 @@ namespace apn::one_for_text
 			//
 			// オブジェクトからミックステキストパートを取得します。
 			//
-			auto get_mix_text_part = [&](ExEdit::Object* object) -> std::wstring
+			auto get_mix_text_part = [&](int32_t sorted_index, ExEdit::Object* object) -> std::wstring
 			{
+				// レイヤー番号が範囲外の場合は除外します。
+				if (object->layer_set < layer_front || object->layer_set > layer_back)
+					return {};
+
 				// テキストオブジェクトの拡張データを取得します。
-				auto exdata = get_text_exdata(object, layer_front, layer_back);
+				auto exdata = get_text_exdata(object);
 				if (!exdata) return {};
 
 				// ヘッダーテキストを構築します。
 				auto header_text = std::format(
-					LR"(/[/{{ "index":{}, "scene_set":{}, "layer_set":{}, "frame_begin":{}, "frame_end":{} }}/]/)",
+					LR"(/[/{{ "sorted_index":{}, "index":{}, "scene_set":{}, "layer_set":{}, "frame_begin":{}, "frame_end":{} }}/]/)",
+					sorted_index,
 					magi.exin.get_object_index(object),
 					object->scene_set,
 					object->layer_set,
@@ -76,38 +77,30 @@ namespace apn::one_for_text
 					object->frame_end);
 
 				// ヘッダーテキストと本体テキストを結合して返します。
-				return header_text + L"\r\n" + exdata->text + L"\r\n";
+				return header_text + L"\r\n" + exdata->text;
 			};
 
+			// ミックステキストです。
+			// 先頭にUTF-16LEのBOMを付与します。
 			std::wstring mix_text = L"\xfeff";
 
-			// 現在のシーンに配置されているテキストオブジェクトのみに限定する場合は
-			if (current_scene_only)
+			// ソート済みオブジェクトを走査します。
+			auto c = magi.exin.get_sorted_object_count();
+			for (auto i = 0; i < c; i++)
 			{
-				// ソート済みオブジェクトを走査します。
-				auto c = magi.exin.get_sorted_object_count();
-				for (auto i = 0; i < c; i++)
-				{
-					// ソート済みオブジェクトを取得します。
-					auto object = magi.exin.get_sorted_object(i);
-					if (!object) continue;
+				// ソート済みオブジェクトを取得します。
+				auto object = magi.exin.get_sorted_object(i);
+				if (!object) continue;
 
-					// パートを取得して追加します。
-					mix_text += get_mix_text_part(object);
-				}
-			}
-			else
-			{
-				// すべてのオブジェクトを走査します。
-				auto c = magi.exin.get_object_count();
-				for (auto i = 0; i < c; i++)
+				// パートを取得します。
+				auto part_text = get_mix_text_part(i, object);
+				if (part_text.length())
 				{
-					// オブジェクトを取得します。
-					auto object = magi.exin.get_object(i);
-					if (!object) continue;
+					// 先頭行以外の場合は改行を追加します。
+					if (i) mix_text += L"\r\n";
 
-					// パートを取得して追加します。
-					mix_text += get_mix_text_part(object);
+					// パート追加します。
+					mix_text += part_text;
 				}
 			}
 
@@ -117,9 +110,9 @@ namespace apn::one_for_text
 		//
 		// テキストオブジェクトのテキストを一つにまとめてファイルに書き込みます。
 		//
-		BOOL write_file(BOOL current_scene_only, int32_t layer_front, int32_t layer_back)
+		BOOL write_file(int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
 
 			try
 			{
@@ -127,7 +120,7 @@ namespace apn::one_for_text
 				auto text_file_name = get_text_file_name();
 
 				// テキストオブジェクトのテキストを一つにまとめます。
-				auto mix_text = get_mix_text(current_scene_only, layer_front, layer_back);
+				auto mix_text = get_mix_text(layer_front, layer_back);
 
 				// バイナリファイルストリームを開きます。
 				std::ofstream ofs(text_file_name, std::ios::binary);
@@ -148,9 +141,9 @@ namespace apn::one_for_text
 		//
 		// ミックステキストをテキストオブジェクトに適用します。
 		//
-		BOOL apply_mix_text(const std::wstring& mix_text, BOOL current_scene_only, int32_t layer_front, int32_t layer_back)
+		BOOL apply_mix_text(const std::wstring& mix_text, int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("{}, {}, {}", current_scene_only, layer_front, layer_back);
+			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
 
 			// 末尾レイヤー番号を調整します。
 			if (layer_back < layer_front) layer_back = layer_front;
@@ -159,15 +152,48 @@ namespace apn::one_for_text
 			const std::wstring suffix = L"/]/\r";
 
 			// オブジェクトの数を取得しておきます。
-			const auto c = magi.exin.get_object_count();
+			const auto c = magi.exin.get_sorted_object_count();
 			const auto current_scene_set = magi.exin.get_current_scene_index();
 
-			// 現在読み込み中のテキストオブジェクトです。
-			ExEdit::Object* current_object = nullptr;
-			ExEdit::Exdata::efText* current_exdata = nullptr;
-			std::vector<int32_t> modified_objects;
+			const auto get_text_exdata_external =
+				[&](int32_t sorted_index) -> ExEdit::Exdata::efText*
+			{
+				// オブジェクトのインデックスが無効の場合は何もしません。
+				if (sorted_index < 0 || sorted_index >= c) return nullptr;
 
-			magi.exin.push_undo();
+				// オブジェクトを取得します。
+				auto object = magi.exin.get_sorted_object(sorted_index);
+
+				// シーンのインデックスが無効の場合は何もしません。
+				if (object->scene_set < 0 || object->scene_set >= 50) return nullptr;
+
+				// カレントシーン外のオブジェクトの場合は除外します。
+				if (object->scene_set != current_scene_set) return nullptr;
+
+				// レイヤー番号が範囲外の場合は除外します。
+				if (object->layer_set < layer_front || object->layer_set > layer_back)
+					return nullptr;
+
+				// テキストオブジェクトの拡張データを取得します。
+				return get_text_exdata(object);
+			};
+
+			//
+			// この構造体は編集対象のオブジェクトのです。
+			//
+			struct Node {
+				int32_t sorted_index;
+				std::wstring text;
+			};
+
+			// 編集に失敗した場合はTRUEになります。
+			BOOL failed = FALSE;
+
+			// 現在の編集対象オブジェクトです。
+			Node* current_node = nullptr;
+
+			// 編集対象オブジェクトのコレクションです。
+			std::vector<Node> objects;
 
 			// 文字列ストリームを作成します。
 			std::wstringstream stream(mix_text);
@@ -176,6 +202,8 @@ namespace apn::one_for_text
 			std::wstring line;
 			while (std::getline(stream, line))
 			{
+				// jsonの解析などで例外が発生するかもしれないので
+				// １行毎にtryを使用しています。
 				try
 				{
 					// ヘッダー行の場合は
@@ -187,47 +215,47 @@ namespace apn::one_for_text
 						// ヘッダーテキストをjsonに変換します。
 						auto header_node = n_json::parse(header_text);
 
-						// オブジェクトのインデックスを取得します。
-						int32_t object_index = -1;
-						get_int(header_node, "index", object_index);
-
-						// オブジェクトのインデックスが無効の場合は何もしません。
-						if (object_index < 0 || object_index >= c) continue;
-
-						// オブジェクトを取得します。
-						auto object = magi.exin.get_object(object_index);
-
-						// 適用範囲がカレントシーンのみの場合は
-						if (current_scene_only)
-						{
-							// カレントシーン外のオブジェクトの場合は除外します。
-							if (object->scene_set != current_scene_set) continue;
-						}
+						// ソート済みオブジェクトのインデックスを取得します。
+						int32_t sorted_index = -1;
+						get_int(header_node, "sorted_index", sorted_index);
 
 						// テキストオブジェクトの拡張データを取得します。
-						current_exdata = get_text_exdata(object, layer_front, layer_back);
+						auto exdata = get_text_exdata_external(sorted_index);
 
 						// 拡張データを取得できた場合は
-						if (current_exdata)
+						if (exdata)
 						{
-							// オブジェクトをアンドゥの対象にします。
-							magi.exin.create_undo(object_index, 0x00);
+							// 現在の編集対象オブジェクトが有効の場合は
+							if (current_node && current_node->text.ends_with(L"\r\n"))
+							{
+								// 余計な改行を削除します。
+								current_node->text.resize(current_node->text.size() - 2);
+							}
 
-							// 編集対象のオブジェクトとして記録しておきます。
-							modified_objects.emplace_back(object_index);
+							// 編集対象オブジェクトを追加します。
+							objects.emplace_back(sorted_index);
 
-							// テキストを空にします。
-							current_exdata->text[0] = L'\0';
+							// 追加した編集対象オブジェクトを現在の編集対象オブジェクトとします。
+							current_node = &objects.back();
+						}
+						// 拡張データを取得できなかった場合は
+						else
+						{
+							// 編集に失敗したのでフラグを立てます。
+							failed = TRUE;
+
+							// 現在の編集対象オブジェクトをクリアします。
+							current_node = nullptr;
 						}
 					}
 					// 本体行の場合は
-					else if (current_exdata && line.length())
+					else if (current_node && line.length())
 					{
 						// 末尾が改行の場合は正しく復元します。
 						if (line.back() == L'\r') line.push_back(L'\n');
 
-						// 拡張データにテキストを追加します。
-						wcsncat_s(current_exdata->text, std::size(current_exdata->text), line.c_str(), _TRUNCATE);
+						// 現在の編集対象オブジェクトのテキストに追加します。
+						current_node->text += line;
 					}
 				}
 				catch (...)
@@ -235,18 +263,74 @@ namespace apn::one_for_text
 				}
 			}
 
-			// 編集したオブジェクトを走査します。
-			for (auto object_index : modified_objects)
+			// 編集に失敗した場合は
+			if (failed)
+			{
+				// 処理を続けるかユーザーに問い合わせます。
+				if (IDOK != hive.message_box(
+					L"変更を適用できないオブジェクトが存在します\n処理を続けますか？",
+					nullptr, MB_OKCANCEL | MB_ICONWARNING))
+				{
+					return FALSE;
+				}
+			}
+
+			// 最初のオブジェクトの場合はTRUEになります。
+			BOOL first_object = TRUE;
+
+			// 変更したオブジェクトの数です。
+			int32_t modified_count = 0;
+
+			// 変更しなかったオブジェクトの数です。
+			int32_t unmodified_count = 0;
+
+			// 編集対象オブジェクトを走査します。
+			for (const auto& node : objects)
 			{
 				// オブジェクトを取得します。
-				auto object = magi.exin.get_object(object_index);
+				auto object = magi.exin.get_sorted_object(node.sorted_index);
+
+				// 最初のオブジェクトの場合は
+				if (first_object)
+				{
+					// フラグを消去します。
+					first_object = FALSE;
+
+					// 現在のシーンを変更します。
+//					magi.exin.set_scene(object->scene_set, nullptr, nullptr);
+
+					// 新しいアンドゥを作成します。
+					magi.exin.push_undo();
+				}
+
+				// オブジェクトのインデックスを取得します。
+				auto object_index = magi.exin.get_object_index(object);
+
+				// オブジェクトをアンドゥの対象にします。
+				magi.exin.create_undo(object_index, 0x00);
 
 				// テキストオブジェクトの拡張データを取得します。
 				auto exdata = (ExEdit::Exdata::efText*)magi.exin.get_exdata(object, 0);
 
-				::WideCharToMultiByte(CP_ACP, 0, exdata->text, -1,
-					object->dispname, std::size(object->dispname), nullptr, nullptr);
-				MY_TRACE_STR(object->dispname);
+				// テキストが異なる場合は
+				if (node.text != exdata->text)
+				{
+					// テキストオブジェクトのテキストを書き換えます。
+					wcscpy_s(exdata->text, std::size(exdata->text), node.text.c_str());
+
+					// テキストオブジェクトの表示名を書き換えます。
+					::WideCharToMultiByte(CP_ACP, 0, exdata->text, -1,
+						object->dispname, std::size(object->dispname), nullptr, nullptr);
+
+					// 変更したオブジェクトの数を増やします。
+					modified_count++;
+				}
+				// テキストが同一の場合は
+				else
+				{
+					// 変更しなかったオブジェクトの数を増やします。
+					unmodified_count++;
+				}
 			}
 
 			// 拡張編集を再描画します。
@@ -257,15 +341,21 @@ namespace apn::one_for_text
 			// AviUtlを再描画します。
 			magi.redraw();
 
+			// 処理結果をユーザーに通知します。
+			hive.message_box(my::format(
+				L"{}個のテキストを変更しました\n"
+				L"{}個のテキストは変更しませんでした",
+				modified_count, unmodified_count));
+
 			return TRUE;
 		}
 
 		//
 		// 保存先テキストファイルをテキストオブジェクトに適用します。
 		//
-		BOOL read_file(BOOL current_scene_only, int32_t layer_front, int32_t layer_back)
+		BOOL read_file(int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
 
 			try
 			{
@@ -288,7 +378,7 @@ namespace apn::one_for_text
 				if (mix_text.starts_with(L"\xfeff")) mix_text = mix_text.substr(1);
 
 				// ミックステキストをテキストオブジェクトに適用します。
-				apply_mix_text(mix_text, current_scene_only, layer_front, layer_back);
+				apply_mix_text(mix_text, layer_front, layer_back);
 			}
 			catch (const std::exception& e)
 			{
@@ -305,7 +395,7 @@ namespace apn::one_for_text
 		//
 		virtual BOOL write_file() override
 		{
-			return write_file(FALSE, 0, 99);
+			return write_file(hive.layer_front - 1, hive.layer_back - 1);
 		}
 
 		//
@@ -338,23 +428,7 @@ namespace apn::one_for_text
 		//
 		virtual BOOL read_file() override
 		{
-			return read_file(FALSE, 0, 99);
-		}
-
-		//
-		// テキストオブジェクトのテキストを一つにまとめてファイルに書き込みます。
-		//
-		virtual BOOL write_file_limited() override
-		{
-			return write_file(hive.current_scene_only, hive.layer_front - 1, hive.layer_back - 1);
-		}
-
-		//
-		// 保存先テキストファイルをテキストオブジェクトに適用します。
-		//
-		virtual BOOL read_file_limited() override
-		{
-			return read_file(hive.current_scene_only, hive.layer_front - 1, hive.layer_back - 1);
+			return read_file(hive.layer_front - 1, hive.layer_back - 1);
 		}
 	} app_impl;
 }

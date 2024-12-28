@@ -72,7 +72,6 @@ namespace apn::one_for_text
 
 			get_string(root, "text_file_name", hive.text_file_name);
 			get_string(root, "text_editor_path", hive.text_editor_path);
-			get_bool(root, "current_scene_only", hive.current_scene_only);
 			get_int(root, "layer_front", hive.layer_front);
 			get_int(root, "layer_back", hive.layer_back);
 			get_window(root, "addin_window", addin_window);
@@ -89,7 +88,6 @@ namespace apn::one_for_text
 
 			set_string(root, "text_file_name", hive.text_file_name);
 			set_string(root, "text_editor_path", hive.text_editor_path);
-			set_bool(root, "current_scene_only", hive.current_scene_only);
 			set_int(root, "layer_front", hive.layer_front);
 			set_int(root, "layer_back", hive.layer_back);
 			set_window(root, "addin_window", addin_window);
