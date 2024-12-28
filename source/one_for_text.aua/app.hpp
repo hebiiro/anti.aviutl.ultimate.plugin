@@ -35,6 +35,17 @@ namespace apn::one_for_text
 			if (!(object->flag & ExEdit::Object::Flag::Exist))
 				return {};
 
+			// 中間点が存在する場合は
+			if (object->index_midpt_leader >= 0)
+			{
+				// オブジェクトのインデックスを取得します。
+				auto object_index = magi.exin.get_object_index(object);
+
+				// 中間点リーダーではない場合は除外します。
+				if (object_index != object->index_midpt_leader)
+					return {};
+			}
+
 			// テキストオブジェクトではない場合は除外します。
 			if (object->filter_param[0].id != 3)
 				return {};
