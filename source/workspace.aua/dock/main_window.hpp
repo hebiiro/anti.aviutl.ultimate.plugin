@@ -277,11 +277,20 @@ namespace apn::workspace
 		//
 		// コンフィグダイアログを表示します。
 		//
-		int show_config_dialog(HWND parent)
+		BOOL show_config_dialog()
 		{
 			ConfigDialog dialog;
 
-			return dialog.do_modal(parent);
+			// コンフィグダイアログを表示します。
+			if (IDOK != dialog.do_modal(*this)) return FALSE;
+
+			// コンフィグを更新します。
+			update_config();
+
+			// レイアウトを更新します。
+			update_all_layouts();
+
+			return TRUE;
 		}
 
 		//
@@ -499,14 +508,7 @@ namespace apn::workspace
 						case hive.c_command_id.c_show_config_dialog:
 							{
 								// コンフィグダイアログを開きます。
-								if (IDOK == show_config_dialog(hwnd))
-								{
-									// コンフィグを更新します。
-									update_config();
-
-									// レイアウトを更新します。
-									update_all_layouts();
-								}
+								show_config_dialog();
 
 								break;
 							}

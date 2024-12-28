@@ -104,6 +104,30 @@ namespace apn::workspace
 			return TRUE;
 		}
 
+		//
+		// この仮想関数は、ウィンドウコマンドを実行するときに呼ばれます。
+		//
+		virtual BOOL on_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+			switch (wParam)
+			{
+			case magi.c_command_id.c_addin.c_command:
+				{
+					MY_TRACE_FUNC("magi.c_command_id.c_addin.c_command");
+
+					if (main_window)
+						main_window->show_config_dialog();
+
+					break;
+				}
+			}
+
+			return FALSE;
+		}
+
+		//
+		// この仮想関数は、このアドインと交信するために呼ばれます。
+		//
 		virtual my::addr_t on_get_address(LPCWSTR name) override
 		{
 			if (::lstrcmpW(name, L"shuttle") == 0) return (my::addr_t)&exports.shuttle;
