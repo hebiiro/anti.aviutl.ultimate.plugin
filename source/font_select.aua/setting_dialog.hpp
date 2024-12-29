@@ -40,14 +40,23 @@ namespace apn::font_select
 		{
 			MY_TRACE_FUNC("{:#010x}", combobox);
 
+			// フォントコンボボックスではない場合は何もしません。
 			if (::GetDlgCtrlID(combobox) != hive.c_control_id.c_font_combobox) return FALSE;
 
+			// まだフォントデータが読み込まれてない場合は
+			if (hive.menu_root.nodes.empty())
+			{
+				auto fonts = create_font_collection(combobox);
+				TextReader text_reader(fonts);
+				text_reader.read();
+			}
+
 			// フォント選択用のカスタムメニューを作成します。
-			FontMenu menu(combobox);
+			my::menu::unique_ptr<> menu(create_menu(hive.menu_root));
 
 			// メニューを表示します。
 			auto point = my::get_cursor_pos();
-			auto id = ::TrackPopupMenuEx(menu, TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, hive.main_window, nullptr);
+			auto id = ::TrackPopupMenuEx(menu.get(), TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, hive.main_window, nullptr);
 			if (id == 0) return FALSE;
 
 			// 選択されたフォントをフォントのコンボボックスに適用します。

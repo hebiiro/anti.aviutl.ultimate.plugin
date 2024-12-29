@@ -15,6 +15,27 @@ namespace apn::font_select
 		} c_control_id;
 
 		//
+		// この構造体はフォントメニュー用のデータを保持します。
+		//
+		struct Menu {
+			//
+			// この構造体はフォントメニューの項目です。
+			//
+			struct Node {
+				uint32_t flags;
+				uint32_t command_id;
+				std::wstring name;
+				std::vector<Node> nodes;
+			};
+			std::vector<Node> nodes;
+		};
+
+		//
+		// メニューのルートノードです。
+		//
+		Menu::Node menu_root;
+
+		//
 		// このアドインのインスタンスハンドルです。
 		//
 		HINSTANCE instance = nullptr;

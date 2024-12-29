@@ -160,8 +160,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="config_io.hpp" />
-    <ClInclude Include="font_collection.hpp" />
-    <ClInclude Include="font_menu.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
@@ -169,6 +167,8 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="addin.hpp" />
     <ClInclude Include="setting_dialog.hpp" />
+    <ClInclude Include="text_reader.hpp" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

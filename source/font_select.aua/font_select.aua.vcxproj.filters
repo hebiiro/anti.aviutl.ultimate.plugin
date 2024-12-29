@@ -19,11 +19,11 @@
       <Filter>resource</Filter>
     </ClInclude>
     <ClInclude Include="setting_dialog.hpp" />
-    <ClInclude Include="font_menu.hpp" />
-    <ClInclude Include="font_collection.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="text_reader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
