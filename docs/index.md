@@ -77,6 +77,7 @@ lang: ja_JP
 | [filter_drag](./contents/addin/filter_drag.html) | フィルタドラッグ | 設定ダイアログのフィルタをドラッグで移動できるようにします。 |
 | [dirty_check](./contents/addin/dirty_check.html) | 終了確認 | 終了する前にプロジェクトの変更を確認します。 |
 | [output_check](./contents/addin/output_check.html) | 出力確認 | 動画を出力する前に設定を確認します。 |
+| [text_drop](./contents/addin/text_drop.html) | テキストドロップ | ドラッグアンドドロップでテキストオブジェクトを作成します。 |
 | [text_split](./contents/addin/text_split.html) | テキスト分解 | テキストオブジェクトを文字毎に別々のオブジェクトに分解します。 |
 | [item_align](./contents/addin/item_align.html) | アイテム整列 | タイムラインのアイテムを整列します。 |
 | [image_export](./contents/addin/image_export.html) | 画像エクスポート | 現在のフレームまたは選択アイテムを画像としてエクスポートします。 |

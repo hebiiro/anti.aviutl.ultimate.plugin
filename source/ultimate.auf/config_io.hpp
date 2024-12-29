@@ -45,6 +45,7 @@ namespace apn
 			register_addin(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", { L"DragFilter.auf" });
 			register_addin(L"M", L"dirty_check", L"終了確認", TRUE, L"", { L"auls_confirmclose.auf", L"DirtyCheck.auf" });
 			register_addin(L"M", L"output_check", L"出力確認", TRUE, L"", { L"ConfigChecker.auf" });
+			register_addin(L"M", L"text_drop", L"テキストドロップ", TRUE, L"", {});
 			register_addin(L"M", L"text_split", L"テキスト分解", TRUE, L"", { L"SplitText.auf" });
 			register_addin(L"M", L"item_align", L"アイテム整列", TRUE, L"", { L"BuildStairs.auf" });
 			register_addin(L"M", L"image_export", L"画像エクスポート", TRUE, L"", { L"SaveImage.auf" });
