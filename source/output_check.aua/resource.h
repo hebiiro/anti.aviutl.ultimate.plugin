@@ -6,6 +6,7 @@
 #define IDC_CHECK_RANGE                 1000
 #define IDC_CHECK_LAST_FRAME            1001
 #define IDC_CHECK_FRAME_RATE            1002
+#define IDC_CHECK_EMPTY_TEXT            1003
 
 // Next default values for new objects
 // 

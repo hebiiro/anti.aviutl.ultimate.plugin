@@ -168,6 +168,71 @@ namespace apn::output_check
 		}
 
 		//
+		// テキストオブジェクトの拡張データを返します。
+		//
+		inline static ExEdit::Exdata::efText* get_text_exdata(ExEdit::Object* object, int32_t object_index)
+		{
+			// オブジェクトが無効の場合は除外します。
+			if (!(object->flag & ExEdit::Object::Flag::Exist))
+				return {};
+
+			// 中間点が存在する場合は
+			if (object->index_midpt_leader >= 0)
+			{
+				// 中間点リーダーではない場合は除外します。
+				if (object_index != object->index_midpt_leader)
+					return {};
+			}
+
+			// テキストオブジェクトではない場合は除外します。
+			if (object->filter_param[0].id != 3)
+				return {};
+
+			// テキストオブジェクトの拡張データを取得します。
+			return (ExEdit::Exdata::efText*)magi.exin.get_exdata(object, 0);
+		}
+
+		//
+		// 空のテキストオブジェクトが存在する場合はTRUEを返します。
+		// その場合はメッセージボックスに表示するテキストをtextに追加します。
+		//
+		BOOL check_empty_text()
+		{
+			// メッセージテキストです。
+			std::wstring text;
+
+			// すべてのオブジェクトの数を取得します。
+			auto c = magi.exin.get_object_count();
+
+			// すべてのオブジェクトを走査します。
+			for (decltype(c) i = 0; i < c; i++)
+			{
+				// オブジェクトを取得します。
+				auto object = magi.exin.get_object(i);
+
+				// テキストオブジェクトの拡張データを取得します。
+				if (auto exdata = get_text_exdata(object, i))
+				{
+					// テキストが空の場合は
+					if (!exdata->text[0])
+					{
+						// メッセージテキストを追加します。
+						text += std::format(
+							_T("シーン {}、レイヤー {}、フレーム {}\n"),
+							object->scene_set, object->layer_set + 1, object->frame_begin);
+					}
+				}
+			}
+
+			// メッセージテキストが空の場合はFALSEを返します。
+			if (text.empty()) return FALSE;
+
+			// メッセージテキストを結合してTRUEを返します。
+			this->text += _T("注意 : 空のテキストオブジェクトが存在します\n") + text + _T("\n");
+			return TRUE;
+		}
+
+		//
 		// ユーザーが指定したチェックを実行します。
 		// チェックに引っかかった場合は処理を継続するかユーザーに問い合わせます。
 		// ユーザーが拒否した場合はFALSEを返します。それ以外の場合はTRUEを返します。
@@ -178,6 +243,7 @@ namespace apn::output_check
 			if (hive.check_range) check_range();
 			if (hive.check_last_frame) check_last_frame();
 			if (hive.check_frame_rate) check_frame_rate();
+			if (hive.check_empty_text) check_empty_text();
 
 			// textが空文字列ではない場合は、チェックに引っかかっています。
 			if (!text.empty())

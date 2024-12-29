@@ -17,6 +17,7 @@ namespace apn::output_check
 			set_check(IDC_CHECK_RANGE, hive.check_range);
 			set_check(IDC_CHECK_LAST_FRAME, hive.check_last_frame);
 			set_check(IDC_CHECK_FRAME_RATE, hive.check_frame_rate);
+			set_check(IDC_CHECK_EMPTY_TEXT, hive.check_empty_text);
 		}
 
 		//
@@ -29,6 +30,7 @@ namespace apn::output_check
 			get_check(IDC_CHECK_RANGE, hive.check_range);
 			get_check(IDC_CHECK_LAST_FRAME, hive.check_last_frame);
 			get_check(IDC_CHECK_FRAME_RATE, hive.check_frame_rate);
+			get_check(IDC_CHECK_EMPTY_TEXT, hive.check_empty_text);
 		}
 
 		//
@@ -60,6 +62,11 @@ namespace apn::output_check
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_CHECK_FRAME_RATE));
 			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_CHECK_EMPTY_TEXT));
+			}
 		}
 
 		//
@@ -71,10 +78,12 @@ namespace apn::output_check
 
 			switch (id)
 			{
-			// その他
-			case IDC_CHECK_RANGE: update_config(); break;
-			case IDC_CHECK_LAST_FRAME: update_config(); break;
-			case IDC_CHECK_FRAME_RATE: update_config(); break;
+			// チェックボックス
+			case IDC_CHECK_RANGE:
+			case IDC_CHECK_LAST_FRAME:
+			case IDC_CHECK_FRAME_RATE:
+			case IDC_CHECK_EMPTY_TEXT:
+				update_config(); break;
 			}
 		}
 	} addin_dialog;

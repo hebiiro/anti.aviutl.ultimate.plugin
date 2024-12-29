@@ -37,7 +37,10 @@ namespace apn::output_check
 		{
 			MY_TRACE_FUNC("");
 
-			return read_file(hive.config_file_name, hive);
+			auto config_file_name = hive.config_file_name;
+			if (!std::filesystem::exists(config_file_name))
+				config_file_name = magi.get_default_config_file_name(hive.instance);
+			return read_file(config_file_name, hive);
 		}
 
 		//
@@ -70,6 +73,7 @@ namespace apn::output_check
 			get_bool(root, "check_range", hive.check_range);
 			get_bool(root, "check_last_frame", hive.check_last_frame);
 			get_bool(root, "check_frame_rate", hive.check_frame_rate);
+			get_bool(root, "check_empty_text", hive.check_empty_text);
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -85,6 +89,7 @@ namespace apn::output_check
 			set_bool(root, "check_range", hive.check_range);
 			set_bool(root, "check_last_frame", hive.check_last_frame);
 			set_bool(root, "check_frame_rate", hive.check_frame_rate);
+			set_bool(root, "check_empty_text", hive.check_empty_text);
 			set_window(root, "addin_window", addin_window);
 
 			return TRUE;
