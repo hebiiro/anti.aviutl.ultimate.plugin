@@ -55,12 +55,8 @@ namespace apn::dialog_position
 					MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {:#010x}, {:#010x}", instance, template_name, parent, dlg_proc, init_param);
 
 				// ダイアログをサブクラス化します。
-				Dialog dialog;
-				dialog.associator.start(&dialog);
-				auto result = orig_proc(instance, template_name, parent, dlg_proc, init_param);
-				dialog.associator.stop();
-
-				return result;
+				Dialog dialog; Dialog::Hooker hooker(dialog);
+				return orig_proc(instance, template_name, parent, dlg_proc, init_param);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DialogBoxParamA;
 		} DialogBoxParamA;

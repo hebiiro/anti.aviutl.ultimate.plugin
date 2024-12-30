@@ -43,11 +43,8 @@ namespace my
 		{
 			if (hwnd) return FALSE; // すでにウィンドウを作成済みの場合は失敗します。
 
-			associator.start(this);
-			auto result = ::CreateWindowEx(ex_style, class_name, window_name, style, x, y, w, h, parent, menu, instance, param);
-			associator.stop();
-
-			return !!result;
+			Hooker hooker(*this);
+			return !!::CreateWindowEx(ex_style, class_name, window_name, style, x, y, w, h, parent, menu, instance, param);
 		}
 
 		//
@@ -126,7 +123,7 @@ namespace my
 	public:
 
 		//
-		// この構造体はHWNDとWindowInterseptor*を関連付けます。
+		// このクラスはHWNDとWindowInterseptor*を関連付けます。
 		// HWNDを生成するタイミングで使用してください。
 		//
 		thread_local inline static struct Associator
@@ -182,6 +179,14 @@ namespace my
 				return ::CallNextHookEx(nullptr, code, wParam, lParam);
 			}
 		} associator = {};
+
+		//
+		// このクラスはウィンドウプロシージャをフックします。
+		//
+		struct Hooker {
+			Hooker(WindowInterseptor& window) { associator.start(&window); }
+			~Hooker() { associator.stop(); }
+		};
 
 		//
 		// サブクラスIDを返します。

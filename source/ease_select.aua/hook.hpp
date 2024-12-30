@@ -79,11 +79,8 @@ namespace apn::ease_select
 						}
 					} dialog;
 
-					dialog.associator.start(&dialog);
-					auto result = orig_proc(instance, template_name, parent, dlg_proc, init_param);
-					dialog.associator.stop();
-
-					return result;
+					decltype(dialog)::Hooker hooker(dialog);
+					return orig_proc(instance, template_name, parent, dlg_proc, init_param);
 				}
 
 				return orig_proc(instance, template_name, parent, dlg_proc, init_param);

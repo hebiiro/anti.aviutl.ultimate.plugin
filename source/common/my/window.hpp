@@ -150,7 +150,7 @@ namespace my
 	public:
 
 		//
-		// この構造体はHWNDとWindowT*を関連付けます。
+		// このクラスはHWNDとWindowT*を関連付けます。
 		// HWNDを生成するタイミングで使用してください。
 		//
 		thread_local inline static struct Associator
@@ -206,6 +206,14 @@ namespace my
 				return ::CallNextHookEx(nullptr, code, wParam, lParam);
 			}
 		} associator = {};
+
+		//
+		// このクラスはウィンドウプロシージャをフックします。
+		//
+		struct Hooker {
+			Hooker(WindowT& window) { associator.start(&window); }
+			~Hooker() { associator.stop(); }
+		};
 
 		//
 		// サブクラスID用の変数です。

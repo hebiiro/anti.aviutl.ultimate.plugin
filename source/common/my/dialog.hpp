@@ -20,10 +20,8 @@ namespace my
 
 		virtual BOOL create(HINSTANCE instance, LPCTSTR name, HWND parent, LPARAM lParam = 0)
 		{
-			associator.start(this);
-			auto result = ::CreateDialogParam(instance, name, parent, dlg_proc, lParam);
-			associator.stop();
-			return !!result;
+			Hooker hooker(*this);
+			return !!::CreateDialogParam(instance, name, parent, dlg_proc, lParam);
 		}
 
 		virtual BOOL close(int result)
