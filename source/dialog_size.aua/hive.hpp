@@ -32,12 +32,13 @@ namespace apn::dialog_size
 			BOOL active;
 			std::string target_template_name;
 			std::wstring target_display_name;
-		} custom_templates[8] = {
+		} custom_templates[9] = {
 			{ TRUE, "SYSTEM", L"システムの設定" },
 			{ TRUE, "ENV_CONFIG", L"拡張編集の環境設定" },
 			{ TRUE, "INPUTLIST", L"入力プラグインの優先順位" },
 			{ TRUE, "PRIORITYLIST", L"フィルタプラグインの優先順位" },
 			{ TRUE, "NEW_FILE", L"新規プロジェクトの作成" },
+			{ TRUE, "SAVE_OBJECT", L"エイリアスの作成" },
 			{ TRUE, "GRID_CONFIG", L"グリッドの設定" },
 			{ TRUE, "SCENE_CONFIG", L"シーンの設定" },
 			{ TRUE, "SCRIPT_PARAM", L"スクリプトの設定" },

@@ -37,7 +37,10 @@ namespace apn::dialog_size
 		{
 			MY_TRACE_FUNC("");
 
-			return read_file(hive.config_file_name, hive);
+			auto config_file_name = hive.config_file_name;
+			if (!std::filesystem::exists(config_file_name))
+				config_file_name = magi.get_default_config_file_name(hive.instance);
+			return read_file(config_file_name, hive);
 		}
 
 		//
@@ -81,6 +84,8 @@ namespace apn::dialog_size
 
 			get_window(root, "addin_window", addin_window);
 
+			new_file_dialog.read_node(root);
+
 			return TRUE;
 		}
 
@@ -101,6 +106,8 @@ namespace apn::dialog_size
 			});
 
 			set_window(root, "addin_window", addin_window);
+
+			new_file_dialog.write_node(root);
 
 			return TRUE;
 		}

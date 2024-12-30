@@ -101,6 +101,10 @@ namespace apn::dialog_size
 		inline static struct {
 			inline static INT_PTR WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc, LPARAM init_param)
 			{
+				const auto do_customize = [&]() {
+					return orig_proc(customize(instance), customize(template_name).c_str(), parent, dlg_proc, init_param);
+				};
+
 				if ((DWORD)template_name <= 0x0000FFFF)
 				{
 					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
@@ -113,7 +117,20 @@ namespace apn::dialog_size
 					{
 						MY_TRACE("ダイアログを置き換えます\n");
 
-						return orig_proc(customize(instance), customize(template_name).c_str(), parent, dlg_proc, init_param);
+						if (::lstrcmpA(template_name, "NEW_FILE") == 0)
+						{
+							// `新規プロジェクトの作成`ダイアログをフックします。
+							decltype(new_file_dialog)::Hooker hooker(new_file_dialog);
+							return do_customize();
+						}
+						else if (::lstrcmpA(template_name, "SAVE_OBJECT") == 0)
+						{
+							// `エイリアスの作成`ダイアログをフックします。
+							decltype(save_object_dialog)::Hooker hooker(save_object_dialog);
+							return do_customize();
+						}
+
+						return do_customize();
 					}
 				}
 

@@ -41,20 +41,23 @@ namespace apn::dialog_size
 			auto margin_value = 2;
 			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
 			auto row = std::make_shared<RelativePos>(get_base_size() + margin_value * 2);
-			std::shared_ptr<AbsolutePos> q[4 + 1];
-			for (auto i = 0; i < std::size(q); i++)
-				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
+			auto half = std::make_shared<AbsolutePos>(1, 2);
+			auto full = std::make_shared<AbsolutePos>(2, 2);
 
+			auto c = std::size(hive.custom_templates);
 			for (size_t i = 0; i < std::size(hive.custom_templates); i += 2)
 			{
 				auto id = IDC_CUSTOM_TEMPLATE_0 + i;
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 
 				set_text(id + 0, hive.custom_templates[i + 0].target_display_name.c_str());
-				set_text(id + 1, hive.custom_templates[i + 1].target_display_name.c_str());
+				node->add_pane(c_axis.c_horz, c_align.c_left, half, margin, ctrl(id + 0));
 
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[2], margin, ctrl(id + 0));
-				node->add_pane(c_axis.c_horz, c_align.c_left, q[4], margin, ctrl(id + 1));
+				if (i + 1 < c)
+				{
+					node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(id + 1));
+					set_text(id + 1, hive.custom_templates[i + 1].target_display_name.c_str());
+				}
 			}
 		}
 

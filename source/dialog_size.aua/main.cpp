@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "resource.h"
 #include "hive.hpp"
+#include "new_file_dialog.hpp"
+#include "save_object_dialog.hpp"
 #include "hook.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
@@ -15,7 +17,7 @@ namespace apn::dialog_size
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		if (!my::contains(args, L"debug")) my::reset(my::Tracer::logger);
 
 		return &addin;
 	}
