@@ -229,3 +229,142 @@ namespace my
 		return ::CreateFile(file_name, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
 	}
 }
+
+// コンボボックス操作用のユーティリティです。
+namespace my::combobox
+{
+	//
+	// コンボボックスの項目数を返します。
+	//
+	inline int32_t get_count(HWND combobox)
+	{
+		return (int32_t)::SendMessageW(combobox, CB_GETCOUNT, 0, 0);
+	}
+
+	//
+	// コンボボックスの選択項目を返します。
+	//
+	inline int32_t get_cur_sel(HWND combobox)
+	{
+		return (int32_t)::SendMessageW(combobox, CB_GETCURSEL, 0, 0);
+	}
+
+	//
+	// コンボボックスの項目の文字列を返します。
+	//
+	inline std::wstring get_text(HWND combobox, int32_t index)
+	{
+		if (index == -1) index = get_cur_sel(combobox);
+
+		auto text_length = ::SendMessageW(combobox, CB_GETLBTEXTLEN, index, 0);
+		if (text_length == CB_ERR) return {};
+		std::wstring text(text_length, L'\0');
+		::SendMessageW(combobox, CB_GETLBTEXT, index, (LPARAM)text.data());
+		return text;
+	}
+
+	//
+	// コンボボックスに項目を追加します。
+	//
+	inline void add_text(HWND combobox, LPCWSTR text)
+	{
+		::SendMessageW(combobox, CB_ADDSTRING, 0, (LPARAM)text);
+	}
+
+	//
+	// コンボボックスに項目を追加します。
+	//
+	inline void insert_text(HWND combobox, LPCWSTR text, int32_t index = -1)
+	{
+		::SendMessageW(combobox, CB_INSERTSTRING, index, (LPARAM)text);
+	}
+
+	//
+	// コンボボックスの項目を削除します。
+	//
+	inline void erase_text(HWND combobox, int32_t index)
+	{
+		::SendMessageW(combobox, CB_DELETESTRING, index, 0);
+	}
+
+	//
+	// コンボボックスの項目を消去します。
+	//
+	inline void clear(HWND combobox)
+	{
+		::SendMessageW(combobox, CB_RESETCONTENT, 0, 0);
+	}
+
+	//
+	// 指定された項目名のインデックスを返します。
+	// (CB_FINDSTRINGは部分一致でもヒットするので意図した動作になりません)
+	//
+	inline int32_t find_string(HWND combobox, const std::wstring& item_name)
+	{
+		// コンボボックスの項目を走査します。
+		auto count = get_count(combobox);
+		for (auto i = 0; i < count; i++)
+		{
+			// 項目のテキストを取得します。
+			auto text = get_text(combobox, i);
+			if (text.empty()) continue;
+
+			// テキストが項目名と完全に一致する場合は
+			if (text == item_name)
+				return i; // インデックスを返します。
+		}
+
+		// 指定された項目名が見つからなかった場合の処理です。
+		return CB_ERR;
+	}
+
+	//
+	// コンボボックス内の指定された文字列の項目を選択します。
+	//
+	inline void select_text(HWND combobox, const std::wstring& text)
+	{
+		// コンボボックスの選択項目を切り替えます。
+		ComboBox_SelectString(combobox, 0, text.c_str());
+
+		// 親ウィンドウに通知メッセージを送信します。
+		::SendMessageW(
+			::GetParent(combobox),
+			WM_COMMAND,
+			MAKEWPARAM(::GetDlgCtrlID(combobox), CBN_SELCHANGE),
+			(LPARAM)combobox);
+	}
+}
+
+// リストボックス操作用のユーティリティです。
+namespace my::listbox
+{
+	//
+	// リストボックスの項目数を返します。
+	//
+	inline int32_t get_count(HWND listbox)
+	{
+		return (int32_t)::SendMessageW(listbox, LB_GETCOUNT, 0, 0);
+	}
+
+	//
+	// リストボックスの選択項目を返します。
+	//
+	inline int32_t get_cur_sel(HWND listbox)
+	{
+		return (int32_t)::SendMessageW(listbox, LB_GETCURSEL, 0, 0);
+	}
+
+	//
+	// リストボックスの項目の文字列を返します。
+	//
+	inline std::wstring get_text(HWND listbox, int32_t index)
+	{
+		if (index == -1) index = get_cur_sel(listbox);
+
+		auto text_length = ::SendMessageW(listbox, LB_GETTEXTLEN, index, 0);
+		if (text_length == LB_ERR) return {};
+		std::wstring text(text_length, L'\0');
+		::SendMessageW(listbox, LB_GETTEXT, index, (LPARAM)text.data());
+		return text;
+	}
+}
