@@ -13,6 +13,22 @@
 1. `aviutlウィンドウ`のメニューで`編集`➡`アルティメットプラグイン`➡`ダイアログサイズ調整`を選択します。
 1. `ダイアログサイズ調整`ウィンドウが表示されます。
 
+## 📄設定ファイル
+
+* 設定は`config/dialog_size.aua.json`から読み込まれます。
+* ただし、上記ファイルが存在しない場合は`assets/default/dialog_size.aua.json`から読み込まれます。
+
+### 🔧設定をリセットする方法(1)
+
+1. `config/dialog_size.aua.json`を削除する。
+1. aviutlを起動して終了する。
+1. `config/dialog_size.aua.json`が生成されているので編集する。
+
+### 🔧設定をリセットする方法(2)
+
+1. `assets/default/dialog_size.aua.json`を`config/dialog_size.aua.json`にコピーする。
+1. `config/dialog_size.aua.json`を編集する。
+
 ### 📝設定項目
 
 * `システムの設定` ✏️aviutlの`システムの設定`ダイアログを変更します。
