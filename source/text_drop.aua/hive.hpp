@@ -80,6 +80,21 @@ namespace apn::text_drop
 		std::wstring drop_text;
 
 		//
+		// 挿入位置のレイヤーです。
+		//
+		int32_t insert_layer = 1;
+
+		//
+		// 選択テキストのみを使用します。
+		//
+		BOOL selected_text_only = TRUE;
+
+		//
+		// 読み込んだテキストファイルのパスです。
+		//
+		std::wstring text_file_name;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {

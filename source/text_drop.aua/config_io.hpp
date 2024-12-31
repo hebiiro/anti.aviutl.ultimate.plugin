@@ -75,6 +75,9 @@ namespace apn::text_drop
 			get_label(root, "item_direction", hive.item_direction, hive.c_direction.labels);
 			get_string(root, "exo_file_name", hive.exo_file_name);
 			get_string(root, "drop_text", hive.drop_text);
+			get_int(root, "insert_layer", hive.insert_layer);
+			get_bool(root, "selected_text_only", hive.selected_text_only);
+			get_string(root, "text_file_name", hive.text_file_name);
 			get_window(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -93,6 +96,9 @@ namespace apn::text_drop
 			set_string(root, "exo_file_name", hive.exo_file_name);
 			set_string(root, "drop_text", hive.drop_text);
 			set_window(root, "addin_window", addin_window);
+			set_int(root, "insert_layer", hive.insert_layer);
+			set_bool(root, "selected_text_only", hive.selected_text_only);
+			set_string(root, "text_file_name", hive.text_file_name);
 
 			return TRUE;
 		}
