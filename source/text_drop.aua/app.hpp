@@ -71,6 +71,37 @@ namespace apn::text_drop
 		}
 
 		//
+		// アイテムの長さを返します。
+		//
+		inline static int32_t get_item_range(int32_t length)
+		{
+			return hive.item_range + hive.char_range * length;
+		}
+
+		//
+		// 制御文字を除いた文字数を返します。
+		//
+		inline static size_t get_length(const std::wstring& line)
+		{
+			// 文字毎の長さが無効の場合は
+			// 文字数を返しても無意味なので0を返します。
+			if (hive.char_range <= 0) return 0;
+
+			try
+			{
+				const std::wregex re(L"<#.*?>|<s.*?>|<r.*?>|<w.*?>|<c.*?>|<p.*?>|");
+				const std::wstring fmt = L"";
+
+				return std::regex_replace(line, re, fmt).length();
+			}
+			catch (...)
+			{
+			}
+
+			return line.length();
+		}
+
+		//
 		// exo形式で書き込みます。
 		//
 		inline static void write_as_exo(
@@ -101,7 +132,24 @@ namespace apn::text_drop
 		{
 			MY_TRACE_FUNC("");
 
-			write_as_exo(ofs, 0, 0, hive.item_range, 0, drop_text);
+			// 最大文字数を取得します。
+			size_t max_length = 0;
+			{
+				// 文字列ストリームを開きます。
+				std::wstringstream stream(drop_text);
+
+				// ドロップテキストを行毎に走査します。
+				std::wstring line;
+				while (std::getline(stream, line))
+				{
+					// キャリッジリターンを除去します。
+					if (line.ends_with(L"\r")) line.pop_back();
+
+					max_length = std::max(max_length, get_length(line));
+				}
+			}
+
+			write_as_exo(ofs, 0, 0, get_item_range(max_length), 0, drop_text);
 
 			return TRUE;
 		}
@@ -117,10 +165,6 @@ namespace apn::text_drop
 
 			auto frame_begin = 0;
 			auto layer_set = 0;
-
-			auto frame_offset = hive.item_range + hive.space_range;
-			auto layer_offset = 1;
-
 			auto index = 0;
 
 			// 文字列ストリームを開きます。
@@ -133,7 +177,11 @@ namespace apn::text_drop
 				// キャリッジリターンを除去します。
 				if (line.ends_with(L"\r")) line.pop_back();
 
-				auto frame_end = frame_begin + hive.item_range;
+				auto item_range = get_item_range(get_length(line));
+				auto frame_offset = item_range + hive.space_range;
+				auto layer_offset = 1;
+
+				auto frame_end = frame_begin + item_range;
 				auto text = line;
 
 				write_as_exo(ofs, index++, frame_begin, frame_end, layer_set, text);
@@ -158,10 +206,6 @@ namespace apn::text_drop
 
 			auto frame_begin = 0;
 			auto layer_set = 0;
-
-			auto frame_offset = hive.item_range + hive.space_range;
-			auto layer_offset = 1;
-
 			auto index = 0;
 
 			// ドロップテキストを文字毎に走査します。
@@ -169,6 +213,10 @@ namespace apn::text_drop
 			{
 				// キャリッジリターンは無視します。
 				if (drop_text[i] == L'\r') continue;
+
+				auto item_range = get_item_range(1);
+				auto frame_offset = item_range + hive.space_range;
+				auto layer_offset = 1;
 
 				// ラインフィードは改行として処理します。
 				if (drop_text[i] == L'\n')
@@ -181,7 +229,7 @@ namespace apn::text_drop
 					continue;
 				}
 
-				auto frame_end = frame_begin + hive.item_range;
+				auto frame_end = frame_begin + item_range;
 				auto text = to_char_string(drop_text[i]);
 
 				write_as_exo(ofs, index++, frame_begin, frame_end, layer_set, text);
@@ -207,12 +255,9 @@ namespace apn::text_drop
 
 			auto frame_begin = 0;
 			auto layer_set = 0;
-
-			auto frame_offset = hive.item_range + hive.space_range;
-			auto layer_offset = 1;
-
 			auto index = 0;
 			std::wstring text;
+			size_t max_length = 0;
 
 			// 文字列ストリームを開きます。
 			std::wstringstream stream(drop_text);
@@ -227,13 +272,19 @@ namespace apn::text_drop
 				// 空行ではない場合は
 				if (line.length())
 				{
+					max_length = std::max(max_length, get_length(line));
+
 					// テキストを蓄積します。
 					text += line + L"\r\n";
 				}
 				// 空行の場合は段落の終わりとみなします。
 				else
 				{
-					auto frame_end = frame_begin + hive.item_range;
+					auto item_range = get_item_range(max_length);
+					auto frame_offset = item_range + hive.space_range;
+					auto layer_offset = 1;
+
+					auto frame_end = frame_begin + item_range;
 
 					write_as_exo(ofs, index++, frame_begin, frame_end, layer_set, text);
 
@@ -242,6 +293,7 @@ namespace apn::text_drop
 					else
 						layer_set += layer_offset;
 
+					max_length = 0;
 					text.clear();
 				}
 			}
@@ -249,7 +301,9 @@ namespace apn::text_drop
 			// テキストが残っている場合は
 			if (text.length())
 			{
-				auto frame_end = frame_begin + hive.item_range;
+				auto item_range = get_item_range(max_length);
+
+				auto frame_end = frame_begin + item_range;
 
 				write_as_exo(ofs, index++, frame_begin, frame_end, layer_set, text);
 			}

@@ -18,6 +18,8 @@
 #define IDC_INSERT_LAYER_STAT           1018
 #define IDC_INSERT_LAYER                1019
 #define IDC_SELECTED_TEXT_ONLY          1020
+#define IDC_CHAR_RANGE_STAT             1021
+#define IDC_CHAR_RANGE                  1022
 #define IDC_READ_FILE                   1040
 #define IDC_WRITE_FILE                  1041
 #define IDC_INSERT_WHOLE                1050

@@ -65,6 +65,11 @@ namespace apn::text_drop
 		int32_t space_range = 0;
 
 		//
+		// 作成するアイテムの文字毎の長さ(フレーム数)です。
+		//
+		int32_t char_range = 0;
+
+		//
 		// アイテムの配置方向です。
 		//
 		int32_t item_direction = c_direction.c_horz;

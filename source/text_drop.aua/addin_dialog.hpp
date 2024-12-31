@@ -35,6 +35,7 @@ namespace apn::text_drop
 
 			get_int(IDC_ITEM_RANGE, hive.item_range);
 			get_int(IDC_SPACE_RANGE, hive.space_range);
+			get_int(IDC_CHAR_RANGE, hive.char_range);
 			get_combobox_index(IDC_ITEM_DIRECTION, hive.item_direction);
 			get_text(IDC_EXO_FILE_NAME, hive.exo_file_name);
 			get_text(IDC_DROP_TEXT, hive.drop_text, 2048 + 2);
@@ -51,6 +52,7 @@ namespace apn::text_drop
 
 			set_int(IDC_ITEM_RANGE, hive.item_range);
 			set_int(IDC_SPACE_RANGE, hive.space_range);
+			set_int(IDC_CHAR_RANGE, hive.char_range);
 			set_combobox_index(IDC_ITEM_DIRECTION, hive.item_direction);
 			set_text(IDC_EXO_FILE_NAME, hive.exo_file_name);
 			set_text(IDC_DROP_TEXT, hive.drop_text);
@@ -75,8 +77,8 @@ namespace apn::text_drop
 			auto row_size = base_size + margin_value * 2;
 			auto row = std::make_shared<RelativePos>(row_size);
 			auto button = std::make_shared<RelativePos>(base_size * 4);
-			auto stat = std::make_shared<RelativePos>(base_size * 4);
-			auto editbox = std::make_shared<RelativePos>(base_size * 5);
+			auto stat = std::make_shared<RelativePos>(base_size * 3 + margin_value * 4);
+			auto editbox = std::make_shared<RelativePos>(base_size * 3);
 			auto half = std::make_shared<AbsolutePos>(1, 2);
 			auto full = std::make_shared<AbsolutePos>(2, 2);
 
@@ -94,6 +96,8 @@ namespace apn::text_drop
 				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_ITEM_RANGE));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SPACE_RANGE_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_SPACE_RANGE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_CHAR_RANGE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_CHAR_RANGE));
 			}
 
 			{
@@ -101,7 +105,7 @@ namespace apn::text_drop
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ITEM_DIRECTION_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_ITEM_DIRECTION));
 				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXO_FILE_NAME_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_EXO_FILE_NAME));
+				node->add_pane(c_axis.c_horz, c_align.c_left, full, margin, ctrl(IDC_EXO_FILE_NAME));
 			}
 
 			{
@@ -155,6 +159,7 @@ namespace apn::text_drop
 			// エディットボックス
 			case IDC_ITEM_RANGE:
 			case IDC_SPACE_RANGE:
+			case IDC_CHAR_RANGE:
 			case IDC_EXO_FILE_NAME:
 			case IDC_DROP_TEXT:
 			case IDC_INSERT_LAYER:
