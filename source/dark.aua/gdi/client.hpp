@@ -38,18 +38,20 @@ namespace apn::dark::gdi
 			if (class_name == UPDOWN_CLASS) return std::make_shared<SpinRenderer>();
 			if (class_name == WC_HEADER)
 			{
+#if 0
 				auto instance = (HINSTANCE)::GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
 				if (instance == ::GetModuleHandle(_T("shell32.dll")))
 					return std::make_shared<ShellHeaderRenderer>();
-
+#endif
 				return std::make_shared<HeaderRenderer>();
 			}
 			if (class_name == WC_LISTVIEW)
 			{
+#if 0
 				auto instance = (HINSTANCE)::GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
 				if (instance == ::GetModuleHandle(_T("shell32.dll")))
 					return std::make_shared<ShellListViewRenderer>();
-
+#endif
 				return std::make_shared<ListViewRenderer>();
 			}
 			if (class_name == _T("DirectUIHWND")) return std::make_shared<ShellListViewRenderer>();
