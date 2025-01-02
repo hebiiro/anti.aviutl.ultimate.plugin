@@ -101,6 +101,22 @@ namespace apn::text_drop
 			return line.length();
 		}
 
+		inline static void write_exo_header(std::ofstream& ofs)
+		{
+			AviUtl::FileInfo fi = {};
+			magi.fp->exfunc->get_file_info(magi.exin.get_editp(), &fi);
+
+			// 拡張編集データを書き込みます。
+			ofs << "[exedit]\r\n";
+			ofs << std::format("width={}\r\n", fi.w);
+			ofs << std::format("height={}\r\n", fi.h);
+			ofs << std::format("rate={}\r\n", fi.video_rate);
+			ofs << std::format("scale={}\r\n", fi.video_scale);
+			ofs << std::format("length={}\r\n", fi.frame_n);
+			ofs << std::format("audio_rate={}\r\n", fi.audio_rate);
+			ofs << std::format("audio_ch={}\r\n", fi.audio_ch);
+		}
+
 		//
 		// exo形式で書き込みます。
 		//
@@ -112,6 +128,7 @@ namespace apn::text_drop
 			int32_t layer_set,
 			const std::wstring& text)
 		{
+			// `テキスト`フィルタデータを書き込みます。
 			ofs << std::format("[{}]\r\n", index);
 			ofs << std::format("start={}\r\n", frame_begin + 1);
 			ofs << std::format("end={}\r\n", frame_end);
@@ -120,9 +137,36 @@ namespace apn::text_drop
 			ofs << "camera=0\r\n";
 			ofs << std::format("[{}.0]\r\n", index);
 			ofs << "_name=テキスト\r\n";
+			ofs << "サイズ=34\r\n";
+			ofs << "表示速度=0.0\r\n";
+			ofs << "文字毎に個別オブジェクト=0\r\n";
+			ofs << "移動座標上に表示する=0\r\n";
+			ofs << "自動スクロール=0\r\n";
+			ofs << "B=0\r\n";
+			ofs << "I=0\r\n";
+			ofs << "type=0\r\n";
+			ofs << "autoadjust=0\r\n";
+			ofs << "soft=1\r\n";
+			ofs << "monospace=0\r\n";
+			ofs << "align=0\r\n";
+			ofs << "spacing_x=0\r\n";
+			ofs << "spacing_y=0\r\n";
+			ofs << "precision=1\r\n";
+			ofs << "color=ffffff\r\n";
+			ofs << "color2=000000\r\n";
+			ofs << "font=MS UI Gothic\r\n";
 			ofs << std::format("text={}\r\n", to_hex_string(text));
+
+			// `標準描画`フィルタデータを書き込みます。
 			ofs << std::format("[{}.1]\r\n", index);
 			ofs << "_name=標準描画\r\n";
+			ofs << "X=0.0\r\n";
+			ofs << "Y=0.0\r\n";
+			ofs << "Z=0.0\r\n";
+			ofs << "拡大率=100.00\r\n";
+			ofs << "透明度=0.0\r\n";
+			ofs << "回転=0.00\r\n";
+			ofs << "blend=0\r\n";
 		}
 
 		//
@@ -324,6 +368,10 @@ namespace apn::text_drop
 			// バイナリファイル出力ストリームを開きます。
 			std::ofstream ofs(exo_path, std::ios::binary);
 
+			// ヘッダーを書き込みます。
+			write_exo_header(ofs);
+
+			// モード別にテキストオブジェクトを書き込みます。
 			switch (mode)
 			{
 			case hive.c_mode.c_whole: return write_exo_whole(ofs, drop_text);
@@ -366,6 +414,10 @@ namespace apn::text_drop
 			MY_TRACE_STR(my::get_error_message(hr));
 			if (!data_object) return FALSE;
 
+			// ドロップソースを作成します。
+			ComPtr<IDropSource> drop_source;
+			drop_source.Attach(DropSource::Allocator::create(mode, exo_path));
+
 			// ドラッグアンドドロップを開始します。
 			// ::SHDoDragDrop()の場合はドロップソースをnullptrにすることもできますが、
 			// 今回はドロップした瞬間に処理したかったので自前のドロップソースを渡しています。
@@ -373,7 +425,7 @@ namespace apn::text_drop
 			hr = ::SHDoDragDrop(
 				hive.main_window,
 				data_object.Get(),
-				DropSource::Allocator::create(mode, exo_path),
+				drop_source.Get(),
 				DROPEFFECT_MOVE | DROPEFFECT_COPY,
 				&effect);
 			MY_TRACE_STR(my::get_error_message(hr));

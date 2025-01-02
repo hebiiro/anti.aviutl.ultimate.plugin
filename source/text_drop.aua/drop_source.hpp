@@ -45,57 +45,68 @@ namespace apn::text_drop
 			: mode(mode)
 			, exo_path(exo_path)
 		{
+			MY_TRACE_FUNC("{}, {}", mode, exo_path);
+		}
+
+		//
+		// デストラクタです。
+		//
+		~DropSource()
+		{
+			MY_TRACE_FUNC("");
 		}
 
 		//
 		// IUnknownの実装です。
 		//
-		virtual ULONG STDMETHODCALLTYPE AddRef() override
+		STDMETHODIMP_(ULONG) AddRef() override
 		{
-			return ++ref_count;
+			MY_TRACE_FUNC("");
+
+			return ::InterlockedIncrement(&ref_count);
 		}
 
 		//
 		// IUnknownの実装です。
 		//
-		virtual ULONG STDMETHODCALLTYPE Release() override
+		STDMETHODIMP_(ULONG) Release() override
 		{
-			if (--ref_count == 0)
-			{
-				Allocator::release(this);
+			MY_TRACE_FUNC("");
 
-				return 0;
-			}
-
-			return ref_count;
+			auto result = ::InterlockedDecrement(&ref_count);
+			if (result == 0) Allocator::release(this);
+			return result;
 		}
 
 		//
 		// IUnknownの実装です。
 		//
-		virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** ppv) override
+		STDMETHODIMP QueryInterface(REFIID iid, void** ppv) override
 		{
+			MY_TRACE_FUNC("");
+
 			if (iid == IID_IUnknown || iid == IID_IDropSource)
 			{
-				AddRef();
 				*ppv = static_cast<IDropSource*>(this);
-				return S_OK;
 			}
 			else if (iid == IID_IDropSourceNotify)
 			{
-				AddRef();
 				*ppv = static_cast<IDropSourceNotify*>(this);
-				return S_OK;
+			}
+			else
+			{
+				*ppv = nullptr;
+				return E_NOINTERFACE;
 			}
 
-			*ppv = nullptr;
-			return E_NOINTERFACE;
+			AddRef();
+			return S_OK;
 		}
 
 		//
 		// IDropSourceの実装です。
 		//
-		virtual HRESULT STDMETHODCALLTYPE QueryContinueDrag(BOOL escape_pressed, DWORD key_state) override
+		STDMETHODIMP QueryContinueDrag(BOOL escape_pressed, DWORD key_state) override
 		{
 			MY_TRACE_FUNC("{}, {:#010x}", escape_pressed, key_state);
 
@@ -119,7 +130,7 @@ namespace apn::text_drop
 		//
 		// IDropSourceの実装です。
 		//
-		virtual HRESULT STDMETHODCALLTYPE GiveFeedback(DWORD effect) override
+		STDMETHODIMP GiveFeedback(DWORD effect) override
 		{
 			MY_TRACE_FUNC("{:#010x}", effect);
 
@@ -129,7 +140,7 @@ namespace apn::text_drop
 		//
 		// IDropSourceNotifyの実装です。
 		//
-		virtual HRESULT STDMETHODCALLTYPE DragEnterTarget(HWND target) override
+		STDMETHODIMP DragEnterTarget(HWND target) override
 		{
 			MY_TRACE_FUNC("{:#010x}", target);
 			MY_TRACE_HWND(target);
@@ -140,7 +151,7 @@ namespace apn::text_drop
 		//
 		// IDropSourceNotifyの実装です。
 		//
-		virtual HRESULT STDMETHODCALLTYPE DragLeaveTarget() override
+		STDMETHODIMP DragLeaveTarget() override
 		{
 			MY_TRACE_FUNC("");
 
