@@ -392,14 +392,10 @@ namespace apn::text_drop
 			auto exo_path = get_exo_path();
 
 			{
-#if 1
-				// 空のファイルを作成します。
+				// exoファイルを作成します。
 				std::ofstream ofs(exo_path, std::ios::binary);
-#else
-				// ドロップソースを使用せずに
-				// ここでexoファイルを作成することも可能です。
+
 				write_exo(mode, exo_path);
-#endif
 			}
 
 			// シェルアイテムを作成します。
@@ -414,18 +410,12 @@ namespace apn::text_drop
 			MY_TRACE_STR(my::get_error_message(hr));
 			if (!data_object) return FALSE;
 
-			// ドロップソースを作成します。
-			ComPtr<IDropSource> drop_source;
-			drop_source.Attach(DropSource::Allocator::create(mode, exo_path));
-
 			// ドラッグアンドドロップを開始します。
-			// ::SHDoDragDrop()の場合はドロップソースをnullptrにすることもできますが、
-			// 今回はドロップした瞬間に処理したかったので自前のドロップソースを渡しています。
 			auto effect = DWORD {};
 			hr = ::SHDoDragDrop(
 				hive.main_window,
 				data_object.Get(),
-				drop_source.Get(),
+				nullptr,
 				DROPEFFECT_MOVE | DROPEFFECT_COPY,
 				&effect);
 			MY_TRACE_STR(my::get_error_message(hr));
