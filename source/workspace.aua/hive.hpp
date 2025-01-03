@@ -392,6 +392,11 @@ namespace apn::workspace
 		BOOL use_fullscreen_preview = FALSE;
 
 		//
+		// TRUEの場合はウィンドウ初期化処理を省略します。
+		//
+		BOOL omit_window_initialize = FALSE;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {

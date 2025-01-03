@@ -102,6 +102,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			get_bool(root, "use_fullscreen_preview", hive.use_fullscreen_preview);
+			get_bool(root, "omit_window_initialize", hive.omit_window_initialize);
 			get_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
 			get_child_nodes(root, "sub_process",
 				[&](const n_json& sub_process_node, size_t i)
@@ -124,6 +125,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			set_bool(root, "use_fullscreen_preview", hive.use_fullscreen_preview);
+			set_bool(root, "omit_window_initialize", hive.omit_window_initialize);
 			set_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
 			set_child_nodes(root, "sub_process", hive.sub_process.collection,
 				[&](n_json& sub_process_node, const auto& sub_process, size_t i)

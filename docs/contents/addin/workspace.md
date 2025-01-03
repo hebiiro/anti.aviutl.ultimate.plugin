@@ -262,6 +262,8 @@
 
 * aviutlを起動する前に`config/workspace.aua.json`をテキストエディタで編集します。
 
+* `omit_window_initialize` ✏️aviutlのウィンドウ初期化処理を省略して高速化します。
+	* `true`を指定すると有効になります。
 * `use_fullscreen_preview` ✏️『再生時にプレビューを最大化』機能自体の有効/無効を指定します。
 	* `true`を指定するとworkspaceメニューに『再生時にプレビューを最大化』の項目が表示されるようになります。
 * `shortcut_key`

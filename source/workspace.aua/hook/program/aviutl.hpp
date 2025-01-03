@@ -419,10 +419,13 @@ namespace apn::workspace::hook
 			play_main::init(aviutl);
 			play_sub::init(aviutl);
 
-			// AviUtl内のウィンドウ初期化処理をフックします。
-			mov_ecx(aviutl + 0x2CBE8, omit_ShowWindow);
-			mov_ecx(aviutl + 0x2CBDC, omit_UpdateWindow);
-			mov_ecx(aviutl + 0x2CC3C, omit_SetWindowPos);
+			if (hive.omit_window_initialize)
+			{
+				// AviUtl内のウィンドウ初期化処理をフックします。
+				mov_ecx(aviutl + 0x2CBE8, omit_ShowWindow);
+				mov_ecx(aviutl + 0x2CBDC, omit_UpdateWindow);
+				mov_ecx(aviutl + 0x2CC3C, omit_SetWindowPos);
+			}
 
 			return TRUE;
 		}
