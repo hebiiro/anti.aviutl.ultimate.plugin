@@ -22,7 +22,7 @@ namespace apn::item_copy
 				WS_EX_NOPARENTNOTIFY,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				100, 100, 400, 300);
+				100, 100, 500, 400);
 		}
 
 		//
