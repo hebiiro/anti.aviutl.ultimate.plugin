@@ -70,6 +70,7 @@ lang: ja_JP
 | [workspace](./contents/addin/workspace.html) | ワークスペース化 | aviutlをワークスペース化します。 |
 | [filer](./contents/addin/filer.html) | ファイラ | aviutl内でエクスプローラを表示します。 |
 | [reboot](./contents/addin/reboot.html) | リブート | aviutlを再起動するなどの特殊なコマンドを実行します。 |
+| [item_copy](./contents/addin/item_copy.html) | アイテムコピー | タイムラインの選択アイテムをexoファイルに保存します。 |
 | [item_wave](./contents/addin/item_wave.html) | アイテム波形 | タイムラインアイテム内に音声波形を表示します。 |
 | [settings_browser](./contents/addin/settings_browser.html) | 設定ブラウザ | 選択アイテムの設定をブラウザで表示します。 |
 |---|---|---|
