@@ -66,6 +66,7 @@ namespace my::aviutl
 				{
 //					MY_TRACE_FUNC("WM_SHOWWINDOW, {:#010x}, {:#010x}", wParam, lParam);
 
+					// ターゲットウィンドウを表示します。
 					if (wParam && ::IsWindow(target))
 						::ShowWindowAsync(target, SW_SHOW);
 
@@ -75,8 +76,19 @@ namespace my::aviutl
 				{
 //					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
 
+					// ターゲットウィンドウをリサイズします。
 					if (::IsWindow(target))
 						resize(hwnd);
+
+					break;
+				}
+			case WM_SETFOCUS:
+				{
+//					MY_TRACE_FUNC("WM_SETFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+
+					// ターゲットウィンドウにフォーカスを渡します。
+					if (::IsWindow(target))
+						::SetFocus(target);
 
 					break;
 				}
