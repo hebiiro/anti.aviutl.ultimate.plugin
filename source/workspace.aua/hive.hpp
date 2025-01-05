@@ -31,6 +31,7 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_import_layout = c_begin + 2;
 			inline static constexpr uint32_t c_export_layout = c_begin + 3;
 			inline static constexpr uint32_t c_create_sub_window = c_begin + 4;
+			inline static constexpr uint32_t c_reset_float_shuttles = c_begin + 5;
 			inline static constexpr uint32_t c_shuttle_begin = c_begin + 10;
 			inline static constexpr uint32_t c_shuttle_end = c_end;
 		} c_command_id;
@@ -400,7 +401,7 @@ namespace apn::workspace
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }

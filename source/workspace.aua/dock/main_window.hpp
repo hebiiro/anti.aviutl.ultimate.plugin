@@ -171,6 +171,7 @@ namespace apn::workspace
 				::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_fullscreen_preview, _T("再生時にプレビューを最大化"));
 
 			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_create_sub_window, _T("サブウィンドウを新規作成"));
+			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_reset_float_shuttles, _T("フローティングウィンドウをリセット"));
 			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_import_layout, _T("レイアウトのインポート"));
 			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_export_layout, _T("レイアウトのエクスポート"));
 			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_show_config_dialog, (hive.c_name + _T("の設定"s)).c_str());
@@ -306,6 +307,76 @@ namespace apn::workspace
 			{
 				sub_window->init(name, *sub_window);
 				::ShowWindowAsync(*sub_window, SW_SHOW);
+			}
+
+			return TRUE;
+		}
+
+		//
+		// すべてのフローティングウィンドウの表示位置をリセットします。
+		//
+		BOOL reset_float_shuttles(HWND parent)
+		{
+			// 処理を実行するかユーザーに確認します。
+			if (IDOK != hive.message_box(
+				L"すべてのフローティングウィンドウの表示位置をリセットします",
+				parent, MB_OKCANCEL | MB_ICONWARNING))
+			{
+				return FALSE;
+			}
+
+			constexpr auto min_size = 10;
+			constexpr auto default_w = 800;
+			constexpr auto default_h = 600;
+
+			auto monitor_rc = my::get_monitor_rect(parent);
+			auto monitor_x = monitor_rc.left;
+			auto monitor_y = monitor_rc.top;
+			auto monitor_w = my::get_width(monitor_rc);
+			auto monitor_h = my::get_height(monitor_rc);
+
+			const auto get_centered_pos = [&](int32_t w, int32_t h) -> POINT
+			{
+				return {
+					monitor_x + (monitor_w - w) / 2,
+					monitor_y + (monitor_h - h) / 2,
+				};
+			};
+
+			const auto reset_window_pos = [&](HWND hwnd)
+			{
+				// ウィンドウが最大化されている場合は除外します。
+				if (::IsZoomed(hwnd)) return FALSE;
+
+				// ウィンドウの現在の位置を取得します。
+				auto rc = my::get_window_rect(hwnd);
+				auto w = my::get_width(rc);
+				auto h = my::get_height(rc);
+
+				// ウィンドウサイズを正規化します。
+				if (w < min_size || w > monitor_w) w = default_w;
+				if (h < min_size || h > monitor_h) h = default_h;
+
+				// ウィンドウをモニタ中央に表示するための座標を取得します。
+				auto pos = get_centered_pos(w, h);
+
+				// ウィンドウの表示位置を変更します。
+				::SetWindowPos(hwnd, nullptr, pos.x, pos.y, w, h, SWP_NOZORDER);
+
+				return TRUE;
+			};
+
+			// すべてのシャトルを走査します。
+			for (auto& pair : shuttle_manager.collection)
+			{
+				// シャトルを取得します。
+				auto& shuttle = pair.second;
+
+				// シャトルがドッキング状態の場合は除外します。
+				if (shuttle->is_docking()) continue;
+
+				// フローティングウィンドウの位置をリセットします。
+				reset_window_pos(*shuttle->float_container);
 			}
 
 			return TRUE;
@@ -488,6 +559,13 @@ namespace apn::workspace
 							{
 								// サブウィンドウを新規作成します。
 								create_sub_window(hwnd);
+
+								break;
+							}
+						case hive.c_command_id.c_reset_float_shuttles:
+							{
+								// フローティングウィンドウの表示位置をリセットします。
+								reset_float_shuttles(hwnd);
 
 								break;
 							}
