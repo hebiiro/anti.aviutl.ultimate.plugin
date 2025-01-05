@@ -26,14 +26,7 @@ namespace apn::workspace
 		inline static constexpr struct CommandID {
 			inline static constexpr uint32_t c_begin = 19800;
 			inline static constexpr uint32_t c_end = c_begin + 100;
-			inline static constexpr uint32_t c_fullscreen_preview = c_begin + 0;
-			inline static constexpr uint32_t c_show_config_dialog = c_begin + 1;
-			inline static constexpr uint32_t c_import_layout = c_begin + 2;
-			inline static constexpr uint32_t c_export_layout = c_begin + 3;
-			inline static constexpr uint32_t c_create_sub_window = c_begin + 4;
-			inline static constexpr uint32_t c_reset_float_shuttles = c_begin + 5;
-			inline static constexpr uint32_t c_shuttle_begin = c_begin + 10;
-			inline static constexpr uint32_t c_shuttle_end = c_end;
+			inline static constexpr uint32_t c_show_extra_menu = c_begin + 0;
 		} c_command_id;
 
 		inline static constexpr struct ClassName {
@@ -48,6 +41,7 @@ namespace apn::workspace
 			inline static constexpr uint32_t c_init_shuttle = WM_APP + 4;
 			inline static constexpr uint32_t c_refresh_title = WM_APP + 5;
 			inline static constexpr uint32_t c_update_layout_list = WM_APP + 6;
+			inline static constexpr uint32_t c_show_extra_menu = WM_APP + 7;
 		} c_message;
 
 		inline static struct PreferenceFlag {

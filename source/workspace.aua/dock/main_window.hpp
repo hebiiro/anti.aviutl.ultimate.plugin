@@ -8,15 +8,18 @@ namespace apn::workspace
 	//
 	struct MainWindow : DockSite<my::Window>
 	{
-		//
-		// メインメニューに独自に追加したポップアップメニューです。
-		//
-		HMENU extra_menu = nullptr;
-
-		//
-		// メインメニューの『その他』にextra_menuを挿入した位置です。
-		//
-		uint32_t extra_menu_index = -1;
+		inline static constexpr struct CommandID {
+			inline static constexpr uint32_t c_begin = 1;
+			inline static constexpr uint32_t c_end = c_begin + 100;
+			inline static constexpr uint32_t c_fullscreen_preview = c_begin + 0;
+			inline static constexpr uint32_t c_show_config_dialog = c_begin + 1;
+			inline static constexpr uint32_t c_import_layout = c_begin + 2;
+			inline static constexpr uint32_t c_export_layout = c_begin + 3;
+			inline static constexpr uint32_t c_create_sub_window = c_begin + 4;
+			inline static constexpr uint32_t c_reset_float_shuttles = c_begin + 5;
+			inline static constexpr uint32_t c_shuttle_begin = c_begin + 10;
+			inline static constexpr uint32_t c_shuttle_end = c_end;
+		} c_command_id;
 
 		//
 		// コンストラクタです。
@@ -151,42 +154,117 @@ namespace apn::workspace
 
 			auto menu = ::GetMenu(hwnd);
 			auto etc_menu = ::GetSubMenu(menu, hive.c_main_menu_item_index.c_etc);
-			extra_menu = ::CreatePopupMenu();
-			extra_menu_index = ::GetMenuItemCount(etc_menu);
-			::InsertMenu(etc_menu, extra_menu_index,
-				MF_BYPOSITION | MF_POPUP, (UINT_PTR)extra_menu, hive.c_name);
+			::AppendMenu(etc_menu, MF_STRING, hive.c_command_id.c_show_extra_menu, hive.c_display_name);
 		}
 
 		//
-		// エキストラメニューを更新します。
+		// エキストラメニューを表示します。
 		//
-		void update_extra_menu()
+		BOOL show_extra_menu()
 		{
 			MY_TRACE_FUNC("");
 
-			// 一旦すべての項目を削除します。
-			while (::DeleteMenu(extra_menu, 0, MF_BYPOSITION)) {}
+			my::menu::unique_ptr<> menu(::CreatePopupMenu());
 
 			if (hive.use_fullscreen_preview)
-				::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_fullscreen_preview, _T("再生時にプレビューを最大化"));
+				::AppendMenu(menu.get(), MF_STRING, c_command_id.c_fullscreen_preview, _T("再生時にプレビューを最大化"));
 
-			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_create_sub_window, _T("サブウィンドウを新規作成"));
-			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_reset_float_shuttles, _T("フローティングウィンドウをリセット"));
-			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_import_layout, _T("レイアウトのインポート"));
-			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_export_layout, _T("レイアウトのエクスポート"));
-			::AppendMenu(extra_menu, MF_STRING, hive.c_command_id.c_show_config_dialog, (hive.c_name + _T("の設定"s)).c_str());
-			::AppendMenu(extra_menu, MF_SEPARATOR, 0, nullptr);
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_create_sub_window, _T("サブウィンドウを新規作成"));
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_reset_float_shuttles, _T("フローティングウィンドウをリセット"));
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_import_layout, _T("レイアウトのインポート"));
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_export_layout, _T("レイアウトのエクスポート"));
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_show_config_dialog, std::format(_T("『{}』の設定"), hive.c_display_name).c_str());
+			::AppendMenu(menu.get(), MF_SEPARATOR, 0, nullptr);
 
 			// シャトルメニューはドッキングサイトで構築します。
-			__super::add_shuttle_list(extra_menu, hive.c_command_id.c_shuttle_begin,
+			__super::add_shuttle_list(menu.get(), c_command_id.c_shuttle_begin,
 				[=](HMENU sub_menu, UINT_PTR id, auto shuttle)
-				{
-					if (::IsWindowVisible(*shuttle))
-						::CheckMenuItem(sub_menu, id, MF_CHECKED);
-				});
+			{
+				if (::IsWindowVisible(*shuttle))
+					::CheckMenuItem(sub_menu, id, MF_CHECKED);
+			});
 
 			if (hive.fullscreen_preview)
-				::CheckMenuItem(extra_menu, hive.c_command_id.c_fullscreen_preview, MF_CHECKED);
+				::CheckMenuItem(menu.get(), c_command_id.c_fullscreen_preview, MF_CHECKED);
+
+			auto cursor_pos = my::get_cursor_pos();
+			auto id = ::TrackPopupMenuEx(menu.get(),
+				TPM_NONOTIFY | TPM_RETURNCMD,
+				cursor_pos.x, cursor_pos.y, *this, nullptr);
+			if (!id) return FALSE;
+
+			if (id >= c_command_id.c_shuttle_begin && id < c_command_id.c_shuttle_end)
+			{
+				// メニューアイテムのテキストを取得します。
+				auto text = my::get_menu_item_text(menu.get(), id, MF_BYCOMMAND);
+				MY_TRACE_STR(text);
+
+				// テキストからシャトルを取得します。
+				auto shuttle = shuttle_manager.get(text);
+				if (!shuttle) return FALSE;
+#if 1
+				// シャトルをフローティング状態にします。
+				shuttle->float_window();
+
+				// シャトルを表示します。
+				::ShowWindow(*shuttle, SW_SHOW);
+#else
+				// シャトルの表示状態を切り替えます。
+				::SendMessage(*shuttle, WM_CLOSE, 0, 0);
+#endif
+				return TRUE;
+			}
+
+			switch (id)
+			{
+			case c_command_id.c_fullscreen_preview:
+				{
+					// 再生時最大化の有効/無効を切り替えます。
+					hive.fullscreen_preview = !hive.fullscreen_preview;
+
+					// コンフィグを更新します。
+					update_config();
+
+					break;
+				}
+			case c_command_id.c_create_sub_window:
+				{
+					// サブウィンドウを新規作成します。
+					create_sub_window(hwnd);
+
+					break;
+				}
+			case c_command_id.c_reset_float_shuttles:
+				{
+					// フローティングウィンドウの表示位置をリセットします。
+					reset_float_shuttles(hwnd);
+
+					break;
+				}
+			case c_command_id.c_import_layout:
+				{
+					// レイアウトをインポートします。
+					hive.app->import_layout();
+
+					break;
+				}
+			case c_command_id.c_export_layout:
+				{
+					// レイアウトをエクスポートします。
+					hive.app->export_layout();
+
+					break;
+				}
+			case c_command_id.c_show_config_dialog:
+				{
+					// コンフィグダイアログを開きます。
+					show_config_dialog();
+
+					break;
+				}
+			}
+
+			return TRUE;
 		}
 
 		//
@@ -515,86 +593,6 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
 
-					auto id = LOWORD(wParam);
-
-					if (id >= hive.c_command_id.c_begin && id < hive.c_command_id.c_end)
-					{
-						if (id >= hive.c_command_id.c_shuttle_begin && id < hive.c_command_id.c_shuttle_end)
-						{
-							auto menu = ::GetMenu(hwnd);
-
-							// メニューアイテムのテキストを取得します。
-							auto text = my::get_menu_item_text(menu, id, MF_BYCOMMAND);
-							MY_TRACE_STR(text);
-
-							// テキストからシャトルを取得します。
-							auto shuttle = shuttle_manager.get(text);
-							if (!shuttle) break;
-#if 1
-							// シャトルをフローティング状態にします。
-							shuttle->float_window();
-
-							// シャトルを表示します。
-							::ShowWindow(*shuttle, SW_SHOW);
-#else
-							// シャトルの表示状態を切り替えます。
-							::SendMessage(*shuttle, WM_CLOSE, 0, 0);
-#endif
-							break;
-						}
-
-						switch (id)
-						{
-						case hive.c_command_id.c_fullscreen_preview:
-							{
-								// 再生時最大化の有効/無効を切り替えます。
-								hive.fullscreen_preview = !hive.fullscreen_preview;
-
-								// コンフィグを更新します。
-								update_config();
-
-								break;
-							}
-						case hive.c_command_id.c_create_sub_window:
-							{
-								// サブウィンドウを新規作成します。
-								create_sub_window(hwnd);
-
-								break;
-							}
-						case hive.c_command_id.c_reset_float_shuttles:
-							{
-								// フローティングウィンドウの表示位置をリセットします。
-								reset_float_shuttles(hwnd);
-
-								break;
-							}
-						case hive.c_command_id.c_import_layout:
-							{
-								// レイアウトをインポートします。
-								hive.app->import_layout();
-
-								break;
-							}
-						case hive.c_command_id.c_export_layout:
-							{
-								// レイアウトをエクスポートします。
-								hive.app->export_layout();
-
-								break;
-							}
-						case hive.c_command_id.c_show_config_dialog:
-							{
-								// コンフィグダイアログを開きます。
-								show_config_dialog();
-
-								break;
-							}
-						}
-
-						break;
-					}
-
 					// 「PSDToolKit」用の処理です。
 					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズしてしまいます。
 					if (psdtoolkit && ::IsWindowVisible(*psdtoolkit))
@@ -644,17 +642,6 @@ namespace apn::workspace
 						// レイアウトを更新します。
 						update_all_layouts();
 					}
-
-					break;
-				}
-			case WM_INITMENUPOPUP:
-				{
-					MY_TRACE_FUNC("WM_INITMENUPOPUP, {:#010x}, {:#010x}", wParam, lParam);
-
-					auto menu = (HMENU)wParam;
-
-					// エキストラメニューが表示されようとしているので更新します。
-					if (menu == extra_menu) update_extra_menu();
 
 					break;
 				}
@@ -735,6 +722,12 @@ namespace apn::workspace
 			case hive.c_message.c_refresh_title: // タイトルを更新するために通知されます。
 				{
 					refresh_title();
+
+					break;
+				}
+			case hive.c_message.c_show_extra_menu: // エキストラメニューを表示するために通知されます。
+				{
+					show_extra_menu();
 
 					break;
 				}

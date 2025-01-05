@@ -76,6 +76,30 @@ namespace apn::workspace
 
 					return result;
 				}
+			case WM_COMMAND:
+				{
+					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+
+					auto id = LOWORD(wParam);
+
+					if (id >= hive.c_command_id.c_begin && id < hive.c_command_id.c_end)
+					{
+						switch (id)
+						{
+						case hive.c_command_id.c_show_extra_menu:
+							{
+								// コマンドの発生をメインウィンドウに通知します。
+								::PostMessage(hive.main_window, hive.c_message.c_show_extra_menu, 0, 0);
+
+								break;
+							}
+						}
+
+						break;
+					}
+
+					break;
+				}
 			}
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
