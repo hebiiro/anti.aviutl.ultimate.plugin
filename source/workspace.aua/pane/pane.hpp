@@ -976,8 +976,11 @@ namespace apn::workspace
 				hide_drawers(dwp);
 			}
 
-			// 基準領域からキャプション領域を除外します。
-			base_rc = get_caption_facet()->get_exclude_rect(this, &base_rc);
+			if (auto caption_facet = get_caption_facet())
+			{
+				// 基準領域からキャプション領域を除外します。
+				base_rc = caption_facet->get_exclude_rect(this, &base_rc);
+			}
 
 			if (flags & c_update_flag.c_show_tab)
 			{
