@@ -126,6 +126,30 @@ namespace apn::workspace
 		}
 
 		//
+		// この仮想関数は、ウィンドウ関数のタイミングで呼び出されます。
+		//
+		virtual BOOL on_window_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+
+			switch (message)
+			{
+			case AviUtl::FilterPlugin::WindowMessage::Update:
+				{
+					MY_TRACE_FUNC("Update, {:#010x}, {:#010x}", wParam, lParam);
+
+					// すべてのウィンドウが生成されたはずなので
+					// レイアウトを初期化します。
+					main_window->post_init();
+
+					break;
+				}
+			}
+
+			return FALSE;
+		}
+
+		//
 		// この仮想関数は、このアドインと交信するために呼ばれます。
 		//
 		virtual my::addr_t on_get_address(LPCWSTR name) override

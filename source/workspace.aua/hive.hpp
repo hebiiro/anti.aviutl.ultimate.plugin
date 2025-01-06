@@ -35,7 +35,6 @@ namespace apn::workspace
 		} c_class_name;
 
 		inline static constexpr struct Message {
-			inline static constexpr uint32_t c_post_init = WM_APP + 1;
 			inline static constexpr uint32_t c_read_preference = WM_APP + 2;
 			inline static constexpr uint32_t c_write_preference = WM_APP + 3;
 			inline static constexpr uint32_t c_init_shuttle = WM_APP + 4;

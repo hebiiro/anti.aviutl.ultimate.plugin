@@ -78,6 +78,36 @@ namespace apn::workspace
 		}
 
 		//
+		// aviutlの初期化が完了したあとに追加の初期化処理を実行します。
+		//
+		BOOL post_init()
+		{
+			static BOOL is_initialized = FALSE;
+			if (is_initialized) return FALSE;
+			is_initialized = TRUE;
+
+			MY_TRACE_FUNC("開始");
+
+			// エキストラメニューを初期化します。
+			init_extra_menu();
+
+			// レイアウトリストのフォントをセットします。
+			layout_list.set_font();
+
+			// レイアウトリストを更新します。
+			layout_list.update_layout_list();
+
+			// プリファレンスを読み込みます。
+			read_preference();
+
+			MY_TRACE_FUNC("終了");
+
+			// メインウィンドウのタイトルを更新します。
+			refresh_title();
+
+			return TRUE;
+		}
+		//
 		// シャトルを初期化します。
 		//
 		BOOL init_shuttle(HWND hwnd, const std::wstring& window_name)
@@ -120,10 +150,6 @@ namespace apn::workspace
 				MY_TRACE("設定ダイアログ用のシャトルを初期化します\n");
 
 				setting_dialog->init(_T("* 設定ダイアログ"), hwnd);
-
-				// 最初のレイアウト計算を行う準備が整ったので、
-				// メインウィンドウにメッセージをポストして通知します。
-				::PostMessage(hive.main_window, hive.c_message.c_post_init, 0, 0);
 
 				return TRUE;
 			}
@@ -666,29 +692,6 @@ namespace apn::workspace
 
 					hive.theme_tav.reset();
 					hive.theme.reset();
-
-					break;
-				}
-			case hive.c_message.c_post_init: // AviUtlの初期化処理が終わったあとに通知されます。
-				{
-					MY_TRACE_FUNC("{:#010x}, c_post_init, {:#010x}, {:#010x}, c_begin", hwnd, wParam, lParam);
-
-					// エキストラメニューを初期化します。
-					init_extra_menu();
-
-					// レイアウトリストのフォントをセットします。
-					layout_list.set_font();
-
-					// レイアウトリストを更新します。
-					layout_list.update_layout_list();
-
-					// プリファレンスを読み込みます。
-					read_preference();
-
-					MY_TRACE_FUNC("{:#010x}, c_post_init, {:#010x}, {:#010x}, c_end", hwnd, wParam, lParam);
-
-					// メインウィンドウのタイトルを更新します。
-					refresh_title();
 
 					break;
 				}
