@@ -10,6 +10,17 @@ namespace apn::item_copy
 		inline static constexpr auto c_name = L"item_copy";
 		inline static constexpr auto c_display_name = L"アイテムコピー";
 
+		inline static constexpr struct FileSplitMode {
+			inline static constexpr int32_t c_none = 0;
+			inline static constexpr int32_t c_item_exo = 1;
+			inline static constexpr int32_t c_item_exa = 2;
+			inline static constexpr my::Label labels[] = {
+				{ c_none, L"none" },
+				{ c_item_exo, L"item_exo" },
+				{ c_item_exa, L"item_exa" },
+			};
+		} c_file_split_mode;
+
 		//
 		// このアドインのインスタンスハンドルです。
 		//
@@ -44,6 +55,11 @@ namespace apn::item_copy
 		// 選択テキストのみを使用します。
 		//
 		BOOL use_empty_text = FALSE;
+
+		//
+		// ファイルに書き込むときの分割モードです。
+		//
+		int32_t file_split_mode = c_file_split_mode.c_none;
 
 		//
 		// 読み込んだexoファイルのパスです。

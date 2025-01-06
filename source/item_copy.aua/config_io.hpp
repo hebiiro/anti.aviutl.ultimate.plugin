@@ -73,6 +73,7 @@ namespace apn::item_copy
 			get_int(root, "insert_layer", hive.insert_layer);
 			get_string(root, "prefix", hive.prefix);
 			get_bool(root, "use_empty_text", hive.use_empty_text);
+			get_label(root, "file_split_mode", hive.file_split_mode, hive.c_file_split_mode.labels);
 			get_string(root, "exo_file_name", hive.exo_file_name);
 			get_window(root, "addin_window", addin_window);
 
@@ -89,6 +90,7 @@ namespace apn::item_copy
 			set_int(root, "insert_layer", hive.insert_layer);
 			set_string(root, "prefix", hive.prefix);
 			set_bool(root, "use_empty_text", hive.use_empty_text);
+			set_label(root, "file_split_mode", hive.file_split_mode, hive.c_file_split_mode.labels);
 			set_string(root, "exo_file_name", hive.exo_file_name);
 			set_window(root, "addin_window", addin_window);
 

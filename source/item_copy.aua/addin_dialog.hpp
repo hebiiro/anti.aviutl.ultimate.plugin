@@ -173,6 +173,7 @@ namespace apn::item_copy
 			get_int(IDC_INSERT_LAYER, hive.insert_layer);
 			get_text(IDC_PREFIX, hive.prefix);
 			get_check(IDC_USE_EMPTY_TEXT, hive.use_empty_text);
+			get_combobox_index(IDC_FILE_SPLIT_MODE, hive.file_split_mode);
 		}
 
 		//
@@ -185,6 +186,7 @@ namespace apn::item_copy
 			set_int(IDC_INSERT_LAYER, hive.insert_layer);
 			set_text(IDC_PREFIX, hive.prefix);
 			set_check(IDC_USE_EMPTY_TEXT, hive.use_empty_text);
+			set_combobox_index(IDC_FILE_SPLIT_MODE, hive.file_split_mode);
 		}
 
 		//
@@ -193,6 +195,8 @@ namespace apn::item_copy
 		virtual void on_init_dialog() override
 		{
 			MY_TRACE_FUNC("");
+
+			init_combobox(IDC_FILE_SPLIT_MODE, _T("一括"), _T("アイテム毎exo"), _T("アイテム毎exa"));
 
 			using namespace my::layout;
 
@@ -213,6 +217,7 @@ namespace apn::item_copy
 				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_COPY_ITEM));
 				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_READ_FILE));
 				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_WRITE_FILE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_l, margin, ctrl(IDC_FILE_SPLIT_MODE));
 			}
 
 			{
@@ -253,6 +258,10 @@ namespace apn::item_copy
 			case IDC_PREFIX:
 			case IDC_INSERT_LAYER:
 				if (code == EN_UPDATE) update_config(); break;
+
+			// コンボボックス
+			case IDC_FILE_SPLIT_MODE:
+				if (code == CBN_SELCHANGE) update_config(); break;
 			}
 		}
 
