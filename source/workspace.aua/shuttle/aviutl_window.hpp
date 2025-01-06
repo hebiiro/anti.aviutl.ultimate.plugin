@@ -95,7 +95,7 @@ namespace apn::workspace
 							}
 						}
 
-						break;
+						return 0;
 					}
 
 					break;
