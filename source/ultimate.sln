@@ -153,6 +153,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{A65FDFA8-9
 		..\.gitignore = ..\.gitignore
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		..\CREDITS.md = ..\CREDITS.md
+		..\LATEST_RELEASE = ..\LATEST_RELEASE
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
 	EndProjectSection
