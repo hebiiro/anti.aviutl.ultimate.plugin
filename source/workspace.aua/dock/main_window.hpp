@@ -82,10 +82,6 @@ namespace apn::workspace
 		//
 		BOOL post_init()
 		{
-			static BOOL is_initialized = FALSE;
-			if (is_initialized) return FALSE;
-			is_initialized = TRUE;
-
 			MY_TRACE_FUNC("開始");
 
 			// エキストラメニューを初期化します。
@@ -692,6 +688,12 @@ namespace apn::workspace
 
 					hive.theme_tav.reset();
 					hive.theme.reset();
+
+					break;
+				}
+			case hive.c_message.c_post_init: // 初期化を完了させるために通知されます。
+				{
+					post_init();
 
 					break;
 				}

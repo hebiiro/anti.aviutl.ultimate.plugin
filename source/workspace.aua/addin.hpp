@@ -134,13 +134,17 @@ namespace apn::workspace
 
 			switch (message)
 			{
-			case AviUtl::FilterPlugin::WindowMessage::Update:
+			case AviUtl::FilterPlugin::WindowMessage::ChangeWindow:
 				{
-					MY_TRACE_FUNC("Update, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("ChangeWindow, {:#010x}, {:#010x}", wParam, lParam);
+
+					static BOOL is_initialized = FALSE;
+					if (is_initialized) break;
+					is_initialized = TRUE;
 
 					// すべてのウィンドウが生成されたはずなので
 					// レイアウトを初期化します。
-					main_window->post_init();
+					::PostMessage(hive.main_window, hive.c_message.c_post_init, 0, 0);
 
 					break;
 				}
