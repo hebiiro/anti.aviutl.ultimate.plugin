@@ -189,7 +189,8 @@ namespace apn::text_drop
 					// キャリッジリターンを除去します。
 					if (line.ends_with(L"\r")) line.pop_back();
 
-					max_length = std::max(max_length, get_length(line));
+					// 行の文字数を最大文字数に加算します。
+					max_length += get_length(line);
 				}
 			}
 
@@ -316,7 +317,8 @@ namespace apn::text_drop
 				// 空行ではない場合は
 				if (line.length())
 				{
-					max_length = std::max(max_length, get_length(line));
+					// 行の文字数を最大文字数に加算します。
+					max_length += get_length(line);
 
 					// テキストを蓄積します。
 					text += line + L"\r\n";
