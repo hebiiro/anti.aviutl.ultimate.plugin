@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::reboot
+namespace apn::reboot::launcher
 {
 	//
 	// このクラスはランチャーのアジトです。

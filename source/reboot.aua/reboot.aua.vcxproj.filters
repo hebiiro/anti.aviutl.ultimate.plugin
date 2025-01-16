@@ -84,7 +84,7 @@
       <Filter>part\spreader</Filter>
     </ClInclude>
     <ClInclude Include="part\spreader\option_dialog.hpp">
-      <Filter>part\launcher</Filter>
+      <Filter>part\spreader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
