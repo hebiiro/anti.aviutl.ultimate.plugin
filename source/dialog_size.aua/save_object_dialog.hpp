@@ -39,7 +39,7 @@ namespace apn::dialog_size
 			auto origin = my::get_module_file_name(nullptr);
 			origin.remove_filename();
 
-			// 検索パターンを取得します。
+			// 検索パターンを作成します。
 			auto pattern = origin / _T("*.*");
 
 			WIN32_FIND_DATA ffd = {};
@@ -48,7 +48,7 @@ namespace apn::dialog_size
 
 			if (handle.get() == INVALID_HANDLE_VALUE)
 			{
-				MY_TRACE("::FindFirstFile() が失敗しました\n");
+				MY_TRACE("::FindFirstFile()が失敗しました\n");
 
 				return FALSE;
 			}
