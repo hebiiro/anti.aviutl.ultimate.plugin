@@ -22,9 +22,38 @@ namespace apn::dark::gdi
 				}
 			case CDDS_ITEMPREPAINT:
 				{
+					MY_TRACE_HEX(cd->nmcd.uItemState);
+
 					if (auto theme = skin::theme::manager.get_theme(VSCLASS_TREEVIEW))
 					{
-						auto state = skin::theme::manager.get_state(theme, TVP_TREEITEM, TREIS_NORMAL);
+						auto part_id = TVP_TREEITEM;
+						auto state_id = TREIS_NORMAL;
+
+						if (cd->nmcd.uItemState & CDIS_DISABLED)
+						{
+							state_id = TREIS_DISABLED;
+						}
+						else if (cd->nmcd.uItemState & CDIS_SELECTED)
+						{
+							if (cd->nmcd.uItemState & TREIS_HOT)
+							{
+								state_id = TREIS_HOTSELECTED;
+							}
+							else if (cd->nmcd.uItemState & CDIS_FOCUS)
+							{
+								state_id = TREIS_SELECTED;
+							}
+							else
+							{
+								state_id = TREIS_SELECTEDNOTFOCUS;
+							}
+						}
+						else if (cd->nmcd.uItemState & TREIS_HOT)
+						{
+							state_id = TREIS_HOT;
+						}
+
+						auto state = skin::theme::manager.get_state(theme, part_id, state_id);
 
 						if (state && state->stuff.fill.color != CLR_NONE)
 							cd->clrTextBk = state->stuff.fill.color;
