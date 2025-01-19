@@ -107,11 +107,11 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("pane_caption_active")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.8)
-		stuff.fill.sub_color = secondary_fill(0.7)
+		stuff.fill.sub_color = tertiary_fill(0.7)
 		stuff.fill.mode = fill_mode
-		stuff.text.color = secondary_text(-0.9)
+		stuff.text.color = tertiary_text(-0.9)
 		stuff.text.shadow_color = text_shadow(stuff)
-		stuff.border.color = secondary_border(0.9)
+		stuff.border.color = tertiary_border(0.9)
 		stuff.border.width = border_width
 
 	## ペインキャプションの非アクティブ状態
@@ -174,11 +174,11 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("menu_hot")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.7)
-		stuff.fill.sub_color = secondary_fill(0.5)
+		stuff.fill.sub_color = tertiary_fill(0.5)
 		stuff.fill.mode = fill_mode
-		stuff.text.color = secondary_text(-0.9)
+		stuff.text.color = tertiary_text(-0.9)
 		stuff.text.shadow_color = text_shadow(stuff)
-		stuff.border.color = secondary_border(-0.2)
+		stuff.border.color = tertiary_border(-0.2)
 		stuff.border.width = border_width
 		stuff.etc.ellipse = ellipse
 
@@ -251,9 +251,9 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("scrollbar_hot")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.4)
-		stuff.fill.sub_color = secondary_fill(0.2)
+		stuff.fill.sub_color = tertiary_fill(0.2)
 		stuff.fill.mode = fill_mode
-		stuff.border.color = secondary_border(-0.4)
+		stuff.border.color = tertiary_border(-0.4)
 		stuff.border.width = 1
 		stuff.etc.ellipse = ellipse
 
@@ -261,9 +261,9 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("scrollbar_pressed")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.4)
-		stuff.fill.sub_color = secondary_fill(0.2)
+		stuff.fill.sub_color = tertiary_fill(0.2)
 		stuff.fill.mode = fill_mode
-		stuff.border.color = secondary_border(-0.4)
+		stuff.border.color = tertiary_border(-0.4)
 		stuff.border.width = 1
 		stuff.etc.ellipse = ellipse
 
@@ -308,7 +308,7 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("trackbar_hot")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.7)
-		stuff.fill.sub_color = secondary_fill(0.5)
+		stuff.fill.sub_color = tertiary_fill(0.5)
 		stuff.fill.mode = fill_mode
 		stuff.border.color = primary_border(-0.6)
 		stuff.border.width = 1
@@ -318,7 +318,7 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("trackbar_pressed")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.5)
-		stuff.fill.sub_color = secondary_fill(0.3)
+		stuff.fill.sub_color = tertiary_fill(0.3)
 		stuff.fill.mode = fill_mode
 		stuff.border.color = primary_border(-0.6)
 		stuff.border.width = 1
@@ -354,11 +354,11 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("button_hot")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.7)
-		stuff.fill.sub_color = secondary_fill(0.6)
+		stuff.fill.sub_color = tertiary_fill(0.6)
 		stuff.fill.mode = fill_mode
-		stuff.text.color = secondary_text(-0.9)
+		stuff.text.color = tertiary_text(-0.9)
 		stuff.text.shadow_color = text_shadow(stuff)
-		stuff.border.color = secondary_border(-0.2)
+		stuff.border.color = tertiary_border(-0.2)
 		stuff.border.width = border_width
 		stuff.etc.ellipse = ellipse
 
@@ -366,11 +366,11 @@ def create_light_tone_stuffs(fill_tones, border_tones, text_tones):
 	stuff = utils.create_stuff("button_pressed")
 	if (stuff):
 		stuff.fill.color = secondary_fill(0.6)
-		stuff.fill.sub_color = secondary_fill(0.5)
+		stuff.fill.sub_color = tertiary_fill(0.5)
 		stuff.fill.mode = fill_mode
-		stuff.text.color = secondary_text(-0.9)
+		stuff.text.color = tertiary_text(-0.9)
 		stuff.text.shadow_color = text_shadow(stuff)
-		stuff.border.color = secondary_border(-0.3)
+		stuff.border.color = tertiary_border(-0.3)
 		stuff.border.width = border_width
 		stuff.etc.ellipse = ellipse
 
