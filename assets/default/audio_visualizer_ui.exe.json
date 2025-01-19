@@ -1,0 +1,32 @@
+{
+	"visual": [
+		{
+			"name": "パワースペクトル",
+			"preference": {
+				"channel_mode": "both"
+			},
+			"scheme_file_name": "simple_spectre.json"
+		},
+		{
+			"name": "右Lv",
+			"preference": {
+				"channel_mode": "right"
+			},
+			"scheme_file_name": "simple_bar.json"
+		},
+		{
+			"name": "左Lv",
+			"preference": {
+				"channel_mode": "left"
+			},
+			"scheme_file_name": "simple_bar.json"
+		},
+		{
+			"name": "左右Lv",
+			"preference": {
+				"channel_mode": "both"
+			},
+			"scheme_file_name": "simple_bar.json"
+		}
+	]
+}

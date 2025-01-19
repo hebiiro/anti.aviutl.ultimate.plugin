@@ -1,0 +1,55 @@
+{
+	"apply_file_dialog": false,
+	"as_round": true,
+	"as_zebra": true,
+	"border_width": 1,
+	"dark_color": [
+		{
+			"border": "128, 128, 128",
+			"fill": "128, 128, 128",
+			"text": "128, 128, 128"
+		},
+		{
+			"border": "128, 128, 128",
+			"fill": "128, 128, 128",
+			"text": "128, 128, 128"
+		},
+		{
+			"border": "128, 128, 128",
+			"fill": "128, 128, 128",
+			"text": "128, 128, 128"
+		}
+	],
+	"dark_mode": true,
+	"dont_write_bytecode": false,
+	"draw_border": true,
+	"draw_button_edge": false,
+	"draw_gradation": true,
+	"draw_shadow": true,
+	"ellipse": 5,
+	"fix_dpi_scaling": false,
+	"light_color": [
+		{
+			"border": "128, 128, 128",
+			"fill": "128, 128, 128",
+			"text": "128, 128, 128"
+		},
+		{
+			"border": "128, 128, 128",
+			"fill": "128, 128, 128",
+			"text": "128, 128, 128"
+		},
+		{
+			"border": "128, 128, 128",
+			"fill": "128, 128, 128",
+			"text": "128, 128, 128"
+		}
+	],
+	"scheme_name": "[テーマ] Mr-Ojii",
+	"scrollbar_reduction": 50,
+	"shadow_density": 80,
+	"skin_name": "黒窓",
+	"specialize_checkbox": false,
+	"use_layer_color": true,
+	"use_layer_color_multi": false
+}

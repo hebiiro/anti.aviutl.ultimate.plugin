@@ -1,0 +1,301 @@
+{
+	"custom_template": [
+		{
+			"active": true,
+			"name": "システムの設定"
+		},
+		{
+			"active": true,
+			"name": "拡張編集の環境設定"
+		},
+		{
+			"active": true,
+			"name": "入力プラグインの優先順位"
+		},
+		{
+			"active": true,
+			"name": "フィルタプラグインの優先順位"
+		},
+		{
+			"active": true,
+			"name": "新規プロジェクトの作成"
+		},
+		{
+			"active": true,
+			"name": "エイリアスの作成"
+		},
+		{
+			"active": true,
+			"name": "グリッドの設定"
+		},
+		{
+			"active": true,
+			"name": "シーンの設定"
+		},
+		{
+			"active": true,
+			"name": "スクリプトの設定"
+		}
+	],
+	"new_file": {
+		"audio_rate": [
+			{
+				"name": "48 kHz",
+				"rate": "48000"
+			},
+			{
+				"name": "44.1 kHz",
+				"rate": "44100"
+			},
+			{
+				"name": "32 KHz",
+				"rate": "32000"
+			},
+			{
+				"name": "24 KHz",
+				"rate": "24000"
+			}
+		],
+		"video_rate": [
+			{
+				"name": "60 fps",
+				"rate": "60"
+			},
+			{
+				"name": "59.94 fps",
+				"rate": "59.94"
+			},
+			{
+				"name": "30 fps",
+				"rate": "30"
+			},
+			{
+				"name": "29.97 fps",
+				"rate": "29.97"
+			},
+			{
+				"name": "24 fps",
+				"rate": "24"
+			},
+			{
+				"name": "23.98 fps",
+				"rate": "23.98"
+			},
+			{
+				"name": "20 fps",
+				"rate": "20"
+			},
+			{
+				"name": "10 fps",
+				"rate": "10"
+			}
+		],
+		"video_size": [
+			{
+				"height": "4320",
+				"name": "7680 x 4320 (4320p / 8K / SHV / 16:9)",
+				"width": "7680"
+			},
+			{
+				"height": "2160",
+				"name": "4096 x 2160 (4Kデジタルシネマ / 256:135)",
+				"width": "4096"
+			},
+			{
+				"height": "2400",
+				"name": "3840 x 2400 (QUXGA+ / 16:10)",
+				"width": "3840"
+			},
+			{
+				"height": "2160",
+				"name": "3840 x 2160 (2160p / 4K / UHD / 16:9)",
+				"width": "3840"
+			},
+			{
+				"height": "2400",
+				"name": "3200 x 2400 (QUXGA / 4:3)",
+				"width": "3200"
+			},
+			{
+				"height": "1800",
+				"name": "3200 x 1800 (WQHD+ / 16:9)",
+				"width": "3200"
+			},
+			{
+				"height": "1800",
+				"name": "2800 x 1800 (QWXGA+ / 16:10)",
+				"width": "2800"
+			},
+			{
+				"height": "1600",
+				"name": "2560 x 1600 (WQXGA / 16:10)",
+				"width": "2560"
+			},
+			{
+				"height": "1440",
+				"name": "2560 x 1440 (1440p / WQHD / 16:9)",
+				"width": "2560"
+			},
+			{
+				"height": "1536",
+				"name": "2048 x 1536 (QXGA / 4:3)",
+				"width": "2048"
+			},
+			{
+				"height": "1152",
+				"name": "2048 x 1152 (QWXGA / 16:9)",
+				"width": "2048"
+			},
+			{
+				"height": "1200",
+				"name": "1920 x 1200 (WUXGA / 16:10)",
+				"width": "1920"
+			},
+			{
+				"height": "1080",
+				"name": "1920 x 1080 (1080p / 2K / FHD / 16:9)",
+				"width": "1920"
+			},
+			{
+				"height": "1200",
+				"name": "1600 x 1200 (UXGA / 4:3)",
+				"width": "1600"
+			},
+			{
+				"height": "1050",
+				"name": "1680 x 1050 (WSXGA+ / 16:10)",
+				"width": "1680"
+			},
+			{
+				"height": "1024",
+				"name": "1600 x 1024 (WSXGA / 25:16)",
+				"width": "1600"
+			},
+			{
+				"height": "1050",
+				"name": "1400 x 1050 (SXGA+ / 4:3)",
+				"width": "1400"
+			},
+			{
+				"height": "1024",
+				"name": "1280 x 1024 (SXGA / 5:4)",
+				"width": "1280"
+			},
+			{
+				"height": "1080",
+				"name": "1440 x 1080 (ハイビジョン / HD / 4:3)",
+				"width": "1440"
+			},
+			{
+				"height": "900",
+				"name": "1440 x 900 (WXGA+ / 16:10)",
+				"width": "1440"
+			},
+			{
+				"height": "960",
+				"name": "1280 x 960 (QVGA / 4:3)",
+				"width": "1280"
+			},
+			{
+				"height": "768",
+				"name": "1366 x 768 (FWXGA / 16:9)",
+				"width": "1366"
+			},
+			{
+				"height": "800",
+				"name": "1280 x 800 (WXGA / 16:10)",
+				"width": "1280"
+			},
+			{
+				"height": "720",
+				"name": "1280 x 720 (720p / HDTV / 16:9)",
+				"width": "1280"
+			},
+			{
+				"height": "864",
+				"name": "1152 x 864 (XGA+ / 4:3)",
+				"width": "1152"
+			},
+			{
+				"height": "768",
+				"name": "1280 x 768 (WXGA / 15:9)",
+				"width": "1280"
+			},
+			{
+				"height": "768",
+				"name": "1024 x 768 (XGA / 4:3)",
+				"width": "1024"
+			},
+			{
+				"height": "600",
+				"name": "1024 x 600 (WSVGA / 128:75)",
+				"width": "1024"
+			},
+			{
+				"height": "600",
+				"name": "800 x 600 (SVGA / 4:3)",
+				"width": "800"
+			},
+			{
+				"height": "480",
+				"name": "800 x 480 (WVGA / 15:9)",
+				"width": "800"
+			},
+			{
+				"height": "480",
+				"name": "720 x 480 (480p / SDTV / 16:9)",
+				"width": "720"
+			},
+			{
+				"height": "480",
+				"name": "640 x 480 (VGA / 4:3)",
+				"width": "640"
+			},
+			{
+				"height": "360",
+				"name": "640 x 360 (360p / 16:9)",
+				"width": "640"
+			},
+			{
+				"height": "320",
+				"name": "480 x 320 (HVGA / 3:2)",
+				"width": "480"
+			},
+			{
+				"height": "272",
+				"name": "480 x 272 (WQVGA / 16:9)",
+				"width": "480"
+			},
+			{
+				"height": "240",
+				"name": "427 x 240 (240p / 16:9)",
+				"width": "427"
+			},
+			{
+				"height": "240",
+				"name": "400 x 240 (WQVGA / 15:9)",
+				"width": "400"
+			},
+			{
+				"height": "240",
+				"name": "320 x 240 (QVGA / 4:3)",
+				"width": "320"
+			},
+			{
+				"height": "144",
+				"name": "256 x 144 (144p / 16:9)",
+				"width": "256"
+			},
+			{
+				"height": "144",
+				"name": "176 x 144 (QCIF / 4:3)",
+				"width": "176"
+			},
+			{
+				"height": "120",
+				"name": "160 x 120 (QQVGA / 4:3)",
+				"width": "160"
+			}
+		]
+	}
+}
