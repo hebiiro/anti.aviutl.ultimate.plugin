@@ -32,6 +32,7 @@ namespace apn::dark
 			get_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			get_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
 			get_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
+			get_check(IDC_SPECIALIZE_CHECKBOX, hive.specialize_checkbox);
 
 			for (size_t i = 0; i < 3; i++)
 			{
@@ -70,6 +71,7 @@ namespace apn::dark
 			set_check(IDC_USE_LAYER_COLOR, hive.use_layer_color);
 			set_check(IDC_USE_LAYER_COLOR_MULTI, hive.use_layer_color_multi);
 			set_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
+			set_check(IDC_SPECIALIZE_CHECKBOX, hive.specialize_checkbox);
 
 			for (size_t i = 0; i < std::size(hive.dark_color); i++)
 			{
@@ -244,6 +246,11 @@ namespace apn::dark
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR));
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_LAYER_COLOR_MULTI));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SPECIALIZE_CHECKBOX));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_DONT_WRITE_BYTECODE));
 			}
 
@@ -348,6 +355,7 @@ namespace apn::dark
 			case IDC_USE_LAYER_COLOR:
 			case IDC_USE_LAYER_COLOR_MULTI:
 			case IDC_DONT_WRITE_BYTECODE:
+			case IDC_SPECIALIZE_CHECKBOX:
 				{
 					app->on_change_controls();
 

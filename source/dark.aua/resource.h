@@ -34,6 +34,7 @@
 #define IDC_USE_LAYER_COLOR_MULTI       1033
 #define IDC_DONT_WRITE_BYTECODE         1034
 #define IDC_GRADATION                   1035
+#define IDC_SPECIALIZE_CHECKBOX         1036
 #define IDC_FILL_COLOR_STAT             1041
 #define IDC_BORDER_COLOR_STAT           1042
 #define IDC_TEXT_COLOR_STAT             1043

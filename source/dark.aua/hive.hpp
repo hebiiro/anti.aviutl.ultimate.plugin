@@ -180,6 +180,11 @@ namespace apn::dark
 		BOOL dont_write_bytecode = FALSE;
 
 		//
+		// TRUEの場合はチェックボックス(とラジオボタン)を特殊化します。
+		//
+		BOOL specialize_checkbox = FALSE;
+
+		//
 		// レンダラを使用するかどうかのフラグです。
 		// レンダラの使用を停止したい場合はTRUEに設定します。
 		//

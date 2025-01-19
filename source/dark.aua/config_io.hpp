@@ -5,51 +5,8 @@ namespace apn::dark
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct ConfigIO : StdConfigIOUseHive<hive>
 	{
-		//
-		// 初期化処理を実行します。
-		//
-		BOOL init()
-		{
-			MY_TRACE_FUNC("");
-
-			hive.config_file_name = magi.get_config_file_name(hive.instance);
-			MY_TRACE_STR(hive.config_file_name);
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグを読み込みます。
-		//
-		BOOL read()
-		{
-			MY_TRACE_FUNC("");
-
-			return read_file(hive.config_file_name, hive);
-		}
-
-		//
-		// コンフィグを書き込みます。
-		//
-		BOOL write()
-		{
-			MY_TRACE_FUNC("");
-
-			return write_file(hive.config_file_name, hive);
-		}
-
 		//
 		// カラーセットを読み込みます。
 		//
@@ -126,6 +83,7 @@ namespace apn::dark
 			get_bool(root, "use_layer_color", hive.use_layer_color);
 			get_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
 			get_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
+			get_bool(root, "specialize_checkbox", hive.specialize_checkbox);
 			get_color_set_array(root, "dark_color", hive.dark_color);
 			get_color_set_array(root, "light_color", hive.light_color);
 			get_window(root, "addin_window", addin_window);
@@ -158,6 +116,7 @@ namespace apn::dark
 			set_bool(root, "use_layer_color", hive.use_layer_color);
 			set_bool(root, "use_layer_color_multi", hive.use_layer_color_multi);
 			set_bool(root, "dont_write_bytecode", hive.dont_write_bytecode);
+			set_bool(root, "specialize_checkbox", hive.specialize_checkbox);
 			set_color_set_array(root, "dark_color", hive.dark_color);
 			set_color_set_array(root, "light_color", hive.light_color);
 			set_window(root, "addin_window", addin_window);

@@ -95,6 +95,7 @@ namespace apn::dark
 			// カスタムロガーを設定します。
 			static struct Logger : my::Tracer::Logger {
 				virtual void output(LPCTSTR raw, LPCTSTR text) override {
+					// F1キーが押されているときだけログを出力します。
 					if (::GetKeyState(VK_F1) < 0) ::OutputDebugString(text);
 				}
 			} logger;
@@ -105,13 +106,14 @@ namespace apn::dark
 			// カスタムロガーを設定します。
 			static struct Logger : my::Tracer::Logger {
 				virtual void output(LPCTSTR raw, LPCTSTR text) override {
+					// Shiftキーが押されているときだけログを出力します。
 					if (::GetKeyState(VK_SHIFT) < 0) ::OutputDebugString(text);
 				}
 			} logger;
 			my::Tracer::logger = &logger;
 		}
 #endif
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		if (!my::contains(args, L"debug")) my::reset(my::Tracer::logger);
 
 		// 黒窓のダミーを読み込みます。
 		// 本物より先に読み込む必要があります。

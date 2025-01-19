@@ -56,7 +56,7 @@ namespace apn::dark::theme
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), ({})", theme, dc, part_id, state_id, safe_string(rc), safe_string(rc_clip));
 
-			if (part_id == BP_RADIOBUTTON || part_id == BP_CHECKBOX)
+			if (hive.specialize_checkbox && (part_id == BP_RADIOBUTTON || part_id == BP_CHECKBOX))
 			{
 				// 全体を描画します。
 
@@ -102,7 +102,7 @@ namespace apn::dark::theme
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, ({})", theme, dc, part_id, state_id, safe_string(text, c), text_flags, text_flags2, safe_string(rc));
 
 			{
-				if (part_id == BP_RADIOBUTTON || part_id == BP_CHECKBOX)
+				if (hive.specialize_checkbox && (part_id == BP_RADIOBUTTON || part_id == BP_CHECKBOX))
 				{
 					// 文字列の描画位置を調整します。
 
