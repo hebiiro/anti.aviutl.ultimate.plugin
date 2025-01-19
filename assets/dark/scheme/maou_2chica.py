@@ -20,7 +20,7 @@ if (dark.hive.dark_mode):
 		(
 			utils.Tone(core.RGB(120, 120, 140)),
 			utils.Tone(core.RGB(120, 120, 240)),
-			utils.Tone(core.RGB(120, 120, 240))
+			utils.Tone(core.RGB(120, 120, 140))
 		)
 	)
 else:
