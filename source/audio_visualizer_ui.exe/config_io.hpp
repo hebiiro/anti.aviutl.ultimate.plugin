@@ -5,76 +5,36 @@ namespace apn::audio_visualizer::ui
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct ConfigIO : StdConfigIOUseHive<hive>
 	{
 		//
 		// ファイルパスを読み込みます。
 		// 相対パスだった場合は絶対パスに変換します。
 		//
-		inline static void get_file_name(const n_json& node, const std::string& name, std::filesystem::path& path)
+		inline static void read_file_name(const n_json& node, const std::string& name,
+			std::filesystem::path& path, const std::filesystem::path& origin_path)
 		{
 			my::json::get_file_name(node, name, path);
-			if (path.is_relative())
-				path = hive.assets_folder_name / path;
+
+			if (path.is_relative()) path = origin_path / path;
 		}
 
 		//
 		// ファイルパスを書き込みます。
-		// 可能ならアセットフォルダからの相対パスで書き込みます。
+		// 可能なら原点からの相対パスで書き込みます。
 		//
-		inline static void set_file_name(n_json& node, const std::string& name, const std::filesystem::path& path)
+		inline static void write_file_name(n_json& node, const std::string& name,
+			const std::filesystem::path& path, const std::filesystem::path& origin_path)
 		{
-			my::json::set_file_name(node, name,
-				path.lexically_proximate(hive.assets_folder_name));
+			my::json::set_file_name(node, name, path.lexically_proximate(origin_path));
 		}
 
 		//
-		// 初期化処理を実行します。
+		// パスの原点を返します。
 		//
-		BOOL init()
+		inline static std::filesystem::path get_origin_path()
 		{
-			MY_TRACE_FUNC("");
-
-			hive.config_file_name = magi.get_config_file_name(hive.instance);
-			MY_TRACE_STR(hive.config_file_name);
-
-			hive.assets_folder_name = magi.get_assets_file_name(hive.c_name);
-			MY_TRACE_STR(hive.assets_folder_name);
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグを読み込みます。
-		//
-		BOOL read()
-		{
-			MY_TRACE_FUNC("");
-
-			auto config_file_name = hive.config_file_name;
-			if (!std::filesystem::exists(config_file_name))
-				config_file_name = magi.get_default_config_file_name(hive.instance);
-			return read_file(config_file_name, hive);
-		}
-
-		//
-		// コンフィグを書き込みます。
-		//
-		BOOL write()
-		{
-			MY_TRACE_FUNC("");
-
-			return write_file(hive.config_file_name, hive);
+			return magi.get_assets_file_name(hive.c_name);
 		}
 
 		//
@@ -94,6 +54,9 @@ namespace apn::audio_visualizer::ui
 		{
 			MY_TRACE_FUNC("");
 
+			// パスの原点を取得します。
+			auto origin_path = get_origin_path();
+
 			// ビジュアルのマップを作成します。
 			// キーはビジュアルのウィンドウ名です。
 			auto visuals = visual_manager.create_visual_map();
@@ -107,14 +70,15 @@ namespace apn::audio_visualizer::ui
 				get_string(visual_node, "name", name);
 				MY_TRACE_STR(name);
 
-				// 名前からビジュアルを取得します。
+				// 名前からビジュアルを検索します。
 				auto it = visuals.find(name);
 				if (it == visuals.end()) return TRUE;
 
+				// ビジュアルを取得します。
 				auto& visual = it->second;
 
-				// スキームファイルのパスを取得します。
-				get_file_name(visual_node, "scheme_file_name", visual->scheme_file_name);
+				// スキームファイルのパスを読み込みます。
+				read_file_name(visual_node, "scheme_file_name", visual->scheme_file_name, origin_path);
 
 				// プリファレンスを取得します。
 				get_child_node(visual_node, "preference", visual->editor.preference);
@@ -135,6 +99,9 @@ namespace apn::audio_visualizer::ui
 		{
 			MY_TRACE_FUNC("");
 
+			// パスの原点を取得します。
+			auto origin_path = get_origin_path();
+
 			// ビジュアルのマップを作成します。
 			// キーはビジュアルのウィンドウ名です。
 			auto visuals = visual_manager.create_visual_map();
@@ -150,7 +117,7 @@ namespace apn::audio_visualizer::ui
 				set_string(visual_node, "name", name);
 
 				// スキームファイルのパスを書き込みます。
-				set_file_name(visual_node, "scheme_file_name", visual->scheme_file_name);
+				write_file_name(visual_node, "scheme_file_name", visual->scheme_file_name, origin_path);
 
 				// プリファレンスを書き込みます。
 				set_child_node(visual_node, "preference", visual->editor.preference);

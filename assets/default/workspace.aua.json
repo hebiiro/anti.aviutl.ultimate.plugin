@@ -1,0 +1,65 @@
+{
+	"use_fullscreen_preview": false,
+	"omit_window_initialize": false,
+	"shortcut_key.show_caption": {
+		"key": "Z",
+		"mod": "SHIFT WIN"
+	},
+	"sub_process": [
+		{
+			"active": true,
+			"type": "console",
+			"name": "コンソール",
+			"exit_mode": [
+				"detach"
+			]
+		},
+		{
+			"active": true,
+			"type": "psdtoolkit",
+			"name": "PSDToolKit(外部)",
+			"class_name": "NuklearWindowClass"
+		},
+		{
+			"active": false,
+			"name": "棒読みさん",
+			"window_name": "棒読みさん",
+			"path": "C:\\Bouyomisan.WinForms-v0.1.1-x86\\Bouyomisan.WinForms\\bymsnwf.exe",
+			"exit_mode": [
+				"detach",
+				"close"
+			]
+		},
+		{
+			"active": false,
+			"name": "棒読みさん",
+			"class_name": "Bouyomisan",
+			"window_name": "棒読みさん",
+			"path": "C:\\Bouyomisan-v3.1.2\\Bouyomisan\\Bouyomisan.exe",
+			"exit_mode": [
+				"detach",
+				"close"
+			]
+		},
+		{
+			"active": false,
+			"name": "Tablacus Explorer 1",
+			"class_name": "TablacusExplorer",
+			"path": "C:\\te240328\\TE32.exe",
+			"exit_mode": [
+				"detach",
+				"close"
+			]
+		},
+		{
+			"active": false,
+			"name": "Tablacus Explorer 2",
+			"class_name": "TablacusExplorer",
+			"path": "C:\\te240328\\TE32.exe",
+			"exit_mode": [
+				"detach",
+				"close"
+			]
+		}
+	]
+}

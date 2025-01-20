@@ -39,11 +39,6 @@ namespace apn::audio_visualizer::ui
 		std::wstring config_file_name;
 
 		//
-		// アセットのフォルダ名です。
-		//
-		std::wstring assets_folder_name;
-
-		//
 		// このモジュールのメインウィンドウです。
 		//
 		HWND main_window = nullptr;
