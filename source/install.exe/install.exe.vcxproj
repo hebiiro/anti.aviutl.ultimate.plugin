@@ -123,7 +123,7 @@ md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
-xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
+xcopy /e /y "$(my_root_dir)\assets" "$(my_assets_dir)\"
 xcopy /e /y "$(my_root_dir)\ui" "$(my_ui_dir)\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
@@ -164,7 +164,7 @@ md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
-xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
+xcopy /e /y "$(my_root_dir)\assets" "$(my_assets_dir)\"
 xcopy /e /y "$(my_root_dir)\ui" "$(my_ui_dir)\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
@@ -209,7 +209,7 @@ md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
-xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
+xcopy /e /y "$(my_root_dir)\assets" "$(my_assets_dir)\"
 xcopy /e /y "$(my_root_dir)\ui" "$(my_ui_dir)\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
@@ -254,7 +254,7 @@ md "$(my_debug_assets_dir)" &gt; NUL 2&gt;&amp;1
 copy /Y "$(my_root_dir)\README.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\CREDITS.md" "$(my_pack_dir)"
 copy /Y "$(my_root_dir)\LICENSE" "$(my_pack_dir)"
-xcopy /e /y "$(my_root_dir)\assets\dark" "$(my_assets_dir)\dark\"
+xcopy /e /y "$(my_root_dir)\assets" "$(my_assets_dir)\"
 xcopy /e /y "$(my_root_dir)\ui" "$(my_ui_dir)\"
 
 md "$(my_runtime_dir)" &gt; NUL 2&gt;&amp;1
