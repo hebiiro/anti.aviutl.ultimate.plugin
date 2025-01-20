@@ -804,6 +804,9 @@ namespace apn::workspace
 				{
 					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
 
+					// IMEは必要ないので無効化します。
+					::ImmAssociateContextEx(hwnd, nullptr, IACE_IGNORENOCONTEXT);
+
 					// ルートペインを作成します。
 					init_root_pane(hwnd);
 
