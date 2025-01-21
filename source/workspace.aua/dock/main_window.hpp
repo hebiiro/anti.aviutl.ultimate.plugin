@@ -224,16 +224,17 @@ namespace apn::workspace
 				// テキストからシャトルを取得します。
 				auto shuttle = shuttle_manager.get(text);
 				if (!shuttle) return FALSE;
-#if 1
-				// シャトルをフローティング状態にします。
-				shuttle->float_window();
+
+				// シャトルがドッキングしているペインを取得します。
+				if (auto pane = Pane::get_pane(*shuttle))
+				{
+					// ドッキングを解除します。
+					pane->release_shuttle(shuttle.get());
+				}
 
 				// シャトルを表示します。
 				::ShowWindow(*shuttle, SW_SHOW);
-#else
-				// シャトルの表示状態を切り替えます。
-				::SendMessage(*shuttle, WM_CLOSE, 0, 0);
-#endif
+
 				return TRUE;
 			}
 
