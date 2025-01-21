@@ -397,7 +397,8 @@ namespace apn::workspace::hook
 			MY_TRACE_HEX(aviutl);
 
 			// AviUtl内の::AdjustWindowRectEx()のコールをフックします。
-			my::hook::attach_abs_call(AdjustWindowRectEx, aviutl + 0x5CAA9);
+			my::hook::attach_abs_call(AdjustWindowRectEx, aviutl + 0x3281D); // ヒストグラム
+			my::hook::attach_abs_call(AdjustWindowRectEx, aviutl + 0x5CAA9); // ツールウィンドウ
 			MY_TRACE_HEX(AdjustWindowRectEx.orig_proc);
 
 			// AviUtl内のdraw_aviutl_button_as_play()のコールをフックします。
