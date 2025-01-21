@@ -5,7 +5,7 @@ namespace apn::dialog_position
 	//
 	// このクラスはダイアログをフックします。
 	//
-	struct Dialog : my::WindowInterseptor
+	struct Dialog : my::WindowInterceptor
 	{
 		//
 		// ウィンドウプロシージャです。

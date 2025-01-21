@@ -7,19 +7,19 @@ namespace my
 	// HWNDに対してインターセプターは複数存在する場合があるので、
 	// HWNDからインターセプターを特定することはできません。
 	//
-	struct WindowInterseptor
+	struct WindowInterceptor
 	{
 		//
 		// コンストラクタです。
 		//
-		WindowInterseptor() : hwnd(nullptr)
+		WindowInterceptor() : hwnd(nullptr)
 		{
 		}
 
 		//
 		// デストラクタです。
 		//
-		virtual ~WindowInterseptor()
+		virtual ~WindowInterceptor()
 		{
 			unsubclass();
 		}
@@ -116,25 +116,25 @@ namespace my
 		{
 //			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam, id, ref_data);
 
-			auto window = (WindowInterseptor*)ref_data;
+			auto window = (WindowInterceptor*)ref_data;
 			return window->on_wnd_proc(hwnd, message, wParam, lParam);
 		}
 
 	public:
 
 		//
-		// このクラスはHWNDとWindowInterseptor*を関連付けます。
+		// このクラスはHWNDとWindowInterceptor*を関連付けます。
 		// HWNDを生成するタイミングで使用してください。
 		//
 		thread_local inline static struct Associator
 		{
-			WindowInterseptor* target; // HWNDを生成中のWindowInterseptorオブジェクトです。
+			WindowInterceptor* target; // HWNDを生成中のWindowInterceptorオブジェクトです。
 			HHOOK hook; // CBTフックのハンドルです。
 
 			//
 			// ウィンドウハンドルが生成される関数の直前にこの関数を呼んでください。
 			//
-			void start(WindowInterseptor* window)
+			void start(WindowInterceptor* window)
 			{
 				target = window;
 				if (hook) ::UnhookWindowsHookEx(hook);
@@ -152,7 +152,7 @@ namespace my
 			}
 
 			//
-			// HWNDとWindowInterseptor*を双方向に関連付けます。サブクラス化も行います。
+			// HWNDとWindowInterceptor*を双方向に関連付けます。サブクラス化も行います。
 			// 内部的に使用されます。
 			//
 			BOOL subclass(HWND hwnd)
@@ -184,7 +184,7 @@ namespace my
 		// このクラスはウィンドウプロシージャをフックします。
 		//
 		struct Hooker {
-			Hooker(WindowInterseptor& window) { associator.start(&window); }
+			Hooker(WindowInterceptor& window) { associator.start(&window); }
 			~Hooker() { associator.stop(); }
 		};
 

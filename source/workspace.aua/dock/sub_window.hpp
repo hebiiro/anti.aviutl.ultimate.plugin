@@ -13,7 +13,7 @@ namespace apn::workspace
 		// このクラスはタイマーのIDです。
 		//
 		inline static constexpr struct TimerID {
-			inline static constexpr UINT_PTR c_update_interseptors = 1000;
+			inline static constexpr UINT_PTR c_update_interceptors = 1000;
 			inline static constexpr UINT_PTR c_update_window_text = 1001;
 		} c_timer_id;
 
@@ -157,7 +157,7 @@ namespace apn::workspace
 			// ウィンドウ名の更新を促します。
 			// ただし、この時点では他のシャトルの作成が完了していないので、
 			// ここではメッセージを送信するだけにして、それをあとからハンドルします。
-			fire_update_interseptors();
+			fire_update_interceptors();
 		}
 
 		//
@@ -169,7 +169,7 @@ namespace apn::workspace
 
 			// シャトルの名前が変更されたので
 			// インターセプターを再設置します。
-			update_interseptors();
+			update_interceptors();
 
 			// ウィンドウ名を更新します。
 			update_window_text();
@@ -178,12 +178,12 @@ namespace apn::workspace
 		//
 		// インターセプターを再設置します。
 		//
-		void update_interseptors()
+		void update_interceptors()
 		{
 			MY_TRACE_FUNC("");
 
 			// 一旦すべてのインターセプターを削除します。
-			interseptors.clear();
+			interceptors.clear();
 
 			// このサブウィンドウのシャトル名を取得します。
 			auto text = this->name;
@@ -205,7 +205,7 @@ namespace apn::workspace
 				if (shuttle && !is_sub_window(*shuttle)) // 循環参照になる可能性があるのでサブウィンドウは除外します。
 				{
 					// インターセプターを作成してメッセージを傍受します。
-					interseptors.emplace_back(std::make_shared<Interseptor>(this, shuttle, result));
+					interceptors.emplace_back(std::make_shared<Interceptor>(this, shuttle, result));
 				}
 
 				// 次の検索位置に進めます。
@@ -224,13 +224,13 @@ namespace apn::workspace
 			// このサブウィンドウのシャトル名を取得します。
 			auto text = this->name;
 
-			for (auto interseptor : interseptors)
+			for (auto interceptor : interceptors)
 			{
 				// textの中にある他のシャトルの名前を含んだパターンを
 				// そのシャトルのウィンドウ名に置換します。
 
-				auto src = interseptor->pattern;
-				auto dst = my::get_window_text(*interseptor->shuttle);
+				auto src = interceptor->pattern;
+				auto dst = my::get_window_text(*interceptor->shuttle);
 
 				text = my::replace(text, src, dst);
 			}
@@ -242,9 +242,9 @@ namespace apn::workspace
 		//
 		// インターセプター更新メッセージを送信します。
 		//
-		void fire_update_interseptors()
+		void fire_update_interceptors()
 		{
-			::SetTimer(*this, c_timer_id.c_update_interseptors, 0, nullptr);
+			::SetTimer(*this, c_timer_id.c_update_interceptors, 0, nullptr);
 		}
 
 		//
@@ -355,10 +355,10 @@ namespace apn::workspace
 				{
 					switch (wParam)
 					{
-					case c_timer_id.c_update_interseptors:
+					case c_timer_id.c_update_interceptors:
 						{
 							// インターセプターを更新します。
-							update_interseptors();
+							update_interceptors();
 
 							// インターセプターが更新されたので
 							// それに合わせてウィンドウ名を更新します。
@@ -392,7 +392,7 @@ namespace apn::workspace
 		//
 		// このクラスは他のシャトルのメッセージを傍受します。
 		//
-		struct Interseptor : my::WindowInterseptor
+		struct Interceptor : my::WindowInterceptor
 		{
 			//
 			// メッセージを受信するサブウィンドウです。
@@ -412,7 +412,7 @@ namespace apn::workspace
 			//
 			// コンストラクタです。
 			//
-			Interseptor(SubWindow* sub_window, const std::shared_ptr<Shuttle>& shuttle, const std::wstring& name)
+			Interceptor(SubWindow* sub_window, const std::shared_ptr<Shuttle>& shuttle, const std::wstring& name)
 				: sub_window(sub_window)
 				, shuttle(shuttle)
 				, pattern(L"%" + name + L"%")
@@ -423,7 +423,7 @@ namespace apn::workspace
 			//
 			// デストラクタです。
 			//
-			virtual ~Interseptor() override
+			virtual ~Interceptor() override
 			{
 				unsubclass();
 			}
@@ -453,7 +453,7 @@ namespace apn::workspace
 		//
 		// インターセプターのコレクションです。
 		//
-		std::vector<std::shared_ptr<Interseptor>> interseptors;
+		std::vector<std::shared_ptr<Interceptor>> interceptors;
 	};
 
 	inline struct SubWindowManager

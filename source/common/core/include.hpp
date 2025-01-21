@@ -72,7 +72,7 @@ using namespace Gdiplus;
 #include "common/my/mfc.hpp"
 #include "common/my/window.hpp"
 #include "common/my/window2.hpp"
-#include "common/my/window_interseptor.hpp"
+#include "common/my/window_interceptor.hpp"
 #include "common/my/dialog.hpp"
 #include "common/my/dialog2.hpp"
 #include "common/my/layout.hpp"
