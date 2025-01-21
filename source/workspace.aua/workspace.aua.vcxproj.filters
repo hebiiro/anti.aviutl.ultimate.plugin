@@ -156,6 +156,9 @@
     <ClInclude Include="hook\hide_window.hpp">
       <Filter>hook</Filter>
     </ClInclude>
+    <ClInclude Include="hook\program\jumpbarx.hpp">
+      <Filter>hook\program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

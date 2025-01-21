@@ -168,6 +168,7 @@
     <ClInclude Include="dock\sub_window.hpp" />
     <ClInclude Include="hook\hide_window.hpp" />
     <ClInclude Include="hook\move_cursor.hpp" />
+    <ClInclude Include="hook\program\jumpbarx.hpp" />
     <ClInclude Include="pane\drawer.hpp" />
     <ClInclude Include="pane\drawer_config_dialog.hpp" />
     <ClInclude Include="pane\pane_config_dialog.hpp" />

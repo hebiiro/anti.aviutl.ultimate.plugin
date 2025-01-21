@@ -70,6 +70,7 @@ namespace apn::workspace
 			hook::color_palette.init();
 			hook::extoolbar.init();
 			hook::z_ram_preview.init();
+			hook::jumpbarx.init();
 
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
@@ -92,6 +93,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
+			hook::jumpbarx.exit();
 			hook::z_ram_preview.exit();
 			hook::extoolbar.exit();
 			hook::color_palette.exit();

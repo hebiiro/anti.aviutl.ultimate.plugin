@@ -37,6 +37,7 @@
 #include "hook/program/color_palette.hpp"
 #include "hook/program/extoolbar.hpp"
 #include "hook/program/z_ram_preview.hpp"
+#include "hook/program/jumpbarx.hpp"
 #include "hook/hook.hpp"
 #include "preference_loader.hpp"
 #include "preference_saver.hpp"
