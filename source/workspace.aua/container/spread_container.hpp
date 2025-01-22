@@ -46,15 +46,5 @@ namespace apn::workspace
 
 			return TRUE;
 		}
-
-		//
-		// コンテンツの位置にフィットするようにコンテナの位置を変更します。
-		//
-		virtual BOOL fit_container_position(const WINDOWPOS* content_wp) override
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
 	};
 }

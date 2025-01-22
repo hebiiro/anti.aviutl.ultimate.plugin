@@ -216,17 +216,37 @@ namespace apn::workspace
 		}
 
 		//
+		// コンテナがドッキング状態になるときに呼ばれます。
+		//
+		virtual void on_dock_container()
+		{
+			MY_TRACE_FUNC("");
+
+			// コンテンツのHWNDを取得します。
+			auto hwnd = content->get_hwnd();
+
+			// ロックします。
+			Locker locker(this);
+
+			// ターゲットの親ウィンドウを切り替えます。
+			::SetParent(hwnd, *this);
+		}
+
+		//
 		// コンテナがフローティング状態になるときに呼ばれます。
 		//
 		virtual void on_float_container()
 		{
 			MY_TRACE_FUNC("");
 
-			// コンテンツとコンテナのクライアント矩形が同じ位置になるように
-			// コンテナのウィンドウ矩形を変更します。
-
 			// コンテンツのHWNDを取得します。
 			auto hwnd = content->get_hwnd();
+
+			// ウィンドウタイトルを更新します。
+			::SetWindowTextW(*this, my::get_window_text(hwnd).c_str());
+
+			// コンテンツとコンテナのクライアント矩形が同じ位置になるように
+			// コンテナのウィンドウ矩形を変更します。
 
 			// コンテンツのクライアント矩形を取得します。
 			auto rc = my::get_client_rect(hwnd);
@@ -239,6 +259,12 @@ namespace apn::workspace
 
 			// コンテナをrcの位置に移動します。
 			set_container_position(&rc);
+
+			// ロックします。
+			Locker locker(this);
+
+			// ターゲットの親ウィンドウを切り替えます。
+			::SetParent(hwnd, *this);
 		}
 
 		//
@@ -333,13 +359,10 @@ namespace apn::workspace
 			// コンテンツのウィンドウ矩形を取得します。
 			auto rc = wp_to_rc(content_wp);
 
-			// ウィンドウ矩形をクライアント矩形に変換します。
+			// コンテンツのウィンドウ矩形をコンテンツのクライアント矩形に変換します。
 			my::window_to_client(content->get_hwnd(), &rc);
 
-			// クライアント座標からスクリーン座標に変換します。
-			my::map_window_points(*this, nullptr, &rc);
-
-			// クライアント矩形をウィンドウ矩形に変換します。
+			// コンテンツのクライアント矩形をコンテナのウィンドウ矩形に変換します。
 			my::client_to_window(*this, &rc);
 
 			// コンテナの位置を変更します。

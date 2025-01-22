@@ -42,6 +42,9 @@ namespace apn::workspace
 			virtual void on_exit_shuttle(const std::shared_ptr<Shuttle>& shuttle) = 0;
 		};
 
+		//
+		// 標準カテゴリです。
+		//
 		inline static const std::vector<std::wstring> c_default_category = {
 			L"プライマリ",
 			L"セカンダリ",
@@ -50,24 +53,46 @@ namespace apn::workspace
 			L"アルティメット",
 		};
 
-		inline static constexpr LPCTSTR c_prop_name = _T("apn::workspace::shuttle");
-
-		inline static StaticListener* static_listener = nullptr; // このクラスのスタティックリスナーです。
-		std::set<Listener*> listeners; // このクラスのリスナーです。
-		std::wstring name; // このシャトルの名前です。
-		std::shared_ptr<Container> dock_container; // このシャトル専用のドッキングコンテナです。
-		std::shared_ptr<Container> float_container; // このシャトル専用のフローティングコンテナです。
+		//
+		// ウィンドウハンドルからポインタを取得するためのプロパティ名です。
+		//
+		inline static constexpr auto c_prop_name = _T("apn::workspace::shuttle");
 
 		//
-		// HWNDに関連付けられているシャトルを返します。
+		// このクラスのスタティックリスナーです。
 		//
-		static Shuttle* get_pointer(HWND hwnd)
+		inline static StaticListener* static_listener = nullptr;
+
+		//
+		// このクラスのリスナーです。
+		//
+		std::set<Listener*> listeners;
+
+		//
+		// このシャトルの名前です。
+		//
+		std::wstring name;
+
+		//
+		// このシャトル専用のドッキングコンテナです。
+		//
+		std::shared_ptr<Container> dock_container;
+
+		//
+		// このシャトル専用のフローティングコンテナです。
+		//
+		std::shared_ptr<Container> float_container;
+
+		//
+		// ウィンドウハンドルに関連付けられているシャトルを返します。
+		//
+		inline static Shuttle* get_pointer(HWND hwnd)
 		{
 			return (Shuttle*)::GetProp(hwnd, c_prop_name);
 		}
 
 		//
-		// HWNDにシャトルを関連付けます。内部的に使用されます。
+		// ウィンドウハンドルにシャトルを関連付けます。内部的に使用されます。
 		//
 		inline static BOOL set_pointer(HWND hwnd, Shuttle* shuttle)
 		{
@@ -141,7 +166,7 @@ namespace apn::workspace
 			// ※すでにサブクラス化済みで失敗する場合もあります。
 			subclass(hwnd);
 
-			// HWNDにポインタを関連付けます。
+			// ターゲットウィンドウにポインタを関連付けます。
 			set_pointer(hwnd, this);
 
 			// カテゴリ名を取得してウィンドウに設定します。
@@ -157,18 +182,30 @@ namespace apn::workspace
 			::ShowWindow(*this, SW_HIDE);
 
 			// ターゲットウィンドウのクライアント矩形を取得しておきます。
-			auto rc_client = my::get_client_rect(*this);
-			MY_TRACE_RECT2(rc_client);
+			auto client_rc = my::get_client_rect(*this);
+			MY_TRACE_RECT2(client_rc);
 
 			// クライアント矩形をスクリーン座標に変換しておきます。
-			my::map_window_points(*this, nullptr, &rc_client);
-			MY_TRACE_RECT2(rc_client);
+			my::map_window_points(*this, nullptr, &client_rc);
+			MY_TRACE_RECT2(client_rc);
 
 			// 設定ダイアログの初期位置は縦に長過ぎたりするので微調整します。
 			if (name == L"* 設定ダイアログ")
 			{
-				rc_client.right += ::GetSystemMetrics(SM_CXSIZEFRAME) * 2;
-				rc_client.bottom /= 2;
+				client_rc.right += ::GetSystemMetrics(SM_CXSIZEFRAME) * 2;
+				client_rc.bottom /= 2;
+			}
+
+			// 「PSDToolKit」用の処理です。
+			if (name == L"PSDToolKit")
+			{
+				// DPIに合わせてクライアント矩形をリサイズします。
+				auto dpi = ::GetDpiForWindow(::GetDesktopWindow());
+				auto w = ::MulDiv(my::get_width(client_rc), dpi, USER_DEFAULT_SCREEN_DPI);
+				auto h = ::MulDiv(my::get_height(client_rc), dpi, USER_DEFAULT_SCREEN_DPI);
+
+				client_rc.right = client_rc.left + w;
+				client_rc.bottom = client_rc.top + h;
 			}
 
 			// コンテナを作成します。
@@ -180,20 +217,6 @@ namespace apn::workspace
 			my::set_style(*this, style | WS_CHILD);
 			my::modify_ex_style(*this, 0, WS_EX_NOPARENTNOTIFY);
 
-			// ウィンドウスタイルが変更されたので
-			// ターゲットのウィンドウ矩形を算出し、更新します。
-			{
-				auto style = my::get_style(*this);
-				auto ex_style = my::get_ex_style(*this);
-				auto menu = ::GetMenu(*this);
-
-				auto rc_window = rc_client;
-				::AdjustWindowRectEx(&rc_window, style, !!menu, ex_style);
-				::SetWindowPos(*this, nullptr,
-					0, 0, my::get_width(rc_window), my::get_height(rc_window),
-					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-			}
-
 			// ターゲットのウィンドウ名を取得します。
 			auto text = my::get_window_text(*this);
 
@@ -203,14 +226,31 @@ namespace apn::workspace
 			// ターゲットのメニューをフローティングコンテナに移し替えます。
 			::SetMenu(*float_container, ::GetMenu(*this));
 
-			// ターゲットの親をフローティングコンテナに変更します。
-			::SetParent(*this, *float_container);
+			{
+				Container::Locker locker(float_container.get());
+
+				// ターゲットの親をフローティングコンテナに変更します。
+				// ※ここでWM_WINDOWPOSCHANGINGが発生するのでロックしています。
+				::SetParent(*this, *float_container);
+
+				// ターゲットのウィンドウ矩形を算出します。
+				auto style = my::get_style(*this);
+				auto ex_style = my::get_ex_style(*this);
+				auto window_rc = client_rc;
+				::AdjustWindowRectEx(&window_rc, style, FALSE, ex_style);
+
+				// ウィンドウスタイルを変更したので
+				// それに合わせてターゲットウィンドウのサイズを更新します。
+				// ※ここでWM_WINDOWPOSCHANGINGが発生するのでロックしています。
+				my::set_window_pos(*this, nullptr, &window_rc,
+					SWP_NOZORDER | SWP_NOMOVE | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			}
 
 			// ターゲットがあった位置にフローティングコンテナを移動します。
 			{
-				auto rc_window = rc_client;
-				my::client_to_window(*float_container, &rc_window);
-				float_container->set_container_position(&rc_window);
+				auto window_rc = client_rc;
+				my::client_to_window(*float_container, &window_rc);
+				float_container->set_container_position(&window_rc);
 			}
 
 			// ターゲットが表示状態ならフローティングコンテナを表示します。
@@ -339,7 +379,7 @@ namespace apn::workspace
 		//
 		// ターゲットウィンドウのハンドルを返します。
 		//
-		HWND get_hwnd() override
+		virtual HWND get_hwnd() override
 		{
 			return *this;
 		}
@@ -347,7 +387,7 @@ namespace apn::workspace
 		//
 		// ターゲットウィンドウの位置を調整します。
 		//
-		BOOL revise_content_position(LPRECT rc) override
+		virtual BOOL revise_content_position(LPRECT rc) override
 		{
 			// スクロールバーがあるときは、その分矩形を縮小させます。
 
@@ -529,19 +569,11 @@ namespace apn::workspace
 			// フローティングコンテナを非表示にします。
 			::ShowWindow(*float_container, SW_HIDE);
 
+			// フローティングコンテナに処理させます。
+			dock_container->on_dock_container();
+
 			// ドッキングコンテナの親ウィンドウを指定されたウィンドウに切り替えます。
 			::SetParent(*dock_container, site);
-
-			// ターゲットの親ウィンドウをドッキングコンテナに切り替えます。
-			::SetParent(*this, *dock_container);
-		}
-
-		//
-		// ドッキングコンテナをリサイズします。
-		//
-		void resize(LPCRECT rc)
-		{
-			dock_container->set_container_position(rc);
 		}
 
 		//
@@ -554,18 +586,19 @@ namespace apn::workspace
 			// ドッキングコンテナを非表示にします。
 			::ShowWindow(*dock_container, SW_HIDE);
 
-			// フローティングコンテナのテキストを更新します。
-			::SetWindowTextW(*float_container,
-				my::get_window_text(*this).c_str());
-
-			// まず現在のターゲットの位置からフローティングコンテナの位置を算出します。
+			// フローティングコンテナに処理させます。
 			float_container->on_float_container();
-
-			// ターゲットの親ウィンドウをフローティングコンテナに切り替えます。
-			::SetParent(*this, *float_container);
 
 			// ドッキングコンテナの親ウィンドウをメインウィンドウに切り替えます。
 			::SetParent(*dock_container, hive.main_window);
+		}
+
+		//
+		// ドッキングコンテナをリサイズします。
+		//
+		void resize(LPCRECT rc)
+		{
+			dock_container->set_container_position(rc);
 		}
 
 		//

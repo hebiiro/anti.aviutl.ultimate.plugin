@@ -367,9 +367,6 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			// シャトルのコレクションを取得しておきます。
-			auto rest = shuttle_manager.collection;
-
 			// フローティングシャトルを読み込みます。
 			get_child_nodes(node, "float_shuttle",
 				[&](const n_json& float_shuttle_node, size_t i)
@@ -388,9 +385,6 @@ namespace apn::workspace
 				if (my::get_style(*shuttle->float_container) & WS_THICKFRAME) flags = 0;
 				get_window(float_shuttle_node, "placement", *shuttle->float_container, flags);
 
-				// このシャトルはリサイズ済みなのでコレクションから除外します。
-				rest.erase(name);
-
 				// フローティングコンテナが表示状態の場合は
 				if (::IsWindowVisible(*shuttle->float_container))
 				{
@@ -403,20 +397,6 @@ namespace apn::workspace
 
 				return TRUE;
 			});
-
-			// リサイズされなかったシャトルを走査します。
-			for (const auto& pair : rest)
-			{
-				// シャトルを取得します。
-				const auto& shuttle = pair.second;
-
-				// シャトルがフローティング状態の場合は
-				if (!shuttle->is_docking())
-				{
-					// コンテンツをリサイズします。
-					shuttle->float_container->set_content_position_with_lock();
-				}
-			}
 		}
 	};
 }
