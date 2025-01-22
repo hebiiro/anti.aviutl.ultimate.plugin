@@ -614,7 +614,8 @@ namespace apn::workspace
 				}
 			}
 
-			my::invalidate(*drawer);
+			// ペインの状態が変更されたのでレイアウトを更新します。
+			pane->update_origin();
 		}
 
 		//
