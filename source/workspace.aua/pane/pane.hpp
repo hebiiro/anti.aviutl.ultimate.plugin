@@ -461,7 +461,7 @@ namespace apn::workspace
 		//
 		void dock_shuttle(Shuttle* shuttle)
 		{
-			set_pane(*shuttle, this);
+//			set_pane(*shuttle, this);
 			shuttle->add_listener(this);
 			shuttle->dock_window(owner);
 		}
@@ -471,7 +471,7 @@ namespace apn::workspace
 		//
 		void float_shuttle(Shuttle* shuttle)
 		{
-			set_pane(*shuttle, nullptr);
+//			set_pane(*shuttle, nullptr);
 			shuttle->remove_listener(this);
 			shuttle->float_window();
 		}
