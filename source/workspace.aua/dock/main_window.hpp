@@ -225,15 +225,11 @@ namespace apn::workspace
 				auto shuttle = shuttle_manager.get(text);
 				if (!shuttle) return FALSE;
 
-				// シャトルがドッキングしているペインを取得します。
-				if (auto pane = Pane::get_pane(*shuttle))
-				{
-					// ドッキングを解除します。
-					pane->release_shuttle(shuttle.get());
-				}
+				// シャトルがドッキング中かもしれないので、ドッキングを解除します。
+				shuttle->fire_release_shuttle();
 
-				// シャトルを表示します。
-				::ShowWindow(*shuttle, SW_SHOW);
+				// シャトルを表示状態にします。
+				shuttle->show();
 
 				return TRUE;
 			}

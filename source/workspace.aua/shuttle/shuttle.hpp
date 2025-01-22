@@ -347,6 +347,21 @@ namespace apn::workspace
 		}
 
 		//
+		// シャトルを表示します。
+		//
+		virtual void show()
+		{
+			MY_TRACE_FUNC("{}", name);
+
+			// 実際にはコンテナの表示状態を変更します。
+			if (auto container = get_current_container())
+			{
+				::ShowWindow(*container, SW_SHOW);
+				::SetForegroundWindow(*container);
+			}
+		}
+
+		//
 		// ターゲットウィンドウを表示します。
 		//
 		virtual void show_target_window()
