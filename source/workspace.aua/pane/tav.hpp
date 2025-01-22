@@ -883,6 +883,9 @@ namespace apn::workspace
 			// タブ項目を変更したのでレイアウトを更新します。
 			post_update_message();
 
+			// ウィンドウを再描画します。
+			my::invalidate(*this);
+
 			return TRUE;
 		}
 
@@ -926,6 +929,9 @@ namespace apn::workspace
 			// タブ項目を変更したのでレイアウトを更新します。
 			post_update_message();
 
+			// ウィンドウを再描画します。
+			my::invalidate(*this);
+
 			return index;
 		}
 
@@ -951,6 +957,9 @@ namespace apn::workspace
 			// タブ項目を変更したのでレイアウトを更新します。
 			post_update_message();
 
+			// ウィンドウを再描画します。
+			my::invalidate(*this);
+
 			return TRUE;
 		}
 
@@ -959,9 +968,13 @@ namespace apn::workspace
 		//
 		void clear()
 		{
+			// 状態を初期値に戻します。
 			nodes.clear();
 			selected_node_index = -1;
 			hot_node_index = -1;
+
+			// ウィンドウを再描画します。
+			my::invalidate(*this);
 		}
 
 		//
@@ -1001,6 +1014,9 @@ namespace apn::workspace
 
 			// タブ項目を変更したのでレイアウトを更新します。
 			post_update_message();
+
+			// ウィンドウを再描画します。
+			my::invalidate(*this);
 
 			return to;
 		}
