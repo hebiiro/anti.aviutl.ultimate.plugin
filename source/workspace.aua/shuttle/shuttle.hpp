@@ -475,12 +475,16 @@ namespace apn::workspace
 						// ターゲットウィンドウの表示状態が変更された場合はコンテナもそれに追従させます。
 						// ここで::ShowWindowAsync()を使用すると一部ウィンドウ(拡張編集)の表示がおかしくなります。
 						// コンテナにWM_SHOWWINDOWを送信したくないので、::SetWindowPos()を使用しています。
-						UINT flags = SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOCOPYBITS;
 						if (wParam)
-							flags |= SWP_SHOWWINDOW;
+						{
+							::SetWindowPos(*container, HWND_TOP, 0, 0, 0, 0,
+								SWP_NOMOVE | SWP_NOSIZE | SWP_NOCOPYBITS | SWP_SHOWWINDOW);
+						}
 						else
-							flags |= SWP_HIDEWINDOW;
-						::SetWindowPos(*container, nullptr, 0, 0, 0, 0, flags);
+						{
+							::SetWindowPos(*container, nullptr, 0, 0, 0, 0,
+								SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_HIDEWINDOW);
+						}
 					}
 
 					break;
