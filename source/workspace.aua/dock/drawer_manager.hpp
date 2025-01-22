@@ -124,7 +124,11 @@ namespace apn::workspace
 		//
 		inline static BOOL hide_shuttle(const auto& shuttle)
 		{
-			return ::ShowWindow(*shuttle, SW_HIDE);
+			// フローティングウィンドウを取得します。
+			auto hwnd = (HWND)*shuttle->float_container;
+
+			// フローティングウィンドウを非表示にします。
+			return ::ShowWindow(hwnd, SW_HIDE);
 		}
 
 		//
