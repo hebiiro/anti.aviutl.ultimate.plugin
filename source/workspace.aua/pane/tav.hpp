@@ -520,6 +520,8 @@ namespace apn::workspace
 		//
 		inline static void process_global_mouse_move(const POINT& point)
 		{
+//			MY_TRACE_FUNC("{}, {}", point.x, point.y);
+
 			// 現存するすべてのタブコントロールに
 			// グローバルメッセージを処理させます。
 			for (auto& tav : tavs) tav->on_global_mouse_move(point);

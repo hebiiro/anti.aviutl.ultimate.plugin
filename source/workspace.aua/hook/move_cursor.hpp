@@ -72,7 +72,7 @@ namespace apn::workspace::hook
 				// ウィンドウがタブコントロールの場合は
 				if (auto pane = Pane::get_pane(hwnd))
 				{
-//					MY_TRACE_HEX(pane);
+//					MY_TRACE("ウィンドウはタブコントロールです\n");
 
 					// そのタブコントロールに処理させます。
 					pane->on_global_mouse_move(hwnd, point);
@@ -80,6 +80,8 @@ namespace apn::workspace::hook
 				// ウィンドウがタブコントロールではない場合は
 				else
 				{
+//					MY_TRACE("ウィンドウはタブコントロール以外です\n");
+
 					// すべてのタブコントロールに処理させます。
 					Tav::process_global_mouse_move(point);
 				}
