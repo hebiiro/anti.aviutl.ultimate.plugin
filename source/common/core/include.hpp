@@ -87,6 +87,7 @@ using namespace my::json;
 #include "common/my/aviutl/plugin_window_extension.hpp"
 #include "common/my/aviutl/plugin_window.hpp"
 #include "common/my/aviutl/slider_panel.hpp"
+#include "common/core/logger.hpp"
 #include "common/core/module.hpp"
 #include "common/core/magi.hpp"
 #include "common/core/addin.hpp"

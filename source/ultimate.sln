@@ -38,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{9759D4C9-A
 		common\core\gdi_bitmap.hpp = common\core\gdi_bitmap.hpp
 		common\core\include.hpp = common\core\include.hpp
 		common\core\layered_window_info.hpp = common\core\layered_window_info.hpp
+		common\core\logger.hpp = common\core\logger.hpp
 		common\core\magi.hpp = common\core\magi.hpp
 		common\core\module.hpp = common\core\module.hpp
 		common\core\object_holder.hpp = common\core\object_holder.hpp

@@ -54,7 +54,7 @@ namespace apn::workspace
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::reset(my::Tracer::logger);
+		set_logger(args);
 
 		return &addin;
 	}
