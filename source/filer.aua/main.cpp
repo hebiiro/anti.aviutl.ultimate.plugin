@@ -18,7 +18,7 @@ namespace apn::filer
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		set_logger(args);
 
 		return &addin;
 	}

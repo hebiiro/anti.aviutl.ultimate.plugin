@@ -41,9 +41,10 @@ namespace apn::filer
 		HWND active_window = nullptr;
 
 		//
-		// TRUEの場合はコモンダイアログ(ファイル選択ダイアログ)を使用するようにします。
+		// TRUEの場合はエイリアスを保存するとき
+		// ファイル選択ダイアログを使用するようにします。
 		//
-		BOOL use_common_dialog = TRUE;
+		BOOL use_common_dialog = FALSE;
 
 		//
 		// ワークスペース化アドインのエクスポート関数です。

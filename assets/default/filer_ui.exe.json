@@ -1,0 +1,19 @@
+{
+	"filer": [
+		{
+			"name": "素材1",
+			"nav_pane": true,
+			"path": "デスクトップ"
+		},
+		{
+			"name": "素材2",
+			"nav_pane": false,
+			"path": "デスクトップ"
+		},
+		{
+			"name": "素材3",
+			"nav_pane": false,
+			"path": "デスクトップ"
+		}
+	]
+}
