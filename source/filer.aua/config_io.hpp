@@ -3,43 +3,6 @@
 namespace apn::filer
 {
 	//
-	// ウィンドウ位置をノードから読み込みます。
-	//
-	inline void read_window_pos(const n_json& node, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
-	{
-		// ウィンドウプレースメントを取得します。
-		WINDOWPLACEMENT wp = { sizeof(wp) };
-		::GetWindowPlacement(hwnd, &wp);
-
-		wp.flags = WPF_SETMINPOSITION;
-		if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
-
-		if (show_cmd == -1)
-			read_int(node, "show_cmd", wp.showCmd);
-		else
-			wp.showCmd = show_cmd;
-/*
-		auto normal_rc = RECT {};
-		read_rect(node, "normal", normal_rc);
-
-		auto min_pos = POINT {};
-		read_point(node, "min", min_pos);
-
-		auto max_pos = POINT {};
-		read_point(node, "max", max_pos);
-*/
-		::SetWindowPlacement(hwnd, &wp);
-	}
-
-	//
-	// ウィンドウ位置をノードから読み込みます。
-	//
-	inline void read_window_pos(const n_json& node, const std::string& name, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
-	{
-		return read_window_pos(read_child(node, name), hwnd, flags, show_cmd);
-	}
-
-	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
 	inline struct ConfigIO : StdConfigIOUseHive<hive>
@@ -54,17 +17,9 @@ namespace apn::filer
 			// プロパティを読み込みます。
 			read_bool(root, "use_common_dialog", hive.use_common_dialog);
 
-			auto window_rc1 = my::get_window_rect(addin_window);
-
 			// アドインウィンドウのウィンドウ位置を読み込みます。
 			read_window_pos(root, "addin_window", addin_window);
 
-			auto window_rc2 = my::get_window_rect(addin_window);
-/*
-+		rcNormalPosition	{LT(0, 0) RB(184, 263)  [184 x 263]}	tagRECT
-+		window_rc1	{LT(108, 129) RB(292, 392)  [184 x 263]}	tagRECT
-+		window_rc2	{LT(0, 0) RB(184, 263)  [184 x 263]}	tagRECT
-*/
 			read_child_nodes(root, "filer",
 				[&](const n_json& filer_node, size_t i)
 			{
