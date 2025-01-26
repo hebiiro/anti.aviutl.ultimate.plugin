@@ -30,24 +30,24 @@ namespace apn::workspace
 			if (flags & hive.c_preference_flag.c_config)
 			{
 				read_tav(node, "tav", hive.tav);
-				get_int(node, "tab_height", hive.tab_height);
-				get_int(node, "tab_space", hive.tab_space);
-				get_int(node, "caption_height", hive.caption_height);
-				get_int(node, "border_width", hive.border_width);
-				get_color(node, "fill_color", hive.fill_color);
-				get_color(node, "border_color", hive.border_color);
-				get_color(node, "hot_border_color", hive.hot_border_color);
-				get_color(node, "active_caption_color", hive.active_caption_color);
-				get_color(node, "active_caption_text_color", hive.active_caption_text_color);
-				get_color(node, "inactive_caption_color", hive.inactive_caption_color);
-				get_color(node, "inactive_caption_text_color", hive.inactive_caption_text_color);
-				get_bool(node, "use_theme", hive.use_theme);
-				get_bool(node, "scroll_force", hive.scroll_force);
-				get_bool(node, "fullscreen_preview", hive.fullscreen_preview);
-				get_bool(node, "show_tab_force", hive.show_tab_force);
-				get_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
-				get_bool(node, "ignore_ctrl_key_up", hive.ignore_ctrl_key_up);
-				get_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
+				read_int(node, "tab_height", hive.tab_height);
+				read_int(node, "tab_space", hive.tab_space);
+				read_int(node, "caption_height", hive.caption_height);
+				read_int(node, "border_width", hive.border_width);
+				read_color(node, "fill_color", hive.fill_color);
+				read_color(node, "border_color", hive.border_color);
+				read_color(node, "hot_border_color", hive.hot_border_color);
+				read_color(node, "active_caption_color", hive.active_caption_color);
+				read_color(node, "active_caption_text_color", hive.active_caption_text_color);
+				read_color(node, "inactive_caption_color", hive.inactive_caption_color);
+				read_color(node, "inactive_caption_text_color", hive.inactive_caption_text_color);
+				read_bool(node, "use_theme", hive.use_theme);
+				read_bool(node, "scroll_force", hive.scroll_force);
+				read_bool(node, "fullscreen_preview", hive.fullscreen_preview);
+				read_bool(node, "show_tab_force", hive.show_tab_force);
+				read_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
+				read_bool(node, "ignore_ctrl_key_up", hive.ignore_ctrl_key_up);
+				read_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
 			}
 
 			// 事前にサブウィンドウを読み込みます。
@@ -70,7 +70,7 @@ namespace apn::workspace
 		//
 		void read_shuttle_name(const n_json& node, const std::string& name, std::wstring& value)
 		{
-			get_string(node, name, value);
+			read_string(node, name, value);
 
 			value = Shuttle::decorate_name(value);
 		}
@@ -84,7 +84,7 @@ namespace apn::workspace
 
 			// タブノードを読み込みます。
 			n_json tav_node;
-			get_child_node(node, name, tav_node);
+			read_child_node(node, name, tav_node);
 			if (tav_node.is_null()) return FALSE;
 
 			// タブの属性を読み込みます。
@@ -99,11 +99,11 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// タブの属性を読み込みます。
-			get_label(tav_node, "display_mode", tav.display_mode, tav.c_display_mode.labels);
-			get_label(tav_node, "select_mode", tav.select_mode, tav.c_select_mode.labels);
-			get_label(tav_node, "stretch_mode", tav.stretch_mode, tav.c_stretch_mode.labels);
-			get_label(tav_node, "location", tav.location, tav.c_location.labels);
-			get_label(tav_node, "node_align", tav.node_align, tav.c_node_align.labels);
+			read_label(tav_node, "display_mode", tav.display_mode, tav.c_display_mode.labels);
+			read_label(tav_node, "select_mode", tav.select_mode, tav.c_select_mode.labels);
+			read_label(tav_node, "stretch_mode", tav.stretch_mode, tav.c_stretch_mode.labels);
+			read_label(tav_node, "location", tav.location, tav.c_location.labels);
+			read_label(tav_node, "node_align", tav.node_align, tav.c_node_align.labels);
 
 			return TRUE;
 		}
@@ -116,7 +116,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// ドロワーの属性を読み込みます。
-			get_bool(drawer_node, "inside", drawer.inside);
+			read_bool(drawer_node, "inside", drawer.inside);
 
 			// タブの属性を読み込みます。
 			return read_tav(drawer_node, drawer);
@@ -134,7 +134,7 @@ namespace apn::workspace
 
 			// ドロワーを読み込みます。
 			{
-				get_child_nodes(node, "drawer",
+				read_child_nodes(node, "drawer",
 					[&](const n_json& drawer_node, size_t i)
 				{
 					// インデックスが無効の場合はループを終了します。
@@ -150,7 +150,7 @@ namespace apn::workspace
 					read_drawer(drawer_node, *drawer);
 
 					// タブ項目を読み込みます。
-					get_child_nodes(drawer_node, "shuttle",
+					read_child_nodes(drawer_node, "shuttle",
 						[&](const n_json& shuttle_node, size_t i)
 					{
 						// シャトル名を読み込みます。
@@ -172,7 +172,7 @@ namespace apn::workspace
 				});
 
 				n_json drawer_node;
-				get_child_node(node, "drawer", drawer_node);
+				read_child_node(node, "drawer", drawer_node);
 
 				for (const auto& drawer : pane->drawers)
 				{
@@ -188,13 +188,13 @@ namespace apn::workspace
 			// ペインの属性を読み込みます。
 			auto current = -1;
 
-			get_label(node, "split_mode", pane->split_mode, hive.pane.c_split_mode.labels);
-			get_label(node, "origin", pane->origin, hive.pane.c_origin.labels);
-			get_label(node, "caption_mode", pane->caption_mode, hive.pane.c_caption_mode.labels);
-			get_label(node, "caption_location", pane->caption_location, hive.pane.c_caption_location.labels);
-			get_bool(node, "is_border_locked", pane->is_border_locked);
-			get_int(node, "border", pane->border);
-			get_int(node, "current", current);
+			read_label(node, "split_mode", pane->split_mode, hive.pane.c_split_mode.labels);
+			read_label(node, "origin", pane->origin, hive.pane.c_origin.labels);
+			read_label(node, "caption_mode", pane->caption_mode, hive.pane.c_caption_mode.labels);
+			read_label(node, "caption_location", pane->caption_location, hive.pane.c_caption_location.labels);
+			read_bool(node, "is_border_locked", pane->is_border_locked);
+			read_int(node, "border", pane->border);
+			read_int(node, "current", current);
 
 			MY_TRACE_INT(pane->split_mode);
 			MY_TRACE_INT(pane->origin);
@@ -205,7 +205,7 @@ namespace apn::workspace
 			MY_TRACE_INT(current);
 
 			// ドッキングシャトルを読み込みます。
-			get_child_nodes(node, "dock_shuttle",
+			read_child_nodes(node, "dock_shuttle",
 				[&](const n_json& dock_shuttle_node, size_t i)
 			{
 				// シャトル名を読み込みます。
@@ -227,7 +227,7 @@ namespace apn::workspace
 			pane->set_current_index(current);
 
 			// 子ペインを読み込みます。
-			get_child_nodes(node, "pane",
+			read_child_nodes(node, "pane",
 				[&](const n_json& pane_node, size_t i)
 			{
 				if (i >= 2) return FALSE; // 子ペインは最大2個までです。
@@ -264,8 +264,8 @@ namespace apn::workspace
 
 			// ルートペインを読み込みます。
 			n_json root_pane_node;
-			get_child_node(node, "root_pane", root_pane_node);
-			get_bool(root_pane_node, "is_solid", root->is_solid);
+			read_child_node(node, "root_pane", root_pane_node);
+			read_bool(root_pane_node, "is_solid", root->is_solid);
 			read_pane(root_pane_node, root);
 		}
 
@@ -289,7 +289,7 @@ namespace apn::workspace
 			}
 
 			// サブウィンドウを読み込みます。
-			get_child_nodes(node, "sub_window",
+			read_child_nodes(node, "sub_window",
 				[&](const n_json& sub_window_node, size_t i)
 			{
 				// シャトル名を読み込みます。
@@ -324,10 +324,10 @@ namespace apn::workspace
 
 			// メインウィンドウを読み込みます。
 			n_json main_window_node;
-			get_child_node(node, "main_window", main_window_node);
+			read_child_node(node, "main_window", main_window_node);
 
 			// ウィンドウ位置を読み込みます。
-			get_window(main_window_node, "placement", hive.main_window);
+			read_window_pos(main_window_node, "placement", hive.main_window);
 
 			// ルートペインを読み込みます。
 			read_root_pane(main_window_node, hive.main_window);
@@ -341,7 +341,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// サブウィンドウを読み込みます。
-			get_child_nodes(node, "sub_window",
+			read_child_nodes(node, "sub_window",
 				[&](const n_json& sub_window_node, size_t i)
 			{
 				// シャトル名を読み込みます。
@@ -368,7 +368,7 @@ namespace apn::workspace
 			MY_TRACE_FUNC("");
 
 			// フローティングシャトルを読み込みます。
-			get_child_nodes(node, "float_shuttle",
+			read_child_nodes(node, "float_shuttle",
 				[&](const n_json& float_shuttle_node, size_t i)
 			{
 				// シャトル名を読み込みます。
@@ -383,7 +383,7 @@ namespace apn::workspace
 				// ウィンドウ位置を読み込みます。
 				auto flags = SWP_NOSIZE;
 				if (my::get_style(*shuttle->float_container) & WS_THICKFRAME) flags = 0;
-				get_window(float_shuttle_node, "placement", *shuttle->float_container, flags);
+				read_window_pos(float_shuttle_node, "placement", *shuttle->float_container, flags);
 
 				// フローティングコンテナが表示状態の場合は
 				if (::IsWindowVisible(*shuttle->float_container))

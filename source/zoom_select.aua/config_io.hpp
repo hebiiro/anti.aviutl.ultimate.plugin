@@ -67,18 +67,18 @@ namespace apn::zoom_select
 		{
 			MY_TRACE_FUNC("");
 
-			get_child_nodes(root, "zoom_value",
+			read_child_nodes(root, "zoom_value",
 				[&](const n_json& zoom_value_node, size_t i)
 			{
 				if (i >= std::size(hive.zoom_values))
 					return FALSE;
 
-				get_int(zoom_value_node, hive.zoom_values[i]);
+				read_int(zoom_value_node, hive.zoom_values[i]);
 
 				return TRUE;
 			});
 
-			get_window(root, "addin_window", addin_window);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -90,15 +90,15 @@ namespace apn::zoom_select
 		{
 			MY_TRACE_FUNC("");
 
-			set_child_nodes(root, "zoom_value", hive.zoom_values,
+			write_child_nodes(root, "zoom_value", hive.zoom_values,
 				[&](n_json& zoom_value_node, const auto& zoom_value, size_t i)
 			{
-				set_int(zoom_value_node, zoom_value);
+				write_int(zoom_value_node, zoom_value);
 
 				return TRUE;
 			});
 
-			set_window(root, "addin_window", addin_window);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

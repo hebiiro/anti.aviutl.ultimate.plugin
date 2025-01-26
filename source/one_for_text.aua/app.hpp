@@ -228,7 +228,7 @@ namespace apn::one_for_text
 
 						// ソート済みオブジェクトのインデックスを取得します。
 						int32_t sorted_index = -1;
-						get_int(header_node, "sorted_index", sorted_index);
+						read_int(header_node, "sorted_index", sorted_index);
 
 						// テキストオブジェクトの拡張データを取得します。
 						auto exdata = get_text_exdata_external(sorted_index);

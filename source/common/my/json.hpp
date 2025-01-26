@@ -10,45 +10,45 @@ namespace my::json
 //
 namespace my::json
 {
-	inline n_json get_child(const n_json& node, const std::string& name)
+	inline n_json read_child(const n_json& node, const std::string& name)
 	{
 		try { return node.at(name); } catch (...) { return {}; }
 	}
 
-	inline void get_child_node(const n_json& node, const std::string& name, n_json& child)
+	inline void read_child_node(const n_json& node, const std::string& name, n_json& child)
 	{
 		try { child = node.at(name); } catch (...) {}
 	}
 
-	inline void get_child_nodes(const n_json& node, const std::string& name, auto func)
+	inline void read_child_nodes(const n_json& node, const std::string& name, auto func)
 	{
 		size_t index = 0;
-		for (auto child_node : get_child(node, name))
+		for (auto child_node : read_child(node, name))
 			if (!func(child_node, index++)) break;
 	}
 
-	inline void get_string(const n_json& node, std::wstring& value)
+	inline void read_string(const n_json& node, std::wstring& value)
 	{
 		try { value = my::cp_to_wide(node.get<std::string>(), CP_UTF8); } catch (...) {}
 	}
 
-	inline void get_string(const n_json& node, const std::string& name, std::wstring& value)
+	inline void read_string(const n_json& node, const std::string& name, std::wstring& value)
 	{
-		get_string(get_child(node, name), value);
+		return read_string(read_child(node, name), value);
 	}
 
-	inline void get_file_name(const n_json& node, std::filesystem::path& path)
+	inline void read_file_name(const n_json& node, std::filesystem::path& path)
 	{
 		try { path = my::cp_to_wide(node.get<std::string>(), CP_UTF8); } catch (...) {}
 	}
 
-	inline void get_file_name(const n_json& node, const std::string& name, std::filesystem::path& path)
+	inline void read_file_name(const n_json& node, const std::string& name, std::filesystem::path& path)
 	{
-		get_file_name(get_child(node, name), path);
+		return read_file_name(read_child(node, name), path);
 	}
 
 	template <typename T>
-	inline void get_bool(const n_json& node, T& value)
+	inline void read_bool(const n_json& node, T& value)
 	{
 		try
 		{
@@ -63,13 +63,13 @@ namespace my::json
 	}
 
 	template <typename T>
-	inline void get_bool(const n_json& node, const std::string& name, T& value)
+	inline void read_bool(const n_json& node, const std::string& name, T& value)
 	{
-		get_bool(get_child(node, name), value);
+		return read_bool(read_child(node, name), value);
 	}
 
 	template <typename T>
-	inline void get_int(const n_json& node, T& value)
+	inline void read_int(const n_json& node, T& value)
 	{
 		try
 		{
@@ -84,13 +84,13 @@ namespace my::json
 	}
 
 	template <typename T>
-	inline void get_int(const n_json& node, const std::string& name, T& value)
+	inline void read_int(const n_json& node, const std::string& name, T& value)
 	{
-		get_int(get_child(node, name), value);
+		return read_int(read_child(node, name), value);
 	}
 
 	template <typename T>
-	inline void get_float(const n_json& node, T& value)
+	inline void read_real(const n_json& node, T& value)
 	{
 		try
 		{
@@ -105,47 +105,47 @@ namespace my::json
 	}
 
 	template <typename T>
-	inline void get_float(const n_json& node, const std::string& name, T& value)
+	inline void read_real(const n_json& node, const std::string& name, T& value)
 	{
-		get_float(get_child(node, name), value);
+		return read_real(read_child(node, name), value);
 	}
 
-	inline void get_point(const n_json& node, POINT& point)
+	inline void read_point(const n_json& node, POINT& point)
 	{
-		get_int(node, "x", point.x);
-		get_int(node, "y", point.y);
+		read_int(node, "x", point.x);
+		read_int(node, "y", point.y);
 	}
 
-	inline void get_point(const n_json& node, const std::string& name, POINT& point)
+	inline void read_point(const n_json& node, const std::string& name, POINT& point)
 	{
-		get_point(get_child(node, name), point);
+		return read_point(read_child(node, name), point);
 	}
 
-	inline void get_size(const n_json& node, SIZE& size)
+	inline void read_size(const n_json& node, SIZE& size)
 	{
-		get_int(node, "w", size.cx);
-		get_int(node, "h", size.cy);
+		read_int(node, "w", size.cx);
+		read_int(node, "h", size.cy);
 	}
 
-	inline void get_size(const n_json& node, const std::string& name, SIZE& size)
+	inline void read_size(const n_json& node, const std::string& name, SIZE& size)
 	{
-		get_size(get_child(node, name), size);
+		return read_size(read_child(node, name), size);
 	}
 
-	inline void get_rect(const n_json& node, RECT& rc)
+	inline void read_rect(const n_json& node, RECT& rc)
 	{
-		get_int(node, "left", rc.left);
-		get_int(node, "top", rc.top);
-		get_int(node, "right", rc.right);
-		get_int(node, "bottom", rc.bottom);
+		read_int(node, "left", rc.left);
+		read_int(node, "top", rc.top);
+		read_int(node, "right", rc.right);
+		read_int(node, "bottom", rc.bottom);
 	}
 
-	inline void get_rect(const n_json& node, const std::string& name, RECT& rc)
+	inline void read_rect(const n_json& node, const std::string& name, RECT& rc)
 	{
-		get_rect(get_child(node, name), rc);
+		return read_rect(read_child(node, name), rc);
 	}
 
-	inline void get_color(const n_json& node, COLORREF& value)
+	inline void read_color(const n_json& node, COLORREF& value)
 	{
 		try
 		{
@@ -206,42 +206,47 @@ namespace my::json
 		}
 	}
 
-	inline void get_color(const n_json& node, const std::string& name, COLORREF& value)
+	inline void read_color(const n_json& node, const std::string& name, COLORREF& value)
 	{
-		get_color(get_child(node, name), value);
+		return read_color(read_child(node, name), value);
 	}
 
-	inline void get_window(const n_json& node, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
+	//
+	// ウィンドウ位置をノードから読み込みます。
+	//
+	inline void read_window_pos(const n_json& node, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
 	{
+		// ウィンドウプレースメントを取得します。
+		WINDOWPLACEMENT wp = { sizeof(wp) };
+		::GetWindowPlacement(hwnd, &wp);
+
+		wp.flags = WPF_SETMINPOSITION;
+		if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
+
 		if (show_cmd == -1)
-			get_int(node, "show_cmd", show_cmd);
+			read_int(node, "show_cmd", wp.showCmd);
+		else
+			wp.showCmd = show_cmd;
 
-		auto rc = RECT {};
-		get_int(node, "left", rc.left);
-		get_int(node, "top", rc.top);
-		get_int(node, "right", rc.right);
-		get_int(node, "bottom", rc.bottom);
+		read_rect(node, "normal", wp.rcNormalPosition);
+		read_point(node, "min", wp.ptMinPosition);
+		read_point(node, "max", wp.ptMaxPosition);
 
-		auto x = rc.left;
-		auto y = rc.top;
-		auto w = my::get_width(rc);
-		auto h = my::get_height(rc);
-		::SetWindowPos(hwnd, nullptr, x, y, w, h,
-			flags | SWP_NOZORDER | SWP_NOACTIVATE);
-
-		if (show_cmd != -1)
-			::ShowWindow(hwnd, show_cmd);
+		::SetWindowPlacement(hwnd, &wp);
 	}
 
-	inline void get_window(const n_json& node, const std::string& name, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
+	//
+	// ウィンドウ位置をノードから読み込みます。
+	//
+	inline void read_window_pos(const n_json& node, const std::string& name, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
 	{
-		get_window(get_child(node, name), hwnd, flags, show_cmd);
+		return read_window_pos(read_child(node, name), hwnd, flags, show_cmd);
 	}
 
 	template <typename T, typename Labels>
-	inline void get_label(const n_json& node, T& value, const Labels& labels)
+	inline void read_label(const n_json& node, T& value, const Labels& labels)
 	{
-		std::wstring str; get_string(node, str);
+		std::wstring str; read_string(node, str);
 
 		for (const auto& label : labels)
 		{
@@ -254,25 +259,25 @@ namespace my::json
 	}
 
 	template <typename T, typename Labels>
-	inline void get_label(const n_json& node, const std::string& name, T& value, const Labels& labels)
+	inline void read_label(const n_json& node, const std::string& name, T& value, const Labels& labels)
 	{
-		get_label(get_child(node, name), value, labels);
+		return read_label(read_child(node, name), value, labels);
 	}
 
 	template <typename ShortcutKey>
-	inline void get_shortcut_key(const n_json& node, ShortcutKey& shortcut_key)
+	inline void read_shortcut_key(const n_json& node, ShortcutKey& shortcut_key)
 	{
-		std::wstring key; get_string(node, "key", key);
+		std::wstring key; read_string(node, "key", key);
 		if (!key.empty()) shortcut_key.key = shortcut_key.str_to_key(key);
 
-		std::wstring mod; get_string(node, "mod", mod);
+		std::wstring mod; read_string(node, "mod", mod);
 		if (!mod.empty()) shortcut_key.mod = shortcut_key.str_to_mod(mod);
 	}
 
 	template <typename ShortcutKey>
-	inline void get_shortcut_key(const n_json& node, const std::string& name, ShortcutKey& shortcut_key)
+	inline void read_shortcut_key(const n_json& node, const std::string& name, ShortcutKey& shortcut_key)
 	{
-		get_shortcut_key(get_child(node, name), shortcut_key);
+		return read_shortcut_key(read_child(node, name), shortcut_key);
 	}
 }
 
@@ -281,17 +286,17 @@ namespace my::json
 //
 namespace my::json
 {
-	inline void set_child(n_json& node, const std::string& name, const n_json& child)
+	inline void write_child(n_json& node, const std::string& name, const n_json& child)
 	{
 		node[name] = child;
 	}
 
-	inline void set_child_node(n_json& node, const std::string& name, const n_json& child)
+	inline void write_child_node(n_json& node, const std::string& name, const n_json& child)
 	{
 		node[name] = child;
 	}
 
-	inline void set_child_nodes(n_json& node, const std::string& name, const auto& collection, auto func)
+	inline void write_child_nodes(n_json& node, const std::string& name, const auto& collection, auto func)
 	{
 		size_t index = 0;
 		for (const auto& value : collection)
@@ -302,85 +307,85 @@ namespace my::json
 		}
 	}
 
-	inline void set_string(n_json& node, const std::wstring& value)
+	inline void write_string(n_json& node, const std::wstring& value)
 	{
 		node = my::wide_to_cp(value, CP_UTF8);
 	}
 
-	inline void set_string(n_json& node, const std::string& name, const std::wstring& value)
+	inline void write_string(n_json& node, const std::string& name, const std::wstring& value)
 	{
-		return set_string(node[name], value);
+		return write_string(node[name], value);
 	}
 
-	inline void set_file_name(n_json& node, const std::filesystem::path& path)
+	inline void write_file_name(n_json& node, const std::filesystem::path& path)
 	{
-		return set_string(node, path);
+		return write_string(node, path);
 	}
 
-	inline void set_file_name(n_json& node, const std::string& name, const std::filesystem::path& path)
+	inline void write_file_name(n_json& node, const std::string& name, const std::filesystem::path& path)
 	{
-		return set_string(node, name, path);
+		return write_string(node, name, path);
 	}
 
 	template <typename T>
-	inline void set_bool(n_json& node, T value)
+	inline void write_bool(n_json& node, T value)
 	{
 		node = !!value;
 	}
 
 	template <typename T>
-	inline void set_bool(n_json& node, const std::string& name, T value)
+	inline void write_bool(n_json& node, const std::string& name, T value)
 	{
-		return set_bool(node[name], value);
+		return write_bool(node[name], value);
 	}
 
 	template <typename T>
-	inline void set_int(n_json& node, T value)
+	inline void write_int(n_json& node, T value)
 	{
 		node = value;
 	}
 
 	template <typename T>
-	inline void set_int(n_json& node, const std::string& name, T value)
+	inline void write_int(n_json& node, const std::string& name, T value)
 	{
-		return set_int(node[name], value);
+		return write_int(node[name], value);
 	}
 
 	template <typename T>
-	inline void set_float(n_json& node, T value)
+	inline void write_real(n_json& node, T value)
 	{
 		node = value;
 	}
 
 	template <typename T>
-	inline void set_float(n_json& node, const std::string& name, T value)
+	inline void write_real(n_json& node, const std::string& name, T value)
 	{
-		return set_float(node[name], value);
+		return write_real(node[name], value);
 	}
 
-	inline void set_point(n_json& node, const POINT& point)
+	inline void write_point(n_json& node, const POINT& point)
 	{
 		node["x"] = point.x;
 		node["y"] = point.y;
 	}
 
-	inline void set_point(n_json& node, const std::string& name, const POINT& point)
+	inline void write_point(n_json& node, const std::string& name, const POINT& point)
 	{
-		return set_point(node[name], point);
+		return write_point(node[name], point);
 	}
 
-	inline void set_size(n_json& node, const SIZE& size)
+	inline void write_size(n_json& node, const SIZE& size)
 	{
 		node["w"] = size.cx;
 		node["h"] = size.cy;
 	}
 
-	inline void set_size(n_json& node, const std::string& name, const SIZE& size)
+	inline void write_size(n_json& node, const std::string& name, const SIZE& size)
 	{
-		return set_size(node[name], size);
+		return write_size(node[name], size);
 	}
 
-	inline void set_rect(n_json& node, const RECT& rc)
+	inline void write_rect(n_json& node, const RECT& rc)
 	{
 		node["left"] = rc.left;
 		node["top"] = rc.top;
@@ -388,12 +393,12 @@ namespace my::json
 		node["bottom"] = rc.bottom;
 	}
 
-	inline void set_rect(n_json& node, const std::string& name, const RECT& rc)
+	inline void write_rect(n_json& node, const std::string& name, const RECT& rc)
 	{
-		return set_rect(node[name], rc);
+		return write_rect(node[name], rc);
 	}
 
-	inline void set_color(n_json& node, COLORREF color)
+	inline void write_color(n_json& node, COLORREF color)
 	{
 		if (color == CLR_NONE)
 			node = "none";
@@ -401,61 +406,92 @@ namespace my::json
 			node = std::format("{}, {}, {}", GetRValue(color), GetGValue(color), GetBValue(color));
 	}
 
-	inline void set_color(n_json& node, const std::string& name, COLORREF color)
+	inline void write_color(n_json& node, const std::string& name, COLORREF color)
 	{
-		return set_color(node[name], color);
+		return write_color(node[name], color);
 	}
 
-	inline void set_window(n_json& node, HWND hwnd)
+	//
+	// ウィンドウ位置をノードに書き込みます。
+	//
+	inline void write_window_pos(n_json& node, HWND hwnd, UINT show_cmd = -1)
 	{
-		auto show_cmd = SW_RESTORE;
-		if (::IsZoomed(hwnd)) show_cmd = SW_MAXIMIZE;
-		if (::IsIconic(hwnd)) show_cmd = SW_MINIMIZE;
-		if (!::IsWindowVisible(hwnd)) show_cmd = SW_HIDE;
+		// ウィンドウプレースメントを取得します。
+		WINDOWPLACEMENT wp = { sizeof(wp) };
+		::GetWindowPlacement(hwnd, &wp);
 
-		auto rc = my::get_window_rect(hwnd);
-		if (my::get_style(hwnd) & WS_CHILD)
-			my::map_window_points(nullptr, ::GetParent(hwnd), &rc);
+		auto is_visible = ::IsWindowVisible(hwnd);
+		auto is_maximized = ::IsZoomed(hwnd);
+		auto is_minimized = ::IsIconic(hwnd);
 
-		set_int(node, "show_cmd", show_cmd);
-		set_int(node, "left", rc.left);
-		set_int(node, "top", rc.top);
-		set_int(node, "right", rc.right);
-		set_int(node, "bottom", rc.bottom);
+		// ウィンドウが最大化も最小化もしていない場合は
+		if (!is_maximized && !is_minimized)
+		{
+			// ウィンドウ矩形を取得します。
+			auto& rc = wp.rcNormalPosition;
+
+			// 現在のウィンドウ矩形を取得し直します。
+			::GetWindowRect(hwnd, &rc);
+
+			// ウィンドウがあるモニターの情報を取得します。
+			auto monitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+			MONITORINFO mi = { sizeof(mi) }; ::GetMonitorInfo(monitor, &mi);
+
+			// ウィンドウとタスクバーが同じモニターにある場合は
+			if (!::EqualRect(&mi.rcMonitor, &mi.rcWork))
+			{
+				// タスクバーの大きさの分だけウィンドウ矩形をずらします。
+				::OffsetRect(&rc,
+					mi.rcMonitor.left - mi.rcWork.left,
+					mi.rcMonitor.top - mi.rcWork.top);
+			}
+		}
+ 
+		if (is_minimized) wp.showCmd = SW_SHOW;
+		if (wp.flags == WPF_RESTORETOMAXIMIZED) wp.showCmd = SW_SHOWMAXIMIZED;
+		if (!is_visible) wp.showCmd = SW_HIDE;
+
+		write_int(node, "show_cmd", (show_cmd == -1) ? wp.showCmd : show_cmd);
+		write_rect(node, "normal", wp.rcNormalPosition);
+		write_point(node, "min", wp.ptMinPosition);
+		write_point(node, "max", wp.ptMaxPosition);
 	}
 
-	inline void set_window(n_json& node, const std::string& name, HWND hwnd)
+	//
+	// ウィンドウ位置をノードに書き込みます。
+	//
+	inline void write_window_pos(n_json& node, const std::string& name, HWND hwnd, UINT show_cmd = -1)
 	{
-		return set_window(node[name], hwnd);
+		return write_window_pos(node[name], hwnd, show_cmd);
 	}
 
 	template <typename T, typename Labels>
-	inline void set_label(n_json& node, const T& value, const Labels& labels)
+	inline void write_label(n_json& node, const T& value, const Labels& labels)
 	{
 		for (const auto& label : labels)
 		{
 			if (label.value == value)
-				set_string(node, label.text);
+				write_string(node, label.text);
 		}
 	}
 
 	template <typename T, typename Labels>
-	inline void set_label(n_json& node, const std::string& name, const T& value, const Labels& labels)
+	inline void write_label(n_json& node, const std::string& name, const T& value, const Labels& labels)
 	{
-		return set_label(node[name], value, labels);
+		return write_label(node[name], value, labels);
 	}
 
 	template <typename ShortcutKey>
-	inline void set_shortcut_key(n_json& node, const ShortcutKey& shortcut_key)
+	inline void write_shortcut_key(n_json& node, const ShortcutKey& shortcut_key)
 	{
-		set_string(node, "key", shortcut_key.key_to_str(shortcut_key.key));
-		set_string(node, "mod", shortcut_key.mod_to_str(shortcut_key.mod));
+		write_string(node, "key", shortcut_key.key_to_str(shortcut_key.key));
+		write_string(node, "mod", shortcut_key.mod_to_str(shortcut_key.mod));
 	}
 
 	template <typename ShortcutKey>
-	inline void set_shortcut_key(n_json& node, const std::string& name, const ShortcutKey& shortcut_key)
+	inline void write_shortcut_key(n_json& node, const std::string& name, const ShortcutKey& shortcut_key)
 	{
-		return set_shortcut_key(node[name], shortcut_key);
+		return write_shortcut_key(node[name], shortcut_key);
 	}
 }
 
@@ -465,29 +501,29 @@ namespace my::json
 //
 namespace my::json
 {
-	inline void get_point(const n_json& node, Point& point)
+	inline void read_point(const n_json& node, Point& point)
 	{
-		get_int(node, "x", point.X);
-		get_int(node, "y", point.Y);
+		read_int(node, "x", point.X);
+		read_int(node, "y", point.Y);
 	}
 
-	inline void get_point(const n_json& node, const std::string& name, Point& point)
+	inline void read_point(const n_json& node, const std::string& name, Point& point)
 	{
-		get_point(get_child(node, name), point);
+		return read_point(read_child(node, name), point);
 	}
 
-	inline void get_size(const n_json& node, Size& size)
+	inline void read_size(const n_json& node, Size& size)
 	{
-		get_int(node, "w", size.Width);
-		get_int(node, "h", size.Height);
+		read_int(node, "w", size.Width);
+		read_int(node, "h", size.Height);
 	}
 
-	inline void get_size(const n_json& node, const std::string& name, Size& size)
+	inline void read_size(const n_json& node, const std::string& name, Size& size)
 	{
-		get_size(get_child(node, name), size);
+		return read_size(read_child(node, name), size);
 	}
 
-	inline void get_color(const n_json& node, Color& value)
+	inline void read_color(const n_json& node, Color& value)
 	{
 		try
 		{
@@ -587,9 +623,9 @@ namespace my::json
 		}
 	}
 
-	inline void get_color(const n_json& node, const std::string& name, Color& value)
+	inline void read_color(const n_json& node, const std::string& name, Color& value)
 	{
-		get_color(get_child(node, name), value);
+		return read_color(read_child(node, name), value);
 	}
 }
 
@@ -598,36 +634,36 @@ namespace my::json
 //
 namespace my::json
 {
-	inline void set_point(n_json& node, const Point& point)
+	inline void write_point(n_json& node, const Point& point)
 	{
 		node["x"] = point.X;
 		node["y"] = point.Y;
 	}
 
-	inline void set_point(n_json& node, const std::string& name, const Point& point)
+	inline void write_point(n_json& node, const std::string& name, const Point& point)
 	{
-		return set_point(node[name], point);
+		return write_point(node[name], point);
 	}
 
-	inline void set_size(n_json& node, const Size& size)
+	inline void write_size(n_json& node, const Size& size)
 	{
 		node["w"] = size.Width;
 		node["h"] = size.Height;
 	}
 
-	inline void set_size(n_json& node, const std::string& name, const Size& size)
+	inline void write_size(n_json& node, const std::string& name, const Size& size)
 	{
-		return set_size(node[name], size);
+		return write_size(node[name], size);
 	}
 
-	inline void set_color(n_json& node, const Color& color)
+	inline void write_color(n_json& node, const Color& color)
 	{
 		node = std::format("{}, {}, {}, {}", color.GetR(), color.GetG(), color.GetB(), color.GetA());
 	}
 
-	inline void set_color(n_json& node, const std::string& name, const Color& color)
+	inline void write_color(n_json& node, const std::string& name, const Color& color)
 	{
-		return set_color(node[name], color);
+		return write_color(node[name], color);
 	}
 }
 #endif

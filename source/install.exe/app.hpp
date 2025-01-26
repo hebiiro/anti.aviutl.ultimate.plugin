@@ -53,11 +53,11 @@ public:
 			std::ifstream ifs(hive.config_file_name);
 			n_json root; ifs >> root;
 
-			get_file_name(root, "aviutl_file_name", hive.aviutl_file_name);
-			get_bool(root, "install_new_version", hive.install_new_version);
-			get_bool(root, "uninstall_old_version", hive.uninstall_old_version);
-			get_bool(root, "deploy_runtime", hive.deploy_runtime);
-			get_bool(root, "create_dark_exe", hive.create_dark_exe);
+			read_file_name(root, "aviutl_file_name", hive.aviutl_file_name);
+			read_bool(root, "install_new_version", hive.install_new_version);
+			read_bool(root, "uninstall_old_version", hive.uninstall_old_version);
+			read_bool(root, "deploy_runtime", hive.deploy_runtime);
+			read_bool(root, "create_dark_exe", hive.create_dark_exe);
 
 			return TRUE;
 		}
@@ -82,11 +82,11 @@ public:
 		{
 			n_json root;
 
-			set_file_name(root, "aviutl_file_name", hive.aviutl_file_name);
-			set_bool(root, "install_new_version", hive.install_new_version);
-			set_bool(root, "uninstall_old_version", hive.uninstall_old_version);
-			set_bool(root, "deploy_runtime", hive.deploy_runtime);
-			set_bool(root, "create_dark_exe", hive.create_dark_exe);
+			write_file_name(root, "aviutl_file_name", hive.aviutl_file_name);
+			write_bool(root, "install_new_version", hive.install_new_version);
+			write_bool(root, "uninstall_old_version", hive.uninstall_old_version);
+			write_bool(root, "deploy_runtime", hive.deploy_runtime);
+			write_bool(root, "create_dark_exe", hive.create_dark_exe);
 
 			std::ofstream ofs(hive.config_file_name);
 			ofs << root.dump(1, '\t');

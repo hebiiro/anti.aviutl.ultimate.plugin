@@ -25,28 +25,28 @@ namespace apn::audio_visualizer
 			MY_TRACE_FUNC("");
 
 			// グローバル設定を読み込みます。
-			get_label(root, "mode", hive.mode, hive.c_mode.labels);
-			get_child(root, "range").get_to(hive.option.range);
-			get_child(root, "marker").get_to(hive.option.marker);
-			get_child(root, "spectre_option").get_to(hive.option.spectre_option);
+			read_label(root, "mode", hive.mode, hive.c_mode.labels);
+			read_child(root, "range").get_to(hive.option.range);
+			read_child(root, "marker").get_to(hive.option.marker);
+			read_child(root, "spectre_option").get_to(hive.option.spectre_option);
 
 			// アドインウィンドウのウィンドウ位置を読み込みます。
-			get_window(root, "addin_window", addin_window);
+			read_window_pos(root, "addin_window", addin_window);
 
 			// コウィンドウを読み込みます。
-			get_child_nodes(root, "co_window",
+			read_child_nodes(root, "co_window",
 				[&](const n_json& co_window_node, size_t i)
 			{
 				// 名前を読み込みます。
 				std::wstring name;
-				get_string(co_window_node, "name", name);
+				read_string(co_window_node, "name", name);
 				if (name.empty()) return TRUE;
 
 				// コウィンドウを作成します。
 				auto co_window = co_window_manager.create_co_window(name);
 
 				// ウィンドウ位置を読み込みます。
-				get_window(co_window_node, "window", *co_window);
+				read_window_pos(co_window_node, "window", *co_window);
 
 				return TRUE;
 			});
@@ -62,24 +62,24 @@ namespace apn::audio_visualizer
 			MY_TRACE_FUNC("");
 
 			// グローバル設定を書き込みます。
-			set_label(root, "mode", hive.mode, hive.c_mode.labels);
-			set_child_node(root, "range", hive.option.range);
-			set_child_node(root, "marker", hive.option.marker);
-			set_child_node(root, "spectre_option", hive.option.spectre_option);
+			write_label(root, "mode", hive.mode, hive.c_mode.labels);
+			write_child_node(root, "range", hive.option.range);
+			write_child_node(root, "marker", hive.option.marker);
+			write_child_node(root, "spectre_option", hive.option.spectre_option);
 
 			// アドインウィンドウのウィンドウ位置を書き込みます。
-			set_window(root, "addin_window", addin_window);
+			write_window_pos(root, "addin_window", addin_window);
 
 			// コウィンドウを書き込みます。
-			set_child_nodes(root, "co_window", co_window_manager.collection,
+			write_child_nodes(root, "co_window", co_window_manager.collection,
 				[&](n_json& co_window_node, const auto& co_window, size_t i)
 			{
 				// 名前を書き込みます。
 				auto name = co_window->name;
-				set_string(co_window_node, "name", name);
+				write_string(co_window_node, "name", name);
 
 				// ウィンドウ位置を書き込みます。
-				set_window(co_window_node, "window", *co_window);
+				write_window_pos(co_window_node, "window", *co_window);
 
 				return TRUE;
 			});

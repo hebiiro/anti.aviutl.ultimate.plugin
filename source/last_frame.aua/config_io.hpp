@@ -67,8 +67,8 @@ namespace apn::last_frame
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "enabled", hive.enabled);
-			get_window(root, "addin_window", addin_window);
+			read_bool(root, "enabled", hive.enabled);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -80,8 +80,8 @@ namespace apn::last_frame
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "enabled", hive.enabled);
-			set_window(root, "addin_window", addin_window);
+			write_bool(root, "enabled", hive.enabled);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

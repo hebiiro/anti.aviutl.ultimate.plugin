@@ -70,11 +70,11 @@ namespace apn::one_for_text
 		{
 			MY_TRACE_FUNC("");
 
-			get_string(root, "text_file_name", hive.text_file_name);
-			get_string(root, "text_editor_path", hive.text_editor_path);
-			get_int(root, "layer_front", hive.layer_front);
-			get_int(root, "layer_back", hive.layer_back);
-			get_window(root, "addin_window", addin_window);
+			read_string(root, "text_file_name", hive.text_file_name);
+			read_string(root, "text_editor_path", hive.text_editor_path);
+			read_int(root, "layer_front", hive.layer_front);
+			read_int(root, "layer_back", hive.layer_back);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -86,11 +86,11 @@ namespace apn::one_for_text
 		{
 			MY_TRACE_FUNC("");
 
-			set_string(root, "text_file_name", hive.text_file_name);
-			set_string(root, "text_editor_path", hive.text_editor_path);
-			set_int(root, "layer_front", hive.layer_front);
-			set_int(root, "layer_back", hive.layer_back);
-			set_window(root, "addin_window", addin_window);
+			write_string(root, "text_file_name", hive.text_file_name);
+			write_string(root, "text_editor_path", hive.text_editor_path);
+			write_int(root, "layer_front", hive.layer_front);
+			write_int(root, "layer_back", hive.layer_back);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

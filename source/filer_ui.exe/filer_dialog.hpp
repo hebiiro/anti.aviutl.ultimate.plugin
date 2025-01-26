@@ -83,19 +83,19 @@ namespace apn::filer_ui
 			folder_control.ResetContent();
 
 			auto nav_pane = true;
-			get_bool(node, "nav_pane", nav_pane);
+			read_bool(node, "nav_pane", nav_pane);
 			nav_pane_control.SetCheck(nav_pane ? BST_CHECKED : BST_UNCHECKED);
 
 			std::wstring path;
-			get_string(node, "path", path);
+			read_string(node, "path", path);
 			folder_control.SetWindowText(path.c_str());
 
 			// ブックマークを読み込みます。
-			get_child_nodes(node, "bookmarks",
+			read_child_nodes(node, "bookmarks",
 				[&](const n_json& bookmark_node, size_t i)
 			{
 				std::wstring path;
-				get_string(bookmark_node, path);
+				read_string(bookmark_node, path);
 				folder_control.AddString(path.c_str());
 
 				return TRUE;
@@ -115,8 +115,8 @@ namespace apn::filer_ui
 
 			auto nav_pane = this->nav_pane_control.GetCheck() == BST_CHECKED;
 
-			set_bool(node, "nav_pane", nav_pane);
-			set_string(node, "path", hot_folder);
+			write_bool(node, "nav_pane", nav_pane);
+			write_string(node, "path", hot_folder);
 
 			std::vector<std::wstring> bookmarks;
 			auto c = folder_control.GetCount();
@@ -129,10 +129,10 @@ namespace apn::filer_ui
 				bookmarks.emplace_back((LPCTSTR)path);
 			}
 
-			set_child_nodes(node, "bookmarks", bookmarks,
+			write_child_nodes(node, "bookmarks", bookmarks,
 				[&](n_json& bookmark_node, const auto& bookmark, size_t i)
 			{
-				set_string(bookmark_node, bookmark);
+				write_string(bookmark_node, bookmark);
 
 				return TRUE;
 			});

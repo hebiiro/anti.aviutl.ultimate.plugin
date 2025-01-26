@@ -42,7 +42,7 @@ namespace apn::reboot::reloader
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "with_write", agit.with_write);
+			read_bool(root, "with_write", agit.with_write);
 
 			return TRUE;
 		}
@@ -54,7 +54,7 @@ namespace apn::reboot::reloader
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "with_write", agit.with_write);
+			write_bool(root, "with_write", agit.with_write);
 
 			return TRUE;
 		}

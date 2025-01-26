@@ -57,7 +57,7 @@ namespace apn::color_code
 		{
 			MY_TRACE_FUNC("");
 
-			get_point(root, "offset", hive.offset);
+			read_point(root, "offset", hive.offset);
 
 			return TRUE;
 		}
@@ -69,7 +69,7 @@ namespace apn::color_code
 		{
 			MY_TRACE_FUNC("");
 
-			set_point(root, "offset", hive.offset);
+			write_point(root, "offset", hive.offset);
 
 			return TRUE;
 		}

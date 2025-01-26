@@ -3,72 +3,47 @@
 namespace apn::filer
 {
 	//
+	// ウィンドウ位置をノードから読み込みます。
+	//
+	inline void read_window_pos(const n_json& node, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
+	{
+		// ウィンドウプレースメントを取得します。
+		WINDOWPLACEMENT wp = { sizeof(wp) };
+		::GetWindowPlacement(hwnd, &wp);
+
+		wp.flags = WPF_SETMINPOSITION;
+		if (!::IsWindowVisible(hwnd)) wp.showCmd = SW_HIDE;
+
+		if (show_cmd == -1)
+			read_int(node, "show_cmd", wp.showCmd);
+		else
+			wp.showCmd = show_cmd;
+/*
+		auto normal_rc = RECT {};
+		read_rect(node, "normal", normal_rc);
+
+		auto min_pos = POINT {};
+		read_point(node, "min", min_pos);
+
+		auto max_pos = POINT {};
+		read_point(node, "max", max_pos);
+*/
+		::SetWindowPlacement(hwnd, &wp);
+	}
+
+	//
+	// ウィンドウ位置をノードから読み込みます。
+	//
+	inline void read_window_pos(const n_json& node, const std::string& name, HWND hwnd, UINT flags = 0, UINT show_cmd = -1)
+	{
+		return read_window_pos(read_child(node, name), hwnd, flags, show_cmd);
+	}
+
+	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct ConfigIO : StdConfigIOUseHive<hive>
 	{
-		//
-		// 初期化処理を実行します。
-		//
-		BOOL init()
-		{
-			MY_TRACE_FUNC("");
-
-			hive.config_file_name = magi.get_config_file_name(hive.instance);
-			MY_TRACE_STR(hive.config_file_name);
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグを読み込みます。
-		//
-		BOOL read()
-		{
-			MY_TRACE_FUNC("");
-
-			// コンフィグファイルが存在しない場合は
-			if (!std::filesystem::exists(hive.config_file_name))
-			{
-				// デフォルトのファイラを作成します。
-
-				for (auto i = 0; i < 3; i++)
-				{
-					// ファイラを作成します。
-					auto filer_window = filer_window_manager.create_filer_window(std::format(L"素材{}", i + 1).c_str(), TRUE);
-
-					// ファイラを表示します。
-//					::ShowWindow(*filer_window, SW_SHOW);
-				}
-
-				return TRUE;
-			}
-			else
-			{
-				return read_file(hive.config_file_name, hive);
-			}
-		}
-
-		//
-		// コンフィグを書き込みます。
-		//
-		BOOL write()
-		{
-			MY_TRACE_FUNC("");
-
-			return write_file(hive.config_file_name, hive);
-		}
-
 		//
 		// ノードからコンフィグを読み込みます。
 		//
@@ -77,24 +52,32 @@ namespace apn::filer
 			MY_TRACE_FUNC("");
 
 			// プロパティを読み込みます。
-			get_bool(root, "use_common_dialog", hive.use_common_dialog);
+			read_bool(root, "use_common_dialog", hive.use_common_dialog);
+
+			auto window_rc1 = my::get_window_rect(addin_window);
 
 			// アドインウィンドウのウィンドウ位置を読み込みます。
-			workspace::share::get_window(root, "addin_window", addin_window);
+			read_window_pos(root, "addin_window", addin_window);
 
-			get_child_nodes(root, "filer",
+			auto window_rc2 = my::get_window_rect(addin_window);
+/*
++		rcNormalPosition	{LT(0, 0) RB(184, 263)  [184 x 263]}	tagRECT
++		window_rc1	{LT(108, 129) RB(292, 392)  [184 x 263]}	tagRECT
++		window_rc2	{LT(0, 0) RB(184, 263)  [184 x 263]}	tagRECT
+*/
+			read_child_nodes(root, "filer",
 				[&](const n_json& filer_node, size_t i)
 			{
 				// ファイラの名前を読み込みます。
 				std::wstring name;
-				get_string(filer_node, "name", name);
+				read_string(filer_node, "name", name);
 
 				// ファイラウィンドウを作成します。
 				auto filer_window = filer_window_manager.create_filer_window(name.c_str(), FALSE);
 				if (filer_window)
 				{
 					// ファイラウィンドウのウィンドウ位置を読み込みます。
-					workspace::share::get_window(filer_node, "filer_window", *filer_window);
+					read_window_pos(filer_node, "filer_window", *filer_window);
 				}
 
 				return TRUE;
@@ -111,20 +94,20 @@ namespace apn::filer
 			MY_TRACE_FUNC("");
 
 			// プロパティを書き込みます。
-			set_bool(root, "use_common_dialog", hive.use_common_dialog);
+			write_bool(root, "use_common_dialog", hive.use_common_dialog);
 
 			// アドインウィンドウのウィンドウ位置を書き込みます。
-			workspace::share::set_window(root, "addin_window", addin_window);
+			write_window_pos(root, "addin_window", addin_window);
 
-			set_child_nodes(root, "filer", FilerWindow::collection,
+			write_child_nodes(root, "filer", FilerWindow::collection,
 				[&](n_json& filer_node, const auto& filer_window, size_t i)
 			{
 				// ファイラの名前を書き込みます。
 				auto name = my::get_window_text(*filer_window);
-				set_string(filer_node, "name", name);
+				write_string(filer_node, "name", name);
 
 				// ファイラウィンドウのウィンドウ位置を書き込みます。
-				workspace::share::set_window(filer_node, "filer_window", *filer_window);
+				write_window_pos(filer_node, "filer_window", *filer_window);
 
 				return TRUE;
 			});

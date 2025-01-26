@@ -87,15 +87,15 @@ namespace apn
 		//
 		// カラー配列を読み込みます。
 		//
-		inline static void get_color_array(const n_json& node, const std::string& name, auto& color_array)
+		inline static void read_color_array(const n_json& node, const std::string& name, auto& color_array)
 		{
-			get_child_nodes(node, name,
+			read_child_nodes(node, name,
 				[&](const n_json& color_node, size_t i)
 			{
 				if (i >= std::size(color_array))
 					return FALSE;
 
-				get_color(color_node, color_array[i]);
+				read_color(color_node, color_array[i]);
 
 				return TRUE;
 			});
@@ -104,12 +104,12 @@ namespace apn
 		//
 		// カラー配列を書き込みます。
 		//
-		inline static void set_color_array(n_json& node, const std::string& name, const auto& color_array)
+		inline static void write_color_array(n_json& node, const std::string& name, const auto& color_array)
 		{
-			set_child_nodes(node, name, color_array,
+			write_child_nodes(node, name, color_array,
 				[&](n_json& color_node, const auto& color, size_t i)
 			{
-				set_color(color_node, color);
+				write_color(color_node, color);
 
 				return TRUE;
 			});
@@ -122,16 +122,16 @@ namespace apn
 		{
 			MY_TRACE_FUNC("");
 
-			get_string(root, "python_file_name", hive.python_file_name);
-			get_color_array(root, "custom_color", magi.custom_colors);
+			read_string(root, "python_file_name", hive.python_file_name);
+			read_color_array(root, "custom_color", magi.custom_colors);
 
 			// アドイン情報を読み込みます。
-			get_child_nodes(root, "addin",
+			read_child_nodes(root, "addin",
 				[&](const n_json& addin_node, size_t i)
 			{
 				// アドインの名前を取得します。
 				std::wstring name;
-				get_string(addin_node, "name", name);
+				read_string(addin_node, "name", name);
 				MY_TRACE_STR(name);
 
 				// アドインの名前から登録されているアドインを取得します。
@@ -141,11 +141,11 @@ namespace apn
 				auto& addin = *it;
 
 				// アドインの状態を取得し、登録されているアドインに格納します。
-				get_bool(addin_node, "active", addin->active);
+				read_bool(addin_node, "active", addin->active);
 				MY_TRACE_INT(addin->active);
 
 				// アドインの引数を取得し、登録されているアドインに格納します。
-				get_string(addin_node, "args", addin->args);
+				read_string(addin_node, "args", addin->args);
 				MY_TRACE_STR(addin->args);
 
 				return TRUE;
@@ -161,15 +161,15 @@ namespace apn
 		{
 			MY_TRACE_FUNC("");
 
-			set_string(root, "python_file_name", hive.python_file_name);
-			set_color_array(root, "custom_color", magi.custom_colors);
+			write_string(root, "python_file_name", hive.python_file_name);
+			write_color_array(root, "custom_color", magi.custom_colors);
 
-			set_child_nodes(root, "addin", hive.addins,
+			write_child_nodes(root, "addin", hive.addins,
 				[&](n_json& addin_node, const auto& addin, size_t i)
 			{
-				set_string(addin_node, "name", addin->name);
-				set_bool(addin_node, "active", addin->active);
-				set_string(addin_node, "args", addin->args);
+				write_string(addin_node, "name", addin->name);
+				write_bool(addin_node, "active", addin->active);
+				write_string(addin_node, "args", addin->args);
 
 				return TRUE;
 			});

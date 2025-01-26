@@ -166,15 +166,15 @@ public:
 			{
 				auto op = std::wstring(L"移動");
 
-				get_child_nodes(root, "rename",
+				read_child_nodes(root, "rename",
 					[&](const n_json& rename_node, size_t i)
 				{
 					std::filesystem::path from;
-					get_file_name(rename_node, "from", from);
+					read_file_name(rename_node, "from", from);
 					if (from.empty()) return TRUE;
 
 					std::filesystem::path to;
-					get_file_name(rename_node, "to", to);
+					read_file_name(rename_node, "to", to);
 					if (to.empty()) return TRUE;
 
 					from = hive.aviutl_dir / from;
@@ -190,11 +190,11 @@ public:
 					return TRUE;
 				});
 
-				get_child_nodes(root, "erase",
+				read_child_nodes(root, "erase",
 					[&](const n_json& erase_node, size_t i)
 				{
 					std::wstring path;
-					get_string(erase_node, "path", path);
+					read_string(erase_node, "path", path);
 					if (path.empty()) return TRUE;
 
 					auto from = hive.aviutl_dir / path;
@@ -215,15 +215,15 @@ public:
 			{
 				auto op = std::wstring(L"コピー");
 
-				get_child_nodes(root, "deploy",
+				read_child_nodes(root, "deploy",
 					[&](const n_json& deploy_node, size_t i)
 				{
 					std::filesystem::path from;
-					get_file_name(deploy_node, "from", from);
+					read_file_name(deploy_node, "from", from);
 					if (from.empty()) return TRUE;
 
 					std::filesystem::path to;
-					get_file_name(deploy_node, "to", to);
+					read_file_name(deploy_node, "to", to);
 					if (to.empty()) return TRUE;
 
 					from = std::filesystem::current_path() / from;

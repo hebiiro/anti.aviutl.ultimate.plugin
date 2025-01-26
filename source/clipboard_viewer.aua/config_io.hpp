@@ -67,8 +67,8 @@ namespace apn::clipboard_viewer
 		{
 			MY_TRACE_FUNC("");
 
-			get_int(root, "zoom", hive.zoom);
-			get_window(root, "addin_window", addin_window);
+			read_int(root, "zoom", hive.zoom);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -80,8 +80,8 @@ namespace apn::clipboard_viewer
 		{
 			MY_TRACE_FUNC("");
 
-			set_int(root, "zoom", hive.zoom);
-			set_window(root, "addin_window", addin_window);
+			write_int(root, "zoom", hive.zoom);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

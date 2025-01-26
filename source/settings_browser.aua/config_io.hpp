@@ -71,9 +71,9 @@ namespace apn::settings_browser
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "auto_get", hive.auto_get);
-			get_string(root, "url", hive.url);
-			get_window(root, "addin_window", addin_window);
+			read_bool(root, "auto_get", hive.auto_get);
+			read_string(root, "url", hive.url);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -85,9 +85,9 @@ namespace apn::settings_browser
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "auto_get", hive.auto_get);
-			set_string(root, "url", hive.url);
-			set_window(root, "addin_window", addin_window);
+			write_bool(root, "auto_get", hive.auto_get);
+			write_string(root, "url", hive.url);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

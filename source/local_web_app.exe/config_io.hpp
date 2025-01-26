@@ -67,7 +67,7 @@ namespace apn::local_web_app
 		{
 			MY_TRACE_FUNC("");
 
-			get_window(root, "main_window", hive.main_window);
+			read_window_pos(root, "main_window", hive.main_window);
 
 			return TRUE;
 		}
@@ -79,7 +79,7 @@ namespace apn::local_web_app
 		{
 			MY_TRACE_FUNC("");
 
-			set_window(root, "main_window", hive.main_window);
+			write_window_pos(root, "main_window", hive.main_window);
 
 			return TRUE;
 		}

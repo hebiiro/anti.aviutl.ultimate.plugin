@@ -42,7 +42,7 @@ namespace apn::reboot::outputs
 		{
 			MY_TRACE_FUNC("");
 
-			get_string(root, "plugin_name", agit.plugin_name);
+			read_string(root, "plugin_name", agit.plugin_name);
 
 			return TRUE;
 		}
@@ -54,7 +54,7 @@ namespace apn::reboot::outputs
 		{
 			MY_TRACE_FUNC("");
 
-			set_string(root, "plugin_name", agit.plugin_name);
+			write_string(root, "plugin_name", agit.plugin_name);
 
 			return TRUE;
 		}

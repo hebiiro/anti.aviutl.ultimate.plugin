@@ -67,7 +67,7 @@ namespace apn::item_wave::ui
 		{
 			MY_TRACE_FUNC("");
 
-			get_int(root, "max_reader_count", reader_manager.max_reader_count);
+			read_int(root, "max_reader_count", reader_manager.max_reader_count);
 
 			return TRUE;
 		}
@@ -79,7 +79,7 @@ namespace apn::item_wave::ui
 		{
 			MY_TRACE_FUNC("");
 
-			set_int(root, "max_reader_count", reader_manager.max_reader_count);
+			write_int(root, "max_reader_count", reader_manager.max_reader_count);
 
 			return TRUE;
 		}

@@ -76,23 +76,23 @@ namespace apn::reboot::spreader
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "enabled", agit.enabled);
-			get_bool(root, "play_select_frame", agit.play_select_frame);
-			get_bool(root, "play_loop", agit.play_loop);
-			get_label(root, "stretch_mode", agit.stretch_mode, agit.c_stretch_mode.labels);
-			get_label(root, "size_mode", agit.size_mode, agit.c_size_mode.labels);
-			get_bool(root, "show_frame", agit.show_frame);
-			get_bool(root, "show_time", agit.show_time);
-			get_bool(root, "show_thumbnail", agit.show_thumbnail);
-			get_size(root, "absolute_size", agit.absolute_size);
-			get_int(root, "relative_size", agit.relative_size);
-			get_child_nodes(root, "thumbnail_scale",
+			read_bool(root, "enabled", agit.enabled);
+			read_bool(root, "play_select_frame", agit.play_select_frame);
+			read_bool(root, "play_loop", agit.play_loop);
+			read_label(root, "stretch_mode", agit.stretch_mode, agit.c_stretch_mode.labels);
+			read_label(root, "size_mode", agit.size_mode, agit.c_size_mode.labels);
+			read_bool(root, "show_frame", agit.show_frame);
+			read_bool(root, "show_time", agit.show_time);
+			read_bool(root, "show_thumbnail", agit.show_thumbnail);
+			read_size(root, "absolute_size", agit.absolute_size);
+			read_int(root, "relative_size", agit.relative_size);
+			read_child_nodes(root, "thumbnail_scale",
 				[&](const n_json& node, size_t i)
 			{
 				if (i >= std::size(agit.thumbnail_scale))
 					return FALSE;
 
-				get_int(node, agit.thumbnail_scale[i]);
+				read_int(node, agit.thumbnail_scale[i]);
 
 				return TRUE;
 			});
@@ -107,20 +107,20 @@ namespace apn::reboot::spreader
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "enabled", agit.enabled);
-			set_bool(root, "play_select_frame", agit.play_select_frame);
-			set_bool(root, "play_loop", agit.play_loop);
-			set_label(root, "stretch_mode", agit.stretch_mode, agit.c_stretch_mode.labels);
-			set_label(root, "size_mode", agit.size_mode, agit.c_size_mode.labels);
-			set_bool(root, "show_frame", agit.show_frame);
-			set_bool(root, "show_time", agit.show_time);
-			set_bool(root, "show_thumbnail", agit.show_thumbnail);
-			set_size(root, "absolute_size", agit.absolute_size);
-			set_int(root, "relative_size", agit.relative_size);
-			set_child_nodes(root, "thumbnail_scale", agit.thumbnail_scale,
+			write_bool(root, "enabled", agit.enabled);
+			write_bool(root, "play_select_frame", agit.play_select_frame);
+			write_bool(root, "play_loop", agit.play_loop);
+			write_label(root, "stretch_mode", agit.stretch_mode, agit.c_stretch_mode.labels);
+			write_label(root, "size_mode", agit.size_mode, agit.c_size_mode.labels);
+			write_bool(root, "show_frame", agit.show_frame);
+			write_bool(root, "show_time", agit.show_time);
+			write_bool(root, "show_thumbnail", agit.show_thumbnail);
+			write_size(root, "absolute_size", agit.absolute_size);
+			write_int(root, "relative_size", agit.relative_size);
+			write_child_nodes(root, "thumbnail_scale", agit.thumbnail_scale,
 				[&](n_json& node, int32_t thumbnail_scale, size_t i)
 			{
-				set_int(node, thumbnail_scale);
+				write_int(node, thumbnail_scale);
 
 				return TRUE;
 			});

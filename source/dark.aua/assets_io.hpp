@@ -18,8 +18,8 @@ namespace apn::dark
 
 				auto skin = hive.skin_list.emplace_back(std::make_shared<Hive::Skin>());
 
-				get_string(root, "module_name", skin->module_name);
-				get_string(root, "display_name", skin->display_name);
+				read_string(root, "module_name", skin->module_name);
+				read_string(root, "display_name", skin->display_name);
 
 				return TRUE;
 			}
@@ -36,8 +36,8 @@ namespace apn::dark
 
 				auto scheme = hive.scheme_list.emplace_back(std::make_shared<Hive::Scheme>());
 
-				get_string(root, "module_name", scheme->module_name);
-				get_string(root, "display_name", scheme->display_name);
+				read_string(root, "module_name", scheme->module_name);
+				read_string(root, "display_name", scheme->display_name);
 
 				return TRUE;
 			}

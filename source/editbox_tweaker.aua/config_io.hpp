@@ -77,16 +77,16 @@ namespace apn::editbox_tweaker
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "unicode_input", hive.unicode_input);
-			get_bool(root, "ctrl_a", hive.ctrl_a);
-			get_bool(root, "zoomable", hive.zoomable);
-			get_int(root, "delta", hive.delta);
+			read_bool(root, "unicode_input", hive.unicode_input);
+			read_bool(root, "ctrl_a", hive.ctrl_a);
+			read_bool(root, "zoomable", hive.zoomable);
+			read_int(root, "delta", hive.delta);
 			{
 				n_json font_node;
-				get_child_node(root, "font", font_node);
-				get_string(font_node, "name", hive.font.name);
-				get_int(font_node, "height", hive.font.height);
-				get_int(font_node, "pitch", hive.font.pitch);
+				read_child_node(root, "font", font_node);
+				read_string(font_node, "name", hive.font.name);
+				read_int(font_node, "height", hive.font.height);
+				read_int(font_node, "pitch", hive.font.pitch);
 			}
 
 			return TRUE;
@@ -99,16 +99,16 @@ namespace apn::editbox_tweaker
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "unicode_input", hive.unicode_input);
-			set_bool(root, "ctrl_a", hive.ctrl_a);
-			set_bool(root, "zoomable", hive.zoomable);
-			set_int(root, "delta", hive.delta);
+			write_bool(root, "unicode_input", hive.unicode_input);
+			write_bool(root, "ctrl_a", hive.ctrl_a);
+			write_bool(root, "zoomable", hive.zoomable);
+			write_int(root, "delta", hive.delta);
 			{
 				n_json font_node;
-				set_string(font_node, "name", hive.font.name);
-				set_int(font_node, "height", hive.font.height);
-				set_int(font_node, "pitch", hive.font.pitch);
-				set_child_node(root, "font", font_node);
+				write_string(font_node, "name", hive.font.name);
+				write_int(font_node, "height", hive.font.height);
+				write_int(font_node, "pitch", hive.font.pitch);
+				write_child_node(root, "font", font_node);
 			}
 
 			return TRUE;

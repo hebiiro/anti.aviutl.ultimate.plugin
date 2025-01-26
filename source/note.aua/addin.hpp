@@ -123,9 +123,9 @@ namespace apn::note
 				auto root = nlohmann::json::parse(my::wide_to_cp(s, CP_UTF8));
 				{
 					n_json note_node;
-					get_child_node(root, "note", note_node);
+					read_child_node(root, "note", note_node);
 					std::wstring project_text;
-					get_string(note_node, "project_text", project_text);
+					read_string(note_node, "project_text", project_text);
 
 					::SetWindowText(project_note.richedit, project_text.c_str());
 				}
@@ -151,7 +151,7 @@ namespace apn::note
 				auto project_text = my::get_window_text(project_note.richedit);
 
 				nlohmann::json note_node;
-				set_string(note_node, "project_text", project_text);
+				write_string(note_node, "project_text", project_text);
 				save_data = my::cp_to_wide(note_node.dump(), CP_UTF8);
 
 				return save_data.c_str();

@@ -151,20 +151,20 @@ namespace apn::audio_visualizer::share
 
 	inline void to_json(n_json& node, const SpectreOption& spectre_option)
 	{
-		set_int(node, "freq_min", spectre_option.freq_min);
-		set_int(node, "freq_max", spectre_option.freq_max);
-		set_int(node, "div", spectre_option.div);
-		set_bool(node, "rms_scaling", spectre_option.rms_scaling);
-		set_bool(node, "log_freq", spectre_option.log_freq);
+		write_int(node, "freq_min", spectre_option.freq_min);
+		write_int(node, "freq_max", spectre_option.freq_max);
+		write_int(node, "div", spectre_option.div);
+		write_bool(node, "rms_scaling", spectre_option.rms_scaling);
+		write_bool(node, "log_freq", spectre_option.log_freq);
 	}
 
 	inline void from_json(const n_json& node, SpectreOption& spectre_option)
 	{
-		get_int(node, "freq_min", spectre_option.freq_min);
-		get_int(node, "freq_max", spectre_option.freq_max);
-		get_int(node, "div", spectre_option.div);
-		get_bool(node, "rms_scaling", spectre_option.rms_scaling);
-		get_bool(node, "log_freq", spectre_option.log_freq);
+		read_int(node, "freq_min", spectre_option.freq_min);
+		read_int(node, "freq_max", spectre_option.freq_max);
+		read_int(node, "div", spectre_option.div);
+		read_bool(node, "rms_scaling", spectre_option.rms_scaling);
+		read_bool(node, "log_freq", spectre_option.log_freq);
 	}
 
 	inline void to_json(n_json& j, const AudioArtifact::Channel::Spectre& spectre)

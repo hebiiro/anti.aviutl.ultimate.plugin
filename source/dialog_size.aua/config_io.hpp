@@ -24,19 +24,19 @@ namespace apn::dialog_size
 		{
 			MY_TRACE_FUNC("");
 
-			get_child_nodes(root, "custom_template",
+			read_child_nodes(root, "custom_template",
 				[&](const n_json& custom_template_node, size_t i)
 			{
 				if (i >= std::size(hive.custom_templates))
 					return FALSE;
 
-				get_bool(custom_template_node, "active", hive.custom_templates[i].active);
-//				get_string(custom_template_node, "name", hive.custom_templates[i].target_display_name);
+				read_bool(custom_template_node, "active", hive.custom_templates[i].active);
+//				read_string(custom_template_node, "name", hive.custom_templates[i].target_display_name);
 
 				return TRUE;
 			});
 
-			get_window(root, "addin_window", addin_window);
+			read_window_pos(root, "addin_window", addin_window);
 
 			new_file_dialog.read_node(root);
 
@@ -50,16 +50,16 @@ namespace apn::dialog_size
 		{
 			MY_TRACE_FUNC("");
 
-			set_child_nodes(root, "custom_template", hive.custom_templates,
+			write_child_nodes(root, "custom_template", hive.custom_templates,
 				[&](n_json& custom_template_node, const auto& custom_template, size_t i)
 			{
-				set_bool(custom_template_node, "active", custom_template.active);
-				set_string(custom_template_node, "name", custom_template.target_display_name);
+				write_bool(custom_template_node, "active", custom_template.active);
+				write_string(custom_template_node, "name", custom_template.target_display_name);
 
 				return TRUE;
 			});
 
-			set_window(root, "addin_window", addin_window);
+			write_window_pos(root, "addin_window", addin_window);
 
 			new_file_dialog.write_node(root);
 

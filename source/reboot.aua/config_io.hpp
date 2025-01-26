@@ -74,11 +74,11 @@ namespace apn::reboot
 			for (auto& part : Part::parts)
 			{
 				n_json node;
-				get_child_node(root, my::wide_to_cp(part->on_get_name(), CP_UTF8), node);
+				read_child_node(root, my::wide_to_cp(part->on_get_name(), CP_UTF8), node);
 				part->on_read(node);
 			}
 
-			get_window(root, "addin_window", addin_window);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -95,10 +95,10 @@ namespace apn::reboot
 			{
 				n_json node;
 				part->on_write(node);
-				set_child_node(root, my::wide_to_cp(part->on_get_name(), CP_UTF8), node);
+				write_child_node(root, my::wide_to_cp(part->on_get_name(), CP_UTF8), node);
 			}
 
-			set_window(root, "addin_window", addin_window);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

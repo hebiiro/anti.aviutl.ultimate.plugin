@@ -70,8 +70,8 @@ namespace apn::note
 		{
 			MY_TRACE_FUNC("");
 
-			get_window(root, "sharing_note", sharing_note);
-			get_window(root, "project_note", project_note);
+			read_window_pos(root, "sharing_note", sharing_note);
+			read_window_pos(root, "project_note", project_note);
 
 			// txtファイルから共通ノートを読み込みます。
 			try
@@ -100,8 +100,8 @@ namespace apn::note
 		{
 			MY_TRACE_FUNC("");
 
-			set_window(root, "sharing_note", sharing_note);
-			set_window(root, "project_note", project_note);
+			write_window_pos(root, "sharing_note", sharing_note);
+			write_window_pos(root, "project_note", project_note);
 
 			// txtファイルに共通ノートを書き込みます。
 			try

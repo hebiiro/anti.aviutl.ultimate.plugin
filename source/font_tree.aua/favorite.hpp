@@ -315,7 +315,7 @@ namespace apn::font_tree
 			MY_TRACE_FUNC("");
 
 			n_json favorite_node;
-			get_child_node(node, "favorite", favorite_node);
+			read_child_node(node, "favorite", favorite_node);
 			read_favorites(favorite_node, TVI_ROOT);
 		}
 
@@ -327,16 +327,16 @@ namespace apn::font_tree
 			MY_TRACE_FUNC("");
 
 			// お気に入りを読み込みます。
-			get_child_nodes(node, "favorite",
+			read_child_nodes(node, "favorite",
 				[&](const n_json& favorite_node, size_t i)
 			{
 				// ノードを新規作成します。
 				auto node = create_node();
 
 				// ノードの属性を読み込みます。
-				get_string(favorite_node, "name", node->name);
-				get_string(favorite_node, "alias", node->alias);
-				get_bool(favorite_node, "expanded", node->expanded);
+				read_string(favorite_node, "name", node->name);
+				read_string(favorite_node, "alias", node->alias);
+				read_bool(favorite_node, "expanded", node->expanded);
 
 				// 子要素を追加します。
 				auto item_handle = insert(parent_handle, TVI_LAST, node);
@@ -357,7 +357,7 @@ namespace apn::font_tree
 
 			n_json favorite_node;
 			write_favorites(favorite_node, TVI_ROOT);
-			set_child_node(node, "favorite", favorite_node);
+			write_child_node(node, "favorite", favorite_node);
 		}
 
 		//
@@ -383,7 +383,7 @@ namespace apn::font_tree
 			}
 
 			// お気に入りを書き込みます。
-			set_child_nodes(node, "favorite", favorites,
+			write_child_nodes(node, "favorite", favorites,
 				[&](n_json& favorite_node, const auto& favorite, size_t i)
 			{
 				// ツリー要素に該当するノードを取得します。
@@ -391,9 +391,9 @@ namespace apn::font_tree
 				if (!node) return TRUE;
 
 				// ノードの属性を書き込みます。
-				set_string(favorite_node, "name", node->name);
-				set_string(favorite_node, "alias", node->alias);
-				set_bool(favorite_node, "expanded", node->expanded);
+				write_string(favorite_node, "name", node->name);
+				write_string(favorite_node, "alias", node->alias);
+				write_bool(favorite_node, "expanded", node->expanded);
 
 				// 再帰的にお気に入りを書き込みます。
 				write_favorites(favorite_node, favorite);

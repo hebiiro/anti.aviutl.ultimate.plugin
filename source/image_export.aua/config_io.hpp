@@ -67,13 +67,13 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			get_int(root, "quality", hive.quality);
-			get_label(root, "mode", hive.mode, hive.c_mode.labels);
-			get_string(root, "file_name", hive.file_name);
-			get_int(root, "index", hive.index);
-			get_int(root, "number_width", hive.number_width);
-			get_bool(root, "use_pargb", hive.use_pargb);
-			get_window(root, "addin_window", addin_window);
+			read_int(root, "quality", hive.quality);
+			read_label(root, "mode", hive.mode, hive.c_mode.labels);
+			read_string(root, "file_name", hive.file_name);
+			read_int(root, "index", hive.index);
+			read_int(root, "number_width", hive.number_width);
+			read_bool(root, "use_pargb", hive.use_pargb);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -85,13 +85,13 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			set_int(root, "quality", hive.quality);
-			set_label(root, "mode", hive.mode, hive.c_mode.labels);
-			set_string(root, "file_name", hive.file_name);
-			set_int(root, "index", hive.index);
-			set_int(root, "number_width", hive.number_width);
-			set_bool(root, "use_pargb", hive.use_pargb);
-			set_window(root, "addin_window", addin_window);
+			write_int(root, "quality", hive.quality);
+			write_label(root, "mode", hive.mode, hive.c_mode.labels);
+			write_string(root, "file_name", hive.file_name);
+			write_int(root, "index", hive.index);
+			write_int(root, "number_width", hive.number_width);
+			write_bool(root, "use_pargb", hive.use_pargb);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

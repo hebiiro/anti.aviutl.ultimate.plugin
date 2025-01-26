@@ -43,17 +43,17 @@ namespace apn::reboot::launcher
 			MY_TRACE_FUNC("");
 
 			// デューティを読み込みます。
-			get_child_nodes(root, "duty",
+			read_child_nodes(root, "duty",
 				[&](const n_json& duty_node, size_t i)
 			{
 				if (i >= std::size(agit.duties)) return FALSE;
 
 				auto& duty = agit.duties[i];
 
-				get_string(duty_node, "name", duty.name);
-				get_string(duty_node, "verb", duty.verb);
-				get_string(duty_node, "path", duty.path);
-				get_string(duty_node, "args", duty.args);
+				read_string(duty_node, "name", duty.name);
+				read_string(duty_node, "verb", duty.verb);
+				read_string(duty_node, "path", duty.path);
+				read_string(duty_node, "args", duty.args);
 
 				return TRUE;
 			});
@@ -69,15 +69,15 @@ namespace apn::reboot::launcher
 			MY_TRACE_FUNC("");
 
 			// デューティを書き込みます。
-			set_child_nodes(root, "duty", agit.duties,
+			write_child_nodes(root, "duty", agit.duties,
 				[&](n_json& duty_node, const auto& duty, size_t i)
 			{
 				if (i >= std::size(agit.duties)) return FALSE;
 
-				set_string(duty_node, "name", duty.name);
-				set_string(duty_node, "verb", duty.verb);
-				set_string(duty_node, "path", duty.path);
-				set_string(duty_node, "args", duty.args);
+				write_string(duty_node, "name", duty.name);
+				write_string(duty_node, "verb", duty.verb);
+				write_string(duty_node, "path", duty.path);
+				write_string(duty_node, "args", duty.args);
 
 				return TRUE;
 			});

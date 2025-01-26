@@ -67,14 +67,14 @@ namespace apn::text_split
 		{
 			MY_TRACE_FUNC("");
 
-			get_label(root, "shift_mode", hive.shift_mode, hive.c_shift_mode.labels);
-			get_int(root, "shift_offset", hive.shift_offset);
-			get_int(root, "shift_range", hive.shift_range);
-			get_label(root, "each_mode", hive.each_mode, hive.c_each_mode.labels);
-			get_label(root, "fit_mode", hive.fit_mode, hive.c_fit_mode.labels);
-			get_int(root, "fit_width", hive.fit_width);
-			get_int(root, "erase_orig_item", hive.erase_orig_item);
-			get_window(root, "addin_window", addin_window);
+			read_label(root, "shift_mode", hive.shift_mode, hive.c_shift_mode.labels);
+			read_int(root, "shift_offset", hive.shift_offset);
+			read_int(root, "shift_range", hive.shift_range);
+			read_label(root, "each_mode", hive.each_mode, hive.c_each_mode.labels);
+			read_label(root, "fit_mode", hive.fit_mode, hive.c_fit_mode.labels);
+			read_int(root, "fit_width", hive.fit_width);
+			read_int(root, "erase_orig_item", hive.erase_orig_item);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -86,14 +86,14 @@ namespace apn::text_split
 		{
 			MY_TRACE_FUNC("");
 
-			set_label(root, "shift_mode", hive.shift_mode, hive.c_shift_mode.labels);
-			set_int(root, "shift_offset", hive.shift_offset);
-			set_int(root, "shift_range", hive.shift_range);
-			set_label(root, "each_mode", hive.each_mode, hive.c_each_mode.labels);
-			set_label(root, "fit_mode", hive.fit_mode, hive.c_fit_mode.labels);
-			set_int(root, "fit_width", hive.fit_width);
-			set_int(root, "erase_orig_item", hive.erase_orig_item);
-			set_window(root, "addin_window", addin_window);
+			write_label(root, "shift_mode", hive.shift_mode, hive.c_shift_mode.labels);
+			write_int(root, "shift_offset", hive.shift_offset);
+			write_int(root, "shift_range", hive.shift_range);
+			write_label(root, "each_mode", hive.each_mode, hive.c_each_mode.labels);
+			write_label(root, "fit_mode", hive.fit_mode, hive.c_fit_mode.labels);
+			write_int(root, "fit_width", hive.fit_width);
+			write_int(root, "erase_orig_item", hive.erase_orig_item);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

@@ -70,11 +70,11 @@ namespace apn::output_check
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "check_range", hive.check_range);
-			get_bool(root, "check_last_frame", hive.check_last_frame);
-			get_bool(root, "check_frame_rate", hive.check_frame_rate);
-			get_bool(root, "check_empty_text", hive.check_empty_text);
-			get_window(root, "addin_window", addin_window);
+			read_bool(root, "check_range", hive.check_range);
+			read_bool(root, "check_last_frame", hive.check_last_frame);
+			read_bool(root, "check_frame_rate", hive.check_frame_rate);
+			read_bool(root, "check_empty_text", hive.check_empty_text);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -86,11 +86,11 @@ namespace apn::output_check
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "check_range", hive.check_range);
-			set_bool(root, "check_last_frame", hive.check_last_frame);
-			set_bool(root, "check_frame_rate", hive.check_frame_rate);
-			set_bool(root, "check_empty_text", hive.check_empty_text);
-			set_window(root, "addin_window", addin_window);
+			write_bool(root, "check_range", hive.check_range);
+			write_bool(root, "check_last_frame", hive.check_last_frame);
+			write_bool(root, "check_frame_rate", hive.check_frame_rate);
+			write_bool(root, "check_empty_text", hive.check_empty_text);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

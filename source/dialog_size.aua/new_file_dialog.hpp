@@ -52,35 +52,35 @@ namespace apn::dialog_size
 			audio_rate_collection.clear();
 
 			n_json new_file_node;
-			get_child_node(root, "new_file", new_file_node);
+			read_child_node(root, "new_file", new_file_node);
 
-			get_child_nodes(new_file_node, "video_size",
+			read_child_nodes(new_file_node, "video_size",
 				[&](const n_json& video_size_node, size_t i)
 			{
 				auto& video_size = video_size_collection.emplace_back();
-				get_string(video_size_node, "width", video_size.width);
-				get_string(video_size_node, "height", video_size.height);
-				get_string(video_size_node, "name", video_size.display_name);
+				read_string(video_size_node, "width", video_size.width);
+				read_string(video_size_node, "height", video_size.height);
+				read_string(video_size_node, "name", video_size.display_name);
 
 				return TRUE;
 			});
 
-			get_child_nodes(new_file_node, "video_rate",
+			read_child_nodes(new_file_node, "video_rate",
 				[&](const n_json& video_rate_node, size_t i)
 			{
 				auto& video_rate = video_rate_collection.emplace_back();
-				get_string(video_rate_node, "rate", video_rate.rate);
-				get_string(video_rate_node, "name", video_rate.display_name);
+				read_string(video_rate_node, "rate", video_rate.rate);
+				read_string(video_rate_node, "name", video_rate.display_name);
 
 				return TRUE;
 			});
 
-			get_child_nodes(new_file_node, "audio_rate",
+			read_child_nodes(new_file_node, "audio_rate",
 				[&](const n_json& audio_rate_node, size_t i)
 			{
 				auto& audio_rate = audio_rate_collection.emplace_back();
-				get_string(audio_rate_node, "rate", audio_rate.rate);
-				get_string(audio_rate_node, "name", audio_rate.display_name);
+				read_string(audio_rate_node, "rate", audio_rate.rate);
+				read_string(audio_rate_node, "name", audio_rate.display_name);
 
 				return TRUE;
 			});
@@ -97,38 +97,38 @@ namespace apn::dialog_size
 
 			n_json new_file_node;
 
-			set_child_nodes(new_file_node, "video_size",
+			write_child_nodes(new_file_node, "video_size",
 				video_size_collection,
 				[&](n_json& video_size_node, const auto& video_size, size_t i)
 			{
-				set_string(video_size_node, "width", video_size.width);
-				set_string(video_size_node, "height", video_size.height);
-				set_string(video_size_node, "name", video_size.display_name);
+				write_string(video_size_node, "width", video_size.width);
+				write_string(video_size_node, "height", video_size.height);
+				write_string(video_size_node, "name", video_size.display_name);
 
 				return TRUE;
 			});
 
-			set_child_nodes(new_file_node, "video_rate",
+			write_child_nodes(new_file_node, "video_rate",
 				video_rate_collection,
 				[&](n_json& video_rate_node, const auto& video_rate, size_t i)
 			{
-				set_string(video_rate_node, "rate", video_rate.rate);
-				set_string(video_rate_node, "name", video_rate.display_name);
+				write_string(video_rate_node, "rate", video_rate.rate);
+				write_string(video_rate_node, "name", video_rate.display_name);
 
 				return TRUE;
 			});
 
-			set_child_nodes(new_file_node, "audio_rate",
+			write_child_nodes(new_file_node, "audio_rate",
 				audio_rate_collection,
 				[&](n_json& audio_rate_node, const auto& audio_rate, size_t i)
 			{
-				set_string(audio_rate_node, "rate", audio_rate.rate);
-				set_string(audio_rate_node, "name", audio_rate.display_name);
+				write_string(audio_rate_node, "rate", audio_rate.rate);
+				write_string(audio_rate_node, "name", audio_rate.display_name);
 
 				return TRUE;
 			});
 
-			set_child_node(root, "new_file", new_file_node);
+			write_child_node(root, "new_file", new_file_node);
 
 			return TRUE;
 		}

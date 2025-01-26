@@ -157,16 +157,16 @@ namespace apn::settings_browser
 			if (midpt_object->index_midpt_leader != midpt_leader) {};
 
 			n_json midpt_node;
-			set_string(midpt_node, "flag", my::format(_T("{:#010x}"), (uint32_t)midpt_object->flag));
-			set_string(midpt_node, "display_name", my::ws(midpt_object->dispname));
-			set_int(midpt_node, "index", midpt_object_index);
-			set_int(midpt_node, "index_midpt_leader", midpt_object->index_midpt_leader);
-			set_int(midpt_node, "frame_begin", midpt_object->frame_begin);
-			set_int(midpt_node, "frame_end", midpt_object->frame_end);
-			set_int(midpt_node, "layer_set", midpt_object->layer_set);
-			set_int(midpt_node, "scene_set", midpt_object->scene_set);
-			set_int(midpt_node, "group_belong", midpt_object->group_belong);
-			set_child(midpt_node, "filter", create_filter_nodes(midpt_object));
+			write_string(midpt_node, "flag", my::format(_T("{:#010x}"), (uint32_t)midpt_object->flag));
+			write_string(midpt_node, "display_name", my::ws(midpt_object->dispname));
+			write_int(midpt_node, "index", midpt_object_index);
+			write_int(midpt_node, "index_midpt_leader", midpt_object->index_midpt_leader);
+			write_int(midpt_node, "frame_begin", midpt_object->frame_begin);
+			write_int(midpt_node, "frame_end", midpt_object->frame_end);
+			write_int(midpt_node, "layer_set", midpt_object->layer_set);
+			write_int(midpt_node, "scene_set", midpt_object->scene_set);
+			write_int(midpt_node, "group_belong", midpt_object->group_belong);
+			write_child(midpt_node, "filter", create_filter_nodes(midpt_object));
 			return midpt_node;
 		}
 
@@ -191,11 +191,11 @@ namespace apn::settings_browser
 				if (!filter) break;
 
 				n_json filter_node;
-				set_int(filter_node, "id", filter_param->id);
-				set_string(filter_node, "name", my::ws(filter->name));
-				set_string(filter_node, "flag", my::format(_T("{:#010x}"), (uint32_t)filter->flag));
-				set_child(filter_node, "track", create_track_nodes(midpt_object, filter_param, filter));
-				set_child(filter_node, "check", create_check_nodes(midpt_object, filter_param, filter));
+				write_int(filter_node, "id", filter_param->id);
+				write_string(filter_node, "name", my::ws(filter->name));
+				write_string(filter_node, "flag", my::format(_T("{:#010x}"), (uint32_t)filter->flag));
+				write_child(filter_node, "track", create_track_nodes(midpt_object, filter_param, filter));
+				write_child(filter_node, "check", create_check_nodes(midpt_object, filter_param, filter));
 				filter_nodes.emplace_back(filter_node);
 			}
 
@@ -259,7 +259,7 @@ namespace apn::settings_browser
 					auto check_default = filter->check_default[i];
 					auto check_name = filter->check_name[i];
 
-					set_int(check_node, "default", check_default);
+					write_int(check_node, "default", check_default);
 
 					switch (check_default)
 					{
@@ -274,27 +274,27 @@ namespace apn::settings_browser
 
 								name += ::lstrlenA(name) + 1;
 							}
-							set_child_node(check_node, "name", name_node);
+							write_child_node(check_node, "name", name_node);
 
 							break;
 						}
 					// ボタンの場合は
 					case -1:
 						{
-							set_string(check_node, "name", my::ws(check_name));
+							write_string(check_node, "name", my::ws(check_name));
 
 							break;
 						}
 					// チェックボックスの場合は
 					default:
 						{
-							set_string(check_node, "name", my::ws(check_name));
+							write_string(check_node, "name", my::ws(check_name));
 
 							break;
 						}
 					}
 				}
-				set_int(check_node, "value", midpt_object->check_value[check_index]);
+				write_int(check_node, "value", midpt_object->check_value[check_index]);
 				check_nodes.emplace_back(check_node);
 			}
 
@@ -335,9 +335,9 @@ namespace apn::settings_browser
 				auto exdata_def = filter->exdata_def;
 
 				n_json exdata_node;
-				set_string(exdata_node, "name", my::ws(filter->name));
-				set_child(exdata_node, "exdata_ptr", exdata_node_creator(filter_param->id, exdata));
-				set_child(exdata_node, "exdata_def", exdata_node_creator(filter_param->id, filter->exdata_def));
+				write_string(exdata_node, "name", my::ws(filter->name));
+				write_child(exdata_node, "exdata_ptr", exdata_node_creator(filter_param->id, exdata));
+				write_child(exdata_node, "exdata_def", exdata_node_creator(filter_param->id, filter->exdata_def));
 				exdata_nodes.emplace_back(exdata_node);
 			}
 

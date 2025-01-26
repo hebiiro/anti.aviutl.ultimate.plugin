@@ -80,9 +80,9 @@ namespace apn::font_tree
 		{
 			MY_TRACE_FUNC("");
 
-			get_string(root, "display_name_format", hive.display_name_format);
-			get_string(root, "separator_format", hive.separator_format);
-			get_window(root, "addin_window", addin_window);
+			read_string(root, "display_name_format", hive.display_name_format);
+			read_string(root, "separator_format", hive.separator_format);
+			read_window_pos(root, "addin_window", addin_window);
 
 			preview_manager.read(root);
 			recent_manager.read(root);
@@ -106,9 +106,9 @@ namespace apn::font_tree
 			recent_manager.write(root);
 			favorite_manager.write(root);
 
-			set_string(root, "display_name_format", hive.display_name_format);
-			set_string(root, "separator_format", hive.separator_format);
-			set_window(root, "addin_window", addin_window);
+			write_string(root, "display_name_format", hive.display_name_format);
+			write_string(root, "separator_format", hive.separator_format);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

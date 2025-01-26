@@ -70,16 +70,16 @@ namespace apn::text_drop
 		{
 			MY_TRACE_FUNC("");
 
-			get_int(root, "item_range", hive.item_range);
-			get_int(root, "space_range", hive.space_range);
-			get_int(root, "char_range", hive.char_range);
-			get_label(root, "item_direction", hive.item_direction, hive.c_direction.labels);
-			get_string(root, "exo_file_name", hive.exo_file_name);
-			get_string(root, "drop_text", hive.drop_text);
-			get_int(root, "insert_layer", hive.insert_layer);
-			get_bool(root, "selected_text_only", hive.selected_text_only);
-			get_string(root, "text_file_name", hive.text_file_name);
-			get_window(root, "addin_window", addin_window);
+			read_int(root, "item_range", hive.item_range);
+			read_int(root, "space_range", hive.space_range);
+			read_int(root, "char_range", hive.char_range);
+			read_label(root, "item_direction", hive.item_direction, hive.c_direction.labels);
+			read_string(root, "exo_file_name", hive.exo_file_name);
+			read_string(root, "drop_text", hive.drop_text);
+			read_int(root, "insert_layer", hive.insert_layer);
+			read_bool(root, "selected_text_only", hive.selected_text_only);
+			read_string(root, "text_file_name", hive.text_file_name);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -91,16 +91,16 @@ namespace apn::text_drop
 		{
 			MY_TRACE_FUNC("");
 
-			set_int(root, "item_range", hive.item_range);
-			set_int(root, "space_range", hive.space_range);
-			set_int(root, "char_range", hive.char_range);
-			set_label(root, "item_direction", hive.item_direction, hive.c_direction.labels);
-			set_string(root, "exo_file_name", hive.exo_file_name);
-			set_string(root, "drop_text", hive.drop_text);
-			set_int(root, "insert_layer", hive.insert_layer);
-			set_bool(root, "selected_text_only", hive.selected_text_only);
-			set_string(root, "text_file_name", hive.text_file_name);
-			set_window(root, "addin_window", addin_window);
+			write_int(root, "item_range", hive.item_range);
+			write_int(root, "space_range", hive.space_range);
+			write_int(root, "char_range", hive.char_range);
+			write_label(root, "item_direction", hive.item_direction, hive.c_direction.labels);
+			write_string(root, "exo_file_name", hive.exo_file_name);
+			write_string(root, "drop_text", hive.drop_text);
+			write_int(root, "insert_layer", hive.insert_layer);
+			write_bool(root, "selected_text_only", hive.selected_text_only);
+			write_string(root, "text_file_name", hive.text_file_name);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

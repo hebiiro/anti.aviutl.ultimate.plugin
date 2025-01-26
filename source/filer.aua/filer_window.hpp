@@ -115,7 +115,7 @@ namespace apn::filer
 		{
 			MY_TRACE_FUNC("");
 
-			workspace::share::get_window(node, "filer_window", *this);
+			workspace::share::read_window_pos(node, "filer_window", *this);
 		}
 
 		//
@@ -125,7 +125,7 @@ namespace apn::filer
 		{
 			MY_TRACE_FUNC("");
 
-			workspace::share::set_window(node, "filer_window", *this);
+			workspace::share::write_window_pos(node, "filer_window", *this);
 		}
 
 		//

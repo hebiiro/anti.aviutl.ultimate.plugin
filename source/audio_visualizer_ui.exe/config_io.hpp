@@ -14,7 +14,7 @@ namespace apn::audio_visualizer::ui
 		inline static void read_file_name(const n_json& node, const std::string& name,
 			std::filesystem::path& path, const std::filesystem::path& origin_path)
 		{
-			my::json::get_file_name(node, name, path);
+			my::json::read_file_name(node, name, path);
 
 			if (path.is_relative()) path = origin_path / path;
 		}
@@ -26,7 +26,7 @@ namespace apn::audio_visualizer::ui
 		inline static void write_file_name(n_json& node, const std::string& name,
 			const std::filesystem::path& path, const std::filesystem::path& origin_path)
 		{
-			my::json::set_file_name(node, name, path.lexically_proximate(origin_path));
+			my::json::write_file_name(node, name, path.lexically_proximate(origin_path));
 		}
 
 		//
@@ -62,12 +62,12 @@ namespace apn::audio_visualizer::ui
 			auto visuals = visual_manager.create_visual_map();
 
 			// ビジュアルを読み込みます。
-			get_child_nodes(root, "visual",
+			read_child_nodes(root, "visual",
 				[&](const n_json& visual_node, size_t i)
 			{
 				// ビジュアルの名前を取得します。
 				std::wstring name;
-				get_string(visual_node, "name", name);
+				read_string(visual_node, "name", name);
 				MY_TRACE_STR(name);
 
 				// 名前からビジュアルを検索します。
@@ -81,7 +81,7 @@ namespace apn::audio_visualizer::ui
 				read_file_name(visual_node, "scheme_file_name", visual->scheme_file_name, origin_path);
 
 				// プリファレンスを取得します。
-				get_child_node(visual_node, "preference", visual->editor.preference);
+				read_child_node(visual_node, "preference", visual->editor.preference);
 
 				// スキームを読み込みます。
 				visual->read_scheme();
@@ -107,20 +107,20 @@ namespace apn::audio_visualizer::ui
 			auto visuals = visual_manager.create_visual_map();
 
 			// ビジュアルを書き込みます。
-			set_child_nodes(root, "visual", visuals,
+			write_child_nodes(root, "visual", visuals,
 				[&](n_json& visual_node, const auto& pair, size_t i)
 			{
 				const auto& name = pair.first;
 				const auto& visual = pair.second;
 
 				// 名前を書き込みます。
-				set_string(visual_node, "name", name);
+				write_string(visual_node, "name", name);
 
 				// スキームファイルのパスを書き込みます。
 				write_file_name(visual_node, "scheme_file_name", visual->scheme_file_name, origin_path);
 
 				// プリファレンスを書き込みます。
-				set_child_node(visual_node, "preference", visual->editor.preference);
+				write_child_node(visual_node, "preference", visual->editor.preference);
 
 				return TRUE;
 			});

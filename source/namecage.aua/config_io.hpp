@@ -67,8 +67,8 @@ namespace apn::namecage
 		{
 			MY_TRACE_FUNC("");
 
-			get_int(root, "offset", hive.offset);
-			get_window(root, "addin_window", addin_window);
+			read_int(root, "offset", hive.offset);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -80,8 +80,8 @@ namespace apn::namecage
 		{
 			MY_TRACE_FUNC("");
 
-			set_int(root, "offset", hive.offset);
-			set_window(root, "addin_window", addin_window);
+			write_int(root, "offset", hive.offset);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

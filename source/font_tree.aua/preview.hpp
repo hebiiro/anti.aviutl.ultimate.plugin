@@ -350,13 +350,13 @@ namespace apn::font_tree
 			MY_TRACE_FUNC("");
 
 			n_json preview_node;
-			get_child_node(node, "preview", preview_node);
-			get_bool(preview_node, "enabled", enabled);
-			get_bool(preview_node, "left_side", left_side);
-			get_size(preview_node, "item_size", item_size);
-			get_string(preview_node, "sample_format", sample_format);
-			get_color(preview_node, "fill_color", fill_color);
-			get_color(preview_node, "text_color", text_color);
+			read_child_node(node, "preview", preview_node);
+			read_bool(preview_node, "enabled", enabled);
+			read_bool(preview_node, "left_side", left_side);
+			read_size(preview_node, "item_size", item_size);
+			read_string(preview_node, "sample_format", sample_format);
+			read_color(preview_node, "fill_color", fill_color);
+			read_color(preview_node, "text_color", text_color);
 		}
 
 		//
@@ -367,13 +367,13 @@ namespace apn::font_tree
 			MY_TRACE_FUNC("");
 
 			n_json preview_node;
-			set_bool(preview_node, "enabled", enabled);
-			set_bool(preview_node, "left_side", left_side);
-			set_size(preview_node, "item_size", item_size);
-			set_string(preview_node, "sample_format", sample_format);
-			set_color(preview_node, "fill_color", fill_color);
-			set_color(preview_node, "text_color", text_color);
-			set_child_node(node, "preview", preview_node);
+			write_bool(preview_node, "enabled", enabled);
+			write_bool(preview_node, "left_side", left_side);
+			write_size(preview_node, "item_size", item_size);
+			write_string(preview_node, "sample_format", sample_format);
+			write_color(preview_node, "fill_color", fill_color);
+			write_color(preview_node, "text_color", text_color);
+			write_child_node(node, "preview", preview_node);
 		}
 	} preview_manager;
 }

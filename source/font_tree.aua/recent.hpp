@@ -202,12 +202,12 @@ namespace apn::font_tree
 			MY_TRACE_FUNC("");
 
 			// 使用履歴を読み込みます。
-			get_child_nodes(node, "recent",
+			read_child_nodes(node, "recent",
 				[&](const n_json& recent_node, size_t i)
 			{
 				// フォント名を読み込みます。
 				std::wstring font_name;
-				get_string(recent_node, "font_name", font_name);
+				read_string(recent_node, "font_name", font_name);
 				MY_TRACE_STR(font_name);
 
 				// フォント名が有効の場合は使用履歴に追加します。
@@ -234,11 +234,11 @@ namespace apn::font_tree
 			}
 
 			// 使用履歴を書き込みます。
-			set_child_nodes(node, "recent", recents,
+			write_child_nodes(node, "recent", recents,
 				[](n_json& recent_node, const auto& recent, size_t i)
 			{
 				// フォント名を書き込みます。
-				set_string(recent_node, "font_name", recent);
+				write_string(recent_node, "font_name", recent);
 
 				return TRUE;
 			});

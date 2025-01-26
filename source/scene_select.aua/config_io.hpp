@@ -70,12 +70,12 @@ namespace apn::scene_select
 		{
 			MY_TRACE_FUNC("");
 
-			get_label(root, "size_mode", hive.size_mode, hive.c_size_mode.labels);
-			get_label(root, "layout_mode", hive.layout_mode, hive.c_layout_mode.labels);
-			get_int(root, "wrap", hive.wrap);
-			get_int(root, "button_count", hive.button_count);
-			get_size(root, "button_size", hive.button_size);
-			get_window(root, "addin_window", addin_window);
+			read_label(root, "size_mode", hive.size_mode, hive.c_size_mode.labels);
+			read_label(root, "layout_mode", hive.layout_mode, hive.c_layout_mode.labels);
+			read_int(root, "wrap", hive.wrap);
+			read_int(root, "button_count", hive.button_count);
+			read_size(root, "button_size", hive.button_size);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -87,12 +87,12 @@ namespace apn::scene_select
 		{
 			MY_TRACE_FUNC("");
 
-			set_label(root, "size_mode", hive.size_mode, hive.c_size_mode.labels);
-			set_label(root, "layout_mode", hive.layout_mode, hive.c_layout_mode.labels);
-			set_int(root, "wrap", hive.wrap);
-			set_int(root, "button_count", hive.button_count);
-			set_size(root, "button_size", hive.button_size);
-			set_window(root, "addin_window", addin_window);
+			write_label(root, "size_mode", hive.size_mode, hive.c_size_mode.labels);
+			write_label(root, "layout_mode", hive.layout_mode, hive.c_layout_mode.labels);
+			write_int(root, "wrap", hive.wrap);
+			write_int(root, "button_count", hive.button_count);
+			write_size(root, "button_size", hive.button_size);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

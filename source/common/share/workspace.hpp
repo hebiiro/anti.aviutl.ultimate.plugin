@@ -15,11 +15,11 @@ namespace apn::workspace::share
 	// ただし、ワークスペース化アドインが存在する場合は
 	// ワークスペース化アドインがウィンドウ位置を設定するので何もしません。
 	//
-	inline void get_window(const n_json& node, const std::string& name, HWND hwnd, DWORD show_cmd = -1)
+	inline void read_window_pos(const n_json& node, const std::string& name, HWND hwnd, DWORD show_cmd = -1)
 	{
 		if (exists()) return;
 
-		return my::json::get_window(node, name, hwnd, show_cmd);
+		return my::json::read_window_pos(node, name, hwnd, show_cmd);
 	}
 
 	//
@@ -27,11 +27,11 @@ namespace apn::workspace::share
 	// ただし、ワークスペース化アドインが存在する場合は
 	// 正しいウィンドウ位置を取得できないので何もしません。
 	//
-	inline void set_window(n_json& node, const std::string& name, HWND hwnd)
+	inline void write_window_pos(n_json& node, const std::string& name, HWND hwnd)
 	{
 		if (exists()) return;
 
-		return my::json::set_window(node, name, hwnd);
+		return my::json::write_window_pos(node, name, hwnd);
 	}
 
 	//

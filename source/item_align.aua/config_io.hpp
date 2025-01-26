@@ -67,20 +67,20 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "use_current_frame", hive.use_current_frame);
-			get_string(root, "align_time", hive.align_time);
-			get_string(root, "stretch_time", hive.stretch_time);
-			get_string(root, "shift_time", hive.shift_time);
-			get_string(root, "relative_space_time", hive.relative_space_time);
-			get_string(root, "absolute_space_time", hive.absolute_space_time);
-			get_int(root, "move_vert_layer", hive.move_vert_layer);
-			get_int(root, "sub_time_mode", hive.sub_time_mode);
-			get_int(root, "align_sub_time", hive.align_sub_time);
-			get_int(root, "stretch_sub_time", hive.stretch_sub_time);
-			get_int(root, "shift_sub_time", hive.shift_sub_time);
-			get_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
-			get_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
-			get_window(root, "addin_window", addin_window);
+			read_bool(root, "use_current_frame", hive.use_current_frame);
+			read_string(root, "align_time", hive.align_time);
+			read_string(root, "stretch_time", hive.stretch_time);
+			read_string(root, "shift_time", hive.shift_time);
+			read_string(root, "relative_space_time", hive.relative_space_time);
+			read_string(root, "absolute_space_time", hive.absolute_space_time);
+			read_int(root, "move_vert_layer", hive.move_vert_layer);
+			read_int(root, "sub_time_mode", hive.sub_time_mode);
+			read_int(root, "align_sub_time", hive.align_sub_time);
+			read_int(root, "stretch_sub_time", hive.stretch_sub_time);
+			read_int(root, "shift_sub_time", hive.shift_sub_time);
+			read_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
+			read_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -92,20 +92,20 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "use_current_frame", hive.use_current_frame);
-			set_string(root, "align_time", hive.align_time);
-			set_string(root, "stretch_time", hive.stretch_time);
-			set_string(root, "shift_time", hive.shift_time);
-			set_string(root, "relative_space_time", hive.relative_space_time);
-			set_string(root, "absolute_space_time", hive.absolute_space_time);
-			set_int(root, "move_vert_layer", hive.move_vert_layer);
-			set_int(root, "sub_time_mode", hive.sub_time_mode);
-			set_int(root, "align_sub_time", hive.align_sub_time);
-			set_int(root, "stretch_sub_time", hive.stretch_sub_time);
-			set_int(root, "shift_sub_time", hive.shift_sub_time);
-			set_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
-			set_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
-			set_window(root, "addin_window", addin_window);
+			write_bool(root, "use_current_frame", hive.use_current_frame);
+			write_string(root, "align_time", hive.align_time);
+			write_string(root, "stretch_time", hive.stretch_time);
+			write_string(root, "shift_time", hive.shift_time);
+			write_string(root, "relative_space_time", hive.relative_space_time);
+			write_string(root, "absolute_space_time", hive.absolute_space_time);
+			write_int(root, "move_vert_layer", hive.move_vert_layer);
+			write_int(root, "sub_time_mode", hive.sub_time_mode);
+			write_int(root, "align_sub_time", hive.align_sub_time);
+			write_int(root, "stretch_sub_time", hive.stretch_sub_time);
+			write_int(root, "shift_sub_time", hive.shift_sub_time);
+			write_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
+			write_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

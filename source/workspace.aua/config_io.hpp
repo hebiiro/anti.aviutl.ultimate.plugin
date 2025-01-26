@@ -12,23 +12,23 @@ namespace apn::workspace
 		//
 		void get_sub_process(const n_json& node, std::shared_ptr<Hive::SubProcess::Node>& sub_process)
 		{
-			get_bool(node, "active", sub_process->active);
-			get_string(node, "type", sub_process->type);
-			get_string(node, "name", sub_process->name);
-			get_string(node, "class_name", sub_process->class_name);
-			get_string(node, "window_name", sub_process->window_name);
-			get_child_nodes(node, "exit_mode",
+			read_bool(node, "active", sub_process->active);
+			read_string(node, "type", sub_process->type);
+			read_string(node, "name", sub_process->name);
+			read_string(node, "class_name", sub_process->class_name);
+			read_string(node, "window_name", sub_process->window_name);
+			read_child_nodes(node, "exit_mode",
 				[&](const n_json& exit_mode_node, size_t i)
 				{
 					std::wstring exit_mode;
-					get_string(exit_mode_node, exit_mode);
+					read_string(exit_mode_node, exit_mode);
 
 					if (!exit_mode.empty())
 						sub_process->exit_mode.emplace(exit_mode);
 
 					return TRUE;
 				});
-			get_string(node, "path", sub_process->path);
+			read_string(node, "path", sub_process->path);
 		}
 
 		//
@@ -36,19 +36,19 @@ namespace apn::workspace
 		//
 		void set_sub_process(n_json& node, const std::shared_ptr<Hive::SubProcess::Node>& sub_process)
 		{
-			set_bool(node, "active", sub_process->active);
-			if (!sub_process->type.empty()) set_string(node, "type", sub_process->type);
-			if (!sub_process->name.empty()) set_string(node, "name", sub_process->name);
-			if (!sub_process->class_name.empty()) set_string(node, "class_name", sub_process->class_name);
-			if (!sub_process->window_name.empty()) set_string(node, "window_name", sub_process->window_name);
-			if (!sub_process->exit_mode.empty()) set_child_nodes(node, "exit_mode", sub_process->exit_mode,
+			write_bool(node, "active", sub_process->active);
+			if (!sub_process->type.empty()) write_string(node, "type", sub_process->type);
+			if (!sub_process->name.empty()) write_string(node, "name", sub_process->name);
+			if (!sub_process->class_name.empty()) write_string(node, "class_name", sub_process->class_name);
+			if (!sub_process->window_name.empty()) write_string(node, "window_name", sub_process->window_name);
+			if (!sub_process->exit_mode.empty()) write_child_nodes(node, "exit_mode", sub_process->exit_mode,
 				[&](n_json& exit_mode_node, const auto& exit_mode, size_t i)
 				{
-					set_string(exit_mode_node, exit_mode);
+					write_string(exit_mode_node, exit_mode);
 
 					return TRUE;
 				});
-			if (!sub_process->path.empty()) set_string(node, "path", sub_process->path);
+			if (!sub_process->path.empty()) write_string(node, "path", sub_process->path);
 		}
 
 		//
@@ -58,10 +58,10 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			get_bool(root, "use_fullscreen_preview", hive.use_fullscreen_preview);
-			get_bool(root, "omit_window_initialize", hive.omit_window_initialize);
-			get_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
-			get_child_nodes(root, "sub_process",
+			read_bool(root, "use_fullscreen_preview", hive.use_fullscreen_preview);
+			read_bool(root, "omit_window_initialize", hive.omit_window_initialize);
+			read_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
+			read_child_nodes(root, "sub_process",
 				[&](const n_json& sub_process_node, size_t i)
 				{
 					auto sub_process = std::make_shared<Hive::SubProcess::Node>();
@@ -81,10 +81,10 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			set_bool(root, "use_fullscreen_preview", hive.use_fullscreen_preview);
-			set_bool(root, "omit_window_initialize", hive.omit_window_initialize);
-			set_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
-			set_child_nodes(root, "sub_process", hive.sub_process.collection,
+			write_bool(root, "use_fullscreen_preview", hive.use_fullscreen_preview);
+			write_bool(root, "omit_window_initialize", hive.omit_window_initialize);
+			write_shortcut_key(root, "shortcut_key.show_caption", hive.shortcut_key.show_caption);
+			write_child_nodes(root, "sub_process", hive.sub_process.collection,
 				[&](n_json& sub_process_node, const auto& sub_process, size_t i)
 				{
 					set_sub_process(sub_process_node, sub_process);
