@@ -26,11 +26,20 @@
     <Filter Include="element\pane\shuttle\container">
       <UniqueIdentifier>{bbe09295-4f3f-484a-80d3-7ee20fcfbb71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hook\program">
-      <UniqueIdentifier>{82fe53e3-4b3e-4559-a799-42a3fe02985e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="element\dock">
       <UniqueIdentifier>{eff8b788-948f-4b49-9692-1649dce466cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\global">
+      <UniqueIdentifier>{82fe53e3-4b3e-4559-a799-42a3fe02985e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\local">
+      <UniqueIdentifier>{2ac3eee2-d3e5-4b0f-8db7-d6c2d6878a03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\win_hook">
+      <UniqueIdentifier>{47c2022c-824f-40c4-bc3b-695cbd1d1e59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hook\win_event">
+      <UniqueIdentifier>{9e9d9891-af20-4e45-83ac-e4251626cab9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,35 +98,8 @@
       <Filter>element\sub_process</Filter>
     </ClInclude>
     <ClInclude Include="preference_io.hpp" />
-    <ClInclude Include="hook\window.hpp">
+    <ClInclude Include="hook\manager.hpp">
       <Filter>hook</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\get_message.hpp">
-      <Filter>hook</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\hook.hpp">
-      <Filter>hook</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\menu.hpp">
-      <Filter>hook</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\program\aviutl.hpp">
-      <Filter>hook\program</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\program\color_palette.hpp">
-      <Filter>hook\program</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\program\exedit.hpp">
-      <Filter>hook\program</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\program\extoolbar.hpp">
-      <Filter>hook\program</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\program\vsthost.hpp">
-      <Filter>hook\program</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\program\z_ram_preview.hpp">
-      <Filter>hook\program</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="sub_process\sub_process_manager.hpp">
@@ -125,9 +107,6 @@
     </ClInclude>
     <ClInclude Include="pane\tav.hpp">
       <Filter>element\pane</Filter>
-    </ClInclude>
-    <ClInclude Include="hook\move_cursor.hpp">
-      <Filter>hook</Filter>
     </ClInclude>
     <ClInclude Include="dock\dock_site.hpp">
       <Filter>element\dock</Filter>
@@ -153,11 +132,47 @@
     <ClInclude Include="pane\pane_config_dialog.hpp">
       <Filter>element\pane</Filter>
     </ClInclude>
-    <ClInclude Include="hook\hide_window.hpp">
+    <ClInclude Include="hook\entity.hpp">
       <Filter>hook</Filter>
     </ClInclude>
-    <ClInclude Include="hook\program\jumpbarx.hpp">
-      <Filter>hook\program</Filter>
+    <ClInclude Include="hook\win_event\hide_window.hpp">
+      <Filter>hook\win_event</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\win_event\move_cursor.hpp">
+      <Filter>hook\win_event</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\win_hook\get_message.hpp">
+      <Filter>hook\win_hook</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\aviutl.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\color_palette.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\exedit.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\extoolbar.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\jumpbarx.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\vsthost.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\local\z_ram_preview.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\global\menu.hpp">
+      <Filter>hook\global</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\global\window.hpp">
+      <Filter>hook\global</Filter>
+    </ClInclude>
+    <ClInclude Include="hook\global\window_pos.hpp">
+      <Filter>hook\global</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

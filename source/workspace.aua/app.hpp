@@ -125,7 +125,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("{}", enable);
 
-			return hook::aviutl.enable_hook(enable);
+			return hook::local::aviutl.enable_hook(enable);
 		}
 	} app;
 }

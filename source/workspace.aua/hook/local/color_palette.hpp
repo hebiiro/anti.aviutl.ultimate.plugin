@@ -5,7 +5,7 @@ namespace apn::workspace::hook
 	//
 	// このクラスはcolor_palette.aufをフックします。
 	//
-	inline struct {
+	inline struct : Entity {
 		//
 		// このクラスは::CreateDialogParamA()をフックします。
 		// マイパレットが作成されるとき、マイパレット用シャトルを作成します。
@@ -62,7 +62,7 @@ namespace apn::workspace::hook
 		//
 		// 初期化処理を実行します。
 		//
-		BOOL init()
+		virtual BOOL on_init() override
 		{
 			MY_TRACE_FUNC("");
 
@@ -84,7 +84,7 @@ namespace apn::workspace::hook
 		//
 		// 後始末処理を実行します。
 		//
-		BOOL exit()
+		virtual BOOL on_exit() override
 		{
 			MY_TRACE_FUNC("");
 

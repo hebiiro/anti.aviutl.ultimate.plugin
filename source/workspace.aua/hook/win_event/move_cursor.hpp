@@ -1,18 +1,18 @@
 ﻿#pragma once
 
-namespace apn::workspace::hook
+namespace apn::workspace::hook::win_event
 {
 	//
 	// このクラスはマウスカーソル移動イベントをフックします。
 	//
-	inline struct MoveCursor
+	inline struct MoveCursor : Entity
 	{
 		my::win_event_hook::unique_ptr<> hook;
 
 		//
 		// 初期化処理を実行します。
 		//
-		BOOL init()
+		virtual BOOL on_dll_init() override
 		{
 			MY_TRACE_FUNC("");
 
@@ -31,7 +31,7 @@ namespace apn::workspace::hook
 		//
 		// 後始末処理を実行します。
 		//
-		BOOL exit()
+		virtual BOOL on_dll_exit() override
 		{
 			MY_TRACE_FUNC("");
 

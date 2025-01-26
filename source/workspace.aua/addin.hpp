@@ -36,8 +36,7 @@ namespace apn::workspace
 			if (!container_manager.init()) return FALSE;
 			if (!main_window->init()) return FALSE;
 			if (!layout_list.init()) return FALSE;
-
-			if (!hook_manager.pre_init()) return FALSE;
+			if (!hook::manager.dll_init()) return FALSE;
 
 			return TRUE;
 		}
@@ -49,8 +48,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			hook_manager.post_exit();
-
+			hook::manager.dll_exit();
 			layout_list.exit();
 			main_window->exit();
 			container_manager.exit();
@@ -71,8 +69,7 @@ namespace apn::workspace
 			if (!shuttle_manager.init()) return FALSE;
 			if (!sub_window_manager.init()) return FALSE;
 			if (!sub_process_manager.init()) return FALSE;
-
-			if (!hook_manager.init()) return FALSE;
+			if (!hook::manager.init()) return FALSE;
 
 			return TRUE;
 		}
@@ -95,8 +92,7 @@ namespace apn::workspace
 				::ShowWindow(hive.main_window, SW_HIDE);
 			}
 
-			hook_manager.exit();
-
+			hook::manager.exit();
 			sub_process_manager.exit();
 			sub_window_manager.exit();
 			shuttle_manager.exit();

@@ -1,28 +1,24 @@
 ﻿#pragma once
 
-namespace apn::workspace
+namespace apn::workspace::hook
 {
 	//
 	// このクラスはフックを管理します。
 	//
-	inline struct HookManager
+	inline struct Manager
 	{
 		//
-		// 先行して初期化処理を実行します。
+		// DLL開始のタイミングで初期化処理を実行します。
 		//
-		BOOL pre_init()
+		BOOL dll_init()
 		{
 			MY_TRACE_FUNC("");
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			hook::aviutl.init();
-			hook::menu.init();
-			hook::window.init();
-			hook::get_message.init();
-			hook::move_cursor.init();
-			hook::hide_window.init();
+			for (auto& entity : Entity::collection)
+				entity->on_dll_init();
 
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
@@ -39,18 +35,14 @@ namespace apn::workspace
 		}
 
 		//
-		// 最後の後始末処理を実行します。
+		// DLL終了のタイミングで後始末処理を実行します。
 		//
-		BOOL post_exit()
+		BOOL dll_exit()
 		{
 			MY_TRACE_FUNC("");
 
-			hook::hide_window.exit();
-			hook::move_cursor.exit();
-			hook::get_message.exit();
-			hook::window.exit();
-			hook::menu.exit();
-			hook::aviutl.exit();
+			for (auto& entity : Entity::collection)
+				entity->on_dll_exit();
 
 			return TRUE;
 		}
@@ -65,12 +57,8 @@ namespace apn::workspace
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
-			hook::exedit.init();
-			hook::vsthost.init();
-			hook::color_palette.init();
-			hook::extoolbar.init();
-			hook::z_ram_preview.init();
-			hook::jumpbarx.init();
+			for (auto& entity : Entity::collection)
+				entity->on_init();
 
 			if (DetourTransactionCommit() == NO_ERROR)
 			{
@@ -93,14 +81,10 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			hook::jumpbarx.exit();
-			hook::z_ram_preview.exit();
-			hook::extoolbar.exit();
-			hook::color_palette.exit();
-			hook::vsthost.exit();
-			hook::exedit.exit();
+			for (auto& entity : Entity::collection)
+				entity->on_exit();
 
 			return TRUE;
 		}
-	} hook_manager;
+	} manager;
 }

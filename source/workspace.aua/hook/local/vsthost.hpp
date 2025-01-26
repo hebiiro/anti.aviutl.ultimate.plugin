@@ -5,7 +5,7 @@ namespace apn::workspace::hook
 	//
 	// このクラスはvsthost.aufをフックします。
 	//
-	inline struct {
+	inline struct : Entity {
 		//
 		// 他のポップアップウィンドウの土台となるポップアップウィンドウを作成します。
 		//
@@ -59,7 +59,7 @@ namespace apn::workspace::hook
 		//
 		// 初期化処理を実行します。
 		//
-		BOOL init()
+		virtual BOOL on_init() override
 		{
 			MY_TRACE_FUNC("");
 
@@ -85,7 +85,7 @@ namespace apn::workspace::hook
 		//
 		// 後始末処理を実行します。
 		//
-		BOOL exit()
+		virtual BOOL on_exit() override
 		{
 			MY_TRACE_FUNC("");
 
