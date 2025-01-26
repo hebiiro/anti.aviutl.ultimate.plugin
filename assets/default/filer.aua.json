@@ -1,31 +1,39 @@
 {
 	"use_common_dialog": false,
 	"addin_window": {
-		"left": 100, "top": 200,
-		"right": 300, "bottom": 500,
+		"normal" : {
+			"left": 100, "top": 200,
+			"right": 300, "bottom": 400
+		},
 		"show_cmd": 0
 	},
 	"filer": [
 		{
 			"filer_window": {
-				"left": 300, "top": 300,
-				"right": 1300, "bottom": 800,
+				"normal" : {
+					"left": 300, "top": 300,
+					"right": 1300, "bottom": 800
+				},
 				"show_cmd": 0
 			},
 			"name": "素材1"
 		},
 		{
 			"filer_window": {
-				"left": 300, "top": 400,
-				"right": 1300, "bottom": 900,
+				"normal" : {
+					"left": 400, "top": 400,
+					"right": 1500, "bottom": 900
+				},
 				"show_cmd": 0
 			},
 			"name": "素材2"
 		},
 		{
 			"filer_window": {
-				"left": 300, "top": 500,
-				"right": 1300, "bottom": 1000,
+				"normal" : {
+					"left": 500, "top": 500,
+					"right": 1500, "bottom": 1000
+				},
 				"show_cmd": 0
 			},
 			"name": "素材3"

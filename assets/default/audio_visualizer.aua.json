@@ -1,51 +1,61 @@
 ﻿{
 	"addin_window": {
-		"left": 0, "top": 200,
-		"right": 400, "bottom": 600,
+		"normal" : {
+			"left": 0, "top": 200,
+			"right": 400, "bottom": 600
+		},
 		"show_cmd": 0
 	},
 	"co_window": [
 		{
 			"name": "左右Lv",
 			"window": {
-				"left": 400, "top": 200,
-				"right": 500, "bottom": 600,
+				"normal" : {
+					"left": 400, "top": 200,
+					"right": 500, "bottom": 600
+				},
 				"show_cmd": 0
 			}
 		},
 		{
 			"name": "左Lv",
 			"window": {
-				"left": 500, "top": 200,
-				"right": 560, "bottom": 600,
+				"normal" : {
+					"left": 500, "top": 200,
+					"right": 560, "bottom": 600
+				},
 				"show_cmd": 0
 			}
 		},
 		{
 			"name": "右Lv",
 			"window": {
-				"left": 560, "top": 200,
-				"right": 620, "bottom": 600,
+				"normal" : {
+					"left": 560, "top": 200,
+					"right": 620, "bottom": 600
+				},
 				"show_cmd": 0
 			}
 		},
 		{
 			"name": "パワースペクトル",
 			"window": {
-				"left": 620, "top": 200,
-				"right": 1000, "bottom": 600,
+				"normal" : {
+					"left": 620, "top": 200,
+					"right": 1000, "bottom": 600
+				},
 				"show_cmd": 0
 			}
 		}
 	],
-	"marker": {
-		"area": 5,
-		"base": 0
-	},
 	"mode": "c_on",
 	"range": {
 		"max": 10,
 		"min": -60
+	},
+	"marker": {
+		"area": 5,
+		"base": 0
 	},
 	"spectre_option": {
 		"div": 20,
