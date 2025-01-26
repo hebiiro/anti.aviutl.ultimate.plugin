@@ -631,6 +631,16 @@ namespace apn::workspace
 		}
 
 		//
+		// フローティング状態ならTRUEを返します。
+		//
+		BOOL is_floating() const
+		{
+			if (!float_container) return FALSE;
+
+			return ::GetParent(*this) == *float_container;
+		}
+
+		//
 		// このシャトルが現在格納されているコンテナを返します。
 		//
 		std::shared_ptr<Container> get_current_container() const
