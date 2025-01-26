@@ -33,6 +33,7 @@
 #include "hook/win_event/hide_window.hpp"
 #include "hook/global/menu.hpp"
 #include "hook/global/window.hpp"
+#include "hook/global/window_pos.hpp"
 #include "hook/local/aviutl.hpp"
 #include "hook/local/exedit.hpp"
 #include "hook/local/vsthost.hpp"
