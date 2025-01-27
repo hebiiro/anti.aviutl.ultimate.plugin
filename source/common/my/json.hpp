@@ -423,29 +423,6 @@ namespace my::json
 		auto is_visible = ::IsWindowVisible(hwnd);
 		auto is_maximized = ::IsZoomed(hwnd);
 		auto is_minimized = ::IsIconic(hwnd);
-
-		// ウィンドウが最大化も最小化もしていない場合は
-		if (!is_maximized && !is_minimized)
-		{
-			// ウィンドウ矩形を取得します。
-			auto& rc = wp.rcNormalPosition;
-
-			// 現在のウィンドウ矩形を取得し直します。
-			::GetWindowRect(hwnd, &rc);
-
-			// ウィンドウがあるモニターの情報を取得します。
-			auto monitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-			MONITORINFO mi = { sizeof(mi) }; ::GetMonitorInfo(monitor, &mi);
-
-			// ウィンドウとタスクバーが同じモニターにある場合は
-			if (!::EqualRect(&mi.rcMonitor, &mi.rcWork))
-			{
-				// タスクバーの大きさの分だけウィンドウ矩形をずらします。
-				::OffsetRect(&rc,
-					mi.rcMonitor.left - mi.rcWork.left,
-					mi.rcMonitor.top - mi.rcWork.top);
-			}
-		}
  
 		if (is_minimized) wp.showCmd = SW_SHOW;
 		if (wp.flags == WPF_RESTORETOMAXIMIZED) wp.showCmd = SW_SHOWMAXIMIZED;
