@@ -34,7 +34,7 @@ namespace apn::dark
 			get_check(IDC_DONT_WRITE_BYTECODE, hive.dont_write_bytecode);
 			get_check(IDC_SPECIALIZE_CHECKBOX, hive.specialize_checkbox);
 
-			for (size_t i = 0; i < 3; i++)
+			for (size_t i = 0; i < std::size(hive.dark_color); i++)
 			{
 				get_int(IDC_DARK_1_FILL_COLOR + i, hive.dark_color[i].fill);
 				get_int(IDC_DARK_1_BORDER_COLOR + i, hive.dark_color[i].border);
@@ -428,30 +428,6 @@ namespace apn::dark
 		{
 			switch (message)
 			{
-#if 0
-			// テスト用コード
-			case WM_CONTEXTMENU:
-				{
-					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
-
-					auto control = (HWND)wParam;
-					auto control_id = ::GetDlgCtrlID(control);
-					auto point = my::lp_to_pt(lParam);
-
-					// ポップアップメニューを作成します。
-					my::menu::unique_ptr<> menu(::CreatePopupMenu());
-
-					for (auto i = 0; i < 100; i++)
-					{
-						::AppendMenu(menu.get(), MF_STRING, i + 1, my::format(_T("アイテム {}"), i).c_str());
-					}
-
-					auto id = ::TrackPopupMenuEx(menu.get(),
-						TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this, nullptr);
-
-					break;
-				}
-#endif
 			case WM_DRAWITEM:
 				{
 					auto id = (UINT)wParam;
