@@ -22,7 +22,7 @@
 			"filer_window": {
 				"normal" : {
 					"left": 400, "top": 400,
-					"right": 1500, "bottom": 900
+					"right": 1400, "bottom": 900
 				},
 				"show_cmd": 0
 			},
