@@ -27,6 +27,10 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
+			// 書き込む前に最小化の影響で非表示状態になっている
+			// フローティングウィンドウを表示状態に戻します。
+			::ShowOwnedPopups(hive.main_window, TRUE);
+
 //			if (flags & hive.c_preference_flag.c_config)
 			{
 				write_tav(node, "tav", hive.tav);
