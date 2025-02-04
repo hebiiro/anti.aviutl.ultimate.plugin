@@ -47,14 +47,14 @@ namespace apn::item_align
 			// AviUtlにメニューアイテムを追加します。
 			add_menu_item(fp, L"ずらす▼", IDC_SHIFT_DOWN);
 			add_menu_item(fp, L"ずらす▲", IDC_SHIFT_UP);
-			add_menu_item(fp, L"隙間(相対)◀", IDC_REL_SPACE_LEFT);
-			add_menu_item(fp, L"隙間(相対)▶", IDC_REL_SPACE_RIGHT);
-			add_menu_item(fp, L"隙間(絶対)◀", IDC_ABS_SPACE_LEFT);
-			add_menu_item(fp, L"隙間(絶対)▶", IDC_ABS_SPACE_RIGHT);
-			add_menu_item(fp, L"伸ばす◀", IDC_STRETCH_LEFT);
-			add_menu_item(fp, L"伸ばす▶", IDC_STRETCH_RIGHT);
-			add_menu_item(fp, L"詰める◀", IDC_ALIGN_LEFT);
-			add_menu_item(fp, L"詰める▶", IDC_ALIGN_RIGHT);
+			add_menu_item(fp, L"隙間(相対)←", IDC_REL_SPACE_LEFT);
+			add_menu_item(fp, L"隙間(相対)→", IDC_REL_SPACE_RIGHT);
+			add_menu_item(fp, L"隙間(絶対)←", IDC_ABS_SPACE_LEFT);
+			add_menu_item(fp, L"隙間(絶対)→", IDC_ABS_SPACE_RIGHT);
+			add_menu_item(fp, L"伸ばす←", IDC_STRETCH_LEFT);
+			add_menu_item(fp, L"伸ばす→", IDC_STRETCH_RIGHT);
+			add_menu_item(fp, L"詰める←", IDC_ALIGN_LEFT);
+			add_menu_item(fp, L"詰める→", IDC_ALIGN_RIGHT);
 			add_menu_item(fp, L"詰める▼", IDC_MOVE_VERT_DOWN);
 			add_menu_item(fp, L"詰める▲", IDC_MOVE_VERT_UP);
 			add_menu_item(fp, L"BPMズレを修正", IDC_FIX_BPM);
