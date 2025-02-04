@@ -1,0 +1,192 @@
+{
+	"favorite": {
+		"favorite": [
+			{
+				"alias": "フォントタイプ別",
+				"expanded": true,
+				"favorite": [
+					{
+						"alias": "ゴシック",
+						"expanded": true,
+						"favorite": [
+							{
+								"name": "ＭＳ ゴシック"
+							},
+							{
+								"name": "ＭＳ Ｐゴシック"
+							},
+							{
+								"name": "MS UI Gothic"
+							},
+							{
+								"name": "メイリオ"
+							},
+							{
+								"name": "游ゴシック"
+							}
+						]
+					},
+					{
+						"alias": "明朝",
+						"expanded": true,
+						"favorite": [
+							{
+								"name": "ＭＳ 明朝"
+							},
+							{
+								"name": "ＭＳ Ｐ明朝"
+							},
+							{
+								"name": "游明朝"
+							}
+						]
+					},
+					{
+						"alias": "手書き",
+						"expanded": true,
+						"favorite": [
+							{
+								"name": "JKゴシックM"
+							},
+							{
+								"name": "JK丸ゴシック Medium"
+							},
+							{
+								"name": "Yomogi"
+							},
+							{
+								"name": ""
+							},
+							{
+								"name": "あずきフォント"
+							},
+							{
+								"name": "あずきフォントP"
+							},
+							{
+								"name": "あんずもじ"
+							},
+							{
+								"name": "あんずもじ2020"
+							},
+							{
+								"name": "あんずもじ等幅"
+							},
+							{
+								"name": "あんずもじ等幅2020"
+							},
+							{
+								"name": "うずらフォント"
+							}
+						]
+					},
+					{
+						"alias": "等幅",
+						"expanded": true,
+						"favorite": [
+							{
+								"name": "Lucida Console"
+							},
+							{
+								"name": "Myrica M"
+							},
+							{
+								"name": "Noto Sans Mono CJK JP Regular"
+							},
+							{
+								"name": "Yomogi"
+							}
+						]
+					},
+					{
+						"alias": "特殊",
+						"expanded": false,
+						"favorite": [
+							{
+								"name": "チョークS"
+							}
+						]
+					},
+					{
+						"alias": "その他",
+						"expanded": false,
+						"favorite": [
+							{
+								"name": "Marlett"
+							},
+							{
+								"name": "Webdings"
+							},
+							{
+								"name": "Wingdings"
+							}
+						]
+					}
+				]
+			},
+			{
+				"alias": "用途別",
+				"expanded": false,
+				"favorite": [
+					{
+						"alias": "用途 1",
+						"expanded": false,
+						"favorite": [
+							{
+								"alias": "タイトル",
+								"expanded": false,
+								"name": "メイリオ"
+							},
+							{
+								"alias": "字幕",
+								"expanded": false,
+								"name": "MS UI Gothic"
+							},
+							{
+								"alias": "セリフ",
+								"expanded": false,
+								"name": "ＭＳ 明朝"
+							},
+							{
+								"alias": "注釈",
+								"expanded": false,
+								"name": "Yu Gothic UI"
+							},
+							{
+								"alias": "エンディング",
+								"expanded": false,
+								"name": "Yu Gothic"
+							}
+						]
+					},
+					{
+						"alias": "用途 2",
+						"expanded": false,
+						"favorite": [
+							{
+								"alias": "タイトル",
+								"expanded": false,
+								"name": "Noto Serif CJK JP Light"
+							},
+							{
+								"alias": "権利表記",
+								"expanded": false,
+								"name": "Lucida Sans Unicode"
+							},
+							{
+								"alias": "時間",
+								"expanded": false,
+								"name": "Noto Sans CJK JP Regular"
+							},
+							{
+								"alias": "説明",
+								"expanded": false,
+								"name": "Mplus 1p Black"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

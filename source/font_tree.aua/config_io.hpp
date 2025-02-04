@@ -5,64 +5,8 @@ namespace apn::font_tree
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct ConfigIO : StdConfigIOUseHive<hive>
 	{
-		//
-		// TRUEの場合は読み込みに成功しています。
-		//
-		BOOL is_read = FALSE;
-
-		//
-		// 初期化処理を実行します。
-		//
-		BOOL init()
-		{
-			MY_TRACE_FUNC("");
-
-			hive.config_file_name = magi.get_config_file_name(hive.instance);
-			MY_TRACE_STR(hive.config_file_name);
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグを読み込みます。
-		//
-		BOOL read()
-		{
-			MY_TRACE_FUNC("");
-
-			// 既存の設定を消去します。
-			recent_manager.clear();
-			favorite_manager.clear();
-
-			return is_read = read_file(hive.config_file_name, hive);
-		}
-
-		//
-		// コンフィグを書き込みます。
-		//
-		BOOL write()
-		{
-			MY_TRACE_FUNC("");
-
-			// コンフィグを読み込めていないのに書き込みを行うと殆どの設定が初期値に戻ってしまいます。
-			// これを防ぐために、コンフィグを読み込めていない場合は書き込みをしないようにします。
-			if (!is_read) return FALSE;
-
-			return write_file(hive.config_file_name, hive);
-		}
-
 		//
 		// コンフィグが更新されたのでコントロールに適用します。
 		//
@@ -79,6 +23,10 @@ namespace apn::font_tree
 		virtual BOOL read_node(n_json& root) override
 		{
 			MY_TRACE_FUNC("");
+
+			// 予め既存の設定を消去します。
+			recent_manager.clear();
+			favorite_manager.clear();
 
 			read_string(root, "display_name_format", hive.display_name_format);
 			read_string(root, "separator_format", hive.separator_format);
