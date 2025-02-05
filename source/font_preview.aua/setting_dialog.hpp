@@ -130,14 +130,33 @@ namespace apn::font_preview
 		{
 			MY_TRACE_FUNC("");
 
+			// コンテキストメニューが無効の場合は何もしません。
+			if (!hive.use_context_menu) return FALSE;
+
+			//
+			// 指定されたキーが押されていない場合はTRUEを返します。
+			//
+			constexpr auto is_key_up = [](DWORD vk) { return ::GetKeyState(vk) >= 0; };
+
+			// 指定された修飾キーが押されていない場合は何もしません。
+			if ((hive.use_shift_key && is_key_up(VK_SHIFT)) ||
+				(hive.use_ctrl_key && is_key_up(VK_CONTROL)) ||
+				(hive.use_alt_key && is_key_up(VK_MENU)) ||
+				(hive.use_win_key && (is_key_up(VK_LWIN) && is_key_up(VK_RWIN))))
+			{
+				return FALSE;
+			}
+
 			// ポップアップメニューのアイテムIDです。
 			constexpr uint32_t c_copy_font_name = 1;
 
 			// ポップアップメニューを作成します。
 			my::menu::unique_ptr<> menu(::CreatePopupMenu());
 
+			// ポップアップメニューに項目を追加します。
 			::AppendMenu(menu.get(), MF_STRING, c_copy_font_name, _T("フォント名をコピー"));
 
+			// ポップアップメニューを表示します。
 			auto id = ::TrackPopupMenuEx(menu.get(),
 				TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, *this, nullptr);
 			if (!id) return FALSE;
@@ -208,20 +227,28 @@ namespace apn::font_preview
 				{
 					auto code = HIWORD(wParam);
 					auto id = LOWORD(wParam);
-					auto sender = (HWND)lParam;
+					auto control = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#06x}, {:#06x}, {:#010x}", code, id, sender);
+					MY_TRACE_FUNC("WM_COMMAND, {:#06x}, {:#06x}, {:#010x}", code, id, control);
 
-					if (id == hive.c_control_id.c_font_combobox && code == CBN_DROPDOWN)
-						font_listbox.start_hook(sender);
+					// フォントコンボボックスがドロップダウンした瞬間に
+					if (code == CBN_DROPDOWN && control == magi.exin.get_font_combobox())
+					{
+						// リストボックスのフックを開始します。
+						font_listbox.start_hook(control);
+					}
 
 					break;
 				}
 			case WM_DRAWITEM:
 				{
+					// フォントコンボボックスの場合は
 					auto dis = (DRAWITEMSTRUCT*)lParam;
-					if (dis->CtlType == ODT_COMBOBOX && dis->CtlID == hive.c_control_id.c_font_combobox)
+					if (dis->CtlType == ODT_COMBOBOX && dis->hwndItem == magi.exin.get_font_combobox())
+					{
+						// オーナードローで描画します。
 						on_draw_item(dis);
+					}
 
 					break;
 				}
@@ -229,9 +256,13 @@ namespace apn::font_preview
 				{
 					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
 
+					// フォントコンボボックスの場合は
 					auto control = (HWND)wParam;
 					if (control == magi.exin.get_font_combobox())
-						return show_context_menu(my::lp_to_pt(lParam));
+					{
+						// コンテキストメニューを表示します。
+						show_context_menu(my::lp_to_pt(lParam));
+					}
 
 					break;
 				}

@@ -20,6 +20,11 @@ namespace apn::font_preview
 			set_int(IDC_WINDOW_SIZE_W, hive.window_size.cx);
 			set_int(IDC_WINDOW_SIZE_H, hive.window_size.cy);
 			set_check(IDC_SINGLELINE, hive.singleline);
+			set_check(IDC_USE_CONTEXT_MENU, hive.use_context_menu);
+			set_check(IDC_USE_SHIFT_KEY, hive.use_shift_key);
+			set_check(IDC_USE_CTRL_KEY, hive.use_ctrl_key);
+			set_check(IDC_USE_ALT_KEY, hive.use_alt_key);
+			set_check(IDC_USE_WIN_KEY, hive.use_win_key);
 			set_combobox_index(IDC_PAINT_MODE, paint.mode);
 			set_uint(IDC_NORMAL_BACKGROUND_COLOR, paint.palette[paint.c_style.c_normal].color.background);
 			set_uint(IDC_NORMAL_PREVIEW_COLOR, paint.palette[paint.c_style.c_normal].color.sample);
@@ -42,6 +47,11 @@ namespace apn::font_preview
 			get_int(IDC_WINDOW_SIZE_W, hive.window_size.cx);
 			get_int(IDC_WINDOW_SIZE_H, hive.window_size.cy);
 			get_check(IDC_SINGLELINE, hive.singleline);
+			get_check(IDC_USE_CONTEXT_MENU, hive.use_context_menu);
+			get_check(IDC_USE_SHIFT_KEY, hive.use_shift_key);
+			get_check(IDC_USE_CTRL_KEY, hive.use_ctrl_key);
+			get_check(IDC_USE_ALT_KEY, hive.use_alt_key);
+			get_check(IDC_USE_WIN_KEY, hive.use_win_key);
 			get_combobox_index(IDC_PAINT_MODE, paint.mode);
 			get_uint(IDC_NORMAL_BACKGROUND_COLOR, paint.palette[paint.c_style.c_normal].color.background);
 			get_uint(IDC_NORMAL_PREVIEW_COLOR, paint.palette[paint.c_style.c_normal].color.sample);
@@ -50,9 +60,7 @@ namespace apn::font_preview
 			get_uint(IDC_SELECT_PREVIEW_COLOR, paint.palette[paint.c_style.c_select].color.sample);
 			get_uint(IDC_SELECT_FONT_NAME_COLOR, paint.palette[paint.c_style.c_select].color.font_name);
 
-			auto hwnd = magi.exin.get_setting_dialog();
-			auto combobox = ::GetDlgItem(hwnd, hive.c_control_id.c_font_combobox);
-			my::invalidate(combobox, nullptr, TRUE);
+			my::invalidate(magi.exin.get_font_combobox(), nullptr, TRUE);
 		}
 
 		//
@@ -66,15 +74,16 @@ namespace apn::font_preview
 
 			using namespace my::layout;
 
+			auto base_size = get_base_size();
 			auto margin_value = 2;
 			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
-			auto row = std::make_shared<RelativePos>(get_base_size() + margin_value * 2);
+			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
 			std::shared_ptr<AbsolutePos> q[12 + 1];
 			for (auto i = 0; i < std::size(q); i++)
 				q[i] = std::make_shared<AbsolutePos>(i, std::size(q) - 1);
-			auto multiline_row = std::make_shared<RelativePos>((get_base_size() + margin_value * 2) * 3);
-			auto groupbox_margin = RECT { margin_value * 4, get_base_size() / 2 + margin_value, margin_value * 4, margin_value * 4 };
-			auto groupbox_row = std::make_shared<RelativePos>(get_base_size() * 2 + margin_value * 2);
+			auto multiline_row = std::make_shared<RelativePos>((base_size + margin_value * 2) * 3);
+			auto groupbox_margin = RECT { margin_value * 4, base_size / 2 + margin_value, margin_value * 4, margin_value * 4 };
+			auto groupbox_row = std::make_shared<RelativePos>(base_size * 2 + margin_value * 2);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, multiline_row);
@@ -131,6 +140,26 @@ namespace apn::font_preview
 				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[10], margin, ctrl(IDC_SELECT_FONT_NAME_COLOR_STAT));
 				sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_SELECT_FONT_NAME_COLOR));
 			}
+
+			{
+				auto padding = ::MulDiv(base_size, 1, 4);
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, groupbox_row, margin, ctrl(IDC_USE_CONTEXT_MENU_STAT));
+				{
+					auto header = std::make_shared<RelativePos>(base_size - margin_value);
+					auto offset = RECT { padding, -margin_value };
+					auto sub_node = node->add_pane(c_axis.c_vert, c_align.c_top, header, offset);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[5], {}, ctrl(IDC_USE_CONTEXT_MENU));
+				}
+
+				{
+					auto groupbox_margin = RECT { padding, -margin_value, padding, 0 };
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, q[12], groupbox_margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[3], margin, ctrl(IDC_USE_SHIFT_KEY));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[6], margin, ctrl(IDC_USE_CTRL_KEY));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[9], margin, ctrl(IDC_USE_ALT_KEY));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_left, q[12], margin, ctrl(IDC_USE_WIN_KEY));
+				}
+			}
 		}
 
 		//
@@ -142,6 +171,7 @@ namespace apn::font_preview
 
 			switch (id)
 			{
+			// エディットボックスの場合は
 			case IDC_SAMPLE_TEXT:
 			case IDC_ITEM_HEIGHT:
 			case IDC_FONT_HEIGHT:
@@ -152,18 +182,26 @@ namespace apn::font_preview
 
 					break;
 				}
+			// チェックボックスの場合は
 			case IDC_SINGLELINE:
+			case IDC_USE_CONTEXT_MENU:
+			case IDC_USE_SHIFT_KEY:
+			case IDC_USE_CTRL_KEY:
+			case IDC_USE_ALT_KEY:
+			case IDC_USE_WIN_KEY:
 				{
 					update_config();
 
 					break;
 				}
+			// コンボボックスの場合は
 			case IDC_PAINT_MODE:
 				{
 					if (code == CBN_SELCHANGE) update_config();
 
 					break;
 				}
+			// カラーボタンの場合は
 			case IDC_NORMAL_BACKGROUND_COLOR:
 			case IDC_NORMAL_PREVIEW_COLOR:
 			case IDC_NORMAL_FONT_NAME_COLOR:
@@ -205,6 +243,7 @@ namespace apn::font_preview
 
 					switch (id)
 					{
+					// カラーボタンの場合は
 					case IDC_NORMAL_BACKGROUND_COLOR:
 					case IDC_NORMAL_PREVIEW_COLOR:
 					case IDC_NORMAL_FONT_NAME_COLOR:

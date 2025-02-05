@@ -83,10 +83,6 @@ namespace apn::font_select
 			hive.use_backward = get_check(IDC_USE_BACKWARD);
 			hive.use_forward = get_check(IDC_USE_FORWARD);
 
-			auto hwnd = magi.exin.get_setting_dialog();
-			auto combobox = ::GetDlgItem(hwnd, hive.c_control_id.c_font_combobox);
-			my::invalidate(combobox, nullptr, TRUE);
-
 			return TRUE;
 		}
 

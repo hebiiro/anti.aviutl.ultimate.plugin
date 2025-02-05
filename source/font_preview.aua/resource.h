@@ -12,8 +12,8 @@
 #define IDC_WINDOW_SIZE_H               1016
 #define IDC_SAMPLE_TEXT                 1020
 #define IDC_SINGLELINE                  1021
-#define IDC_PAINT_MODE                  1022
-#define IDC_PAINT_MODE_STAT             1023
+#define IDC_PAINT_MODE_STAT             1022
+#define IDC_PAINT_MODE                  1023
 #define IDC_NORMAL_STAT                 1030
 #define IDC_NORMAL_BACKGROUND_COLOR_STAT 1031
 #define IDC_NORMAL_BACKGROUND_COLOR     1032
@@ -28,6 +28,12 @@
 #define IDC_SELECT_FONT_NAME_COLOR      1044
 #define IDC_SELECT_PREVIEW_COLOR_STAT   1045
 #define IDC_SELECT_PREVIEW_COLOR        1046
+#define IDC_USE_CONTEXT_MENU_STAT       1060
+#define IDC_USE_CONTEXT_MENU            1061
+#define IDC_USE_SHIFT_KEY               1062
+#define IDC_USE_CTRL_KEY                1063
+#define IDC_USE_ALT_KEY                 1064
+#define IDC_USE_WIN_KEY                 1065
 
 // Next default values for new objects
 // 

@@ -41,7 +41,22 @@ namespace apn::font_select
 			MY_TRACE_FUNC("{:#010x}", combobox);
 
 			// フォントコンボボックスではない場合は何もしません。
-			if (::GetDlgCtrlID(combobox) != hive.c_control_id.c_font_combobox) return FALSE;
+			if (combobox != magi.exin.get_font_combobox()) return FALSE;
+
+			//
+			// 指定されたキーが押されている場合はTRUEを返します。
+			//
+			constexpr auto is_key_down = [](DWORD vk) { return ::GetKeyState(vk) < 0; };
+
+			// 修飾キーが押されている場合は何もしません。
+			if (is_key_down(VK_SHIFT) ||
+				is_key_down(VK_CONTROL) ||
+				is_key_down(VK_MENU) ||
+				is_key_down(VK_LWIN) ||
+				is_key_down(VK_RWIN))
+			{
+				return FALSE;
+			}
 
 			// まだフォントデータが読み込まれてない場合は
 			if (hive.menu_root.nodes.empty())

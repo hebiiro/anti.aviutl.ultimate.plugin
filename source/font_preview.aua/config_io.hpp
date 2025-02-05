@@ -5,51 +5,8 @@ namespace apn::font_preview
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct ConfigIO : StdConfigIOUseHive<hive>
 	{
-		//
-		// 初期化処理を実行します。
-		//
-		BOOL init()
-		{
-			MY_TRACE_FUNC("");
-
-			hive.config_file_name = magi.get_config_file_name(hive.instance);
-			MY_TRACE_STR(hive.config_file_name);
-
-			return TRUE;
-		}
-
-		//
-		// 後始末処理を実行します。
-		//
-		BOOL exit()
-		{
-			MY_TRACE_FUNC("");
-
-			return TRUE;
-		}
-
-		//
-		// コンフィグを読み込みます。
-		//
-		BOOL read()
-		{
-			MY_TRACE_FUNC("");
-
-			return read_file(hive.config_file_name, hive);
-		}
-
-		//
-		// コンフィグを書き込みます。
-		//
-		BOOL write()
-		{
-			MY_TRACE_FUNC("");
-
-			return write_file(hive.config_file_name, hive);
-		}
-
 		//
 		// コンフィグが更新されたのでコントロールに適用します。
 		//
@@ -72,6 +29,11 @@ namespace apn::font_preview
 			read_size(root, "window_size", hive.window_size);
 			read_string(root, "sample", hive.sample);
 			read_bool(root, "singleline", hive.singleline);
+			read_bool(root, "use_context_menu", hive.use_context_menu);
+			read_bool(root, "use_shift_key", hive.use_shift_key);
+			read_bool(root, "use_ctrl_key", hive.use_ctrl_key);
+			read_bool(root, "use_alt_key", hive.use_alt_key);
+			read_bool(root, "use_win_key", hive.use_win_key);
 
 			{
 				n_json paint_node;
@@ -123,6 +85,11 @@ namespace apn::font_preview
 			write_size(root, "window_size", hive.window_size);
 			write_string(root, "sample", hive.sample);
 			write_bool(root, "singleline", hive.singleline);
+			write_bool(root, "use_context_menu", hive.use_context_menu);
+			write_bool(root, "use_shift_key", hive.use_shift_key);
+			write_bool(root, "use_ctrl_key", hive.use_ctrl_key);
+			write_bool(root, "use_alt_key", hive.use_alt_key);
+			write_bool(root, "use_win_key", hive.use_win_key);
 
 			{
 				n_json paint_node;

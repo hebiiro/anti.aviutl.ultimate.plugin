@@ -10,10 +10,6 @@ namespace apn::font_select
 		inline static constexpr auto c_name = L"font_select";
 		inline static constexpr auto c_display_name = L"フォント選択";
 
-		inline static constexpr struct ControlID {
-			inline static constexpr uint32_t c_font_combobox = 0x5654;
-		} c_control_id;
-
 		//
 		// この構造体はフォントメニュー用のデータを保持します。
 		//
@@ -89,7 +85,7 @@ namespace apn::font_select
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }
