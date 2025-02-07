@@ -23,15 +23,11 @@ namespace apn::workspace
 		}
 
 		//
-		// コンテンツの位置を変更するために呼ばれます。
+		// 理想のコンテンツ位置を返します。
+		// hwndはコンテンツのHWNDです。
 		//
-		virtual BOOL set_content_position() override
+		BOOL get_ideal_content_position(HWND hwnd, WINDOWPOS* wp)
 		{
-			// コンテンツをコンテナのクライアント領域全体まで広げます。
-
-			// コンテンツのHWNDを取得します。
-			auto hwnd = content->get_hwnd();
-
 			// コンテナのクライアント矩形を取得します。
 			auto rc = my::get_client_rect(*this);
 
@@ -41,8 +37,29 @@ namespace apn::workspace
 			// rcを元にしてコンテンツから最適な位置を取得します。
 			content->revise_content_position(&rc);
 
+			// 算出したコンテンツ用の矩形を返します。
+			*wp = rc_to_wp(&rc, wp->flags);
+
+			return TRUE;
+		}
+
+		//
+		// コンテンツの位置を変更するために呼ばれます。
+		//
+		virtual BOOL set_content_position() override
+		{
+			MY_TRACE_FUNC("");
+
+			// コンテンツのHWNDを取得します。
+			auto hwnd = content->get_hwnd();
+
+			// コンテンツに最適な位置を取得します。
+			auto wp = WINDOWPOS {};
+			wp.flags = SWP_NOZORDER | SWP_NOACTIVATE;
+			get_ideal_content_position(hwnd, &wp);
+
 			// コンテンツの位置を変更します。
-			set_window_pos(hwnd, &rc);
+			set_window_pos(hwnd, &wp);
 
 			return TRUE;
 		}

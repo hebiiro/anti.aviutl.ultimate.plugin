@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="container\fixed_spread_container.hpp" />
     <ClInclude Include="dock\dock_site.hpp" />
     <ClInclude Include="dock\drawer_manager.hpp" />
     <ClInclude Include="dock\layout_list.hpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="addin.hpp" />
     <ClInclude Include="Shuttle\aviutl_window.hpp" />
     <ClInclude Include="Shuttle\exedit_window.hpp" />
+    <ClInclude Include="shuttle\player_window.hpp" />
     <ClInclude Include="Shuttle\setting_dialog.hpp" />
     <ClInclude Include="Shuttle\shuttle.hpp" />
     <ClInclude Include="Shuttle\shuttle_manager.hpp" />

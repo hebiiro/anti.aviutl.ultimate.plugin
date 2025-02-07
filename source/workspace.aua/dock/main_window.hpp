@@ -155,6 +155,17 @@ namespace apn::workspace
 				// 拡張編集ウィンドウのダミーかもしれないのでチェックしておきます。
 				if (hwnd == exedit_window->dummy) return FALSE;
 
+				if (window_name == L"再生ウィンドウ")
+				{
+					if (*player_window) return FALSE;
+
+					MY_TRACE("再生ウィンドウ用のシャトルを初期化します\n");
+
+					player_window->init(window_name, hwnd);
+
+					return TRUE;
+				}
+
 				MY_TRACE("「{}」用のシャトルを初期化します\n", window_name);
 
 				auto shuttle = std::make_shared<Shuttle>();

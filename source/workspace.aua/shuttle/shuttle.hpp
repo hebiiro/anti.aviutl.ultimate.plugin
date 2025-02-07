@@ -309,7 +309,7 @@ namespace apn::workspace
 
 			// ドッキングコンテナのタイプを決定します。
 			auto container = (style & WS_THICKFRAME) ?
-				(std::shared_ptr<Container>)std::make_shared<SpreadContainer>(this, dock_style, dock_ex_style) :
+				(std::shared_ptr<Container>)std::make_shared<FixedSpreadContainer>(this, dock_style, dock_ex_style) :
 				(std::shared_ptr<Container>)std::make_shared<ScrollContainer>(this, dock_style, dock_ex_style);
 
 			// コンテナウィンドウにコンテナタイプを関連付けます。

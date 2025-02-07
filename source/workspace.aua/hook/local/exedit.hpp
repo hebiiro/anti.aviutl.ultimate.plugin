@@ -100,13 +100,13 @@ namespace apn::workspace::hook::local
 			inline static struct {
 				inline static HWND WINAPI hook_proc()
 				{
-					MY_TRACE_FUNC("");
+//					MY_TRACE_FUNC("");
 
 					auto active_window = ::GetActiveWindow();
-					MY_TRACE_HWND(active_window);
+//					MY_TRACE_HWND(active_window);
 
 					auto focus = ::GetFocus();
-					MY_TRACE_HWND(focus);
+//					MY_TRACE_HWND(focus);
 
 					// フォーカスが存在しない場合は
 					if (!focus)
