@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "hive.hpp"
 #include "new_file_dialog.hpp"
+#include "scene_config_dialog.hpp"
 #include "save_object_dialog.hpp"
 #include "hook.hpp"
 #include "addin_dialog.hpp"

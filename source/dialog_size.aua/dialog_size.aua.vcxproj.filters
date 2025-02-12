@@ -24,6 +24,7 @@
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="new_file_dialog.hpp" />
     <ClInclude Include="save_object_dialog.hpp" />
+    <ClInclude Include="scene_config_dialog.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

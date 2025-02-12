@@ -123,6 +123,12 @@ namespace apn::dialog_size
 							decltype(new_file_dialog)::Hooker hooker(new_file_dialog);
 							return do_customize();
 						}
+						else if (::lstrcmpA(template_name, "SCENE_CONFIG") == 0)
+						{
+							// `シーンの設定`ダイアログをフックします。
+							decltype(scene_config_dialog)::Hooker hooker(scene_config_dialog);
+							return do_customize();
+						}
 						else if (::lstrcmpA(template_name, "SAVE_OBJECT") == 0)
 						{
 							// `エイリアスの作成`ダイアログをフックします。

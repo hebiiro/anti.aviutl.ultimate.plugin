@@ -3,16 +3,15 @@
 namespace apn::dialog_size
 {
 	//
-	// このクラスは`新規プロジェクトの作成`ダイアログをフックします。
+	// このクラスは`シーンの設定`ダイアログをフックします。
 	//
-	inline struct NewFileDialog : my::Window
+	inline struct SceneConfigDialog : my::Window
 	{
 		inline static constexpr struct CommandID {
-			inline static constexpr uint32_t c_video_width = 171;
-			inline static constexpr uint32_t c_video_height = 172;
-			inline static constexpr uint32_t c_video_rate = 173;
-			inline static constexpr uint32_t c_audio_rate = 174;
-			inline static constexpr uint32_t c_use_file_param = 201;
+			inline static constexpr uint32_t c_scene_name = 171;
+			inline static constexpr uint32_t c_video_width = 172;
+			inline static constexpr uint32_t c_video_height = 173;
+			inline static constexpr uint32_t c_has_alpha = 201;
 			inline static constexpr struct Preset {
 				inline static constexpr uint32_t c_video_size = 2024;
 				inline static constexpr uint32_t c_video_rate = 2025;
@@ -59,42 +58,6 @@ namespace apn::dialog_size
 						}
 					}
 
-					{
-						// 映像レートのコンボボックスを初期化します。
-						auto combobox = ::GetDlgItem(hwnd, c_command_id.c_preset.c_video_rate);
-						customize_combobox_option(combobox);
-						for (const auto& video_rate : hive.video_rate_collection)
-						{
-							if (video_rate.display_name.empty())
-							{
-								my::combobox::add_text(combobox,
-									std::format(L"{}fps", video_rate.rate).c_str());
-							}
-							else
-							{
-								my::combobox::add_text(combobox, video_rate.display_name.c_str());
-							}
-						}
-					}
-
-					{
-						// 音声レートのコンボボックスを初期化します。
-						auto combobox = ::GetDlgItem(hwnd, c_command_id.c_preset.c_audio_rate);
-						customize_combobox_option(combobox);
-						for (const auto& audio_rate : hive.audio_rate_collection)
-						{
-							if (audio_rate.display_name.empty())
-							{
-								my::combobox::add_text(combobox,
-									std::format(L"{}Hz", audio_rate.rate).c_str());
-							}
-							else
-							{
-								my::combobox::add_text(combobox, audio_rate.display_name.c_str());
-							}
-						}
-					}
-
 					break;
 				}
 			case WM_COMMAND:
@@ -129,32 +92,6 @@ namespace apn::dialog_size
 
 							break;
 						}
-					case c_command_id.c_preset.c_video_rate:
-						{
-							if (code != CBN_SELCHANGE) break;
-
-							auto index = (size_t)my::combobox::get_cur_sel(control);
-							if (index >= hive.video_rate_collection.size()) break;
-
-							// 映像レートのプリセットを適用します。
-							const auto& video_rate = hive.video_rate_collection[index];
-							::SetDlgItemTextW(hwnd, c_command_id.c_video_rate, video_rate.rate.c_str());
-
-							break;
-						}
-					case c_command_id.c_preset.c_audio_rate:
-						{
-							if (code != CBN_SELCHANGE) break;
-
-							auto index = (size_t)my::combobox::get_cur_sel(control);
-							if (index >= hive.audio_rate_collection.size()) break;
-
-							// 音声レートのプリセットを適用します。
-							const auto& audio_rate = hive.audio_rate_collection[index];
-							::SetDlgItemTextW(hwnd, c_command_id.c_audio_rate, audio_rate.rate.c_str());
-
-							break;
-						}
 					}
 
 					break;
@@ -163,5 +100,5 @@ namespace apn::dialog_size
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
-	} new_file_dialog;
+	} scene_config_dialog;
 }

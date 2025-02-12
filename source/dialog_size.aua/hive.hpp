@@ -45,6 +45,34 @@ namespace apn::dialog_size
 		};
 
 		//
+		// 映像サイズのプリセットです。
+		//
+		struct VideoSize {
+			std::wstring display_name;
+			std::wstring width;
+			std::wstring height;
+		};
+		std::vector<VideoSize> video_size_collection;
+
+		//
+		// 映像レートのプリセットです。
+		//
+		struct VideoRate {
+			std::wstring display_name;
+			std::wstring rate;
+		};
+		std::vector<VideoRate> video_rate_collection;
+
+		//
+		// 音声レートのプリセットです。
+		//
+		struct AudioRate {
+			std::wstring display_name;
+			std::wstring rate;
+		};
+		std::vector<AudioRate> audio_rate_collection;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {

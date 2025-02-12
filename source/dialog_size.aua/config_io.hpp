@@ -7,6 +7,100 @@ namespace apn::dialog_size
 	//
 	inline struct ConfigIO : StdConfigIOUseHive<hive>
 	{
+
+		//
+		// ノードからプリセットを読み込みます。
+		//
+		BOOL read_preset(n_json& root)
+		{
+			MY_TRACE_FUNC("");
+
+			hive.video_size_collection.clear();
+			hive.video_rate_collection.clear();
+			hive.audio_rate_collection.clear();
+
+			n_json new_file_node;
+			read_child_node(root, "new_file", new_file_node);
+
+			read_child_nodes(new_file_node, "video_size",
+				[&](const n_json& video_size_node, size_t i)
+			{
+				auto& video_size = hive.video_size_collection.emplace_back();
+				read_string(video_size_node, "width", video_size.width);
+				read_string(video_size_node, "height", video_size.height);
+				read_string(video_size_node, "name", video_size.display_name);
+
+				return TRUE;
+			});
+
+			read_child_nodes(new_file_node, "video_rate",
+				[&](const n_json& video_rate_node, size_t i)
+			{
+				auto& video_rate = hive.video_rate_collection.emplace_back();
+				read_string(video_rate_node, "rate", video_rate.rate);
+				read_string(video_rate_node, "name", video_rate.display_name);
+
+				return TRUE;
+			});
+
+			read_child_nodes(new_file_node, "audio_rate",
+				[&](const n_json& audio_rate_node, size_t i)
+			{
+				auto& audio_rate = hive.audio_rate_collection.emplace_back();
+				read_string(audio_rate_node, "rate", audio_rate.rate);
+				read_string(audio_rate_node, "name", audio_rate.display_name);
+
+				return TRUE;
+			});
+
+			return TRUE;
+		}
+
+		//
+		// ノードにプリセットを書き込みます。
+		//
+		BOOL write_preset(n_json& root)
+		{
+			MY_TRACE_FUNC("");
+
+			n_json new_file_node;
+
+			write_child_nodes(new_file_node, "video_size",
+				hive.video_size_collection,
+				[&](n_json& video_size_node, const auto& video_size, size_t i)
+			{
+				write_string(video_size_node, "width", video_size.width);
+				write_string(video_size_node, "height", video_size.height);
+				write_string(video_size_node, "name", video_size.display_name);
+
+				return TRUE;
+			});
+
+			write_child_nodes(new_file_node, "video_rate",
+				hive.video_rate_collection,
+				[&](n_json& video_rate_node, const auto& video_rate, size_t i)
+			{
+				write_string(video_rate_node, "rate", video_rate.rate);
+				write_string(video_rate_node, "name", video_rate.display_name);
+
+				return TRUE;
+			});
+
+			write_child_nodes(new_file_node, "audio_rate",
+				hive.audio_rate_collection,
+				[&](n_json& audio_rate_node, const auto& audio_rate, size_t i)
+			{
+				write_string(audio_rate_node, "rate", audio_rate.rate);
+				write_string(audio_rate_node, "name", audio_rate.display_name);
+
+				return TRUE;
+			});
+
+			write_child_node(root, "new_file", new_file_node);
+
+			return TRUE;
+		}
+
 		//
 		// コンフィグが更新されたのでコントロールに適用します。
 		//
@@ -37,8 +131,7 @@ namespace apn::dialog_size
 			});
 
 			read_window_pos(root, "addin_window", addin_window);
-
-			new_file_dialog.read_node(root);
+			read_preset(root);
 
 			return TRUE;
 		}
@@ -60,8 +153,7 @@ namespace apn::dialog_size
 			});
 
 			write_window_pos(root, "addin_window", addin_window);
-
-			new_file_dialog.write_node(root);
+			write_preset(root);
 
 			return TRUE;
 		}

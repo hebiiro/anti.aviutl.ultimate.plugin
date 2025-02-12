@@ -169,6 +169,7 @@
     <ClInclude Include="addin.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="save_object_dialog.hpp" />
+    <ClInclude Include="scene_config_dialog.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
