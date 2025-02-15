@@ -42,7 +42,7 @@ namespace apn::reboot::launcher
 		{
 			MY_TRACE_FUNC("");
 
-			// デューティを読み込みます。
+			// コマンドを読み込みます。
 			read_child_nodes(root, "duty",
 				[&](const n_json& duty_node, size_t i)
 			{
@@ -68,7 +68,7 @@ namespace apn::reboot::launcher
 		{
 			MY_TRACE_FUNC("");
 
-			// デューティを書き込みます。
+			// コマンドを書き込みます。
 			write_child_nodes(root, "duty", agit.duties,
 				[&](n_json& duty_node, const auto& duty, size_t i)
 			{
@@ -92,13 +92,13 @@ namespace apn::reboot::launcher
 		{
 			MY_TRACE_FUNC("");
 
-			// ダイアログのデューティ名を更新します。
+			// ダイアログのコマンド名を更新します。
 			for (int32_t i = 0; i < std::size(agit.duties); i++)
 			{
 				const auto& duty = agit.duties[i];
 
-				addin_dialog->set_text(IDC_LAUNCHER_DUTY_0 + i,
-					duty.name.empty() ? my::format(_T("デューティ {}"), i) : duty.name);
+				addin_dialog->set_text(IDC_LAUNCHER_COMMAND_0 + i,
+					duty.name.empty() ? my::format(_T("コマンド {}"), i) : duty.name);
 			}
 
 			return TRUE;
@@ -111,7 +111,7 @@ namespace apn::reboot::launcher
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, control_id, control);
 
-			int32_t index = (int32_t)control_id - IDC_LAUNCHER_DUTY_0;
+			int32_t index = (int32_t)control_id - IDC_LAUNCHER_COMMAND_0;
 
 			// このパート用のコントロールではない場合は何もしません。
 			if (index < 0 || index >= std::size(agit.duties)) return FALSE;
@@ -137,7 +137,7 @@ namespace apn::reboot::launcher
 		{
 			MY_TRACE_FUNC("{:#010x}, {:#010x}", control_id, control);
 
-			int32_t index = (int32_t)control_id - IDC_LAUNCHER_DUTY_0;
+			int32_t index = (int32_t)control_id - IDC_LAUNCHER_COMMAND_0;
 
 			// このパート用のコントロールではない場合は何もしません。
 			if (index < 0 || index >= std::size(agit.duties)) return FALSE;

@@ -3,7 +3,7 @@
 namespace apn::reboot::launcher
 {
 	//
-	// このクラスはデューティ用のオプションダイアログです。
+	// このクラスはコマンド用のオプションダイアログです。
 	//
 	struct DutyOptionDialog : my::Dialog2
 	{
@@ -39,15 +39,15 @@ namespace apn::reboot::launcher
 		int do_modal(HWND parent, int32_t index)
 		{
 			// ダイアログを作成します。
-			create(hive.instance, MAKEINTRESOURCE(IDD_LAUNCHER_DUTY_OPTION), parent);
+			create(hive.instance, MAKEINTRESOURCE(IDD_LAUNCHER_COMMAND_OPTION), parent);
 
-			// デューティを取得します。
+			// コマンドを取得します。
 			auto& duty = agit.duties[index];
 
-			bind_text(IDC_LAUNCHER_DUTY_NAME, duty.name);
-			bind_text(IDC_LAUNCHER_DUTY_VERB, duty.verb);
-			bind_text(IDC_LAUNCHER_DUTY_PATH, duty.path);
-			bind_text(IDC_LAUNCHER_DUTY_ARGS, duty.args);
+			bind_text(IDC_LAUNCHER_COMMAND_NAME, duty.name);
+			bind_text(IDC_LAUNCHER_COMMAND_VERB, duty.verb);
+			bind_text(IDC_LAUNCHER_COMMAND_PATH, duty.path);
+			bind_text(IDC_LAUNCHER_COMMAND_ARGS, duty.args);
 
 			return do_modal2(parent);
 		}
@@ -69,19 +69,19 @@ namespace apn::reboot::launcher
 
 					switch (id)
 					{
-					case IDC_LAUNCHER_DUTY_PATH_REF:
+					case IDC_LAUNCHER_COMMAND_PATH_REF:
 						{
-							auto file_name = get_text(IDC_LAUNCHER_DUTY_PATH);
+							auto file_name = get_text(IDC_LAUNCHER_COMMAND_PATH);
 							if (get_open_file_name(file_name))
-								set_text(IDC_LAUNCHER_DUTY_PATH, file_name);
+								set_text(IDC_LAUNCHER_COMMAND_PATH, file_name);
 
 							break;
 						}
-					case IDC_LAUNCHER_DUTY_ARGS_REF:
+					case IDC_LAUNCHER_COMMAND_ARGS_REF:
 						{
-							auto file_name = get_text(IDC_LAUNCHER_DUTY_ARGS);
+							auto file_name = get_text(IDC_LAUNCHER_COMMAND_ARGS);
 							if (get_open_file_name(file_name))
-								set_text(IDC_LAUNCHER_DUTY_ARGS, file_name);
+								set_text(IDC_LAUNCHER_COMMAND_ARGS, file_name);
 
 							break;
 						}

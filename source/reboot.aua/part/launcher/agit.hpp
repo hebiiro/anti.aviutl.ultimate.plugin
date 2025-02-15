@@ -8,7 +8,7 @@ namespace apn::reboot::launcher
 	inline struct Agit
 	{
 		//
-		// このクラスはデューティです。
+		// このクラスはコマンドです。
 		//
 		struct Duty {
 			std::wstring name;
