@@ -12,6 +12,14 @@ namespace apn::dark::hook
 		inline static int (*ShowColorDialog)(DWORD u1, COLORREF* color, DWORD u3) = nullptr;
 
 		//
+		// スキンが使用不可能な場合はTRUEを返します。
+		//
+		inline static BOOL is_invalid()
+		{
+			return python.is_invalid();
+		}
+
+		//
 		// 指定されたステートを縞模様用のステートに変更して返します。
 		//
 		inline static int32_t as_zebra(int32_t state_id)
@@ -223,6 +231,8 @@ namespace apn::dark::hook
 			{
 				MY_TRACE_FUNC("{:#010x}, {:#010x}", dc, brush);
 
+				if (is_invalid()) return orig_proc(dc, rc, brush);
+
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
 					if (python.call_draw_figure(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, 0, rc))
@@ -241,6 +251,8 @@ namespace apn::dark::hook
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
 				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}", dc, x, y, options);
+
+				if (is_invalid()) return orig_proc(dc, x, y, options, rc, text, c, dx);
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
@@ -263,6 +275,8 @@ namespace apn::dark::hook
 			{
 				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", dc, edge, flags);
 
+				if (is_invalid()) return orig_proc(dc, rc, edge,flags);
+
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
 					if (python.call_draw_figure(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCENE_BUTTON_EDGE, rc))
@@ -281,6 +295,8 @@ namespace apn::dark::hook
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
 //				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}", dc, x, y, options);
+
+				if (is_invalid()) return orig_proc(dc, x, y, options, rc, text, c, dx);
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
@@ -328,6 +344,8 @@ namespace apn::dark::hook
 			{
 				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", dc, edge, flags);
 
+				if (is_invalid()) return orig_proc(dc, rc, edge, flags);
+
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
 					auto state_id = as_zebra(EES_EVEN_LAYER_BUTTON_EDGE);
@@ -348,6 +366,8 @@ namespace apn::dark::hook
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
 //				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
@@ -370,6 +390,8 @@ namespace apn::dark::hook
 			{
 //				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
 
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
+
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
 					auto state = skin::theme::manager.get_state(theme, WP_EXEDIT, EES_SCALE_SECONDARY);
@@ -390,6 +412,8 @@ namespace apn::dark::hook
 			inline static void CDECL hook_proc(HDC dc, LPCSTR text, int x, int y, int w, int h, int scroll_x)
 			{
 //				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {}, {}", dc, text, x, y, w, h, scroll_x);
+
+				if (is_invalid()) return orig_proc(dc, text, x, y, w, h, scroll_x);
 
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_EXEDIT))
 				{
@@ -426,6 +450,8 @@ namespace apn::dark::hook
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
 //				MY_TRACE_FUNC("{:#010x}, {:#010x}", dc, brush);
+
+				if (is_invalid()) return orig_proc(dc, rc, brush);
 
 				// レイヤーの背景色を取得します。
 				auto color = get_layer_background_color();
@@ -466,6 +492,8 @@ namespace apn::dark::hook
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
 				MY_TRACE_FUNC("{:#010x}, {:#010x}", dc, brush);
+
+				if (is_invalid()) return orig_proc(dc, rc, brush);
 
 				// レイヤーの背景色を取得します。
 				auto color = get_layer_background_color();
@@ -508,6 +536,8 @@ namespace apn::dark::hook
 			{
 				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
 
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
+
 				return draw_line(dc, pen, EES_LAYER_LINE_LEFT, mx, my, 1, ly - my);
 			}
 			inline static decltype(&hook_proc) orig_proc = nullptr;
@@ -517,6 +547,8 @@ namespace apn::dark::hook
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
 				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
 				return draw_line(dc, pen, EES_LAYER_LINE_RIGHT, mx, my, 1, ly - my);
 			}
@@ -528,6 +560,8 @@ namespace apn::dark::hook
 			{
 				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
 
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
+
 				return draw_line(dc, pen, EES_LAYER_LINE_TOP, mx, my, lx - mx, 1);
 			}
 			inline static decltype(&hook_proc) orig_proc = nullptr;
@@ -537,6 +571,8 @@ namespace apn::dark::hook
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
 				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
 				return draw_line(dc, pen, EES_LAYER_LINE_BOTTOM, mx, my, lx - mx, 1);
 			}
@@ -548,6 +584,8 @@ namespace apn::dark::hook
 			{
 //				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
 
+				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
+
 				return draw_line(dc, pen, EES_LAYER_LINE_SEPARATOR, mx, my, 1, ly - my);
 			}
 			inline static decltype(&hook_proc) orig_proc = nullptr;
@@ -557,6 +595,8 @@ namespace apn::dark::hook
 			inline static void CDECL hook_proc(HDC dc, int layer_index, DWORD a3, DWORD a4, DWORD a5, DWORD a6, DWORD a7)
 			{
 //				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {}, {}", dc, layer_index, a3, a4, a5, a6, a7);
+
+				if (is_invalid()) return orig_proc(dc, layer_index, a3, a4, a5, a6, a7);
 
 				// ここで現在描画しているレイヤーのインデックスを取得します。
 				drawing_layer_index = layer_index;

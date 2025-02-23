@@ -126,6 +126,15 @@ namespace apn::dark
 		}
 
 		//
+		// pythonが使用不可能な場合はTRUEを返します。
+		//
+		BOOL is_invalid()
+		{
+			return !sys_module;
+//			return !interpreter;
+		}
+
+		//
 		// pythonのdont_write_bytecodeフラグを更新します。
 		//
 		BOOL update_dont_write_bytecode()
