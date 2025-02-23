@@ -117,35 +117,43 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			// レイアウトファイルを列挙します。
-
-			stems.clear();
-
-			for (const auto& path : std::filesystem::directory_iterator(folder_name))
+			try
 			{
-				if (path.path().filename().wstring().ends_with(extension))
-					stems.emplace_back(path.path().stem());
+				// レイアウトファイルを列挙します。
+
+				stems.clear();
+
+				for (const auto& path : std::filesystem::directory_iterator(folder_name))
+				{
+					if (path.path().filename().wstring().ends_with(extension))
+						stems.emplace_back(path.path().stem());
+				}
+
+				std::sort(stems.begin(), stems.end());
+
+				// タブコントロールを更新します。
+
+				auto tab = (HWND)*this;
+				MY_TRACE_HWND(tab);
+
+				::SendMessage(tab, TCM_DELETEALLITEMS, 0, 0);
+
+				for (size_t i = 0; i < stems.size(); i++)
+				{
+					TCITEM item = {};
+					item.mask = TCIF_PARAM | TCIF_TEXT;
+					item.lParam = (LPARAM)0;
+					item.pszText = (LPTSTR)stems[i].c_str();
+					::SendMessage(tab, TCM_INSERTITEM, i, (LPARAM)&item);
+				}
+
+				return TRUE;
+			}
+			catch (...)
+			{
 			}
 
-			std::sort(stems.begin(), stems.end());
-
-			// タブコントロールを更新します。
-
-			auto tab = (HWND)*this;
-			MY_TRACE_HWND(tab);
-
-			::SendMessage(tab, TCM_DELETEALLITEMS, 0, 0);
-
-			for (size_t i = 0; i < stems.size(); i++)
-			{
-				TCITEM item = {};
-				item.mask = TCIF_PARAM | TCIF_TEXT;
-				item.lParam = (LPARAM)0;
-				item.pszText = (LPTSTR)stems[i].c_str();
-				::SendMessage(tab, TCM_INSERTITEM, i, (LPARAM)&item);
-			}
-
-			return TRUE;
+			return FALSE;
 		}
 
 		//
