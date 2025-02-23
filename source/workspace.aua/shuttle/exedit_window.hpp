@@ -87,6 +87,17 @@ namespace apn::workspace
 					// ダミーウィンドウの表示状態を更新します。
 					::ShowWindow(dummy, wParam ? SW_SHOW : SW_HIDE);
 
+					// 拡張編集ウィンドウが非表示になってもマウス操作ができるようにします。
+					{
+						auto result = __super::on_wnd_proc(hwnd, message, wParam, lParam);
+
+						// 拡張編集フィルタに常にWindowActiveフラグを持たせます。
+						if (auto fp = get_filter(hwnd))
+							fp->flag |= AviUtl::FilterPlugin::Flag::WindowActive;
+
+						return result;
+					}
+
 					break;
 				}
 			case WM_SETTEXT:
