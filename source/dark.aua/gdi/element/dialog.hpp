@@ -74,8 +74,8 @@ namespace apn::dark::gdi
 		{
 			MY_TRACE_FUNC("{:#010x}, ({}), {:#010x}, {:#010x}", dc, safe_string(rc), edge, flags);
 
-			int part_id = 0;
-			int state_id = 0;
+			auto part_id = 0;
+			auto state_id = 0;
 
 			switch (edge)
 			{
@@ -89,7 +89,7 @@ namespace apn::dark::gdi
 			{
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 				{
-					BOOL result = FALSE;
+					auto result = FALSE;
 
 					if (flags & BF_MIDDLE)
 					{

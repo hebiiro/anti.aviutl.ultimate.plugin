@@ -47,7 +47,7 @@ namespace apn::dark::gdi
 
 			if (auto theme = skin::theme::manager.get_theme(VSCLASS_WINDOW))
 			{
-				BOOL result = FALSE;
+				auto result = FALSE;
 
 				if (flags & BF_MIDDLE)
 				{

@@ -71,7 +71,7 @@ namespace apn
 
 		BOOL func_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
-			BOOL result = addin_manager.fire_window_proc(hwnd, message, wParam, lParam, editp, fp);
+			auto result = addin_manager.fire_window_proc(hwnd, message, wParam, lParam, editp, fp);
 
 			switch (message)
 			{
