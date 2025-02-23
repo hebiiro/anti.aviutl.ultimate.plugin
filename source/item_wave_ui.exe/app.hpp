@@ -15,7 +15,7 @@ namespace apn::item_wave::ui
 		//
 		// 初期化処理を実行します。
 		//
-		BOOL init()
+		virtual BOOL init() override
 		{
 			MY_TRACE_FUNC("");
 
@@ -61,7 +61,7 @@ namespace apn::item_wave::ui
 		//
 		// 後始末処理を実行します。
 		//
-		BOOL exit()
+		virtual BOOL exit() override
 		{
 			MY_TRACE_FUNC("");
 
