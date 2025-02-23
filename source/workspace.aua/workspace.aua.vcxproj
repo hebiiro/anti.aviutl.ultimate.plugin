@@ -210,6 +210,7 @@
     <ClInclude Include="sub_process\psdtoolkit.hpp" />
     <ClInclude Include="sub_process\sub_process.hpp" />
     <ClInclude Include="sub_process\sub_process_manager.hpp" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
