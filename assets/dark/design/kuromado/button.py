@@ -82,9 +82,17 @@ class Button(core.Control):
 			if (hasattr(args, 'text')):
 				dark.draw_str(args, rc, stuff)
 			else:
-				#rc.offset(2, 0)
-				if (attrs.checked): core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Webdings', '\u003D', rc)
-				core.draw_icon(args, stuff, 'Webdings', '\u0063', rc)
+				if (True):
+					#rc.offset(0, -1)
+					if (attrs.checked):
+						core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Meiryo', '\uE005', rc)
+					else:
+						core.draw_icon(args, stuff, 'Meiryo', '\uE002', rc)
+				else:
+					#rc.offset(2, 0)
+					core.draw_icon(args, stuff, 'Webdings', '\u0063', rc)
+					if (attrs.checked):
+						core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Webdings', '\u003D', rc)
 		return True
 
 	#
@@ -100,17 +108,24 @@ class Button(core.Control):
 			if (hasattr(args, 'text')):
 				dark.draw_str(args, rc, stuff)
 			else:
-				if (False):
-					rc.offset(0, -1)
+				if (True):
+					#rc.offset(0, -1)
 					if (attrs.checked):
 						core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Meiryo', '\uE005', rc)
 					else:
+						#core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Meiryo', '\uE002', rc)
 						core.draw_icon(args, stuff, 'Meiryo', '\uE002', rc)
+						#core.draw_icon(args, stuff, 'Meiryo', '\uE003', rc)
+				elif (True):
+					#rc.offset(0, -1)
+					core.draw_icon(args, stuff, 'Meiryo', '\uE003', rc)
+					if (attrs.checked):
+						core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Meiryo', '\uE001', rc)
 				else:
 					#rc.offset(2, 0)
+					core.draw_icon(args, stuff, 'Webdings', '\u0063', rc)
 					if (attrs.checked):
 						core.draw_icon(args, self.get_stuff(STUFF_CHECKED), 'Webdings', '\u0061', rc)
-					core.draw_icon(args, stuff, 'Webdings', '\u0063', rc)
 		return True
 
 	#
