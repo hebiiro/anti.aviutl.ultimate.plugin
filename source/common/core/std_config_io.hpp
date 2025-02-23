@@ -29,7 +29,7 @@ namespace apn
 			catch (const std::exception& error)
 			{
 				error_handler.message_box(std::format(
-					L"{}を読込中にエラーが発生しました\n{}",
+					L"{}を読み込み中にエラーが発生しました\n{}",
 					config_file_name, my::ws(error.what())));
 
 				return FALSE;
@@ -39,12 +39,16 @@ namespace apn
 		}
 
 		//
-		// 指定されたファイルに設定を保存します。
+		// 指定されたファイルにコンフィグを書き込みます。
 		//
 		BOOL write_file(const std::wstring& config_file_name, auto& error_handler)
 		{
 			try
 			{
+				// フォルダを作成します。
+				std::filesystem::path path = config_file_name;
+				std::filesystem::create_directories(path.parent_path());
+
 				std::ofstream ofs(config_file_name);
 
 				return write_stream(ofs);
@@ -52,7 +56,7 @@ namespace apn
 			catch (const std::exception& error)
 			{
 				error_handler.message_box(std::format(
-					L"{}を保存中にエラーが発生しました\n{}",
+					L"{}を書き込み中にエラーが発生しました\n{}",
 					config_file_name, my::ws(error.what())));
 
 				return FALSE;
@@ -67,7 +71,7 @@ namespace apn
 		virtual BOOL update() { return FALSE; }
 
 		//
-		// 指定されたストリームから設定を読み込みます。
+		// 指定されたストリームからコンフィグを読み込みます。
 		//
 		virtual BOOL read_stream(std::ifstream& ifs)
 		{
@@ -77,7 +81,7 @@ namespace apn
 		}
 
 		//
-		// 指定されたプロパティツリーから設定を読み込みます。
+		// 指定されたノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(nlohmann::json& root)
 		{
@@ -85,7 +89,7 @@ namespace apn
 		}
 
 		//
-		// 指定されたストリームに設定を保存します。
+		// 指定されたストリームにコンフィグを書き込みます。
 		//
 		virtual BOOL write_stream(std::ofstream& ofs)
 		{
@@ -96,7 +100,7 @@ namespace apn
 		}
 
 		//
-		// 指定されたプロパティツリーに設定を保存します。
+		// 指定されたノードにコンフィグを書き込みます。
 		//
 		virtual BOOL write_node(nlohmann::json& root)
 		{

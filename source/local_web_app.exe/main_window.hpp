@@ -109,6 +109,9 @@ namespace apn::local_web_app
 					auto abs_path = get_abs_path(path);
 					MY_TRACE_STR(abs_path);
 
+					// フォルダが存在しないかもしれないので作成します。
+					std::filesystem::create_directories(abs_path.parent_path());
+
 					// 書き込むデータ(json)を取得します。
 					const auto& data_node = node["data"];
 

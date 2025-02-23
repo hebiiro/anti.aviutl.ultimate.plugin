@@ -30,6 +30,9 @@ namespace apn::font_select
 		{
 			MY_TRACE_FUNC("");
 
+			// 予め使用予定のコンフィグフォルダを作成しておきます。
+			magi.create_config_folders(hive.c_name, {});
+
 			if (!config_io.init()) return FALSE;
 			if (!paint.init()) return FALSE;
 			if (!setting_dialog.init()) return FALSE;

@@ -30,6 +30,9 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("{:#010x}", instance);
 
+			// 予め使用予定のコンフィグフォルダを作成しておきます。
+			magi.create_config_folders(hive.c_name, { L"layout" });
+
 			if (!config_io.init()) return FALSE;
 			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
 			if (!preference_io.init()) return FALSE;

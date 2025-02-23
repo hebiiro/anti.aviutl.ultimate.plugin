@@ -42,6 +42,9 @@ namespace apn::note
 
 			::LoadLibraryW(L"riched20.dll");
 
+			// 予め使用予定のコンフィグフォルダを作成しておきます。
+			magi.create_config_folders(hive.c_name, {});
+
 			if (!sharing_note.init()) return FALSE;
 			if (!project_note.init()) return FALSE;
 			if (!config_io.init()) return FALSE;

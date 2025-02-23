@@ -138,6 +138,40 @@ namespace apn
 		}
 
 		//
+		// 指定された原点にフォルダを作成します。
+		//
+		BOOL create_folders(const std::filesystem::path& origin, const std::vector<std::filesystem::path>& folders)
+		{
+			try
+			{
+				if (folders.empty())
+				{
+					std::filesystem::create_directories(origin);
+				}
+				else
+				{
+					for (const auto& folder : folders)
+						std::filesystem::create_directories(origin / folder);
+				}
+
+				return TRUE;
+			}
+			catch (...)
+			{
+			}
+
+			return FALSE;
+		}
+
+		//
+		// 指定されたコンフィグフォルダを作成します。
+		//
+		BOOL create_config_folders(const std::wstring& name, const std::vector<std::filesystem::path>& folders)
+		{
+			return create_folders(get_config_file_name(name), folders);
+		}
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, const std::wstring& title,
