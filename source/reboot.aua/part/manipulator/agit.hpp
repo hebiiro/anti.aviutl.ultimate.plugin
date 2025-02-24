@@ -15,6 +15,6 @@ namespace apn::reboot::manipulator
 		//
 		// TRUEの場合はメモリを掃除します。
 		//
-		BOOL clean_memory = TRUE;
+		BOOL reset_workingset_size = TRUE;
 	} agit;
 }

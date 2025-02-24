@@ -46,7 +46,7 @@ namespace apn::reboot::manipulator
 			MY_TRACE_FUNC("");
 
 			read_bool(root, "optimize_heap", agit.optimize_heap);
-			read_bool(root, "clean_memory", agit.clean_memory);
+			read_bool(root, "reset_workingset_size", agit.reset_workingset_size);
 
 			return TRUE;
 		}
@@ -59,7 +59,7 @@ namespace apn::reboot::manipulator
 			MY_TRACE_FUNC("");
 
 			write_bool(root, "optimize_heap", agit.optimize_heap);
-			write_bool(root, "clean_memory", agit.clean_memory);
+			write_bool(root, "reset_workingset_size", agit.reset_workingset_size);
 
 			return TRUE;
 		}
@@ -108,7 +108,7 @@ namespace apn::reboot::manipulator
 
 			// ポップアップメニューのアイテムIDです。
 			constexpr uint32_t c_optimize_heap = 3000;
-			constexpr uint32_t c_clean_memory = 3001;
+			constexpr uint32_t c_reset_workingset_size = 3001;
 
 			// ポップアップメニューを作成します。
 			my::menu::unique_ptr<> menu(::CreatePopupMenu());
@@ -117,9 +117,9 @@ namespace apn::reboot::manipulator
 			::AppendMenu(menu.get(), MF_STRING, c_optimize_heap, _T("ヒープを最適化する"));
 			if (agit.optimize_heap) ::CheckMenuItem(menu.get(), c_optimize_heap, MF_CHECKED);
 
-			// clean_memoryを追加します。
-			::AppendMenu(menu.get(), MF_STRING, c_clean_memory, _T("メモリを掃除する"));
-			if (agit.clean_memory) ::CheckMenuItem(menu.get(), c_clean_memory, MF_CHECKED);
+			// reset_workingset_sizeを追加します。
+			::AppendMenu(menu.get(), MF_STRING, c_reset_workingset_size, _T("ワーキングセットサイズをリセットする"));
+			if (agit.reset_workingset_size) ::CheckMenuItem(menu.get(), c_reset_workingset_size, MF_CHECKED);
 
 			// ポップアップメニューを表示します。
 			auto id = ::TrackPopupMenuEx(menu.get(),
@@ -129,7 +129,7 @@ namespace apn::reboot::manipulator
 			switch (id)
 			{
 			case c_optimize_heap: agit.optimize_heap = !agit.optimize_heap; break;
-			case c_clean_memory: agit.clean_memory = !agit.clean_memory; break;
+			case c_reset_workingset_size: agit.reset_workingset_size = !agit.reset_workingset_size; break;
 			}
 
 			return TRUE;
@@ -209,9 +209,9 @@ namespace apn::reboot::manipulator
 		}
 
 		//
-		// メモリを掃除します。
+		// ワーキングセットサイズをリセットします。
 		//
-		BOOL clean_memory()
+		BOOL reset_workingset_size()
 		{
 			MY_TRACE_FUNC("");
 
@@ -228,7 +228,7 @@ namespace apn::reboot::manipulator
 			auto result = FALSE;
 
 			if (agit.optimize_heap) result |= optimize_heap();
-			if (agit.clean_memory) result |= clean_memory();
+			if (agit.reset_workingset_size) result |= reset_workingset_size();
 
 			return result;
 		}
