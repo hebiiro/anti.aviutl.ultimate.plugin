@@ -75,7 +75,8 @@ lang: ja_JP
 | [reboot](./contents/addin/reboot.html) | リブート | aviutlを再起動するなどの特殊なコマンドを実行します。 |
 | [item_copy](./contents/addin/item_copy.html) | アイテムコピー | タイムラインの選択アイテムをexoファイルに保存します。 |
 | [item_wave](./contents/addin/item_wave.html) | アイテム波形 | タイムラインアイテム内に音声波形を表示します。 |
-| [settings_browser](./contents/addin/settings_browser.html) | 設定ブラウザ | 選択アイテムの設定をブラウザで表示します。 |
+| [audio_visualizer](./contents/addin/audio_visualizer.html) | 音声視覚化 | 再生中の音声をブラウザ(WebView2)で視覚化します。 |
+| [settings_browser](./contents/addin/settings_browser.html) | 設定ブラウザ | 選択アイテムの設定をブラウザ(WebView2)で表示します。 |
 |---|---|---|
 | [filter_copy](./contents/addin/filter_copy.html) | フィルタコピー | 設定ダイアログのフィルタをコピペできるようにします。 |
 | [filter_drag](./contents/addin/filter_drag.html) | フィルタドラッグ | 設定ダイアログのフィルタをドラッグで移動できるようにします。 |
