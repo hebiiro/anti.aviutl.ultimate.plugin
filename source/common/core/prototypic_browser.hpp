@@ -36,8 +36,12 @@ namespace apn
 				Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 				[&](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", result, env);
+				MY_TRACE_FUNC("{}, {:#010x}", my::get_error_message(result), env);
 
+				// 引数が無効の場合は何もしません。
+				if (!env) return result;
+
+				// WebViewの環境を取得します。
 				env->QueryInterface(&this->env);
 
 				// コントローラを作成します。
@@ -45,7 +49,10 @@ namespace apn
 					Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
 					[&](HRESULT result, ICoreWebView2Controller* _controller) -> HRESULT
 				{
-					MY_TRACE_FUNC("{:#010x}, {:#010x}", result, _controller);
+					MY_TRACE_FUNC("{}, {:#010x}", my::get_error_message(result), _controller);
+
+					// 引数が無効の場合は何もしません。
+					if (!_controller) return result;
 
 					_controller->QueryInterface(&controller);
 					MY_TRACE_HEX(controller.get());
