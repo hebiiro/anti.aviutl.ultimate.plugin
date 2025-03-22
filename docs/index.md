@@ -24,6 +24,13 @@ lang: ja_JP
 1. [`python実行環境`をダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
 1. `python実行環境`のzip内の`plugins`フォルダも`aviutlフォルダ`内にコピーします。
 
+## ⚠問題が発生した場合の対処方法
+
+* **※aviutlが起動しない、アドインが正常に動作しないなどの問題が発生する場合は、**<br>
+**`config`フォルダ内の`jsonファイル`を削除して設定をリセットしてください。**
+* **※もしくは`config/default`フォルダにあるデフォルト設定のコンフィグファイルを**<br>
+**`config`フォルダに上書きコピーしてください。**
+
 ## 🔖更新履歴
 
 * [更新履歴のページ](./contents/history.html)を参照してください。
@@ -32,9 +39,8 @@ lang: ja_JP
 
 * 基本的には`config`フォルダ内のファイルをテキストエディタで編集します。
 * アドインによってはGUIで設定できる場合もあります。
-* アドインによっては`config`フォルダ内にコンフィグファイルが存在しない場合は、 
+* アドインによっては`config`フォルダ内にコンフィグファイルが存在しない場合は、<br>
 `assets/default`フォルダ内のコンフィグファイルを読み込む場合があります。
-* aviutlが起動しないなどの問題が発生する場合は`config`フォルダ内の`jsonファイル`を削除して設定をリセットしてください。
 
 ### 📝ultimate.auf.json
 
@@ -42,9 +48,11 @@ lang: ja_JP
 1. `plugins\ultimate\ui\アルティメットプラグインの設定.html_local`ファイルを実行します。
 	* `.html_local`ファイルは[『ローカルウェブアプリ』](./contents/utils/local_web_app.html)で実行する必要があります。
 1. もしくは`config/ultimate.auf.json`をテキストエディタで編集します。
-	* ファイルが存在しない場合は`config/default`フォルダにあるものを`config`フォルダにコピーしてから編集してください。
+	* ファイルが存在しない場合は`config/default`フォルダにあるものを<br>
+	`config`フォルダにコピーしてから編集してください。
 	* `python_file_name` ✏️python312.dllのパスを指定します。
-		* ✏️デフォルトでは`ultimate.auf`からの相対パスで`ultimate/assets/python32/python312.dll`を読み込むようになっています。
+		* ✏️デフォルトでは`ultimate.auf`からの相対パスで<br>
+		`ultimate/assets/python32/python312.dll`を読み込むようになっています。
 		* ✏️システムに存在するPython(32bit版)を使用する場合はこの値を空文字列に書き換えてください。
 	* `addin`
 		* `active`
@@ -55,7 +63,7 @@ lang: ja_JP
 		* `args`
 			* ✏️アドインに与える引数です。
 			* ✏️主に開発者用のオプションです。
-			* ✏️デバッグバージョンで`debug`を与えるとデバッグトレースが有効になりますが、リリースバージョンでは何の影響ありません。
+			* ✏️デバッグバージョンで`debug`を与えるとデバッグトレースが有効になります。
 1. aviutlを起動します。
 
 ## 🚀ユーティリティの一覧
