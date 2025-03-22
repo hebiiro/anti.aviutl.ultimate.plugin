@@ -165,18 +165,6 @@ namespace apn::item_align
 		}
 
 		//
-		// 指定されたオブジェクトを元にレイヤーを作成して返します。
-		// 内部的に使用されます。
-		//
-		std::shared_ptr<Layer> create_layer(ExEdit::Object* object)
-		{
-			if (auto& layer = layers[object->layer_set])
-				return layer;
-			else
-				return layer = std::make_shared<Layer>(object->layer_set);
-		}
-
-		//
 		// 選択ノードを追加します。
 		// 内部的に使用されます。
 		//
@@ -268,8 +256,14 @@ namespace apn::item_align
 				// ノードをコレクションに追加します。
 				nodes[object] = node;
 
+				// レイヤーを取得します。
+				auto& layer = layers[object->layer_set];
+
+				// レイヤーが取得できなかった場合は新規作成します。
+				if (!layer) layer = std::make_shared<Layer>(object->layer_set);
+
 				// ノードをレイヤーに追加します。
-				create_layer(object)->nodes.emplace_back(node);
+				layer->nodes.emplace_back(node);
 			}
 		}
 
@@ -290,12 +284,12 @@ namespace apn::item_align
 				// レイヤー内のノードを時間順に並べ替えます。
 				std::sort(std::begin(layer->nodes), std::end(layer->nodes),
 					[](const auto& x, const auto& y)
-					{
-						if (x->before.time_start == y->before.time_start)
-							return x->before.time_end < y->before.time_end;
-						else
-							return x->before.time_start < y->before.time_start;
-					});
+				{
+					if (x->before.time_start == y->before.time_start)
+						return x->before.time_end < y->before.time_end;
+					else
+						return x->before.time_start < y->before.time_start;
+				});
 			}
 		}
 
