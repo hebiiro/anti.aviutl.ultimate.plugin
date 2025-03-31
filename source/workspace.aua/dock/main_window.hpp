@@ -573,8 +573,13 @@ namespace apn::workspace
 			case WM_SYSKEYUP:
 			case WM_SYSCHAR:
 			case WM_SYSDEADCHAR:
+			case WM_CLEAR:
+			case WM_COPY:
+			case WM_CUT:
+			case WM_PASTE:
+			case WM_APPCOMMAND:
 				{
-					MY_TRACE_FUNC("WM_***KEY***, {:#010x}, {:#010x}, {:#010x}", message, wParam, lParam);
+					MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", message, wParam, lParam);
 
 					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
 				}
