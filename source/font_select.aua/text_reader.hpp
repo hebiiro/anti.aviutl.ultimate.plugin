@@ -46,7 +46,7 @@ namespace apn::font_select
 			auto file_name = magi.get_config_file_name(L"font_select/font_menu.txt");
 			MY_TRACE_STR(file_name);
 			if (!std::filesystem::exists(file_name))
-				auto file_name = magi.get_assets_file_name(L"font_select/font_menu.txt");
+				file_name = magi.get_assets_file_name(L"font_select/font_menu.txt");
 			MY_TRACE_STR(file_name);
 
 			// テキストファイルストリームを開きます。
