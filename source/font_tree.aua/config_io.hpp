@@ -28,7 +28,7 @@ namespace apn::font_tree
 			recent_manager.clear();
 			favorite_manager.clear();
 
-			read_string(root, "display_name_format", hive.display_name_format);
+			read_string(root, "display_name_format_v2", hive.display_name_format);
 			read_string(root, "separator_format", hive.separator_format);
 			read_window_pos(root, "addin_window", addin_window);
 
@@ -54,7 +54,7 @@ namespace apn::font_tree
 			recent_manager.write(root);
 			favorite_manager.write(root);
 
-			write_string(root, "display_name_format", hive.display_name_format);
+			write_string(root, "display_name_format_v2", hive.display_name_format);
 			write_string(root, "separator_format", hive.separator_format);
 			write_window_pos(root, "addin_window", addin_window);
 

@@ -25,7 +25,7 @@ namespace apn::font_tree
 		//
 		// サンプル文字列の書式です。
 		//
-		std::wstring sample_format = L"プレビュー({/})";
+		std::wstring sample_format = L"プレビュー(%font_name%)";
 
 		//
 		// 項目の背景色です。
@@ -196,7 +196,7 @@ namespace apn::font_tree
 			}
 
 			// プレビューウィンドウを移動します。
-			::MoveWindow(preview, x, y, w, h, TRUE);
+			::SetWindowPos(preview, HWND_TOPMOST, x, y, w, h, SWP_NOACTIVATE);
 		}
 
 		//
@@ -253,10 +253,10 @@ namespace apn::font_tree
 				if (text.length())
 				{
 					// 表示用テキストを取得します。
-					auto display_text = my::format(sample_format, text);
+					auto display_text = my::replace(sample_format, L"%font_name%", text);
 
 					// フォントをセットします。
-					_tcscpy_s(lf.lfFaceName, std::size(lf.lfFaceName), text.c_str());
+					_tcscpy_s(lf.lfFaceName, text.c_str());
 					my::gdi::unique_ptr<HFONT> font(::CreateFontIndirect(&lf));
 					my::gdi::selector font_selector(dc, font.get());
 
@@ -354,7 +354,7 @@ namespace apn::font_tree
 			read_bool(preview_node, "enabled", enabled);
 			read_bool(preview_node, "left_side", left_side);
 			read_size(preview_node, "item_size", item_size);
-			read_string(preview_node, "sample_format", sample_format);
+			read_string(preview_node, "sample_format_v2", sample_format);
 			read_color(preview_node, "fill_color", fill_color);
 			read_color(preview_node, "text_color", text_color);
 		}
@@ -370,7 +370,7 @@ namespace apn::font_tree
 			write_bool(preview_node, "enabled", enabled);
 			write_bool(preview_node, "left_side", left_side);
 			write_size(preview_node, "item_size", item_size);
-			write_string(preview_node, "sample_format", sample_format);
+			write_string(preview_node, "sample_format_v2", sample_format);
 			write_color(preview_node, "fill_color", fill_color);
 			write_color(preview_node, "text_color", text_color);
 			write_child_node(node, "preview", preview_node);

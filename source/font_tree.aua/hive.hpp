@@ -28,7 +28,7 @@ namespace apn::font_tree
 		//
 		// 表示名の書式です。
 		//
-		std::wstring display_name_format = L"{/} --- {/}";
+		std::wstring display_name_format = L"%alias% --- %name%";
 
 		//
 		// セパレータの書式です。
