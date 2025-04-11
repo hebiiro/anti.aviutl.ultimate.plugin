@@ -19,7 +19,7 @@ namespace apn::dark
 	//
 	BOOL init(void* addin)
 	{
-		MY_TRACE_FUNC("{:#010x}", addin);
+		MY_TRACE_FUNC("{/hex}", addin);
 
 		// ダークモード化アドインのエクスポートシンボルを取得します。
 		return exports.init((apn::Addin*)addin);
@@ -50,9 +50,9 @@ namespace apn::dark
 	//
 	// 各オブジェクトを文字列化して返します。
 	//
-	inline auto POINT_str(const POINT& pt) { return std::format(L"x = {}, y = {}", pt.x, pt.y); }
+	inline auto POINT_str(const POINT& pt) { return my::format(L"x = {/}, y = {/}", pt.x, pt.y); }
 	inline auto Point_str(const Point& pt) { return POINT_str(pt); }
-	inline auto RECT_str(const RECT& rc) { return std::format(L"x = {}, y = {}, w = {}, h = {}", rc.left, rc.top, my::get_width(rc), my::get_height(rc)); }
+	inline auto RECT_str(const RECT& rc) { return my::format(L"x = {/}, y = {/}, w = {/}, h = {/}", rc.left, rc.top, my::get_width(rc), my::get_height(rc)); }
 	inline auto Rect_str(const Rect& rc) { return RECT_str(rc); }
 	inline auto Dark_Stuff_str(const share::Stuff& stuff) { return static_cast<const Stuff&>(stuff).__str__(); }
 	inline auto Stuff_str(const Stuff& stuff) { return stuff.__str__(); }
@@ -84,17 +84,17 @@ namespace apn::dark
 
 	inline auto DrawFigureArgs_str(const share::DrawFigureArgs& args)
 	{
-		return std::format(L"{}", safe_string(args.rc));
+		return my::format(L"{/}", safe_string(args.rc));
 	}
 
 	inline auto DrawTextArgs_str(const share::DrawTextArgs& args)
 	{
-		return std::format(L"{}, {}", safe_string(args.rc), safe_string(args.text, args.c));
+		return my::format(L"{/}, {/}", safe_string(args.rc), safe_string(args.text, args.c));
 	}
 
 	inline auto TextOutArgs_str(const share::TextOutArgs& args)
 	{
-		return std::format(L"rc = {{{}}}, options = {:#010x}, text = {}", safe_string(args.rc), args.options, safe_string(args.text, args.c, args.options));
+		return my::format(L"rc = {{{/}}}, options = {/hex}, text = {/}", safe_string(args.rc), args.options, safe_string(args.text, args.c, args.options));
 	}
 
 	//

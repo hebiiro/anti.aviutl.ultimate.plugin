@@ -224,7 +224,7 @@ namespace apn::item_wave
 		//
 		BOOL create_cache(LPCSTR file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			return ::PostThreadMessage(tid, SubThread::c_message.c_create_cache, (WPARAM)new CacheRequest(file_name), 0);
 		}

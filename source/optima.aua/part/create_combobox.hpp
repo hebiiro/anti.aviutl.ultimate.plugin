@@ -59,7 +59,7 @@ namespace apn::optima
 			{
 			case CB_RESETCONTENT:
 				{
-					MY_TRACE("{:#010x}, CB_RESETCONTENT\n", (uint32_t)hwnd);
+					MY_TRACE("{/hex}, CB_RESETCONTENT\n", (uint32_t)hwnd);
 
 					dump_filter_controls();
 
@@ -81,7 +81,7 @@ namespace apn::optima
 						// アニメーション効果の場合は
 						if (filter.get())
 						{
-							MY_TRACE("{:#010x} => アニメーション効果\n", (uint32_t)hwnd);
+							MY_TRACE("{/hex} => アニメーション効果\n", (uint32_t)hwnd);
 
 							// デフォルト処理をスキップして
 							// コンボボックスのコンテンツを維持します。
@@ -90,7 +90,7 @@ namespace apn::optima
 						// アニメーション効果以外の場合は
 						else
 						{
-							MY_TRACE("{:#010x} => アニメーション効果以外\n", (uint32_t)hwnd);
+							MY_TRACE("{/hex} => アニメーション効果以外\n", (uint32_t)hwnd);
 
 							// コンボボックスのカテゴリをリセットします。
 							set_category_id(hwnd, 0);
@@ -116,37 +116,37 @@ namespace apn::optima
 						// フラグが立っている場合はデフォルト処理をスキップします。
 						if (skip_default) return result;
 
-						MY_TRACE("{:#010x}, CB_INSERTSTRING, {}, {:#010x}, {}\n", (uint32_t)hwnd, result, lparam, (LPCSTR)lparam);
+						MY_TRACE("{/hex}, CB_INSERTSTRING, {/}, {/hex}, {/}\n", (uint32_t)hwnd, result, lparam, (LPCSTR)lparam);
 
 						// 先頭アイテムの場合は
 						if (result == 0)
 						{
 							// フィルタのカテゴリを取得します。
 							auto filter_category_id = animation_effect_manager.get_category_id(object.get(), filter.index());
-							MY_TRACE("フィルタカテゴリ => {}\n", filter_category_id);
+							MY_TRACE("フィルタカテゴリ => {/}\n", filter_category_id);
 
 							// 選択アイテム(設定ダイアログ全体)ではなく、
 							// 例えばコンボボックスの選択だけが変更された場合は
 							if (hive.lock_count == 0)
 							{
 								auto combobox_index = find_combobox_index(hwnd);
-								MY_TRACE("コンボボックスインデックス => {}\n", combobox_index);
+								MY_TRACE("コンボボックスインデックス => {/}\n", combobox_index);
 
 								auto category_combobox = get_combobox(combobox_index + 1);
-								MY_TRACE("カテゴリコンボボック => {:#010x}\n", (uint32_t)category_combobox);
+								MY_TRACE("カテゴリコンボボック => {/hex}\n", (uint32_t)category_combobox);
 
 								auto category_index = cb::get_cur_sel(category_combobox);
-								MY_TRACE("カテゴリインデックス => {}\n", category_index);
+								MY_TRACE("カテゴリインデックス => {/}\n", category_index);
 #ifdef _DEBUG
 								auto category_text = cb::get_text(category_combobox, -1);
-								MY_TRACE("カテゴリ文字列 => {}\n", category_text);
+								MY_TRACE("カテゴリ文字列 => {/}\n", category_text);
 
 								auto name = animation_effect_manager.get_name(object.get(), filter.index());
-								MY_TRACE("アニメーション効果名 => {}\n", name);
+								MY_TRACE("アニメーション効果名 => {/}\n", name);
 #endif
 								// カテゴリコンボボックスからフィルタカテゴリを取得します。
 								filter_category_id = category_index + 1;
-								MY_TRACE("フィルタカテゴリ => {}\n", filter_category_id);
+								MY_TRACE("フィルタカテゴリ => {/}\n", filter_category_id);
 							}
 
 							// フィルタのカテゴリが設定されていて、
@@ -163,7 +163,7 @@ namespace apn::optima
 
 							// コンボボックスのカテゴリを取得します。
 							auto cached_category_id = get_category_id(hwnd);
-							MY_TRACE("キャッシュカテゴリ => {}\n", cached_category_id);
+							MY_TRACE("キャッシュカテゴリ => {/}\n", cached_category_id);
 
 							// キャッシュされたカテゴリが存在する場合は
 							if (cached_category_id)

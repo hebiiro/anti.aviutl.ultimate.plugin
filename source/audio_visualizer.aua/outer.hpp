@@ -28,7 +28,7 @@ namespace apn::audio_visualizer
 			auto path = magi.get_module_file_name(hive.c_name + L"_ui.exe"s);
 			MY_TRACE_STR(path);
 
-			auto args = my::format(_T("{:#010x}"), hive.main_window);
+			auto args = my::format(_T("{/hex}"), hive.main_window);
 			MY_TRACE_STR(args);
 
 			STARTUPINFO si = { sizeof(si) };
@@ -51,7 +51,7 @@ namespace apn::audio_visualizer
 
 			HANDLE handles[] = { app_ready_event, pi.hProcess };
 			auto result = ::WaitForMultipleObjects(std::size(handles), handles, FALSE, INFINITE);
-			MY_TRACE("::WaitForMultipleObjects()が{:#010x}を返しました\n", result);
+			MY_TRACE("::WaitForMultipleObjects()が{/hex}を返しました\n", result);
 			if (result != WAIT_OBJECT_0 + 0) return FALSE;
 
 			hive.ui_window = share::host_window::get_ui_window(hive.main_window);

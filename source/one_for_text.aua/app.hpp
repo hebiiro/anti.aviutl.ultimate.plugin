@@ -59,7 +59,7 @@ namespace apn::one_for_text
 		//
 		inline static std::wstring get_mix_text(int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
+			MY_TRACE_FUNC("{/}, {/}", layer_front, layer_back);
 
 			// 末尾レイヤー番号を調整します。
 			if (layer_back < layer_front) layer_back = layer_front;
@@ -78,8 +78,8 @@ namespace apn::one_for_text
 				if (!exdata) return {};
 
 				// ヘッダーテキストを構築します。
-				auto header_text = std::format(
-					LR"(/[/{{ "sorted_index":{}, "index":{}, "scene_set":{}, "layer_set":{}, "frame_begin":{}, "frame_end":{} }}/]/)",
+				auto header_text = my::format(
+					LR"(/[/{{ "sorted_index":{/}, "index":{/}, "scene_set":{/}, "layer_set":{/}, "frame_begin":{/}, "frame_end":{/} }}/]/)",
 					sorted_index,
 					magi.exin.get_object_index(object),
 					object->scene_set,
@@ -123,7 +123,7 @@ namespace apn::one_for_text
 		//
 		BOOL write_file(int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
+			MY_TRACE_FUNC("{/}, {/}", layer_front, layer_back);
 
 			try
 			{
@@ -141,7 +141,7 @@ namespace apn::one_for_text
 			}
 			catch (const std::exception& e)
 			{
-				hive.message_box(my::format(L"ファイルの書き込みに失敗しました\n{}", e.what()));
+				hive.message_box(my::format(L"ファイルの書き込みに失敗しました\n{/}", e.what()));
 
 				return FALSE;
 			}
@@ -154,7 +154,7 @@ namespace apn::one_for_text
 		//
 		BOOL apply_mix_text(const std::wstring& mix_text, int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
+			MY_TRACE_FUNC("{/}, {/}", layer_front, layer_back);
 
 			// 末尾レイヤー番号を調整します。
 			if (layer_back < layer_front) layer_back = layer_front;
@@ -354,8 +354,8 @@ namespace apn::one_for_text
 
 			// 処理結果をユーザーに通知します。
 			hive.message_box(my::format(
-				L"{}個のテキストを変更しました\n"
-				L"{}個のテキストは変更しませんでした",
+				L"{/}個のテキストを変更しました\n"
+				L"{/}個のテキストは変更しませんでした",
 				modified_count, unmodified_count));
 
 			return TRUE;
@@ -366,7 +366,7 @@ namespace apn::one_for_text
 		//
 		BOOL read_file(int32_t layer_front, int32_t layer_back)
 		{
-			MY_TRACE_FUNC("{}, {}", layer_front, layer_back);
+			MY_TRACE_FUNC("{/}, {/}", layer_front, layer_back);
 
 			try
 			{
@@ -393,7 +393,7 @@ namespace apn::one_for_text
 			}
 			catch (const std::exception& e)
 			{
-				hive.message_box(my::format(L"ファイルの読み込みに失敗しました\n{}", e.what()));
+				hive.message_box(my::format(L"ファイルの読み込みに失敗しました\n{/}", e.what()));
 
 				return FALSE;
 			}

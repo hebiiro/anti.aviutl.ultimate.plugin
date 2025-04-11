@@ -85,26 +85,26 @@ namespace apn::item_wave::share
 
 	inline my::tstring get_completion_event_name(HWND host_window)
 	{
-		return my::format(_T("item_wave.completion_event.{:#010x}"), host_window);
+		return my::format(_T("item_wave.completion_event.{/hex}"), host_window);
 	}
 
 	inline my::tstring get_mutex_name(HWND host_window)
 	{
-		return my::format(_T("item_wave.mutex.{:#010x}"), host_window);
+		return my::format(_T("item_wave.mutex.{/hex}"), host_window);
 	}
 
 	inline my::tstring get_main_buffer_name(HWND host_window)
 	{
-		return my::format(_T("item_wave.main_buffer.{:#010x}"), host_window);
+		return my::format(_T("item_wave.main_buffer.{/hex}"), host_window);
 	}
 
 	inline my::tstring get_reader_event_name(DWORD tid)
 	{
-		return my::format(_T("item_wave.reader.event.{:#010x}"), tid);
+		return my::format(_T("item_wave.reader.event.{/hex}"), tid);
 	}
 
 	inline my::tstring get_reader_buffer_name(DWORD tid)
 	{
-		return my::format(_T("item_wave.reader.buffer.{:#010x}"), tid);
+		return my::format(_T("item_wave.reader.buffer.{/hex}"), tid);
 	}
 }

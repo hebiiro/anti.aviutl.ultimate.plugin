@@ -166,7 +166,7 @@ namespace apn::workspace
 			if (get(name))
 			{
 				// メッセージボックスを出して処理を中止します。
-				hive.message_box(std::format(L"ウィンドウ名が重複しています\nウィンドウ名 : {}", name), hive.main_window);
+				hive.message_box(my::format(L"ウィンドウ名が重複しています\nウィンドウ名 : {/}", name), hive.main_window);
 
 				return FALSE;
 			}
@@ -194,7 +194,7 @@ namespace apn::workspace
 		//
 		void on_init_shuttle(const std::shared_ptr<Shuttle>& shuttle) override
 		{
-			MY_TRACE_FUNC("{}", shuttle->name);
+			MY_TRACE_FUNC("{/}", shuttle->name);
 
 			add(shuttle, shuttle->name);
 		}
@@ -204,7 +204,7 @@ namespace apn::workspace
 		//
 		void on_exit_shuttle(const std::shared_ptr<Shuttle>& shuttle) override
 		{
-			MY_TRACE_FUNC("{}", shuttle->name);
+			MY_TRACE_FUNC("{/}", shuttle->name);
 
 			// このシャトルをコレクションから削除します。
 			erase(shuttle);

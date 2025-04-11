@@ -42,7 +42,7 @@ namespace apn::dark
 		if ((ULONG_PTR)name > 0x0000FFFF)
 			return name;
 		else
-			return std::format("{:#010x}", (uint32_t)name);
+			return my::format("{/hex}", (uint32_t)name);
 	}
 
 	inline std::wstring safe_string(LPCWSTR name)
@@ -50,13 +50,13 @@ namespace apn::dark
 		if ((ULONG_PTR)name > 0x0000FFFF)
 			return name;
 		else
-			return std::format(L"{:#010x}", (uint32_t)name);
+			return my::format(L"{/hex}", (uint32_t)name);
 	}
 
 	inline std::wstring safe_string(LPCRECT rc)
 	{
 		if (rc)
-			return std::format(L"{}, {}, {}, {}", rc->left, rc->top, rc->right, rc->bottom);
+			return my::format(L"{/}, {/}, {/}, {/}", rc->left, rc->top, rc->right, rc->bottom);
 		else
 			return L"null";
 	}

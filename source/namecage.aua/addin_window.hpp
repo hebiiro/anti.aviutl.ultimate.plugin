@@ -44,7 +44,7 @@ namespace apn::namecage
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (!addin_dialog.init(hive.instance, hwnd))
 					{
@@ -63,7 +63,7 @@ namespace apn::namecage
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					addin_dialog.exit();
 

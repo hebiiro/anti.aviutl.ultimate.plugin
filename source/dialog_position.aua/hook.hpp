@@ -50,9 +50,9 @@ namespace apn::dialog_position
 			inline static INT_PTR WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc, LPARAM init_param)
 			{
 				if ((DWORD)template_name <= 0x0000FFFF)
-					MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", instance, template_name, parent, dlg_proc, init_param);
+					MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}, {/hex}", instance, template_name, parent, dlg_proc, init_param);
 				else
-					MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {:#010x}, {:#010x}", instance, template_name, parent, dlg_proc, init_param);
+					MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}, {/hex}", instance, template_name, parent, dlg_proc, init_param);
 
 				// ダイアログをサブクラス化します。
 				Dialog dialog; Dialog::Hooker hooker(dialog);

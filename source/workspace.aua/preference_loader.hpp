@@ -178,7 +178,7 @@ namespace apn::workspace
 				{
 					// タブの属性を読み込みます。
 					Hive::Tav tav;
-					if (read_tav(drawer_node, std::format("{}", &drawer - pane->drawers).c_str(), tav))
+					if (read_tav(drawer_node, my::format("{/}", &drawer - pane->drawers).c_str(), tav))
 					{
 						(Hive::Tav&)*drawer = tav;
 					}

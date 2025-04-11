@@ -44,7 +44,7 @@ namespace apn::item_wave
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (!addin_dialog.init(hive.instance, hwnd))
 					{
@@ -63,7 +63,7 @@ namespace apn::item_wave
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					addin_dialog.exit();
 
@@ -71,7 +71,7 @@ namespace apn::item_wave
 				}
 			case share::c_message.c_cache_result:
 				{
-					MY_TRACE_FUNC("c_cache_result, {:#010x}, {:#010x}, {:#010x}", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("c_cache_result, {/hex}, {/hex}, {/hex}", hwnd, wParam, lParam);
 
 					app->on_cache_result();
 

@@ -45,7 +45,7 @@ namespace apn::audio_visualizer
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (!addin_dialog.init(hive.instance, hwnd))
 					{
@@ -64,7 +64,7 @@ namespace apn::audio_visualizer
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					addin_dialog.exit();
 
@@ -72,19 +72,19 @@ namespace apn::audio_visualizer
 				}
 			case share::c_message.c_init_process:
 				{
-					MY_TRACE_FUNC("c_init_process, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_init_process, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case share::c_message.c_exit_process:
 				{
-					MY_TRACE_FUNC("c_exit_process, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_exit_process, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case share::c_message.c_request_option:
 				{
-					MY_TRACE_FUNC("c_request_option, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_request_option, {/hex}, {/hex}", wParam, lParam);
 
 					worker.process_option((HWND)wParam, hive.option);
 

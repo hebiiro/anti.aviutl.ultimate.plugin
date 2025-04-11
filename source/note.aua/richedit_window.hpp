@@ -18,7 +18,7 @@ namespace apn::note
 		//
 		BOOL init(LPCWSTR name)
 		{
-			MY_TRACE_FUNC("{}", name);
+			MY_TRACE_FUNC("{/}", name);
 
 			return create_as_plugin(
 				hive.instance,
@@ -49,7 +49,7 @@ namespace apn::note
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (!richedit.init(hwnd))
 					{
@@ -65,7 +65,7 @@ namespace apn::note
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					richedit.exit();
 
@@ -73,7 +73,7 @@ namespace apn::note
 				}
 			case WM_COMMAND:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					richedit.on_command_reflection(hwnd, message, wParam, lParam);
 
@@ -81,7 +81,7 @@ namespace apn::note
 				}
 			case WM_NOTIFY:
 				{
-					MY_TRACE_FUNC("WM_NOTIFY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_NOTIFY, {/hex}, {/hex}", wParam, lParam);
 
 					richedit.on_notify_reflection(hwnd, message, wParam, lParam);
 

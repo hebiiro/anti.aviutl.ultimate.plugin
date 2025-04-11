@@ -25,7 +25,7 @@ namespace apn::font_tree
 		//
 		// サンプル文字列の書式です。
 		//
-		std::wstring sample_format = L"プレビュー({})";
+		std::wstring sample_format = L"プレビュー({/})";
 
 		//
 		// 項目の背景色です。
@@ -51,7 +51,7 @@ namespace apn::font_tree
 				{
 				case WM_PAINT:
 					{
-						MY_TRACE_FUNC("WM_PAINT, {:#010x}, {:#010x}", wParam, lParam);
+						MY_TRACE_FUNC("WM_PAINT, {/hex}, {/hex}", wParam, lParam);
 
 						auto rc = my::get_client_rect(hwnd);
 						my::PaintDC pdc(hwnd);
@@ -279,13 +279,13 @@ namespace apn::font_tree
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
 			if (::GetKeyState(VK_SHIFT) < 0)
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", message, wParam, lParam);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", message, wParam, lParam);
 
 			switch (message)
 			{
 			case WM_WINDOWPOSCHANGED:
 				{
-					MY_TRACE_FUNC("WM_WINDOWPOSCHANGED, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_WINDOWPOSCHANGED, {/hex}, {/hex}", wParam, lParam);
 
 					// WM_SHOWWINDOWではリストボックスの表示タイミングを
 					// ハンドルすることができないので、代わりにここで処理します。
@@ -305,7 +305,7 @@ namespace apn::font_tree
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE_FUNC("WM_SHOWWINDOW, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SHOWWINDOW, {/hex}, {/hex}", wParam, lParam);
 
 					if (wParam)
 					{

@@ -49,7 +49,7 @@ namespace apn::text_drop
 
 			std::string hex_string;
 			for (size_t i = 0; i < std::size(code); i++)
-				hex_string += std::format("{:02x}", code[i]);
+				hex_string += my::format("{/02x}", code[i]);
 			return hex_string;
 		}
 
@@ -108,13 +108,13 @@ namespace apn::text_drop
 
 			// 拡張編集データを書き込みます。
 			ofs << "[exedit]\r\n";
-			ofs << std::format("width={}\r\n", fi.w);
-			ofs << std::format("height={}\r\n", fi.h);
-			ofs << std::format("rate={}\r\n", fi.video_rate);
-			ofs << std::format("scale={}\r\n", fi.video_scale);
-			ofs << std::format("length={}\r\n", fi.frame_n);
-			ofs << std::format("audio_rate={}\r\n", fi.audio_rate);
-			ofs << std::format("audio_ch={}\r\n", fi.audio_ch);
+			ofs << my::format("width={/}\r\n", fi.w);
+			ofs << my::format("height={/}\r\n", fi.h);
+			ofs << my::format("rate={/}\r\n", fi.video_rate);
+			ofs << my::format("scale={/}\r\n", fi.video_scale);
+			ofs << my::format("length={/}\r\n", fi.frame_n);
+			ofs << my::format("audio_rate={/}\r\n", fi.audio_rate);
+			ofs << my::format("audio_ch={/}\r\n", fi.audio_ch);
 		}
 
 		//
@@ -129,13 +129,13 @@ namespace apn::text_drop
 			const std::wstring& text)
 		{
 			// `テキスト`フィルタデータを書き込みます。
-			ofs << std::format("[{}]\r\n", index);
-			ofs << std::format("start={}\r\n", frame_begin + 1);
-			ofs << std::format("end={}\r\n", frame_end);
-			ofs << std::format("layer={}\r\n", layer_set + 1);
+			ofs << my::format("[{/}]\r\n", index);
+			ofs << my::format("start={/}\r\n", frame_begin + 1);
+			ofs << my::format("end={/}\r\n", frame_end);
+			ofs << my::format("layer={/}\r\n", layer_set + 1);
 			ofs << "overlay=1\r\n";
 			ofs << "camera=0\r\n";
-			ofs << std::format("[{}.0]\r\n", index);
+			ofs << my::format("[{/}.0]\r\n", index);
 			ofs << "_name=テキスト\r\n";
 			ofs << "サイズ=34\r\n";
 			ofs << "表示速度=0.0\r\n";
@@ -155,10 +155,10 @@ namespace apn::text_drop
 			ofs << "color=ffffff\r\n";
 			ofs << "color2=000000\r\n";
 			ofs << "font=MS UI Gothic\r\n";
-			ofs << std::format("text={}\r\n", to_hex_string(text));
+			ofs << my::format("text={/}\r\n", to_hex_string(text));
 
 			// `標準描画`フィルタデータを書き込みます。
-			ofs << std::format("[{}.1]\r\n", index);
+			ofs << my::format("[{/}.1]\r\n", index);
 			ofs << "_name=標準描画\r\n";
 			ofs << "X=0.0\r\n";
 			ofs << "Y=0.0\r\n";

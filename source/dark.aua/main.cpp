@@ -152,7 +152,7 @@ namespace apn::dark
 	//
 	BOOL WINAPI dark_init(HWND hwnd)
 	{
-		MY_TRACE_FUNC("{:#010x}", hwnd);
+		MY_TRACE_FUNC("{/hex}", hwnd);
 
 		gdiplus.si.SuppressBackgroundThread = TRUE;
 		GdiplusStartup(&gdiplus.token, &gdiplus.si, &gdiplus.so);
@@ -194,7 +194,7 @@ namespace apn::dark
 	//
 	const Dark::Stuff* WINAPI dark_get_stuff(LPCWSTR name)
 	{
-		MY_TRACE_FUNC("{}", name);
+		MY_TRACE_FUNC("{/}", name);
 
 		return exports.stuff_manager.get_stuff(name);
 	}
@@ -205,7 +205,7 @@ namespace apn::dark
 	//
 	void WINAPI dark_set_stuff(LPCWSTR name, const Dark::Stuff* stuff)
 	{
-		MY_TRACE_FUNC("{}", name);
+		MY_TRACE_FUNC("{/}", name);
 
 		exports.stuff_manager.set_stuff(name, (const share::Stuff*)stuff);
 	}

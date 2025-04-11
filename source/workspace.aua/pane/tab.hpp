@@ -23,13 +23,13 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case WM_LBUTTONDBLCLK:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONDBLCLK, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDBLCLK, {/hex}, {/hex}", wParam, lParam);
 
 					// タブコントロールはNM_DBLCLKを通知しないので手動で通知します。
 

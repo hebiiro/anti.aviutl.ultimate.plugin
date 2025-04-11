@@ -43,7 +43,7 @@ namespace apn::filer
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// アドインダイアログを初期化します。
 					if (!addin_dialog.init(hwnd))
@@ -63,7 +63,7 @@ namespace apn::filer
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// アドインダイアログを終了します。
 					addin_dialog.exit();

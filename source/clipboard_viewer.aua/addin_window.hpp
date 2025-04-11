@@ -137,14 +137,14 @@ namespace apn::clipboard_viewer
 			if (bitmaps.empty())
 			{
 				// ウィンドウ名を更新します。
-				::SetWindowText(*this, my::format(_T("{} - {}% - (0/0)"), hive.c_display_name, hive.zoom).c_str());
+				::SetWindowText(*this, my::format(_T("{/} - {/}% - (0/0)"), hive.c_display_name, hive.zoom).c_str());
 
 				return FALSE;
 			}
 			else
 			{
 				// ウィンドウ名を更新します。
-				::SetWindowText(*this, my::format(_T("{} - {}% - ({}/{})"),
+				::SetWindowText(*this, my::format(_T("{/} - {/}% - ({/}/{/})"),
 					hive.c_display_name, hive.zoom, current_bitmap_index + 1, bitmaps.size()).c_str());
 
 				// スクロールバーを更新します。
@@ -405,7 +405,7 @@ namespace apn::clipboard_viewer
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// テーマを開きます。
 					theme.reset(::OpenThemeData(hwnd, VSCLASS_WINDOW));
@@ -420,7 +420,7 @@ namespace apn::clipboard_viewer
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// クリップボードの監視を終了します。
 					::RemoveClipboardFormatListener(hwnd);
@@ -457,7 +457,7 @@ namespace apn::clipboard_viewer
 				}
 			case WM_APPCOMMAND:
 				{
-					MY_TRACE_FUNC("WM_APPCOMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_APPCOMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					switch (GET_APPCOMMAND_LPARAM(lParam))
 					{

@@ -93,7 +93,7 @@ namespace apn::reboot
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			// パートのコマンド処理を実行します。
 			for (auto& part : Part::parts) part->on_command(this, code, id, control);

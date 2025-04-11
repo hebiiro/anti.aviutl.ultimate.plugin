@@ -171,7 +171,7 @@ namespace apn::filer_ui
 			SFGAOF attributes = {};
 			si->GetAttributes(SFGAO_FOLDER, &attributes);
 
-//			MY_TRACE_FUNC("{}, {:#010x}", (LPWSTR)display_name, attributes);
+//			MY_TRACE_FUNC("{/}, {/hex}", (LPWSTR)display_name, attributes);
 
 			auto search_str = my::get_window_text(search_control);
 
@@ -285,7 +285,7 @@ namespace apn::filer_ui
 
 		void browse_to_path(LPCTSTR path)
 		{
-			MY_TRACE_FUNC("{}", path);
+			MY_TRACE_FUNC("{/}", path);
 
 			if (!explorer) return;
 

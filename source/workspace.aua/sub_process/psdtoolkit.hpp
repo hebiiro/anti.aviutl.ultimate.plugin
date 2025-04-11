@@ -24,7 +24,7 @@ namespace apn::workspace
 			//
 			void init(PSDToolKit* shuttle, HWND dialog)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", (HWND)*shuttle, dialog);
+				MY_TRACE_FUNC("{/hex}, {/hex}", (HWND)*shuttle, dialog);
 
 				this->dialog = dialog;
 

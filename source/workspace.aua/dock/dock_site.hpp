@@ -712,7 +712,7 @@ namespace apn::workspace
 				{
 					auto header = (NMHDR*)lParam;
 
-					MY_TRACE_FUNC("WM_NOTIFY, {}", header->code);
+					MY_TRACE_FUNC("WM_NOTIFY, {/}", header->code);
 
 					switch (header->code)
 					{
@@ -803,7 +803,7 @@ namespace apn::workspace
 				}
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// IMEは必要ないので無効化します。
 					::ImmAssociateContextEx(hwnd, nullptr, IACE_IGNORENOCONTEXT);
@@ -815,7 +815,7 @@ namespace apn::workspace
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// ルートペインを削除します。
 					exit_root_pane(hwnd);
@@ -824,7 +824,7 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// ドッキングサイトのウィンドウサイズが変更されたので
 					// すべてのペインのレイアウトを再計算します。
@@ -834,7 +834,7 @@ namespace apn::workspace
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE_FUNC("WM_SHOWWINDOW, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SHOWWINDOW, {/hex}, {/hex}", wParam, lParam);
 
 					if (wParam)
 					{
@@ -939,7 +939,7 @@ namespace apn::workspace
 				}
 			case WM_LBUTTONDOWN:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDOWN, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -1006,7 +1006,7 @@ namespace apn::workspace
 				}
 			case WM_LBUTTONUP:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONUP, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -1032,7 +1032,7 @@ namespace apn::workspace
 				}
 			case WM_LBUTTONDBLCLK:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONDBLCLK, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDBLCLK, {/hex}, {/hex}", wParam, lParam);
 
 					// ルートペインを取得します。
 					auto root = get_root_pane(hwnd);
@@ -1073,7 +1073,7 @@ namespace apn::workspace
 				}
 			case WM_RBUTTONDOWN:
 				{
-					MY_TRACE_FUNC("WM_RBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_RBUTTONDOWN, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -1097,7 +1097,7 @@ namespace apn::workspace
 					if (mouse_move_pos == lParam) break;
 					mouse_move_pos = lParam;
 
-//					MY_TRACE_FUNC("WM_MOUSEMOVE, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_MOUSEMOVE, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -1141,7 +1141,7 @@ namespace apn::workspace
 				}
 			case WM_MOUSELEAVE:
 				{
-//					MY_TRACE_FUNC("WM_MOUSELEAVE, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_MOUSELEAVE, {/hex}, {/hex}", wParam, lParam);
 
 					// ホットボーダーが存在する場合は
 					if (hot_border_pane)
@@ -1157,7 +1157,7 @@ namespace apn::workspace
 				}
 			case WM_MOUSEWHEEL:
 				{
-					MY_TRACE_FUNC("WM_MOUSEWHEEL, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSEWHEEL, {/hex}, {/hex}", wParam, lParam);
 
 					// タブ上でマウスホイールが発生した場合はカレントタブを切り替えます。
 

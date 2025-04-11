@@ -29,7 +29,7 @@ namespace apn::item_wave::ui
 			auto path = magi.get_module_file_name(L"item_wave_reader.exe");
 			MY_TRACE_STR(path);
 
-			auto args = my::format(_T("{:#010x}"), hive.host_window);
+			auto args = my::format(_T("{/hex}"), hive.host_window);
 			MY_TRACE_STR(args);
 
 			STARTUPINFO si = { sizeof(si) };
@@ -58,7 +58,7 @@ namespace apn::item_wave::ui
 		//
 		~Reader()
 		{
-			MY_TRACE_FUNC("{}, {}", pi.dwProcessId, pi.dwThreadId);
+			MY_TRACE_FUNC("{/}, {/}", pi.dwProcessId, pi.dwThreadId);
 
 			::CloseHandle(pi.hThread);
 			::CloseHandle(pi.hProcess);
@@ -111,7 +111,7 @@ namespace apn::item_wave::ui
 		//
 		std::shared_ptr<Reader> create_reader(const std::string& file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			auto reader = std::make_shared<Reader>();
 			auto shared = reader->get_buffer();
@@ -126,7 +126,7 @@ namespace apn::item_wave::ui
 		//
 		void erase_reader(DWORD id)
 		{
-			MY_TRACE_FUNC("{}", id);
+			MY_TRACE_FUNC("{/}", id);
 
 			collection.erase(id);
 		}

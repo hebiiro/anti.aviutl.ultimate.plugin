@@ -140,7 +140,7 @@ namespace apn::text_drop
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{
@@ -180,7 +180,7 @@ namespace apn::text_drop
 			{
 			case WM_SETCURSOR:
 				{
-//					MY_TRACE_FUNC("WM_SETCURSOR, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_SETCURSOR, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標からモードを取得します。
 					auto point = my::get_cursor_pos();
@@ -192,7 +192,7 @@ namespace apn::text_drop
 				}
 			case WM_LBUTTONDOWN:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDOWN, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標からモードを取得します。
 					auto point = my::lp_to_pt(lParam);

@@ -26,7 +26,7 @@ namespace apn::item_wave::ui
 		//
 		std::shared_ptr<Cache> get_cache(LPCSTR file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			auto it = collection.find(file_name);
 			if (it == collection.end()) return nullptr;

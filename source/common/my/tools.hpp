@@ -39,7 +39,7 @@ namespace my::tools
 		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), nullptr);
 
 		if (orig.call != 0xE8)
-			return {}; // 相対CALLではなかったので{}を返します。
+			return {}; // 相対CALLではなかったので{/}を返します。
 
 		struct {
 			BYTE call;
@@ -72,7 +72,7 @@ namespace my::tools
 		::ReadProcessMemory(process, (LPVOID)address, &orig, sizeof(orig), nullptr);
 
 		if (orig.call[0] != 0xFF || orig.call[1] != 0x15)
-			return {}; // 絶対CALLではなかったので{}を返します。
+			return {}; // 絶対CALLではなかったので{/}を返します。
 
 		struct {
 			BYTE call;

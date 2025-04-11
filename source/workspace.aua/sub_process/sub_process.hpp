@@ -115,7 +115,7 @@ namespace apn::workspace
 		//
 		BOOL create(const std::shared_ptr<Hive::SubProcess::Node>& node)
 		{
-			MY_TRACE_FUNC("{}", node->name);
+			MY_TRACE_FUNC("{/}", node->name);
 
 			class_name = node->class_name;
 			window_name = node->window_name;
@@ -200,7 +200,7 @@ namespace apn::workspace
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_CREATE, {:#010x}, {:#010x}", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_CREATE, {/hex}, {/hex}", hwnd, wParam, lParam);
 
 					// このウィンドウにカテゴリ名を設定します。
 					::SetProp(hwnd, _T("aviutl.plugin.category_name"), (HANDLE)L"サブプロセス");
@@ -214,13 +214,13 @@ namespace apn::workspace
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_DESTROY, {:#010x}, {:#010x}", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_DESTROY, {/hex}, {/hex}", hwnd, wParam, lParam);
 
 					break;
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_CLOSE, {:#010x}, {:#010x}", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_CLOSE, {/hex}, {/hex}", hwnd, wParam, lParam);
 
 					// ウィンドウの表示状態をトグルで切り替えます。
 					if (::IsWindowVisible(hwnd))
@@ -236,7 +236,7 @@ namespace apn::workspace
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_SHOWWINDOW, {:#010x}, {:#010x}", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_SHOWWINDOW, {/hex}, {/hex}", hwnd, wParam, lParam);
 
 					// このウィンドウが表示されるとき、サブプロセスウィンドウも表示状態にします。
 					if (wParam && ::IsWindow(window))
@@ -246,7 +246,7 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_SIZE, {:#010x}, {:#010x}", hwnd, wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_SIZE, {/hex}, {/hex}", hwnd, wParam, lParam);
 
 					// サブプロセスウィンドウが有効ならリサイズします。
 					if (::IsWindow(window))
@@ -289,7 +289,7 @@ namespace apn::workspace
 			// サブプロセスウィンドウを検索します。
 			if (!on_find_window()) return FALSE;
 
-			MY_TRACE("サブプロセスウィンドウが見つかりました => {:#010x}\n", window);
+			MY_TRACE("サブプロセスウィンドウが見つかりました => {/hex}\n", window);
 #if 0
 			auto menu = ::GetMenu(window);
 			auto result = ::SetMenu(hwnd, menu);

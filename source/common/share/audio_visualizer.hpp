@@ -118,7 +118,7 @@ namespace apn::audio_visualizer::share
 	//
 	inline my::tstring get_app_ready_event_name(HWND hwnd)
 	{
-		return my::format(_T("audio_visualizer_ui.app_ready_event.{:#010x}"), hwnd);
+		return my::format(_T("audio_visualizer_ui.app_ready_event.{/hex}"), hwnd);
 	}
 
 	inline void to_json(n_json& j, const Option::Range& range)

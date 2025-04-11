@@ -17,7 +17,7 @@ namespace apn::item_wave
 		std::wstring s;
 		for (const auto& layer : layers) {
 			if (!s.empty()) s += L", ";
-			s += std::format(L"{}", layer + 1);
+			s += my::format(L"{/}", layer + 1);
 		}
 		return s;
 	}

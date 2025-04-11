@@ -140,7 +140,7 @@ namespace apn::audio_visualizer
 
 		virtual BOOL on_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state) override
 		{
-			MY_TRACE_FUNC("frame = {}, audio_n = {}", fpip->frame, fpip->audio_n);
+			MY_TRACE_FUNC("frame = {/}, audio_n = {/}", fpip->frame, fpip->audio_n);
 
 			switch (hive.mode)
 			{

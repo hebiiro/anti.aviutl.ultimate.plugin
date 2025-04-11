@@ -28,7 +28,7 @@ namespace apn::workspace
 		//
 		virtual BOOL revise_content_position(WINDOWPOS* wp) override
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
 
 			// コンテンツのHWNDを取得します。
 			auto hwnd = content->get_hwnd();
@@ -42,7 +42,7 @@ namespace apn::workspace
 		//
 		virtual BOOL fit_container_position(const WINDOWPOS* content_wp) override
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", content_wp->x, content_wp->y, content_wp->cx, content_wp->cy, content_wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", content_wp->x, content_wp->y, content_wp->cx, content_wp->cy, content_wp->flags);
 
 			return TRUE; // コンテナのサイズを変更しないようにします。
 		}

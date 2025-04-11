@@ -37,7 +37,7 @@ namespace apn
 
 				if (auto addin = conflicts(file_name))
 				{
-					std::wcout << std::format(L"\033[31m" L"『{}』アドインと競合しているので『{}』プラグインは使用できません" L"\033[m",
+					std::wcout << my::format(L"\033[31m" L"『{/}』アドインと競合しているので『{/}』プラグインは使用できません" L"\033[m",
 						addin->display_name, std::filesystem::path(file_name).filename().wstring()) << std::endl;
 
 					return nullptr;
@@ -45,7 +45,7 @@ namespace apn
 
 				auto result = orig_proc(_file_name);
 
-				MY_TRACE("::LoadLibraryA({}) => {:#010x}\n", file_name, result);
+				MY_TRACE("::LoadLibraryA({/}) => {/hex}\n", file_name, result);
 
 				if (::StrStrIW(file_name.c_str(), L"exedit.auf"))
 				{

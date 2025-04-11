@@ -116,9 +116,9 @@ public:
 			}
 			catch (const std::exception& error)
 			{
-				AfxMessageBox(std::format(
+				AfxMessageBox(my::format(
 					L"マニフェストの作成に失敗しました" L"\n"
-					L"{}",
+					L"{/}",
 					my::ws(error.what())).c_str());
 			}
 			catch (...)
@@ -256,9 +256,9 @@ public:
 		}
 		catch (const std::exception& error)
 		{
-			AfxMessageBox(std::format(
-				L"{}を読込中にエラーが発生しました" L"\n"
-				L"{}",
+			AfxMessageBox(my::format(
+				L"{/}を読込中にエラーが発生しました" L"\n"
+				L"{/}",
 				hive.spec_file_name,
 				my::ws(error.what())).c_str());
 

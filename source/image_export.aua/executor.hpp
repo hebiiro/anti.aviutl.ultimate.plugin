@@ -103,7 +103,7 @@ namespace apn::image_export
 		//
 		void create_image(BOOL has_alpha, BOOL sel_item_only)
 		{
-			MY_TRACE_FUNC("{}, {}", has_alpha, sel_item_only);
+			MY_TRACE_FUNC("{/}, {/}", has_alpha, sel_item_only);
 
 			auto fp = magi.fp;
 			auto editp = magi.exin.get_editp();
@@ -193,7 +193,7 @@ namespace apn::image_export
 				{
 					auto visual_temp = magi.exin.get_selection_visual(i);
 
-					MY_TRACE("{} => {:#010x}, {}, {}, {}, {}, {}\n",
+					MY_TRACE("{/} => {/hex}, {/}, {/}, {/}, {/}, {/}\n",
 						i, visual_temp->flags, visual_temp->object_index,
 						visual_temp->x, visual_temp->y, visual_temp->w, visual_temp->h);
 
@@ -245,7 +245,7 @@ namespace apn::image_export
 		//
 		BOOL export_image(const std::wstring& file_name, BOOL has_alpha, BOOL sel_item_only)
 		{
-			MY_TRACE_FUNC("{}, {}, {}", file_name, has_alpha, sel_item_only);
+			MY_TRACE_FUNC("{/}, {/}, {/}", file_name, has_alpha, sel_item_only);
 
 			std::filesystem::path path(file_name);
 			std::filesystem::create_directories(path.parent_path());
@@ -305,7 +305,7 @@ namespace apn::image_export
 		//
 		BOOL copy_image(BOOL has_alpha, BOOL sel_item_only)
 		{
-			MY_TRACE_FUNC("{}, {}", has_alpha, sel_item_only);
+			MY_TRACE_FUNC("{/}, {/}", has_alpha, sel_item_only);
 
 			try
 			{

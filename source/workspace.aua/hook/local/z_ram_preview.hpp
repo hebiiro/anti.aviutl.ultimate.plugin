@@ -12,7 +12,7 @@ namespace apn::workspace::hook
 		inline static struct {
 			inline static int WINAPI hook_proc(HMENU menu)
 			{
-				MY_TRACE_FUNC("{:#010x}", menu);
+				MY_TRACE_FUNC("{/hex}", menu);
 
 				// 「拡張編集RAMプレビュー」用の処理です。
 

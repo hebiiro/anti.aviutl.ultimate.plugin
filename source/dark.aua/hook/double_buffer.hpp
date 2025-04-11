@@ -46,7 +46,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HDC WINAPI hook_proc(HWND hwnd, LPPAINTSTRUCT ps)
 			{
-//				MY_TRACE_FUNC("{:#010x}", hwnd);
+//				MY_TRACE_FUNC("{/hex}", hwnd);
 
 				// デフォルト処理を実行してデフォルトのDCを取得します。
 				auto dc = orig_proc(hwnd, ps);
@@ -74,7 +74,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, const PAINTSTRUCT* ps)
 			{
-//				MY_TRACE_FUNC("{:#010x}", hwnd);
+//				MY_TRACE_FUNC("{/hex}", hwnd);
 
 				// ダブルバッファが存在する場合はフロントバッファに転送します。
 				dark::double_buffer.swap(hwnd);

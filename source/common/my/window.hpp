@@ -141,7 +141,7 @@ namespace my
 			HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam,
 			UINT_PTR id, DWORD_PTR ref_data)
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam, id, ref_data);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam, id, ref_data);
 
 			auto window = (WindowT*)ref_data;
 			return window->on_wnd_proc(hwnd, message, wParam, lParam);
@@ -195,7 +195,7 @@ namespace my
 			//
 			inline static LRESULT CALLBACK hook_proc(int code, WPARAM wParam, LPARAM lParam)
 			{
-//				MY_TRACE_FUNC("{}, {:#010x}, {:#010x}", code, wParam, lParam);
+//				MY_TRACE_FUNC("{/}, {/hex}, {/hex}", code, wParam, lParam);
 
 				if (code == HCBT_CREATEWND)
 				{

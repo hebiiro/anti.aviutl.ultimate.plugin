@@ -145,7 +145,7 @@ namespace apn::dark
 
 				// pythonでエラーが発生したので
 				// メッセージボックスでエラーメッセージを表示します。
-				hive.message_box(std::format(L"配色の取得に失敗しました\n\n{}", what));
+				hive.message_box(my::format(L"配色の取得に失敗しました\n\n{/}", what));
 			}
 
 			return FALSE;
@@ -318,7 +318,7 @@ namespace apn::dark
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{
@@ -475,7 +475,7 @@ namespace apn::dark
 							// 文字を描画します。
 							auto old_text_color = ::SetTextColor(dc, toning_color);
 							auto old_bk_mode = ::SetBkMode(dc, TRANSPARENT);
-							auto s = std::format(_T("{}, {}, {}"), r, g, b);
+							auto s = my::format(_T("{/}, {/}, {/}"), r, g, b);
 							::DrawText(dc, s.c_str(), -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 							::SetTextColor(dc, old_text_color);
 							::SetBkMode(dc, old_bk_mode);

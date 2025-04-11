@@ -234,7 +234,7 @@ namespace apn::dark
 
 				for (auto& name : unload_modules)
 				{
-					MY_TRACE("{}をアンロードします\n", name);
+					MY_TRACE("{/}をアンロードします\n", name);
 
 					modules.attr("pop")(name);
 				}
@@ -278,7 +278,7 @@ namespace apn::dark
 		//
 		BOOL import_modules(const std::wstring& skin_module_name, const std::wstring& scheme_module_name)
 		{
-			MY_TRACE_FUNC("{}, {}", skin_module_name, scheme_module_name);
+			MY_TRACE_FUNC("{/}, {/}", skin_module_name, scheme_module_name);
 
 			// キャッシュを作成しないようにします。
 			update_dont_write_bytecode();
@@ -297,7 +297,7 @@ namespace apn::dark
 		//
 		BOOL import_skin_module(const std::string& skin_module_name)
 		{
-			MY_TRACE_FUNC("{}", skin_module_name);
+			MY_TRACE_FUNC("{/}", skin_module_name);
 
 			try
 			{
@@ -307,7 +307,7 @@ namespace apn::dark
 				// スキンモジュールを読み込みます。
 				skin_module = boot_module.attr("boot_skin_module")(skin_module_name).cast<py::module>();
 				if (!skin_module)
-					throw std::exception(std::format("{}の読み込みに失敗しました", skin_module_name).c_str());
+					throw std::exception(my::format("{/}の読み込みに失敗しました", skin_module_name).c_str());
 
 				dark_module.add_object("skin", skin_module, true);
 
@@ -329,7 +329,7 @@ namespace apn::dark
 		//
 		BOOL import_sheme_module(const std::string& scheme_module_name)
 		{
-			MY_TRACE_FUNC("{}", scheme_module_name);
+			MY_TRACE_FUNC("{/}", scheme_module_name);
 
 			try
 			{
@@ -341,7 +341,7 @@ namespace apn::dark
 				scheme_module = boot_module.attr("boot_scheme_module")(scheme_module_name).cast<py::module>();
 				if (!scheme_module)
 				{
-					auto message = std::format(L"{}の読み込みに失敗しました", ws(scheme_module_name));
+					auto message = my::format(L"{/}の読み込みに失敗しました", ws(scheme_module_name));
 
 					throw std::exception(u8(message).c_str());
 				}

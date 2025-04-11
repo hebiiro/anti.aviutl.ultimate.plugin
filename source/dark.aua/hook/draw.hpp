@@ -100,7 +100,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int left, int top, int right, int bottom)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {}", ret_addr(&dc), dc, left, top, right, bottom);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/}, {/}", ret_addr(&dc), dc, left, top, right, bottom);
 				return gdi::manager.on_rectangle(dc, left, top, right, bottom);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::Rectangle;
@@ -112,7 +112,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, ({}), {:#010x}", ret_addr(&dc), dc, safe_string(rc), brush);
+				MY_TRACE_FUNC("{/hex}, {/hex}, ({/}), {/hex}", ret_addr(&dc), dc, safe_string(rc), brush);
 				return gdi::manager.on_fill_rect(dc, rc, brush);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::FillRect;
@@ -124,7 +124,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPRECT rc, UINT width, UINT type)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, ({}), {}, {:#010x}", ret_addr(&dc), dc, safe_string(rc), width, type);
+				MY_TRACE_FUNC("{/hex}, {/hex}, ({/}), {/}, {/hex}", ret_addr(&dc), dc, safe_string(rc), width, type);
 				return gdi::manager.on_draw_frame(dc, rc, width, type);
 			}
 			inline static decltype(&hook_proc) orig_proc = nullptr;
@@ -136,7 +136,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPRECT rc, UINT type, UINT state)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, ({}), {:#010x}, {:#010x}", ret_addr(&dc), dc, safe_string(rc), type, state);
+				MY_TRACE_FUNC("{/hex}, {/hex}, ({/}), {/hex}, {/hex}", ret_addr(&dc), dc, safe_string(rc), type, state);
 				return gdi::manager.on_draw_frame_control(dc, rc, type, state);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DrawFrameControl;
@@ -149,7 +149,7 @@ namespace apn::dark::hook
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
 				auto from = *((my::addr_t*)&dc - 1);
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, ({}), {:#010x}", from, dc, safe_string(rc), brush);
+				MY_TRACE_FUNC("{/hex}, {/hex}, ({/}), {/hex}", from, dc, safe_string(rc), brush);
 				return gdi::manager.on_frame_rect(dc, rc, brush);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::FrameRect;
@@ -161,7 +161,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPRECT rc, UINT edge, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, ({}), {:#010x}, {:#010x}", ret_addr(&dc), dc, safe_string(rc), edge, flags);
+				MY_TRACE_FUNC("{/hex}, {/hex}, ({/}), {/hex}, {/hex}", ret_addr(&dc), dc, safe_string(rc), edge, flags);
 				return gdi::manager.on_draw_edge(dc, rc, edge, flags);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DrawEdge;
@@ -173,7 +173,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, ({})", ret_addr(&dc), dc, safe_string(rc));
+				MY_TRACE_FUNC("{/hex}, {/hex}, ({/})", ret_addr(&dc), dc, safe_string(rc));
 				return gdi::manager.on_draw_focus_rect(dc, rc);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DrawFocusRect;
@@ -185,7 +185,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, HBRUSH fore, DRAWSTATEPROC cb, LPARAM lData, WPARAM wData, int x, int y, int cx, int cy, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {}, {}, {}, {}, {:#010x}", ret_addr(&dc), dc, fore, x, y, cx, cy, flags);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/}, {/}, {/}, {/}, {/hex}", ret_addr(&dc), dc, fore, x, y, cx, cy, flags);
 				return gdi::manager.on_draw_state_w(dc, fore, cb, lData, wData, x, y, cx, cy, flags);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DrawStateW;
@@ -205,7 +205,7 @@ namespace apn::dark::hook
 				}
 				ExtTextOutLocker locker;
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {:#010x}, ({}), {}",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/hex}, ({/}), {/}",
 					ret_addr(&dc), dc, x, y, options, safe_string(rc), safe_string(text, c, options));
 
 				return gdi::manager.on_ext_text_out_w(dc, x, y, options, rc, text, c, dx);
@@ -219,7 +219,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, int w, int h, DWORD rop)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {}, {:#010x}", ret_addr(&dc), dc, x, y, w, h, rop);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/}, {/}, {/hex}", ret_addr(&dc), dc, x, y, w, h, rop);
 				return gdi::manager.on_pat_blt(dc, x, y, w, h, rop);
 			}
 			inline static decltype(&hook_proc) orig_proc = ::PatBlt;

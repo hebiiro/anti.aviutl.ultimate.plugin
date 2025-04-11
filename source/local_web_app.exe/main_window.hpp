@@ -191,7 +191,7 @@ namespace apn::local_web_app
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					::DragAcceptFiles(hwnd, TRUE);
 
@@ -202,7 +202,7 @@ namespace apn::local_web_app
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// メッセージループを終了します。
 					::PostQuitMessage(0);
@@ -211,7 +211,7 @@ namespace apn::local_web_app
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("WM_CLOSE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CLOSE, {/hex}, {/hex}", wParam, lParam);
 
 					// コンフィグを書き込みます。
 					config_io.write();
@@ -220,7 +220,7 @@ namespace apn::local_web_app
 				}
 			case WM_DROPFILES:
 				{
-					MY_TRACE_FUNC("WM_DROP_FILES, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DROP_FILES, {/hex}, {/hex}", wParam, lParam);
 
 					auto drop = (HDROP)wParam;
 					auto c = ::DragQueryFileW(drop, 0xffffffff, nullptr, 0);

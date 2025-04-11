@@ -20,7 +20,7 @@ namespace apn
 		//
 		BOOL init(HINSTANCE instance)
 		{
-			MY_TRACE_FUNC("{:#010x}", instance);
+			MY_TRACE_FUNC("{/hex}", instance);
 
 			// モジュールのファイルパスを取得します。
 			auto module_file_name = my::get_module_file_name(instance);
@@ -36,7 +36,7 @@ namespace apn
 				Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 				[&](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
 			{
-				MY_TRACE_FUNC("{}, {:#010x}", my::get_error_message(result), env);
+				MY_TRACE_FUNC("{/}, {/hex}", my::get_error_message(result), env);
 
 				// 引数が無効の場合は何もしません。
 				if (!env) return result;
@@ -49,7 +49,7 @@ namespace apn
 					Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
 					[&](HRESULT result, ICoreWebView2Controller* _controller) -> HRESULT
 				{
-					MY_TRACE_FUNC("{}, {:#010x}", my::get_error_message(result), _controller);
+					MY_TRACE_FUNC("{/}, {/hex}", my::get_error_message(result), _controller);
 
 					// 引数が無効の場合は何もしません。
 					if (!_controller) return result;
@@ -85,7 +85,7 @@ namespace apn
 						Callback<ICoreWebView2WebMessageReceivedEventHandler>(
 						[&](ICoreWebView2* webview, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
 					{
-						MY_TRACE_FUNC("{:#010x}, {:#010x}", webview, args);
+						MY_TRACE_FUNC("{/hex}, {/hex}", webview, args);
 
 						{
 							wil::unique_cotaskmem_string s;
@@ -113,7 +113,7 @@ namespace apn
 						Callback<ICoreWebView2NavigationCompletedEventHandler>(
 						[&](ICoreWebView2* sender, ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
 					{
-						MY_TRACE_FUNC("{:#010x}, {:#010x}", sender, args);
+						MY_TRACE_FUNC("{/hex}, {/hex}", sender, args);
 
 						BOOL success = FALSE;
 						args->get_IsSuccess(&success);
@@ -127,7 +127,7 @@ namespace apn
 						Callback<ICoreWebView2FaviconChangedEventHandler>(
 						[&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
 					{
-						MY_TRACE_FUNC("{:#010x}, {:#010x}", sender, args);
+						MY_TRACE_FUNC("{/hex}, {/hex}", sender, args);
 #if 0
 						wil::unique_cotaskmem_string url;
 						webview->get_FaviconUri(&url);
@@ -201,7 +201,7 @@ namespace apn
 		//
 		BOOL navigate(const std::wstring& file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			if (!webview) return FALSE;
 
@@ -217,7 +217,7 @@ namespace apn
 		//
 		BOOL post_web_message_as_string(const std::wstring& s)
 		{
-			MY_TRACE_FUNC("{}", s);
+			MY_TRACE_FUNC("{/}", s);
 
 			if (!webview) return FALSE;
 
@@ -231,7 +231,7 @@ namespace apn
 		//
 		BOOL post_web_message_as_json(const std::wstring& json)
 		{
-			MY_TRACE_FUNC("{}", json);
+			MY_TRACE_FUNC("{/}", json);
 
 			if (!webview) return FALSE;
 
@@ -265,7 +265,7 @@ namespace apn
 		//
 		virtual BOOL on_navigation_completed(BOOL success)
 		{
-			MY_TRACE_FUNC("{}", success);
+			MY_TRACE_FUNC("{/}", success);
 
 			if (success)
 			{
@@ -285,7 +285,7 @@ namespace apn
 		//
 		virtual BOOL on_web_message_as_string(const std::wstring& s)
 		{
-			MY_TRACE_FUNC("{}", s);
+			MY_TRACE_FUNC("{/}", s);
 
 			return TRUE;
 		}
@@ -295,7 +295,7 @@ namespace apn
 		//
 		virtual BOOL on_web_message_as_json(const std::wstring& json)
 		{
-			MY_TRACE_FUNC("{}", json);
+			MY_TRACE_FUNC("{/}", json);
 
 			return TRUE;
 		}
@@ -305,7 +305,7 @@ namespace apn
 		//
 		BOOL show_controller(BOOL visible)
 		{
-			MY_TRACE_FUNC("{}", visible);
+			MY_TRACE_FUNC("{/}", visible);
 
 			if (!controller) return FALSE;
 			return SUCCEEDED(controller->put_IsVisible(visible));
@@ -332,7 +332,7 @@ namespace apn
 			{
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// コントローラをリサイズします。
 					resize_controller();

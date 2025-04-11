@@ -71,7 +71,7 @@ namespace apn::dark::gdi
 		//
 		void attach_renderer(HWND hwnd, const ClassName& class_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name.c_str());
+			MY_TRACE_FUNC("{/hex}, {/}", hwnd, class_name.c_str());
 
 			if (auto renderer = find_renderer(hwnd, class_name))
 				Renderer::attach(hwnd, renderer);
@@ -82,7 +82,7 @@ namespace apn::dark::gdi
 		//
 		void tweak_window(HWND hwnd, const ClassName& class_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", hwnd, class_name.c_str());
+			MY_TRACE_FUNC("{/hex}, {/}", hwnd, class_name.c_str());
 
 			if (my::get_style(hwnd) & WS_CAPTION)
 			{
@@ -111,7 +111,7 @@ namespace apn::dark::gdi
 		//
 		void init_renderer(HWND hwnd)
 		{
-			MY_TRACE_FUNC("{:#010x}", hwnd);
+			MY_TRACE_FUNC("{/hex}", hwnd);
 
 			// ウィンドウのクラス名を取得します。
 			auto class_name = ClassName(my::get_class_name(hwnd));
@@ -129,7 +129,7 @@ namespace apn::dark::gdi
 		//
 		void exit_renderer(HWND hwnd)
 		{
-			MY_TRACE_FUNC("{:#010x}", hwnd);
+			MY_TRACE_FUNC("{/hex}", hwnd);
 
 			Renderer::detach(hwnd);
 		}
@@ -164,7 +164,7 @@ namespace apn::dark::gdi
 			{
 				auto class_name = my::get_class_name(hwnd);
 
-				MY_TRACE_FUNC("{}, {:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}",
+				MY_TRACE_FUNC("{/}, {/hex}, {/hex}, {/hex}, {/hex}, {/hex}",
 					class_name, wnd_proc, hwnd, message, wParam, lParam);
 
 				if (0)
@@ -177,7 +177,7 @@ namespace apn::dark::gdi
 					auto dpi4 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 					auto dpi5 = ::GetDpiFromDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
 
-					MY_TRACE("{}, {}, {}, {}, {}, {}, {}\n", window_dpi, system_dpi, dpi1, dpi2, dpi3, dpi4, dpi5);
+					MY_TRACE("{/}, {/}, {/}, {/}, {/}, {/}, {/}\n", window_dpi, system_dpi, dpi1, dpi2, dpi3, dpi4, dpi5);
 				}
 			}
 
@@ -191,7 +191,7 @@ namespace apn::dark::gdi
 				{
 					auto active = LOWORD(wParam);
 
-					MY_TRACE_FUNC("WM_ACTIVATE, {}", active);
+					MY_TRACE_FUNC("WM_ACTIVATE, {/}", active);
 
 					skin::dwm.set_window_attribute(hwnd, active);
 
@@ -205,7 +205,7 @@ namespace apn::dark::gdi
 			case WM_CTLCOLORSCROLLBAR:
 			case WM_CTLCOLORSTATIC:
 				{
-//					MY_TRACE_FUNC("WM_CTLCOLOR, {:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//					MY_TRACE_FUNC("WM_CTLCOLOR, {/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 					auto dc = (HDC)wParam;
 					auto control = (HWND)lParam;

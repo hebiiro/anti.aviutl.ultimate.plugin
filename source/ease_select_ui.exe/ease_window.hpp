@@ -76,7 +76,7 @@ namespace apn::ease_select_ui
 		//
 		BOOL init(CWnd* parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			return __super::CreateEx(0, nullptr, nullptr, WS_POPUP, CRect(0, 0, 0, 0), parent, 0);
 		}
@@ -190,8 +190,8 @@ namespace apn::ease_select_ui
 		//
 		void output_ease_text()
 		{
-			auto str = std::format(
-				_T("({}, {}) ({}, {}) - {:02d}{:02d}{:02d}{:02d}"),
+			auto str = my::format(
+				_T("({/}, {/}) ({/}, {/}) - {:02d}{:02d}{:02d}{:02d}"),
 				points[c_points.c_first].x,
 				points[c_points.c_first].y,
 				points[c_points.c_second].x,
@@ -249,7 +249,7 @@ namespace apn::ease_select_ui
 			MY_TRACE_HWND(child);
 			MY_TRACE_INT(::GetDlgCtrlID(child));
 
-			auto str = std::format(_T("{:02d}{:02d}{:02d}{:02d}"),
+			auto str = my::format(_T("{:02d}{:02d}{:02d}{:02d}"),
 				points[c_points.c_first].x, points[c_points.c_first].y,
 				points[c_points.c_second].x, points[c_points.c_second].y);
 			::SendMessage(child, WM_SETTEXT, 0, (LPARAM)str.c_str());
@@ -261,7 +261,7 @@ namespace apn::ease_select_ui
 		//
 		void show(HWND number_window, HWND easing_window)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", number_window, easing_window);
+			MY_TRACE_FUNC("{/hex}, {/hex}", number_window, easing_window);
 
 			if (!enabled) return;
 			if (IsWindowVisible()) return;
@@ -499,14 +499,14 @@ namespace apn::ease_select_ui
 
 		BOOL OnNcActivate(BOOL bActive)
 		{
-			MY_TRACE_FUNC("{}", bActive);
+			MY_TRACE_FUNC("{/}", bActive);
 
 			return __super::OnNcActivate(bActive);
 		}
 
 		void OnLButtonDown(UINT nFlags, CPoint point)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", nFlags, point.x, point.y);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", nFlags, point.x, point.y);
 
 			hot = hittest(point);
 			if (hot != c_points.c_none)
@@ -523,7 +523,7 @@ namespace apn::ease_select_ui
 
 		void OnLButtonUp(UINT nFlags, CPoint point)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", nFlags, point.x, point.y);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", nFlags, point.x, point.y);
 
 			if (GetCapture() == this)
 			{
@@ -539,7 +539,7 @@ namespace apn::ease_select_ui
 
 		void OnLButtonDblClk(UINT nFlags, CPoint point)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", nFlags, point.x, point.y);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", nFlags, point.x, point.y);
 
 			send_number();
 
@@ -548,21 +548,21 @@ namespace apn::ease_select_ui
 
 		void OnRButtonDown(UINT nFlags, CPoint point)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", nFlags, point.x, point.y);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", nFlags, point.x, point.y);
 
 			__super::OnRButtonDown(nFlags, point);
 		}
 
 		void OnRButtonUp(UINT nFlags, CPoint point)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", nFlags, point.x, point.y);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", nFlags, point.x, point.y);
 
 			__super::OnRButtonUp(nFlags, point);
 		}
 
 		void OnRButtonDblClk(UINT nFlags, CPoint point)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", nFlags, point.x, point.y);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", nFlags, point.x, point.y);
 
 			__super::OnRButtonDblClk(nFlags, point);
 		}

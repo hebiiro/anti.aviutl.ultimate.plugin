@@ -102,7 +102,7 @@ namespace apn::audio_visualizer
 		//
 		virtual BOOL destroy_co_window(size_t index) override
 		{
-			MY_TRACE_FUNC("{}", index);
+			MY_TRACE_FUNC("{/}", index);
 
 			// 指定されたインデックスにあるウィンドウを取得します。
 			auto co_window = co_window_manager.get_co_window(index);
@@ -113,8 +113,8 @@ namespace apn::audio_visualizer
 			MY_TRACE_STR(name);
 
 			// メッセージテキストを構築します。
-			auto text = std::format(
-				_T("ウィンドウ「{}」を削除しますか？") _T("\n")
+			auto text = my::format(
+				_T("ウィンドウ「{/}」を削除しますか？") _T("\n")
 				_T("※ウィンドウを削除するとウィンドウの設定も一緒に削除されます"), name);
 			MY_TRACE_STR(text);
 
@@ -136,7 +136,7 @@ namespace apn::audio_visualizer
 		//
 		virtual BOOL edit_co_window(size_t index) override
 		{
-			MY_TRACE_FUNC("{}", index);
+			MY_TRACE_FUNC("{/}", index);
 
 			// 指定されたインデックスにあるウィンドウを取得します。
 			auto co_window = co_window_manager.get_co_window(index);

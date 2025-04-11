@@ -59,14 +59,14 @@ namespace apn::audio_visualizer::ui
 				if (audio_artifact->time > time)
 				{
 					auto due_time = audio_artifact->time - time;
-					MY_TRACE("{}, {:.3f}, {:.3f}, {:.3f}秒後に表示します\n",
+					MY_TRACE("{/}, {/.3f}, {/.3f}, {/.3f}秒後に表示します\n",
 						audio_artifact->frame, time / 1000.0, audio_artifact->time / 1000.0, due_time / 1000.0);
 
 					::Sleep(due_time);
 				}
 				else if (audio_artifact->time + 5 < time)
 				{
-					MY_TRACE("{}, {:.3f}, {:.3f}, 表示が間に合っていないのでスキップします\n",
+					MY_TRACE("{/}, {/.3f}, {/.3f}, 表示が間に合っていないのでスキップします\n",
 						audio_artifact->frame, time / 1000.0, audio_artifact->time / 1000.0);
 
 					return FALSE;
@@ -85,7 +85,7 @@ namespace apn::audio_visualizer::ui
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// このウィンドウをメインウィンドウに設定します。
 					share::host_window::set_ui_window(hive.host_window, hive.main_window = hwnd);
@@ -94,13 +94,13 @@ namespace apn::audio_visualizer::ui
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case share::c_message.c_init_process:
 				{
-					MY_TRACE_FUNC("c_init_process, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_init_process, {/hex}, {/hex}", wParam, lParam);
 
 					// 設定を読み込みます。
 					app->read_config();
@@ -109,7 +109,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case share::c_message.c_exit_process:
 				{
-					MY_TRACE_FUNC("c_exit_process, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_exit_process, {/hex}, {/hex}", wParam, lParam);
 
 					// 設定を保存します。
 					app->write_config();
@@ -121,7 +121,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case share::c_message.c_init_co_window:
 				{
-					MY_TRACE_FUNC("c_init_co_window, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_init_co_window, {/hex}, {/hex}", wParam, lParam);
 
 					// コウィンドウを取得します。
 					auto co_window = (HWND)wParam;
@@ -137,7 +137,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case share::c_message.c_exit_co_window:
 				{
-					MY_TRACE_FUNC("c_exit_co_window, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_exit_co_window, {/hex}, {/hex}", wParam, lParam);
 
 					// コウィンドウを取得します。
 					auto co_window = (HWND)wParam;
@@ -152,7 +152,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case share::c_message.c_update_option:
 				{
-					MY_TRACE_FUNC("c_update_option, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_update_option, {/hex}, {/hex}", wParam, lParam);
 
 					// ビジュアルを取得します。
 					auto visual = (HWND)wParam;
@@ -174,7 +174,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case share::c_message.c_update_audio:
 				{
-					MY_TRACE_FUNC("c_update_audio, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_update_audio, {/hex}, {/hex}", wParam, lParam);
 
 					// ファイルマッピングを取得します。
 					my::handle::unique_ptr<> file_mapping((HANDLE)lParam);

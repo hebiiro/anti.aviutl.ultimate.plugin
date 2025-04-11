@@ -437,7 +437,7 @@ namespace apn::scene_select
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					window_theme.reset(::OpenThemeData(hwnd, VSCLASS_WINDOW));
 					MY_TRACE_HEX(window_theme.get());
@@ -452,7 +452,7 @@ namespace apn::scene_select
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					window_theme.reset();
 					button_theme.reset();
@@ -461,7 +461,7 @@ namespace apn::scene_select
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// 固定サイズモードの場合はWM_SIZEでは何もしません。
 					if (hive.size_mode == hive.c_size_mode.c_nonresizable) break;
@@ -472,7 +472,7 @@ namespace apn::scene_select
 				}
 			case WM_PAINT:
 				{
-					MY_TRACE_FUNC("WM_PAINT, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_PAINT, {/hex}, {/hex}", wParam, lParam);
 
 					on_paint(hwnd);
 
@@ -480,7 +480,7 @@ namespace apn::scene_select
 				}
 			case WM_LBUTTONDOWN:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDOWN, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -503,7 +503,7 @@ namespace apn::scene_select
 				}
 			case WM_LBUTTONUP:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONUP, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -543,7 +543,7 @@ namespace apn::scene_select
 				}
 			case WM_MOUSEMOVE:
 				{
-//					MY_TRACE_FUNC("WM_MOUSEMOVE, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_MOUSEMOVE, {/hex}, {/hex}", wParam, lParam);
 
 					// マウスカーソルの座標を取得します。
 					auto point = my::lp_to_pt(lParam);
@@ -602,10 +602,10 @@ namespace apn::scene_select
 								auto width = scene_setting->width;
 								auto height = scene_setting->height;
 								auto has_alpha = !!(scene_setting->flag & ExEdit::SceneSetting::Flag::Alpha);
-								auto name_string = name ? my::format(_T("\"{}\""), name) : my::format(_T("Scene {}"), hot_button);
-								auto size_string = (width && height) ? my::format(_T("{} x {}"), width, height) : my::format(_T("デフォルトサイズ"));
+								auto name_string = name ? my::format(_T("\"{/}\""), name) : my::format(_T("Scene {/}"), hot_button);
+								auto size_string = (width && height) ? my::format(_T("{/} x {/}"), width, height) : my::format(_T("デフォルトサイズ"));
 								auto has_alpha_string = has_alpha ? _T("アルファあり") : _T("アルファなし");
-								::SetWindowText(hwnd, my::format(_T("{} {} - {} - {}"),
+								::SetWindowText(hwnd, my::format(_T("{/} {/} - {/} - {/}"),
 									hive.c_display_name, name_string, size_string, has_alpha_string).c_str());
 							}
 						}
@@ -615,7 +615,7 @@ namespace apn::scene_select
 				}
 			case WM_MOUSELEAVE:
 				{
-					MY_TRACE_FUNC("WM_MOUSELEAVE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSELEAVE, {/hex}, {/hex}", wParam, lParam);
 
 					// ホットボタンが有効なら
 					if (hot_button >= 0)
@@ -631,7 +631,7 @@ namespace apn::scene_select
 				}
 			case WM_RBUTTONUP:
 				{
-					MY_TRACE_FUNC("WM_RBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_RBUTTONUP, {/hex}, {/hex}", wParam, lParam);
 
 					// コンテキストメニューを表示します。
 					on_context_menu(hwnd);

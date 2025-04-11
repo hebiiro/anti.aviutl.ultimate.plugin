@@ -143,7 +143,7 @@ namespace apn::optima
 			// コンボボックスのカテゴリを取得します。
 			auto cached_category_id = get_category_id(hwnd);
 
-			output_debug_string("{}, {:#010x}, {}", i, (uint32_t)hwnd, cached_category_id);
+			output_debug_string("{/}, {/hex}, {/}", i, (uint32_t)hwnd, cached_category_id);
 		}
 #endif
 	}

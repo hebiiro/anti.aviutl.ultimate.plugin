@@ -89,7 +89,7 @@ namespace apn::workspace
 		Container(Content* content, DWORD style, DWORD ex_style)
 			: content(content)
 		{
-			MY_TRACE_FUNC("{:010x}, {:010x}, {:010x}", content, style, ex_style);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", content, style, ex_style);
 
 			create(
 				ex_style,
@@ -202,7 +202,7 @@ namespace apn::workspace
 		//
 		virtual BOOL revise_content_position(WINDOWPOS* wp)
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
 
 			// コンテンツの位置だけ変更します。サイズは変更しません。
 
@@ -267,7 +267,7 @@ namespace apn::workspace
 		//
 		BOOL fit_container_position_with_lock(const WINDOWPOS* content_wp)
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", content_wp->x, content_wp->y, content_wp->cx, content_wp->cy, content_wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", content_wp->x, content_wp->y, content_wp->cx, content_wp->cy, content_wp->flags);
 
 			// ロックされている場合は何もしません。
 			if (is_locked()) return FALSE;
@@ -284,7 +284,7 @@ namespace apn::workspace
 		//
 		virtual BOOL fit_container_position(const WINDOWPOS* content_wp)
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", content_wp->x, content_wp->y, content_wp->cx, content_wp->cy, content_wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", content_wp->x, content_wp->y, content_wp->cx, content_wp->cy, content_wp->flags);
 
 			// コンテンツのウィンドウ矩形を取得します。
 			auto rc = wp_to_rc(content_wp);
@@ -309,7 +309,7 @@ namespace apn::workspace
 		//
 		virtual BOOL on_content_pos_changing(WINDOWPOS* wp)
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
 
 			// ロックされている場合は何もしません。
 			if (is_locked()) return FALSE;
@@ -332,7 +332,7 @@ namespace apn::workspace
 		//
 		virtual BOOL on_content_pos_changed(WINDOWPOS* wp)
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}, {:#010x}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}, {/hex}", wp->x, wp->y, wp->cx, wp->cy, wp->flags);
 
 			// ロックされている場合は何もしません。
 			if (is_locked()) return FALSE;
@@ -365,7 +365,7 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {}, ({}, {})", wParam, (short)LOWORD(lParam), (short)HIWORD(lParam));
+					MY_TRACE_FUNC("WM_SIZE, {/}, ({/}, {/})", wParam, (short)LOWORD(lParam), (short)HIWORD(lParam));
 
 					// コンテンツの位置を変更します。
 					set_content_position_with_lock();
@@ -396,7 +396,7 @@ namespace apn::workspace
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE_FUNC("WM_SHOWWINDOW, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SHOWWINDOW, {/hex}, {/hex}", wParam, lParam);
 
 					// ::ShowWindow()の呼び出し以外がトリガーの場合は何もしません。
 					if (lParam) break;

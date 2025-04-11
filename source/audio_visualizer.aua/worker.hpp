@@ -301,7 +301,7 @@ namespace apn::audio_visualizer
 			//
 			BOOL post_option(HWND visual, const share::Option* option)
 			{
-				MY_TRACE_FUNC("{:#010x}", visual);
+				MY_TRACE_FUNC("{/hex}", visual);
 
 				// 外部プロスが無効の場合は何もしません。
 				if (!hive.ui_window) return FALSE;
@@ -361,7 +361,7 @@ namespace apn::audio_visualizer
 					// 許容範囲以上に遅れている場合は解析をスキップします。
 					if (time > audio_sample->time && time - audio_sample->time > 5)
 					{
-						MY_TRACE("{}, {:.3f}, {:.3f}, 解析が間に合っていないのでスキップします\n",
+						MY_TRACE("{/}, {/.3f}, {/.3f}, 解析が間に合っていないのでスキップします\n",
 							audio_sample->frame, time / 1000.0, audio_sample->time / 1000.0);
 
 						return TRUE;

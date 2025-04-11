@@ -283,7 +283,7 @@ namespace my::layout
 			{
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					update_layout();
 

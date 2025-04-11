@@ -38,7 +38,7 @@ namespace apn::font_select
 		//
 		BOOL on_context_menu(HWND combobox)
 		{
-			MY_TRACE_FUNC("{:#010x}", combobox);
+			MY_TRACE_FUNC("{/hex}", combobox);
 
 			// フォントコンボボックスではない場合は何もしません。
 			if (combobox != magi.exin.get_font_combobox()) return FALSE;

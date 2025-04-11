@@ -41,7 +41,7 @@ namespace apn::item_wave
 
 		virtual BOOL update_item_caches(BOOL send) override
 		{
-			MY_TRACE_FUNC("{}", send);
+			MY_TRACE_FUNC("{/}", send);
 
 			return item_cache_manager.update(send);
 		}

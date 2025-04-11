@@ -28,7 +28,7 @@ namespace apn::settings_browser
 		//
 		BOOL add_menu_item(AviUtl::FilterPlugin* fp, LPCWSTR text, UINT id)
 		{
-			auto str = std::format(L"[{}]{}", hive.c_display_name, text);
+			auto str = my::format(L"[{/}]{/}", hive.c_display_name, text);
 
 			return fp->exfunc->add_menu_item(fp, my::hs(str).c_str(),
 				addin_dialog, id, 0, AviUtl::ExFunc::AddMenuItemFlag::None);

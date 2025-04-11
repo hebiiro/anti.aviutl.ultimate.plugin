@@ -15,7 +15,7 @@ namespace apn::font_select
 		//
 		BOOL init(HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			return __super::create(hive.instance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), parent);
 		}
@@ -95,7 +95,7 @@ namespace apn::font_select
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 					std::fill(std::begin(colors), std::end(colors), RGB(0xff, 0xff, 0xff));
 
@@ -105,7 +105,7 @@ namespace apn::font_select
 				}
 			case WM_COMMAND:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					auto code = HIWORD(wParam);
 					auto id = LOWORD(wParam);

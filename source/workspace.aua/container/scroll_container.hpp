@@ -166,7 +166,7 @@ namespace apn::workspace
 		//
 		virtual void set_container_position(LPCRECT rc) override
 		{
-			MY_TRACE_FUNC("{}, {}, {}, {}", rc->left, rc->top, rc->right, rc->bottom);
+			MY_TRACE_FUNC("{/}, {/}, {/}, {/}", rc->left, rc->top, rc->right, rc->bottom);
 
 			// ロックされている場合は何もしません。
 			if (is_locked()) return;
@@ -310,7 +310,7 @@ namespace apn::workspace
 				}
 			case WM_MOUSEWHEEL:
 				{
-					MY_TRACE_FUNC("WM_MOUSEWHEEL, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSEWHEEL, {/hex}, {/hex}", wParam, lParam);
 
 					// ホイールに応じてスクロールしてからコンテンツの位置を更新します。
 					Locker lcoker(this);
@@ -321,7 +321,7 @@ namespace apn::workspace
 				}
 			case WM_MOUSEHWHEEL:
 				{
-					MY_TRACE_FUNC("WM_MOUSEHWHEEL, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_MOUSEHWHEEL, {/hex}, {/hex}", wParam, lParam);
 
 					// ホイールに応じてスクロールしてからコンテンツの位置を更新します。
 					Locker lcoker(this);

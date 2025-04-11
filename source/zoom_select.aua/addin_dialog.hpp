@@ -70,13 +70,13 @@ namespace apn::zoom_select
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_COMMAND:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					auto code = HIWORD(wParam);
 					auto id = LOWORD(wParam);

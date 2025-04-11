@@ -128,7 +128,7 @@ namespace apn::font_preview
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
@@ -136,7 +136,7 @@ namespace apn::font_preview
 				{
 					auto wp = (WINDOWPOS*)lParam;
 
-					MY_TRACE("{:#010x}, {:#010x}, {}, {}, {}, {}\n", wp->flags, wp->hwndInsertAfter, wp->x, wp->y, wp->cx, wp->cy);
+					MY_TRACE("{/hex}, {/hex}, {/}, {/}, {/}, {/}\n", wp->flags, wp->hwndInsertAfter, wp->x, wp->y, wp->cx, wp->cy);
 
 					if (wp->flags & SWP_NOMOVE) break;
 					if (wp->flags & SWP_NOSIZE) break;

@@ -64,7 +64,7 @@ namespace my::aviutl
 			{
 			case WM_SHOWWINDOW:
 				{
-//					MY_TRACE_FUNC("WM_SHOWWINDOW, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_SHOWWINDOW, {/hex}, {/hex}", wParam, lParam);
 
 					// ターゲットウィンドウを表示します。
 					if (wParam && ::IsWindow(target))
@@ -74,7 +74,7 @@ namespace my::aviutl
 				}
 			case WM_SIZE:
 				{
-//					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// ターゲットウィンドウをリサイズします。
 					if (::IsWindow(target))
@@ -84,7 +84,7 @@ namespace my::aviutl
 				}
 			case WM_SETFOCUS:
 				{
-//					MY_TRACE_FUNC("WM_SETFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					// ターゲットウィンドウにフォーカスを渡します。
 					if (::IsWindow(target))

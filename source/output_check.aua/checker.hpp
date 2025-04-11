@@ -71,7 +71,7 @@ namespace apn::output_check
 				Time sel_start(s, fi);
 				Time sel_end(e + 1, fi);
 
-				text += std::format(
+				text += my::format(
 					_T("注意 : 全体の長さが [{:02d}:{:02d}:{:05.2f}] のプロジェクトに対して\n")
 					_T("[{:02d}:{:02d}:{:05.2f}]～[{:02d}:{:02d}:{:05.2f}] の出力範囲が指定されています\n")
 					_T("この設定のままだとプロジェクトの一部分しか出力されません\n\n"),
@@ -124,7 +124,7 @@ namespace apn::output_check
 				Time frame_time(frame_end + 1, fi);
 				Time item_time(item_end + 1, fi);
 
-				text += std::format(
+				text += my::format(
 					_T("注意 : 最終フレーム位置と全アイテムの最終位置が一致しません\n")
 					_T("[{:02d}:{:02d}:{:05.2f}] (最終フレーム位置)\n")
 					_T("[{:02d}:{:02d}:{:05.2f}] (全アイテムの最終位置)\n")
@@ -157,9 +157,9 @@ namespace apn::output_check
 				if (framerate_config >= 0 && framerate_config < framerate_fp->check_n)
 					label = framerate_fp->check_name[framerate_config];
 
-				text += std::format(
+				text += my::format(
 					_T("注意 : [設定] > [フレームレートの変更]が\n")
-					_T("[{}]に設定されています\n")
+					_T("[{/}]に設定されています\n")
 					_T("この設定のままだとフレームレートが低下した状態で出力されます\n\n"),
 					my::ts(label));
 			}
@@ -217,8 +217,8 @@ namespace apn::output_check
 					if (!exdata->text[0])
 					{
 						// メッセージテキストを追加します。
-						text += std::format(
-							_T("シーン {}、レイヤー {}、フレーム {}\n"),
+						text += my::format(
+							_T("シーン {/}、レイヤー {/}、フレーム {/}\n"),
 							object->scene_set, object->layer_set + 1, object->frame_begin);
 					}
 				}

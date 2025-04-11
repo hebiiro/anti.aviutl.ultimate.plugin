@@ -129,7 +129,7 @@ namespace apn::filter_copy
 			//
 			BOOL add(const Prep& prep, int32_t filter_index)
 			{
-				MY_TRACE_FUNC("{}", filter_index);
+				MY_TRACE_FUNC("{/}", filter_index);
 
 				if (filter_index == 0)
 					return FALSE; // 先頭のフィルタはコピーしません。
@@ -142,8 +142,8 @@ namespace apn::filter_copy
 				if (!filter) return FALSE;
 
 				// 一時ファイルのファイル名を構築します。
-				auto temp_file_name = std::format(
-					"{}\\aviutl_filter_copy_{}_{}.exa",
+				auto temp_file_name = my::format(
+					"{/}\\aviutl_filter_copy_{/}_{/}.exa",
 					prep.temp_folder_path, prep.pid, filter_index);
 				MY_TRACE_STR(temp_file_name);
 
@@ -309,7 +309,7 @@ namespace apn::filter_copy
 		//
 		void create_filter(int32_t orig_object_index, int32_t new_filter_index)
 		{
-			MY_TRACE_FUNC("{}, {}", orig_object_index, new_filter_index);
+			MY_TRACE_FUNC("{/}, {/}", orig_object_index, new_filter_index);
 
 			auto object_index = orig_object_index;
 			MY_TRACE_INT(object_index);
@@ -539,7 +539,7 @@ namespace apn::filter_copy
 		struct {
 			inline static BOOL CDECL hook_proc(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index)
 			{
-				MY_TRACE_FUNC("{}, {}, {}, {}", file_name, flag1, flag2, object_index);
+				MY_TRACE_FUNC("{/}, {/}, {/}, {/}", file_name, flag1, flag2, object_index);
 
 				if (!hook_manager.flag_paste_filter) // フラグが立っていない場合はデフォルトの処理を行います。
 					return orig_proc(file_name, flag1, flag2, object_index);
@@ -595,7 +595,7 @@ namespace apn::filter_copy
 		struct {
 			inline static void CDECL hook_proc(int32_t object_index, int32_t filter_index)
 			{
-				MY_TRACE_FUNC("{}, {}", object_index, filter_index);
+				MY_TRACE_FUNC("{/}, {/}", object_index, filter_index);
 
 				orig_proc(object_index, filter_index);
 

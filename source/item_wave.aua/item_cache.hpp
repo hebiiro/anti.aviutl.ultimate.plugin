@@ -106,7 +106,7 @@ namespace apn::item_wave
 		//
 		BOOL update(BOOL send)
 		{
-			MY_TRACE_FUNC("{}", send);
+			MY_TRACE_FUNC("{/}", send);
 
 			// 無効なキャッシュを削除します。
 			for (auto it = collection.begin(); it != collection.end();)
@@ -172,7 +172,7 @@ namespace apn::item_wave
 		//
 		std::shared_ptr<ItemCache> update(BOOL send, int32_t object_index, ExEdit::Object* object)
 		{
-			MY_TRACE_FUNC("{}, {}, {:#010x}", send, object_index, object);
+			MY_TRACE_FUNC("{/}, {/}, {/hex}", send, object_index, object);
 
 			// 音声を取得します。
 			auto audio = get_audio(object);

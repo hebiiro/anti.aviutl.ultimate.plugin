@@ -34,7 +34,7 @@ namespace apn::workspace
 		//
 		virtual ~MainWindow() override
 		{
-			MY_TRACE_FUNC("{:#010x}", (HWND)*this);
+			MY_TRACE_FUNC("{/hex}", (HWND)*this);
 		}
 
 		//
@@ -115,7 +115,7 @@ namespace apn::workspace
 			// ウィンドウ名を取得します。取得できなかった場合は何もしません。
 			if (window_name.empty()) return FALSE;
 
-			MY_TRACE_FUNC("{:#010x}, {}, {}", hwnd, class_name, window_name);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", hwnd, class_name, window_name);
 
 			if (hwnd == hive.aviutl_window)
 			{
@@ -166,7 +166,7 @@ namespace apn::workspace
 					return TRUE;
 				}
 
-				MY_TRACE("「{}」用のシャトルを初期化します\n", window_name);
+				MY_TRACE("「{/}」用のシャトルを初期化します\n", window_name);
 
 				auto shuttle = std::make_shared<Shuttle>();
 
@@ -206,7 +206,7 @@ namespace apn::workspace
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_reset_float_shuttles, _T("フローティングウィンドウをリセット"));
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_import_layout, _T("レイアウトのインポート"));
 			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_export_layout, _T("レイアウトのエクスポート"));
-			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_show_config_dialog, std::format(_T("『{}』の設定"), hive.c_display_name).c_str());
+			::AppendMenu(menu.get(), MF_STRING, c_command_id.c_show_config_dialog, my::format(_T("『{/}』の設定"), hive.c_display_name).c_str());
 			::AppendMenu(menu.get(), MF_SEPARATOR, 0, nullptr);
 
 			// シャトルメニューはドッキングサイトで構築します。
@@ -314,7 +314,7 @@ namespace apn::workspace
 			{
 				auto file_name = std::filesystem::path(editp->project_filename).filename();
 				if (file_name.empty()) file_name = _T("無題");
-				title = std::format(_T("{} - {}"), file_name.c_str(), orig);
+				title = my::format(_T("{/} - {/}"), file_name.c_str(), orig);
 			}
 			else
 			{
@@ -579,19 +579,19 @@ namespace apn::workspace
 			case WM_PASTE:
 			case WM_APPCOMMAND:
 				{
-					MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", message, wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", message, wParam, lParam);
 
 					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
 				}
 			case WM_NCACTIVATE:
 				{
-					MY_TRACE_FUNC("WM_NCACTIVATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_NCACTIVATE, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_ACTIVATE:
 				{
-					MY_TRACE_FUNC("WM_ACTIVATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_ACTIVATE, {/hex}, {/hex}", wParam, lParam);
 
 					// 「patch.aul」用の処理です。
 					if (LOWORD(wParam) == WA_INACTIVE)
@@ -601,32 +601,32 @@ namespace apn::workspace
 				}
 			case WM_SETFOCUS:
 				{
-					MY_TRACE_FUNC("WM_SETFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_KILLFOCUS:
 				{
-					MY_TRACE_FUNC("WM_KILLFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_KILLFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_MENUSELECT:
 				{
-					MY_TRACE_FUNC("WM_MENUSELECT, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_MENUSELECT, {/hex}, {/hex}", wParam, lParam);
 
 					// 「patch.aul」用の処理です。
 					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("WM_CLOSE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CLOSE, {/hex}, {/hex}", wParam, lParam);
 
 					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
 				}
 			case WM_COMMAND:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					// 「PSDToolKit」用の処理です。
 					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズしてしまいます。
@@ -649,7 +649,7 @@ namespace apn::workspace
 				}
 			case WM_SYSCOMMAND:
 				{
-					MY_TRACE_FUNC("WM_SYSCOMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SYSCOMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					switch (wParam)
 					{

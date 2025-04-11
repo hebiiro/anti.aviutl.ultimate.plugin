@@ -12,7 +12,7 @@ namespace apn::workspace
 		//
 		void init(const std::wstring& name, HWND hwnd)
 		{
-			MY_TRACE_FUNC("{}, {:#010x}", name, hwnd);
+			MY_TRACE_FUNC("{/}, {/hex}", name, hwnd);
 
 			__super::init(name, hwnd);
 		}
@@ -61,13 +61,13 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
@@ -96,7 +96,7 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// 「patch.aul」用の処理です。
 					// 設定ダイアログが高速描画されているときは

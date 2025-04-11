@@ -30,7 +30,7 @@ namespace apn::dialog_size
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 					//
 					// コンボボックスのオプションをカスタマイズします。
@@ -50,7 +50,7 @@ namespace apn::dialog_size
 							if (video_size.display_name.empty())
 							{
 								my::combobox::add_text(combobox,
-									std::format(L"{} x {}", video_size.width, video_size.height).c_str());
+									my::format(L"{/} x {/}", video_size.width, video_size.height).c_str());
 							}
 							else
 							{
@@ -68,7 +68,7 @@ namespace apn::dialog_size
 							if (video_rate.display_name.empty())
 							{
 								my::combobox::add_text(combobox,
-									std::format(L"{}fps", video_rate.rate).c_str());
+									my::format(L"{/}fps", video_rate.rate).c_str());
 							}
 							else
 							{
@@ -86,7 +86,7 @@ namespace apn::dialog_size
 							if (audio_rate.display_name.empty())
 							{
 								my::combobox::add_text(combobox,
-									std::format(L"{}Hz", audio_rate.rate).c_str());
+									my::format(L"{/}Hz", audio_rate.rate).c_str());
 							}
 							else
 							{
@@ -103,7 +103,7 @@ namespace apn::dialog_size
 					auto control_id = LOWORD(wParam);
 					auto control = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, control_id, control);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, control_id, control);
 
 					switch (control_id)
 					{

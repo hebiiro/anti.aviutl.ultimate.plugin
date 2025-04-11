@@ -66,7 +66,7 @@ namespace apn::dialog_size
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			auto index = id - IDC_CUSTOM_TEMPLATE_0;
 			if (index < std::size(hive.custom_templates)) update_config();

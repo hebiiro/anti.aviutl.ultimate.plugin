@@ -40,7 +40,7 @@ namespace apn::reboot::spreader
 					auto control_id = LOWORD(wParam);
 					auto control = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, control_id, control);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, control_id, control);
 
 					break;
 				}

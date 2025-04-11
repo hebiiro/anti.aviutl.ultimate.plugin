@@ -403,7 +403,7 @@ namespace my::json
 		if (color == CLR_NONE)
 			node = "none";
 		else
-			node = std::format("{}, {}, {}", GetRValue(color), GetGValue(color), GetBValue(color));
+			node = my::format("{/}, {/}, {/}", GetRValue(color), GetGValue(color), GetBValue(color));
 	}
 
 	inline void write_color(n_json& node, const std::string& name, COLORREF color)
@@ -635,7 +635,7 @@ namespace my::json
 
 	inline void write_color(n_json& node, const Color& color)
 	{
-		node = std::format("{}, {}, {}, {}", color.GetR(), color.GetG(), color.GetB(), color.GetA());
+		node = my::format("{/}, {/}, {/}, {/}", color.GetR(), color.GetG(), color.GetB(), color.GetA());
 	}
 
 	inline void write_color(n_json& node, const std::string& name, const Color& color)

@@ -145,7 +145,7 @@ namespace apn::image_export
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{
@@ -250,7 +250,7 @@ namespace apn::image_export
 						return file_name; // 自動保存用ファイル名を返します。
 
 					// ファイルを上書きするかどうかをユーザーに確認します。
-					auto str = std::format(L"{}\nはすでに存在します。上書きしますか?", file_name);
+					auto str = my::format(L"{/}\nはすでに存在します。上書きしますか?", file_name);
 					if (IDYES == hive.message_box(str, *this, MB_YESNO))
 						return file_name;
 
@@ -266,7 +266,7 @@ namespace apn::image_export
 		//
 		BOOL export_image(BOOL has_alpha, BOOL sel_item_only)
 		{
-			MY_TRACE_FUNC("{}, {}", has_alpha, sel_item_only);
+			MY_TRACE_FUNC("{/}, {/}", has_alpha, sel_item_only);
 
 			auto file_name = get_file_name();
 			if (file_name.empty()) return FALSE;
@@ -278,7 +278,7 @@ namespace apn::image_export
 		//
 		BOOL copy_image(BOOL has_alpha, BOOL sel_item_only)
 		{
-			MY_TRACE_FUNC("{}, {}", has_alpha, sel_item_only);
+			MY_TRACE_FUNC("{/}, {/}", has_alpha, sel_item_only);
 
 			return app->copy_image(has_alpha, sel_item_only);
 		}
@@ -305,7 +305,7 @@ namespace apn::image_export
 			{
 			case WM_HSCROLL:
 				{
-					MY_TRACE_FUNC("WM_HSCROLL, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_HSCROLL, {/hex}, {/hex}", wParam, lParam);
 
 					auto control = (HWND)lParam;
 

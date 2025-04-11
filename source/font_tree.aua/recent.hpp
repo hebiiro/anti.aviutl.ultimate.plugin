@@ -55,7 +55,7 @@ namespace apn::font_tree
 		//
 		BOOL init(HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			// コンボボックスを作成します。
 			return create(
@@ -111,7 +111,7 @@ namespace apn::font_tree
 				if (cb::find_string(*this, font_name.c_str()) < 0)
 				{
 					::AppendMenu(menu.get(), MF_STRING, c_insert_recent,
-						my::format(_T("{}を追加"), font_name).c_str());
+						my::format(_T("{/}を追加"), font_name).c_str());
 				}
 			}
 
@@ -119,7 +119,7 @@ namespace apn::font_tree
 			if (recent_font_name.length())
 			{
 				::AppendMenu(menu.get(), MF_STRING, c_erase_recent,
-					my::format(_T("{}を削除"), recent_font_name).c_str());
+					my::format(_T("{/}を削除"), recent_font_name).c_str());
 			}
 
 			if (::GetMenuItemCount(menu.get()))
@@ -171,19 +171,19 @@ namespace apn::font_tree
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_CONTEXTMENU:
 				{
-					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CONTEXTMENU, {/hex}, {/hex}", wParam, lParam);
 
 					show_context_menu(my::lp_to_pt(lParam));
 

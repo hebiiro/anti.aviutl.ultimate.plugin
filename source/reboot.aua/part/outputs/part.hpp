@@ -78,7 +78,7 @@ namespace apn::reboot::outputs
 		//
 		virtual BOOL on_command(AddinDialogInterface* addin_dialog, uint32_t code, uint32_t control_id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, control_id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, control_id, control);
 
 			// このパート用のコントロールではない場合は何もしません。
 			if (control_id != IDC_OUTPUTS) return FALSE;
@@ -100,7 +100,7 @@ namespace apn::reboot::outputs
 			{
 				hive.message_box(my::format(
 					_T("出力プラグインが見つかりませんでした") _T("\n")
-					_T("現在選択されているプラグイン = 【{}】"),
+					_T("現在選択されているプラグイン = 【{/}】"),
 					agit.plugin_name.empty() ? _T("なし") : agit.plugin_name));
 			}
 
@@ -112,7 +112,7 @@ namespace apn::reboot::outputs
 		//
 		virtual BOOL on_option(AddinDialogInterface* addin_dialog, uint32_t control_id, HWND control, const POINT& point) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", control_id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}", control_id, control);
 
 			// このパート用のコントロールではない場合は何もしません。
 			if (control_id != IDC_OUTPUTS) return FALSE;

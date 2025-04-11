@@ -87,7 +87,7 @@ namespace apn::dialog_size
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 					// フォルダリストのコンボボックスを初期化します。
 					auto folder_list = ::GetDlgItem(hwnd, c_command_id.c_folder_list);
@@ -101,7 +101,7 @@ namespace apn::dialog_size
 					auto control_id = LOWORD(wParam);
 					auto control = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, control_id, control);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, control_id, control);
 
 					switch (control_id)
 					{

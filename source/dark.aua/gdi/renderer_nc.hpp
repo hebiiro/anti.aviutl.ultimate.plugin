@@ -10,7 +10,7 @@ namespace apn::dark::gdi
 			{
 			case WM_NCPAINT:
 				{
-					MY_TRACE_FUNC("WM_NCPAINT, {:#010x}, {:#010x}, {:#010x}",
+					MY_TRACE_FUNC("WM_NCPAINT, {/hex}, {/hex}, {/hex}",
 						current_state->hwnd, current_state->wParam, current_state->lParam);
 
 					auto hwnd = current_state->hwnd;

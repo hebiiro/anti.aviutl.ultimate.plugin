@@ -12,7 +12,7 @@ namespace apn::local_web_app
 		//
 		BOOL navigate(const std::wstring& file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			contents_file_name = file_name;
 

@@ -133,7 +133,7 @@ namespace apn::workspace::hook::local
 
 			inline BOOL init(my::addr_t aviutl)
 			{
-				MY_TRACE_FUNC("{:#010x}", aviutl);
+				MY_TRACE_FUNC("{/hex}", aviutl);
 
 				orig = aviutl + 0x00053320;
 				MY_TRACE_HEX(orig);
@@ -254,7 +254,7 @@ namespace apn::workspace::hook::local
 
 			inline BOOL init(my::addr_t aviutl)
 			{
-				MY_TRACE_FUNC("{:#010x}", aviutl);
+				MY_TRACE_FUNC("{/hex}", aviutl);
 
 				orig = aviutl + 0x00051150;
 				MY_TRACE_HEX(orig);
@@ -287,7 +287,7 @@ namespace apn::workspace::hook::local
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(LPRECT rc, DWORD style, BOOL menu, DWORD ex_style)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {:#010x}", style, menu, ex_style);
+				MY_TRACE_FUNC("{/hex}, {/}, {/hex}", style, menu, ex_style);
 
 				return TRUE;
 			}
@@ -301,7 +301,7 @@ namespace apn::workspace::hook::local
 		inline static struct {
 			inline static void __fastcall hook_proc(HWND hwnd, HICON icon)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, icon);
+				MY_TRACE_FUNC("{/hex}, {/hex}", hwnd, icon);
 
 				// ボタンにアイコンをセットします。
 				::SetWindowLongA(hwnd, 0, (LONG)icon);
@@ -319,7 +319,7 @@ namespace apn::workspace::hook::local
 		inline static struct {
 			inline static void __fastcall hook_proc(HWND hwnd, HICON icon)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, icon);
+				MY_TRACE_FUNC("{/hex}, {/hex}", hwnd, icon);
 
 				// ボタンにアイコンをセットします。
 				::SetWindowLongA(hwnd, 0, (LONG)icon);
@@ -335,7 +335,7 @@ namespace apn::workspace::hook::local
 		//
 		inline static BOOL WINAPI omit_ShowWindow(HWND hwnd, int cmd_show)
 		{
-//			MY_TRACE_FUNC("{:#010x}, {}", hwnd, cmd_show);
+//			MY_TRACE_FUNC("{/hex}, {/}", hwnd, cmd_show);
 //			MY_TRACE_HWND(hwnd);
 
 			return TRUE;
@@ -346,7 +346,7 @@ namespace apn::workspace::hook::local
 		//
 		inline static BOOL WINAPI omit_UpdateWindow(HWND hwnd)
 		{
-//			MY_TRACE_FUNC("{:#010x}", hwnd);
+//			MY_TRACE_FUNC("{/hex}", hwnd);
 //			MY_TRACE_HWND(hwnd);
 
 			return TRUE;
@@ -357,7 +357,7 @@ namespace apn::workspace::hook::local
 		//
 		inline static BOOL WINAPI omit_SetWindowPos(HWND hwnd, HWND insert_after, int x, int y, int w, int h, UINT flags)
 		{
-//			MY_TRACE_FUNC("{:#010x}", hwnd);
+//			MY_TRACE_FUNC("{/hex}", hwnd);
 //			MY_TRACE_HWND(hwnd);
 
 			return TRUE;
@@ -446,7 +446,7 @@ namespace apn::workspace::hook::local
 		//
 		BOOL enable_hook(BOOL enable)
 		{
-			MY_TRACE_FUNC("{}", enable);
+			MY_TRACE_FUNC("{/}", enable);
 
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());

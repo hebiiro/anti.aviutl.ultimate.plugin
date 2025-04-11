@@ -48,7 +48,7 @@ namespace apn
 		//
 		BOOL init(HINSTANCE instance, HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", instance, parent);
+			MY_TRACE_FUNC("{/hex}, {/hex}", instance, parent);
 
 			// 初期化中にエディットボックスがコマンドを発行してしまうので、
 			// それを防ぐためにロックしておきます。
@@ -106,7 +106,7 @@ namespace apn
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 					on_init_dialog();
 
@@ -115,7 +115,7 @@ namespace apn
 			case WM_COMMAND:
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
 
 					if (is_locked()) break;
 

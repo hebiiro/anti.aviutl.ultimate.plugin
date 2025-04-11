@@ -67,7 +67,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HWND hwnd, HDC dc, LPCRECT rc)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, ({})",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, ({/})",
 					ret_addr(&hwnd), hwnd, dc, safe_string(rc));
 
 				MY_TRACE_HWND(hwnd);
@@ -87,7 +87,7 @@ namespace apn::dark::hook
 				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_background(theme, dc, part_id, state_id, rc, rc_clip);
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), ({})",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, ({/}), ({/})",
 					ret_addr(&theme), theme, part_id, state_id, safe_string(rc), safe_string(rc_clip));
 
 				return orig_proc(theme, dc, part_id, state_id, rc, rc_clip);
@@ -105,7 +105,7 @@ namespace apn::dark::hook
 				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_background_ex(theme, dc, part_id, state_id, rc, options);
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, ({/}), {/hex}",
 					ret_addr(&theme), theme, part_id, state_id, safe_string(rc), options);
 
 				return orig_proc(theme, dc, part_id, state_id, rc, options);
@@ -123,7 +123,7 @@ namespace apn::dark::hook
 				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_text(theme, dc, part_id, state_id, text, c, text_flags, text_flags2, rc);
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, ({})",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/}, {/hex}, {/hex}, ({/})",
 					ret_addr(&theme), theme, part_id, state_id, safe_string(text, c), text_flags, text_flags2, safe_string(rc));
 
 				return orig_proc(theme, dc, part_id, state_id, text, c, text_flags, text_flags2, rc);
@@ -141,7 +141,7 @@ namespace apn::dark::hook
 				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_text_ex(theme, dc, part_id, state_id, text, c, text_flags, rc, options);
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {:#010x}, ({}), {:#010x}",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/}, {/hex}, ({/}), {/hex}",
 					ret_addr(&theme), theme, part_id, state_id, safe_string(text, c), text_flags, safe_string(rc), options);
 
 				return orig_proc(theme, dc, part_id, state_id, text, c, text_flags, rc, options);
@@ -159,7 +159,7 @@ namespace apn::dark::hook
 				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_icon(theme, dc, part_id, state_id, rc, image_list, image_index);
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}, {}",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, ({/}), {/hex}, {/}",
 					ret_addr(&theme), theme, part_id, state_id, safe_string(rc), image_list, image_index);
 
 				return orig_proc(theme, dc, part_id, state_id, rc, image_list, image_index);
@@ -177,7 +177,7 @@ namespace apn::dark::hook
 				if (auto renderer = theme::manager.get_renderer(theme))
 					return renderer->on_draw_theme_edge(theme, dc, part_id, state_id, dest_rect, edge, flags, content_rect);
 
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, ({}), {:#010x}, {:#010x}",
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, ({/}), {/hex}, {/hex}",
 					ret_addr(&theme), theme, part_id, state_id, safe_string(dest_rect), edge, flags);
 
 				return orig_proc(theme, dc, part_id, state_id, dest_rect, edge, flags, content_rect);
@@ -192,7 +192,7 @@ namespace apn::dark::hook
 			inline static HTHEME WINAPI hook_proc(HWND hwnd, LPCWSTR class_list)
 			{
 				auto theme = orig_proc(hwnd, class_list);
-				MY_TRACE_FUNC("{:#010x}, {} => {:#010x}", hwnd, class_list, theme);
+				MY_TRACE_FUNC("{/hex}, {/} => {/hex}", hwnd, class_list, theme);
 				return theme;
 			}
 			inline static decltype(&hook_proc) orig_proc = ::OpenThemeData;
@@ -205,7 +205,7 @@ namespace apn::dark::hook
 			inline static HTHEME WINAPI hook_proc(HWND hwnd, LPCWSTR class_list, UINT dpi)
 			{
 				auto theme = orig_proc(hwnd, class_list, dpi);
-				MY_TRACE_FUNC("{:#010x}, {}, {} => {:#010x}", hwnd, class_list, dpi, theme);
+				MY_TRACE_FUNC("{/hex}, {/}, {/} => {/hex}", hwnd, class_list, dpi, theme);
 				return theme;
 			}
 			inline static decltype(&hook_proc) orig_proc = ::OpenThemeDataForDpi;
@@ -218,7 +218,7 @@ namespace apn::dark::hook
 			inline static HTHEME WINAPI hook_proc(HWND hwnd, LPCWSTR class_list, DWORD flags)
 			{
 				auto theme = orig_proc(hwnd, class_list, flags);
-				MY_TRACE_FUNC("{:#010x}, {}, {:#010x} => {:#010x}", hwnd, class_list, flags, theme);
+				MY_TRACE_FUNC("{/hex}, {/}, {/hex} => {/hex}", hwnd, class_list, flags, theme);
 				return theme;
 			}
 			inline static decltype(&hook_proc) orig_proc = ::OpenThemeDataEx;
@@ -230,7 +230,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HRESULT WINAPI hook_proc(HWND hwnd, LPCWSTR sub_app_name, LPCWSTR sub_id_list)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}", hwnd, sub_app_name, sub_id_list);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}", hwnd, sub_app_name, sub_id_list);
 
 				return orig_proc(hwnd, sub_app_name, sub_id_list);
 			}

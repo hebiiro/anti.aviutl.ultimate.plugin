@@ -191,7 +191,7 @@ namespace apn::item_wave
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{
@@ -263,7 +263,7 @@ namespace apn::item_wave
 			{
 			case WM_NOTIFY:
 				{
-					MY_TRACE_FUNC("WM_NOTIFY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_NOTIFY, {/hex}, {/hex}", wParam, lParam);
 
 					switch (wParam)
 					{

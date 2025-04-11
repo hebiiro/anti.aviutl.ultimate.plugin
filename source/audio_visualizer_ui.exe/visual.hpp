@@ -85,7 +85,7 @@ namespace apn::audio_visualizer::ui
 			//
 			BOOL request_preference(BOOL notify)
 			{
-				MY_TRACE_FUNC("{}", notify);
+				MY_TRACE_FUNC("{/}", notify);
 
 				return post_web_message_as_json(
 					create_web_message_as_json("request_preference",
@@ -99,7 +99,7 @@ namespace apn::audio_visualizer::ui
 			//
 			BOOL post_preference(BOOL notify)
 			{
-				MY_TRACE_FUNC("{}", notify);
+				MY_TRACE_FUNC("{/}", notify);
 
 				return post_web_message_as_json(
 					create_web_message_as_json("update_preference",
@@ -348,7 +348,7 @@ namespace apn::audio_visualizer::ui
 			//
 			virtual BOOL on_navigation_completed(BOOL success) override
 			{
-				MY_TRACE_FUNC("{}", success);
+				MY_TRACE_FUNC("{/}", success);
 
 				if (success)
 				{
@@ -399,7 +399,7 @@ namespace apn::audio_visualizer::ui
 		//
 		BOOL init(HWND co_window)
 		{
-			MY_TRACE_FUNC("{:#010x}", co_window);
+			MY_TRACE_FUNC("{/hex}", co_window);
 
 			if (!create(co_window))
 			{
@@ -609,7 +609,7 @@ namespace apn::audio_visualizer::ui
 			{
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// ブラウザをクライアント領域全体に広げます。
 					auto rc = my::get_client_rect(hwnd);
@@ -623,7 +623,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case hive.c_message.c_select_scheme:
 				{
-					MY_TRACE_FUNC("c_select_scheme, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_select_scheme, {/hex}, {/hex}", wParam, lParam);
 
 					// ユーザーにスキームの選択を促します。
 					select_scheme();
@@ -632,7 +632,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case hive.c_message.c_show_visual_editor:
 				{
-					MY_TRACE_FUNC("c_show_visual_editor, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_show_visual_editor, {/hex}, {/hex}", wParam, lParam);
 
 					// ビジュアルエディタを表示します。
 					show_visual_editor();
@@ -641,7 +641,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case hive.c_message.c_notify_change_preference:
 				{
-					MY_TRACE_FUNC("c_notify_change_preference, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_notify_change_preference, {/hex}, {/hex}", wParam, lParam);
 
 					// ビジュアルの設定をスクリプトに送信します。
 					browser.post_preference(FALSE);

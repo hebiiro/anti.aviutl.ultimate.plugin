@@ -19,7 +19,7 @@ namespace apn::ease_select
 			auto path = magi.get_module_file_name(L"ease_select_ui.exe");
 			MY_TRACE_STR(path);
 
-			auto args = my::format(L"{:#010x}", hive.main_window);
+			auto args = my::format(L"{/hex}", hive.main_window);
 			MY_TRACE_STR(args);
 
 			STARTUPINFO si = { sizeof(si) };
@@ -35,7 +35,7 @@ namespace apn::ease_select
 				&si,			// Pointer to STARTUPINFO structure
 				&pi))			// Pointer to PROCESS_INFORMATION structur
 			{
-				hive.message_box(std::format(L"{}の起動に失敗しました\n", path));
+				hive.message_box(my::format(L"{/}の起動に失敗しました\n", path));
 
 				return FALSE;
 			}

@@ -48,7 +48,7 @@ public:
 
 		for (const auto& result : hive.results)
 		{
-			std::format_to(std::back_inserter(str), L"{} {} => {}" L"\r\n",
+			str += my::format(L"{/} {/} => {/}" L"\r\n",
 				result.succeeded ? L"(成功)" : L"(失敗)", result.from, result.to);
 		}
 

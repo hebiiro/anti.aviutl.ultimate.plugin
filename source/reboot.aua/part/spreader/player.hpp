@@ -13,7 +13,7 @@ namespace apn::reboot::spreader
 			DWORD start_time = 0;
 			DWORD end_time = 0;
 			Clocker(LPCTSTR label) : label(label) { start_time = ::timeGetTime(); }
-			~Clocker() { end_time = ::timeGetTime(); MY_TRACE("{} = {}ms\n", label, end_time - start_time); }
+			~Clocker() { end_time = ::timeGetTime(); MY_TRACE("{/} = {/}ms\n", label, end_time - start_time); }
 		};
 #else
 		struct Clocker {
@@ -463,7 +463,7 @@ namespace apn::reboot::spreader
 			// フレームを表示する場合は
 			if (agit.show_frame)
 			{
-				text += my::format(_T("{} / {}"), current_frame, end_frame);
+				text += my::format(_T("{/} / {/}"), current_frame, end_frame);
 			}
 
 			// 時間を表示する場合は
@@ -672,7 +672,7 @@ namespace apn::reboot::spreader
 		//
 		LRESULT on_show_window(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("{}", wParam);
+			MY_TRACE_FUNC("{/}", wParam);
 
 			// プレイヤーの表示状態を切り替えます。
 			::ShowWindow(hwnd, wParam);
@@ -689,7 +689,7 @@ namespace apn::reboot::spreader
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// 最後の初期化処理を遅延させて実行します。
 					::PostMessage(hwnd, agit.c_message.c_post_init, 0, 0);
@@ -698,13 +698,13 @@ namespace apn::reboot::spreader
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_LBUTTONDOWN:
 				{
-					MY_TRACE_FUNC("WM_LBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_LBUTTONDOWN, {/hex}, {/hex}", wParam, lParam);
 
 					// 左クリックで再生停止するようにします。
 					return ::SendMessage(hive.aviutl_window, WM_KEYDOWN, VK_SPACE, 0);

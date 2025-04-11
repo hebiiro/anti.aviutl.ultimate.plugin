@@ -176,7 +176,7 @@ namespace apn::filer_ui
 
 		virtual void on_init_filer_window(HWND filer_window, BOOL full) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", filer_window, full);
+			MY_TRACE_FUNC("{/hex}, {/}", filer_window, full);
 
 			FilerDialog::create_instance(filer_window, full);
 		}

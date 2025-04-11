@@ -2,7 +2,7 @@
 
 #define MY_TRACE_OBJECT_HOLDER(object) \
 do { \
-	MY_TRACE(#object _T(" = {}\n"), object.get_object_index()); \
+	MY_TRACE(#object _T(" = {/}\n"), object.get_object_index()); \
 } while (false)
 
 namespace apn

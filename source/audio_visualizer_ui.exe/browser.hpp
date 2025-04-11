@@ -40,7 +40,7 @@ namespace apn::audio_visualizer::ui
 			{
 			case c_message.c_run_async:
 				{
-					MY_TRACE_FUNC("c_run_async, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_run_async, {/hex}, {/hex}", wParam, lParam);
 
 					auto* task = reinterpret_cast<std::function<void()>*>(wParam);
 					(*task)();

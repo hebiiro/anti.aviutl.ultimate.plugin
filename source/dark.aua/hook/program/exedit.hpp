@@ -229,7 +229,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", dc, brush);
+				MY_TRACE_FUNC("{/hex}, {/hex}", dc, brush);
 
 				if (is_invalid()) return orig_proc(dc, rc, brush);
 
@@ -250,7 +250,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}", dc, x, y, options);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/hex}", dc, x, y, options);
 
 				if (is_invalid()) return orig_proc(dc, x, y, options, rc, text, c, dx);
 
@@ -273,7 +273,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPRECT rc, UINT edge, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", dc, edge, flags);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", dc, edge, flags);
 
 				if (is_invalid()) return orig_proc(dc, rc, edge,flags);
 
@@ -294,7 +294,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}", dc, x, y, options);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/hex}", dc, x, y, options);
 
 				if (is_invalid()) return orig_proc(dc, x, y, options, rc, text, c, dx);
 
@@ -316,7 +316,7 @@ namespace apn::dark::hook
 						str = str.substr(0, str.find(L'#')); // 記号より前にある文字列を取り出します。
 
 						// 文字列が空の場合はデフォルトのレイヤー名にします。
-						if (str.empty()) str = std::format(L"Layer {}", drawing_layer_index + 1);
+						if (str.empty()) str = my::format(L"Layer {/}", drawing_layer_index + 1);
 
 						// レイヤーボタンの文字列を描画します。
 #if 1
@@ -342,7 +342,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPRECT rc, UINT edge, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", dc, edge, flags);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", dc, edge, flags);
 
 				if (is_invalid()) return orig_proc(dc, rc, edge, flags);
 
@@ -365,7 +365,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -388,7 +388,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -411,7 +411,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, LPCSTR text, int x, int y, int w, int h, int scroll_x)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {}, {}", dc, text, x, y, w, h, scroll_x);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/}, {/}", dc, text, x, y, w, h, scroll_x);
 
 				if (is_invalid()) return orig_proc(dc, text, x, y, w, h, scroll_x);
 
@@ -449,7 +449,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {:#010x}", dc, brush);
+//				MY_TRACE_FUNC("{/hex}, {/hex}", dc, brush);
 
 				if (is_invalid()) return orig_proc(dc, rc, brush);
 
@@ -491,7 +491,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, LPCRECT rc, HBRUSH brush)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}", dc, brush);
+				MY_TRACE_FUNC("{/hex}, {/hex}", dc, brush);
 
 				if (is_invalid()) return orig_proc(dc, rc, brush);
 
@@ -534,7 +534,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -546,7 +546,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -558,7 +558,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -570,7 +570,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -582,7 +582,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 				if (is_invalid()) return orig_proc(dc, mx, my, lx, ly, pen);
 
@@ -594,7 +594,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int layer_index, DWORD a3, DWORD a4, DWORD a5, DWORD a6, DWORD a7)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {}, {}", dc, layer_index, a3, a4, a5, a6, a7);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/}, {/}", dc, layer_index, a3, a4, a5, a6, a7);
 
 				if (is_invalid()) return orig_proc(dc, layer_index, a3, a4, a5, a6, a7);
 
@@ -635,7 +635,7 @@ namespace apn::dark::hook
 						auto id = LOWORD(wParam);
 						auto sender = (HWND)lParam;
 
-						MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, id, sender);
+						MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, id, sender);
 
 						if (id == IDC_CHOOSE_COLOR)
 						{
@@ -652,7 +652,7 @@ namespace apn::dark::hook
 
 							str = str.substr(0, str.find(L'#')); // 記号より前にある文字列を取り出します。
 
-							::SetDlgItemText(hdlg, control_id, std::format(_T("{}#{:02x}{:02x}{:02x}"),
+							::SetDlgItemText(hdlg, control_id, my::format(_T("{/}#{:02x}{:02x}{:02x}"),
 								str, GetRValue(color), GetGValue(color), GetBValue(color)).c_str());
 						}
 
@@ -668,7 +668,7 @@ namespace apn::dark::hook
 		inline static struct {
 			inline static INT_PTR CDECL hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {:#010x}", instance, template_name, parent, dlg_proc);
+				MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", instance, template_name, parent, dlg_proc);
 
 				if (::lstrcmpiA(template_name, "GET_LAYER_NAME") == 0)
 				{

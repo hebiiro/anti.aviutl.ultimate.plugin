@@ -12,14 +12,14 @@
 #define MY_TRACE_FUNC(f, ...)		my::Tracer::output_func(_T(__FILE__), __LINE__, _T(__FUNCTION__), _T(__FUNCSIG__), my::format(_T(f), __VA_ARGS__).c_str())
 #define MY_TRACE_BINARY(buf, c)		my::Tracer::output_binary(_T(__FILE__), __LINE__, buf, c)
 
-#define MY_TRACE_STR(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
-#define MY_TRACE_INT(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
-#define MY_TRACE_INT64(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
-#define MY_TRACE_HEX(xxx)			MY_TRACE(#xxx _T(" = {:#010x}\n"), (DWORD)(xxx))
-#define MY_TRACE_REAL(xxx)			MY_TRACE(#xxx _T(" = {}\n"), xxx)
-#define MY_TRACE_RECT(xxx)			MY_TRACE(#xxx _T(" = {}, {}, {}, {}\n"), (xxx).left, (xxx).top, (xxx).right, (xxx).bottom)
-#define MY_TRACE_POINT(xxx)			MY_TRACE(#xxx _T(" = {}, {}\n"), (xxx).x, (xxx).y)
-#define MY_TRACE_SIZE(xxx)			MY_TRACE(#xxx _T(" = {}, {}\n"), (xxx).cx, (xxx).cy)
+#define MY_TRACE_STR(xxx)			MY_TRACE(#xxx _T(" = {/}\n"), xxx)
+#define MY_TRACE_INT(xxx)			MY_TRACE(#xxx _T(" = {/}\n"), xxx)
+#define MY_TRACE_INT64(xxx)			MY_TRACE(#xxx _T(" = {/}\n"), xxx)
+#define MY_TRACE_HEX(xxx)			MY_TRACE(#xxx _T(" = {/hex}\n"), xxx)
+#define MY_TRACE_REAL(xxx)			MY_TRACE(#xxx _T(" = {/}\n"), xxx)
+#define MY_TRACE_RECT(xxx)			MY_TRACE(#xxx _T(" = {/}, {/}, {/}, {/}\n"), (xxx).left, (xxx).top, (xxx).right, (xxx).bottom)
+#define MY_TRACE_POINT(xxx)			MY_TRACE(#xxx _T(" = {/}, {/}\n"), (xxx).x, (xxx).y)
+#define MY_TRACE_SIZE(xxx)			MY_TRACE(#xxx _T(" = {/}, {/}\n"), (xxx).cx, (xxx).cy)
 
 #define MY_TRACE_RECT2(xxx) \
 do \
@@ -28,7 +28,7 @@ do \
 	int y = (xxx).top; \
 	int w = (xxx).right - (xxx).left; \
 	int h = (xxx).bottom - (xxx).top; \
-	MY_TRACE(#xxx _T(" = {}, {}, {}, {}\n"), x, y, w, h); \
+	MY_TRACE(#xxx _T(" = {/}, {/}, {/}, {/}\n"), x, y, w, h); \
 } \
 while (false)
 
@@ -38,11 +38,11 @@ do \
 	HWND ___hwnd = xxx; \
 	auto ___window_text = my::get_window_text(___hwnd); \
 	auto ___class_name = my::get_class_name(___hwnd); \
-	MY_TRACE(#xxx _T(" = {:#010x} = \"{}\" ({})\n"), ___hwnd, ___window_text, ___class_name); \
+	MY_TRACE(#xxx _T(" = {/hex} = \"{/}\" ({/})\n"), ___hwnd, ___window_text, ___class_name); \
 } \
 while (false)
 
-#define MY_TRACE_COM_ERROR(hr) MY_TRACE("{:#010x} = {}\n", hr, _com_error(hr).ErrorMessage())
+#define MY_TRACE_COM_ERROR(hr) MY_TRACE("{/hex} = {/}\n", hr, _com_error(hr).ErrorMessage())
 
 #else
 
@@ -189,7 +189,7 @@ namespace my
 			if (file)
 			{
 				// rawを修飾してからロガーに出力させます。
-				logger->output(raw.c_str(), std::format(_T("{}({}) : {}"), file, line, raw).c_str());
+				logger->output(raw.c_str(), my::format(_T("{/}({/}) : {/}"), file, line, raw).c_str());
 			}
 			else
 			{
@@ -207,7 +207,7 @@ namespace my
 			auto func_name = get_func_name(func, func_sig);
 
 			// func_nameとfunc_argsを書式化して出力します。
-			output_text(file, line, std::format(_T("{}({})\n"), func_name, func_args));
+			output_text(file, line, my::format(_T("{/}({/})\n"), func_name, func_args));
 		}
 
 		//

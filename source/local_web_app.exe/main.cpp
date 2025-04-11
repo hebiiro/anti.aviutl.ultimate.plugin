@@ -39,7 +39,7 @@ namespace apn::local_web_app
 			}
 		} initializer;
 
-		MY_TRACE_FUNC("{}", cmd_line);
+		MY_TRACE_FUNC("{/}", cmd_line);
 
 		// インスタンスハンドルをハイブに格納します。
 		hive.instance = instance;

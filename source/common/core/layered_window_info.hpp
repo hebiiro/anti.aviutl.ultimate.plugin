@@ -31,7 +31,7 @@ namespace apn
 			m_blend.SourceConstantAlpha = alpha;
 			BOOL result = ::UpdateLayeredWindowIndirect(window, &m_info);
 			DWORD error = ::GetLastError();
-			MY_TRACE("result = {}, error = {:#010x}\n", result, error);
+			MY_TRACE("result = {/}, error = {/hex}\n", result, error);
 		}
 
 		UINT GetWidth() const { return m_size.cx; }

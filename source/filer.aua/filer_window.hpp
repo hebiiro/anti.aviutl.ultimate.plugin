@@ -18,7 +18,7 @@ namespace apn::filer
 		//
 		inline static std::shared_ptr<FilerWindow> create_instance(LPCTSTR name, BOOL full)
 		{
-			MY_TRACE_FUNC("{}, {}", name, full);
+			MY_TRACE_FUNC("{/}, {/}", name, full);
 
 			// ファイラウィンドウのインスタンスを作成します。
 			auto filer_window = std::make_shared<FilerWindow>();
@@ -35,7 +35,7 @@ namespace apn::filer
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 				rc.left, rc.top, my::get_width(rc), my::get_height(rc)))
 			{
-				hive.message_box(L"{}(ファイラウィンドウ)の作成に失敗しました");
+				hive.message_box(L"{/}(ファイラウィンドウ)の作成に失敗しました");
 
 				return nullptr;
 			}
@@ -166,7 +166,7 @@ namespace apn::filer
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// ファイラダイアログの親ウィンドウを変更します。
 					// これにより、ファイラウィンドウが終了したときに
@@ -184,7 +184,7 @@ namespace apn::filer
 				}
 			case WM_ACTIVATE:
 				{
-					MY_TRACE_FUNC("WM_ACTIVATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_ACTIVATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (wParam)
 						hive.active_window = hwnd;
@@ -193,7 +193,7 @@ namespace apn::filer
 				}
 			case WM_SETFOCUS:
 				{
-					MY_TRACE_FUNC("WM_SETFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					hive.active_window = hwnd;
 
@@ -201,7 +201,7 @@ namespace apn::filer
 				}
 			case share::message::c_init: // このメッセージはファイラダイアログの作成が完了したときに通知されます。
 				{
-					MY_TRACE_FUNC("c_init, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_init, {/hex}, {/hex}", wParam, lParam);
 
 					auto dialog = (HWND)wParam;
 					auto full = (BOOL)lParam;
@@ -223,7 +223,7 @@ namespace apn::filer
 				}
 			case share::message::c_get_file_name: // このメッセージはファイラダイアログで「取得」ボタンが押されたときに通知されます。
 				{
-					MY_TRACE_FUNC("c_get_file_name, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_get_file_name, {/hex}, {/hex}", wParam, lParam);
 
 					// カレントオブジェクトに関連するファイル名を取得します。
 					auto file_name = get_item_file_name();

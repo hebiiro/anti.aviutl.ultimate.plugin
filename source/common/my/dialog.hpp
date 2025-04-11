@@ -215,7 +215,7 @@ namespace my
 		}
 
 		template <typename T>
-		BOOL set_float(UINT id, T value, LPCTSTR format = _T("{}"))
+		BOOL set_float(UINT id, T value, LPCTSTR format = _T("{/}"))
 		{
 			return set_text(id, my::format(format, value).c_str());
 		}

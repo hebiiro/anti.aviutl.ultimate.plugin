@@ -77,7 +77,7 @@ namespace apn::workspace::hook::global
 		//
 		inline static HWND hook_window(HWND hwnd, const my::tstring& class_name, const my::tstring& window_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", hwnd, class_name, window_name);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", hwnd, class_name, window_name);
 
 			// ウィンドウがフック対象かチェックします。
 			if (is_hook_target(hwnd, class_name, window_name))
@@ -140,7 +140,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static HWND WINAPI hook_proc(LPCSTR class_name, LPCSTR window_name)
 			{
-				MY_TRACE_FUNC("{}, {}", class_name, window_name);
+				MY_TRACE_FUNC("{/}, {/}", class_name, window_name);
 
 				// 「ショートカット再生」用の処理です。
 				if (class_name && window_name && ::lstrcmpiA(class_name, "AviUtl") == 0)
@@ -160,7 +160,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static HWND WINAPI hook_proc(LPCWSTR class_name, LPCWSTR window_name)
 			{
-				MY_TRACE_FUNC("{}, {}", class_name, window_name);
+				MY_TRACE_FUNC("{/}, {/}", class_name, window_name);
 
 				// 「PSDToolKit」の「送る」用の処理です。
 				if (class_name && ::lstrcmpiW(class_name, L"ExtendedFilterClass") == 0)
@@ -177,7 +177,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static HWND WINAPI hook_proc(HWND parent, HWND child_after, LPCSTR class_name, LPCSTR window_name)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}", parent, child_after, class_name, window_name);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}", parent, child_after, class_name, window_name);
 
 				if (!parent && class_name)
 				{
@@ -191,7 +191,7 @@ namespace apn::workspace::hook::global
 					{
 						if (auto shuttle = shuttle_manager.get(my::ts(window_name)))
 						{
-							MY_TRACE("{}を返します\n", window_name);
+							MY_TRACE("{/}を返します\n", window_name);
 
 							return *shuttle;
 						}
@@ -209,7 +209,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static HWND WINAPI hook_proc(HWND hwnd, UINT cmd)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}", hwnd, cmd);
+//				MY_TRACE_FUNC("{/hex}, {/}", hwnd, cmd);
 //				MY_TRACE_HWND(hwnd);
 
 				if (cmd == GW_OWNER)
@@ -244,7 +244,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(DWORD thread_id, WNDENUMPROC enum_proc, LPARAM lParam)
 			{
-//				MY_TRACE_FUNC("{}, {:#010x}, {:#010x}", thread_id, enum_proc, lParam);
+//				MY_TRACE_FUNC("{/}, {/hex}, {/hex}", thread_id, enum_proc, lParam);
 
 				// 「イージング設定時短プラグイン」用の処理です。
 				if (thread_id == ::GetCurrentThreadId() && enum_proc && lParam)
@@ -265,7 +265,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(WNDENUMPROC enum_proc, LPARAM lParam)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {:#010x}", enum_proc, lParam);
+//				MY_TRACE_FUNC("{/hex}, {/hex}", enum_proc, lParam);
 
 				// 「拡張編集RAMプレビュー」用の処理です。
 				if (enum_proc && lParam)
@@ -285,7 +285,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static LONG WINAPI hook_proc(HWND hwnd, int index, LONG new_long)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {}, {:#010x}", hwnd, index, new_long);
+//				MY_TRACE_FUNC("{/hex}, {/}, {/hex}", hwnd, index, new_long);
 
 				// 「拡張ツールバー」用の処理です。
 				if (index == GWL_HWNDPARENT)

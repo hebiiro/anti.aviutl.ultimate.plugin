@@ -140,7 +140,7 @@ namespace apn::workspace
 		//
 		virtual ~Shuttle() override
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", (HWND)*this, name);
+			MY_TRACE_FUNC("{/hex}, {/}", (HWND)*this, name);
 #if 0
 			// ターゲットウィンドウの親ウィンドウをnullptrにします。
 			// これにより、コンテナウィンドウが破壊されてもターゲットウィンドウが道連れに破壊されずにすみます。
@@ -157,7 +157,7 @@ namespace apn::workspace
 		//
 		void init(const std::wstring& name, HWND hwnd)
 		{
-			MY_TRACE_FUNC("{}, {:#010x}", name, hwnd);
+			MY_TRACE_FUNC("{/}, {/hex}", name, hwnd);
 
 			// シャトル名をセットします。
 			this->name = name;
@@ -351,7 +351,7 @@ namespace apn::workspace
 		//
 		virtual void show()
 		{
-			MY_TRACE_FUNC("{}", name);
+			MY_TRACE_FUNC("{/}", name);
 
 			// 実際にはコンテナの表示状態を変更します。
 			if (auto container = get_current_container())
@@ -366,7 +366,7 @@ namespace apn::workspace
 		//
 		virtual void show_target_window()
 		{
-			MY_TRACE_FUNC("{}", name);
+			MY_TRACE_FUNC("{/}", name);
 
 			// ターゲットウィンドウを表示します。
 			::ShowWindow(*this, SW_SHOW);
@@ -432,19 +432,19 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", name, hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/}, {/hex}, {/hex}, {/hex}, {/hex}", name, hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("{}, WM_DESTROY, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_DESTROY, {/hex}, {/hex}", name, wParam, lParam);
 
 					break;
 				}
 			case WM_NCDESTROY:
 				{
-					MY_TRACE_FUNC("{}, WM_NCDESTROY, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_NCDESTROY, {/hex}, {/hex}", name, wParam, lParam);
 
 					break;
 				}
@@ -468,7 +468,7 @@ namespace apn::workspace
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE_FUNC("{}, WM_SHOWWINDOW, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_SHOWWINDOW, {/hex}, {/hex}", name, wParam, lParam);
 
 					if (auto container = get_current_container())
 					{
@@ -491,7 +491,7 @@ namespace apn::workspace
 				}
 			case WM_SETTEXT:
 				{
-					MY_TRACE_FUNC("{}, WM_SETTEXT, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_SETTEXT, {/hex}, {/hex}", name, wParam, lParam);
 
 					auto text = (LPCTSTR)lParam;
 
@@ -543,7 +543,7 @@ namespace apn::workspace
 				}
 			case WM_WINDOWPOSCHANGING:
 				{
-					MY_TRACE_FUNC("{}, WM_WINDOWPOSCHANGING, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_WINDOWPOSCHANGING, {/hex}, {/hex}", name, wParam, lParam);
 
 					if (auto container = get_current_container())
 					{
@@ -559,7 +559,7 @@ namespace apn::workspace
 				}
 			case WM_WINDOWPOSCHANGED:
 				{
-					MY_TRACE_FUNC("{}, WM_WINDOWPOSCHANGED, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_WINDOWPOSCHANGED, {/hex}, {/hex}", name, wParam, lParam);
 
 					if (auto container = get_current_container())
 					{
@@ -583,7 +583,7 @@ namespace apn::workspace
 		//
 		void dock_window(HWND site)
 		{
-			MY_TRACE_FUNC("{:#010x}", site);
+			MY_TRACE_FUNC("{/hex}", site);
 
 			// フローティングコンテナを非表示にします。
 			::ShowWindow(*float_container, SW_HIDE);

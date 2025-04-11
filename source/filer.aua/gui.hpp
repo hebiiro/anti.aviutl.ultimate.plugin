@@ -14,7 +14,7 @@ namespace apn::filer
 		//
 		BOOL init(HWND hwnd)
 		{
-			MY_TRACE_FUNC("{:#010x}", hwnd);
+			MY_TRACE_FUNC("{/hex}", hwnd);
 
 			my::Event event(nullptr, TRUE, FALSE, share::event::c_post_init_client);
 			MY_TRACE_HEX((HANDLE)event);
@@ -22,7 +22,7 @@ namespace apn::filer
 			auto path = magi.get_module_file_name(L"filer_ui.exe");
 			MY_TRACE_STR(path);
 
-			auto args = my::format(L"{:#010x}", hwnd);
+			auto args = my::format(L"{/hex}", hwnd);
 			MY_TRACE_STR(args);
 
 			STARTUPINFO si = { sizeof(si) };
@@ -38,14 +38,14 @@ namespace apn::filer
 				&si,			// Pointer to STARTUPINFO structure
 				&pi))			// Pointer to PROCESS_INFORMATION structur
 			{
-				hive.message_box(std::format(L"{}の起動に失敗しました\n", path));
+				hive.message_box(my::format(L"{/}の起動に失敗しました\n", path));
 
 				return FALSE;
 			}
 
 			HANDLE handles[] = { event, pi.hProcess };
 			auto result = ::WaitForMultipleObjects(std::size(handles), handles, FALSE, INFINITE);
-			MY_TRACE("::WaitForMultipleObjects()が{:#010x}を返しました\n", result);
+			MY_TRACE("::WaitForMultipleObjects()が{/hex}を返しました\n", result);
 			if (result != WAIT_OBJECT_0 + 0) return FALSE;
 
 			return TRUE;

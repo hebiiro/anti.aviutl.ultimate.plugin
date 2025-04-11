@@ -79,7 +79,7 @@ namespace apn::audio_visualizer::ui
 			//
 			BOOL request_preference(BOOL notify)
 			{
-				MY_TRACE_FUNC("{}", notify);
+				MY_TRACE_FUNC("{/}", notify);
 
 				return post_web_message_as_json(
 					create_web_message_as_json("request_preference",
@@ -93,7 +93,7 @@ namespace apn::audio_visualizer::ui
 			//
 			BOOL post_preference(BOOL notify)
 			{
-				MY_TRACE_FUNC("{}", notify);
+				MY_TRACE_FUNC("{/}", notify);
 
 				return post_web_message_as_json(
 					create_web_message_as_json("update_preference",
@@ -130,7 +130,7 @@ namespace apn::audio_visualizer::ui
 			//
 			virtual BOOL on_navigation_completed(BOOL success) override
 			{
-				MY_TRACE_FUNC("{}", success);
+				MY_TRACE_FUNC("{/}", success);
 
 				if (success)
 				{
@@ -197,7 +197,7 @@ namespace apn::audio_visualizer::ui
 		//
 		BOOL init(HWND visual)
 		{
-			MY_TRACE_FUNC("{:#010x}", visual);
+			MY_TRACE_FUNC("{/hex}", visual);
 
 			this->visual = visual;
 
@@ -255,7 +255,7 @@ namespace apn::audio_visualizer::ui
 			{
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// ブラウザをクライアント領域全体に広げます。
 					auto rc = my::get_client_rect(hwnd);
@@ -269,7 +269,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("WM_CLOSE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CLOSE, {/hex}, {/hex}", wParam, lParam);
 
 					// ウィンドウを非表示にします。
 					::ShowWindow(hwnd, SW_HIDE);
@@ -279,7 +279,7 @@ namespace apn::audio_visualizer::ui
 				}
 			case hive.c_message.c_notify_change_preference:
 				{
-					MY_TRACE_FUNC("c_notify_change_preference, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_notify_change_preference, {/hex}, {/hex}", wParam, lParam);
 
 					// ビジュアルの設定をスクリプトに送信します。
 					browser.post_preference(FALSE);

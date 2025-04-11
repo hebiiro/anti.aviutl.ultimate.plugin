@@ -19,7 +19,7 @@ namespace apn::settings_browser
 		//
 		BOOL init(HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			WNDCLASSEXW wc = { sizeof(wc) };
 			wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -88,7 +88,7 @@ namespace apn::settings_browser
 		//
 		virtual BOOL on_web_message_as_string(const std::wstring& s) override
 		{
-			MY_TRACE_FUNC("{}", s);
+			MY_TRACE_FUNC("{/}", s);
 
 			if (s == L"request_settings")
 			{

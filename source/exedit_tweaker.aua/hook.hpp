@@ -89,7 +89,7 @@ namespace apn::exedit_tweaker
 			//
 			inline static void CDECL hook_proc(HDC dc, const RECT *rc, BYTE r, BYTE g, BYTE b, BYTE gr, BYTE gg, BYTE gb, int gs, int ge)
 			{
-				MY_TRACE_FUNC("{}, {}", gs, ge);
+				MY_TRACE_FUNC("{/}, {/}", gs, ge);
 
 				// グラデーションで塗りつぶします。
 				auto color1 = RGB(r, g, b);
@@ -110,7 +110,7 @@ namespace apn::exedit_tweaker
 				struct {
 					inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 					{
-						MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+						MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 						hive.layer.bound.left.draw(dc, mx, my, 1, ly - my, pen);
 					}
@@ -120,7 +120,7 @@ namespace apn::exedit_tweaker
 				struct {
 					inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 					{
-						MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+						MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 						hive.layer.bound.top.draw(dc, mx, my, lx - mx, 1, pen);
 					}
@@ -130,7 +130,7 @@ namespace apn::exedit_tweaker
 				struct {
 					inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 					{
-						MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+						MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 						hive.layer.bound.right.draw(dc, mx, my, 1, ly - my, pen);
 					}
@@ -140,7 +140,7 @@ namespace apn::exedit_tweaker
 				struct {
 					inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 					{
-						MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+						MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 						hive.layer.bound.bottom.draw(dc, mx, my, lx - mx, 1, pen);
 					}
@@ -151,7 +151,7 @@ namespace apn::exedit_tweaker
 			struct {
 				inline static void CDECL hook_proc(HDC dc, int mx, int my, int lx, int ly, HPEN pen)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, mx, my, lx, ly, pen);
+					MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, mx, my, lx, ly, pen);
 
 					hive.layer.separator.draw(dc, mx, my, 1, ly - my, pen);
 				}

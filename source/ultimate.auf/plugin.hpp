@@ -9,7 +9,7 @@ namespace apn
 	{
 		BOOL init(HINSTANCE instance)
 		{
-			MY_TRACE_FUNC("{:#010x}", instance);
+			MY_TRACE_FUNC("{/hex}", instance);
 
 			if (!hook_manager.init()) return FALSE;
 			if (!config_io.init()) return FALSE;
@@ -77,7 +77,7 @@ namespace apn
 			{
 			case AviUtl::FilterPlugin::WindowMessage::Init:
 				{
-					MY_TRACE_FUNC("Init, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("Init, {/hex}, {/hex}", wParam, lParam);
 
 					// このウィンドウにカテゴリ名を設定します。
 					::SetProp(hwnd, _T("aviutl.plugin.category_name"), (HANDLE)L"アルティメット");
@@ -88,7 +88,7 @@ namespace apn
 				}
 			case AviUtl::FilterPlugin::WindowMessage::Exit:
 				{
-					MY_TRACE_FUNC("Exit, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("Exit, {/hex}, {/hex}", wParam, lParam);
 
 					result |= addin_manager.fire_window_exit(hwnd, message, wParam, lParam, editp, fp);
 

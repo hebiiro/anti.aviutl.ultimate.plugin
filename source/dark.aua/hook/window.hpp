@@ -58,7 +58,7 @@ namespace apn::dark::hook
 			inline static HWND WINAPI hook_proc(DWORD ex_style, LPCSTR class_name, LPCSTR window_name, DWORD style,
 				int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 			{
-				MY_TRACE_FUNC("{}, {}", safe_string(class_name), safe_string(window_name));
+				MY_TRACE_FUNC("{/}, {/}", safe_string(class_name), safe_string(window_name));
 
 				ActCtx::Activator activator;
 
@@ -76,7 +76,7 @@ namespace apn::dark::hook
 			inline static HWND WINAPI hook_proc(DWORD ex_style, LPCWSTR class_name, LPCWSTR window_name, DWORD style,
 				int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 			{
-				MY_TRACE_FUNC("{}, {}", safe_string(class_name), safe_string(window_name));
+				MY_TRACE_FUNC("{/}, {/}", safe_string(class_name), safe_string(window_name));
 
 				ActCtx::Activator activator;
 

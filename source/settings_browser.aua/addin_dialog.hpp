@@ -130,7 +130,7 @@ namespace apn::settings_browser
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{
@@ -182,7 +182,7 @@ namespace apn::settings_browser
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (!browser.init(hwnd))
 					{
@@ -195,7 +195,7 @@ namespace apn::settings_browser
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					browser.exit();
 
@@ -203,7 +203,7 @@ namespace apn::settings_browser
 				}
 			case WM_CONTEXTMENU:
 				{
-					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CONTEXTMENU, {/hex}, {/hex}", wParam, lParam);
 
 					auto control = (HWND)wParam;
 					auto control_id = ::GetDlgCtrlID(control);

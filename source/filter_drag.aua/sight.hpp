@@ -137,7 +137,7 @@ namespace apn::filter_drag
 		//
 		void render(LPCSTR name, BYTE alpha)
 		{
-			MY_TRACE_FUNC("{}, {}", name, alpha);
+			MY_TRACE_FUNC("{/}, {/}", name, alpha);
 
 			Pen pen(config.pen_color, config.pen_width);
 			SolidBrush brush(config.brush_color);
@@ -234,7 +234,7 @@ namespace apn::filter_drag
 		//
 		void show(int x, int y)
 		{
-			MY_TRACE_FUNC("{}, {}", x, y);
+			MY_TRACE_FUNC("{/}, {/}", x, y);
 
 			start_pos.x = x - context->info.GetWidth() / 2 + config.start_offset.X;
 			start_pos.y = y - context->info.GetHeight() / 2 + config.start_offset.Y;

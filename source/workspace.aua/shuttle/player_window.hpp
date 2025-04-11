@@ -12,13 +12,13 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case WM_WINDOWPOSCHANGING:
 				{
-					MY_TRACE_FUNC("{}, WM_WINDOWPOSCHANGING, {:#010x}, {:#010x}", name, wParam, lParam);
+					MY_TRACE_FUNC("{/}, WM_WINDOWPOSCHANGING, {/hex}, {/hex}", name, wParam, lParam);
 
 					// ウィンドウサイズを変更する場合は
 					auto wp = (WINDOWPOS*)lParam;

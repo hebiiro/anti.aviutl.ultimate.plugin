@@ -481,7 +481,7 @@ namespace apn::workspace
 		//
 		int32_t insert_shuttle(Shuttle* shuttle, BOOL show, int32_t index = -1)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", shuttle, index);
+			MY_TRACE_FUNC("{/hex}, {/}", shuttle, index);
 
 			// シャトルはすでにこのペインとドッキング済みなので何もしません。
 			if (find_tab(shuttle) != -1) return -1;
@@ -509,7 +509,7 @@ namespace apn::workspace
 		//
 		void erase_shuttle(Shuttle* shuttle)
 		{
-			MY_TRACE_FUNC("{:#010x}", shuttle);
+			MY_TRACE_FUNC("{/hex}", shuttle);
 
 			// 指定されたシャトルを保持しているかチェックします。
 			auto index = find_tab(shuttle);
@@ -570,7 +570,7 @@ namespace apn::workspace
 		//
 		int32_t insert_shuttle(const std::shared_ptr<Drawer>& drawer, Shuttle* shuttle, int32_t index = -1)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", shuttle, index);
+			MY_TRACE_FUNC("{/hex}, {/}", shuttle, index);
 
 			// 指定されたシャトルはすでにドロワー内に存在するので何もしません。
 			if (drawer->find_node(*shuttle) != -1) return -1;
@@ -587,7 +587,7 @@ namespace apn::workspace
 		//
 		BOOL erase_shuttle(const std::shared_ptr<Drawer>& drawer, int32_t index)
 		{
-			MY_TRACE_FUNC("{}", index);
+			MY_TRACE_FUNC("{/}", index);
 
 			// ドロワーからタブ項目を削除します。
 			return drawer->erase_node(index);
@@ -912,7 +912,7 @@ namespace apn::workspace
 		//
 		void update_origin(uint32_t flags = c_update_flag.c_default)
 		{
-//			MY_TRACE_FUNC("{:#010x}", flags);
+//			MY_TRACE_FUNC("{/hex}", flags);
 
 			update_origin(&position, flags);
 		}
@@ -923,7 +923,7 @@ namespace apn::workspace
 		//
 		void update_origin(LPCRECT rc, uint32_t flags = c_update_flag.c_default)
 		{
-//			MY_TRACE_FUNC("{:#010x}", flags);
+//			MY_TRACE_FUNC("{/hex}", flags);
 
 			my::DeferWindowPos dwp(100);
 
@@ -936,7 +936,7 @@ namespace apn::workspace
 		//
 		virtual void update(my::DeferWindowPos& dwp, LPCRECT rc, uint32_t flags)
 		{
-//			MY_TRACE_FUNC("{:#010x}", flags);
+//			MY_TRACE_FUNC("{/hex}", flags);
 
 			if (::IsIconic(owner))
 				return;
@@ -1074,7 +1074,7 @@ namespace apn::workspace
 		//
 		void update_shuttles(my::DeferWindowPos& dwp, uint32_t flags)
 		{
-//			MY_TRACE_FUNC("{:#010x}", flags);
+//			MY_TRACE_FUNC("{/hex}", flags);
 
 			// タブの数を取得します。
 			auto c = get_tab_count();
@@ -1095,7 +1095,7 @@ namespace apn::workspace
 				// シャトルをリサイズします。
 				shuttle->resize(&rc_dock);
 
-				MY_TRACE("『{}』の表示状態を変更します\n", shuttle->name);
+				MY_TRACE("『{/}』の表示状態を変更します\n", shuttle->name);
 
 				MY_TRACE_INT(::IsWindowVisible(*shuttle));
 				MY_TRACE_INT(::IsWindowVisible(*shuttle->dock_container));
@@ -1113,7 +1113,7 @@ namespace apn::workspace
 					}
 					else
 					{
-						MY_TRACE("「{}」を表示します\n", shuttle->name);
+						MY_TRACE("「{/}」を表示します\n", shuttle->name);
 
 						show_shuttle(dwp, shuttle);
 					}
@@ -1126,7 +1126,7 @@ namespace apn::workspace
 				}
 				else
 				{
-					MY_TRACE("「{}」を非表示にします\n", shuttle->name);
+					MY_TRACE("「{/}」を非表示にします\n", shuttle->name);
 
 					hide_shuttle(dwp, shuttle);
 				}

@@ -75,7 +75,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(LPOPENFILENAMEA ofn)
 			{
-				MY_TRACE_FUNC("{:#010x}", ofn);
+				MY_TRACE_FUNC("{/hex}", ofn);
 
 				RendererLocker locker;
 
@@ -90,7 +90,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(LPOPENFILENAMEW ofn)
 			{
-				MY_TRACE_FUNC("{:#010x}", ofn);
+				MY_TRACE_FUNC("{/hex}", ofn);
 
 				RendererLocker locker;
 
@@ -105,7 +105,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(LPOPENFILENAMEA ofn)
 			{
-				MY_TRACE_FUNC("{:#010x}", ofn);
+				MY_TRACE_FUNC("{/hex}", ofn);
 
 				RendererLocker locker;
 
@@ -120,7 +120,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(LPOPENFILENAMEW ofn)
 			{
-				MY_TRACE_FUNC("{:#010x}", ofn);
+				MY_TRACE_FUNC("{/hex}", ofn);
 
 				RendererLocker locker;
 

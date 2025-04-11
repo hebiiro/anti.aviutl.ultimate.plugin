@@ -50,7 +50,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HICON WINAPI hook_proc(HINSTANCE instance, LPCSTR icon_name)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}", instance, safe_string(icon_name));
+				MY_TRACE_FUNC("{/hex}, {/}", instance, safe_string(icon_name));
 
 				return orig_proc(instance, icon_name);
 			}
@@ -63,7 +63,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HICON WINAPI hook_proc(HINSTANCE instance, LPCWSTR icon_name)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}", instance, safe_string(icon_name));
+				MY_TRACE_FUNC("{/hex}, {/}", instance, safe_string(icon_name));
 
 				return orig_proc(instance, icon_name);
 			}
@@ -76,13 +76,13 @@ namespace apn::dark::hook
 		struct {
 			inline static HANDLE WINAPI hook_proc(HINSTANCE instance, LPCSTR name, UINT type, int cx, int cy, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {}, {}, {:#010x}", instance, safe_string(name), type, cx, cy, flags);
+				MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/}, {/}, {/hex}", instance, safe_string(name), type, cx, cy, flags);
 
 				if ((my::addr_t)name > 0x0000FFFF && !::IsBadReadPtr(name, 1))
 				{
 					if (instance == ::GetModuleHandle(nullptr) && ::StrStrIA(name, "ICON_"))
 					{
-						MY_TRACE("AviUtlのアイコンをアイコンマネージャに追加します {}, {:#010x}\n", name, flags);
+						MY_TRACE("AviUtlのアイコンをアイコンマネージャに追加します {/}, {/hex}\n", name, flags);
 
 						auto str = "AVIUTL_"s + name;
 
@@ -92,7 +92,7 @@ namespace apn::dark::hook
 					}
 					else if (instance == ::GetModuleHandle(_T("exedit.auf")) && ::StrStrIA(name, "ICON_"))
 					{
-						MY_TRACE("拡張編集のアイコンをアイコンマネージャに追加します {}, {:#010x}\n", name, flags);
+						MY_TRACE("拡張編集のアイコンをアイコンマネージャに追加します {/}, {/hex}\n", name, flags);
 
 						auto str = "EXEDIT_"s + name;
 
@@ -113,7 +113,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HANDLE WINAPI hook_proc(HINSTANCE instance, LPCWSTR name, UINT type, int cx, int cy, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {}, {}, {:#010x}", instance, safe_string(name), type, cx, cy, flags);
+				MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/}, {/}, {/hex}", instance, safe_string(name), type, cx, cy, flags);
 
 				return orig_proc(instance, name, type, cx, cy, flags);
 			}
@@ -126,7 +126,7 @@ namespace apn::dark::hook
 		struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, HICON icon, int w, int h, UINT step, HBRUSH brush, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}", dc, x, y, icon, w, h, step, brush, flags);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/hex}, {/}, {/}, {/}, {/hex}, {/hex}", dc, x, y, icon, w, h, step, brush, flags);
 
 				icon = skin::icon_manager.get(icon);
 
@@ -141,7 +141,7 @@ namespace apn::dark::hook
 		struct {
 			inline static HMENU WINAPI hook_proc(HINSTANCE instance, LPCSTR menu_name)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}", instance, safe_string(menu_name));
+				MY_TRACE_FUNC("{/hex}, {/}", instance, safe_string(menu_name));
 
 				if (::GetModuleHandle(_T("exedit.auf")))
 				{

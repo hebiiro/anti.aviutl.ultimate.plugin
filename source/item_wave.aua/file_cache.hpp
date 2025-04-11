@@ -74,7 +74,7 @@ namespace apn::item_wave
 		//
 		BOOL create_cache(LPCSTR file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			// キャッシュを作成します。
 			return app->create_cache(file_name);

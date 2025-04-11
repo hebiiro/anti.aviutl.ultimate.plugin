@@ -240,7 +240,7 @@ namespace apn::item_copy
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{
@@ -274,7 +274,7 @@ namespace apn::item_copy
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// シェルビューを作成します。
 					if (!init_shell_view()) return -1;
@@ -283,7 +283,7 @@ namespace apn::item_copy
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// シェルビューを終了します。
 					exit_shell_view();
@@ -292,7 +292,7 @@ namespace apn::item_copy
 				}
 			case WM_SETFOCUS:
 				{
-					MY_TRACE_FUNC("WM_SETFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					// シェルビューにフォーカスを渡します。
 					if (shell_view)

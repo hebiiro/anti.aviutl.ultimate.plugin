@@ -16,7 +16,7 @@ namespace apn::dialog_position
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 					// デフォルト処理を先に実行します。
 					auto result = __super::on_wnd_proc(hwnd, message, wParam, lParam);

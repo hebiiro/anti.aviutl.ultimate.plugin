@@ -95,7 +95,7 @@ namespace apn::workspace
 		{
 			for (size_t i = 0; TRUE; i++)
 			{
-				auto name = std::format(L"サブ{}", i + 1);
+				auto name = my::format(L"サブ{/}", i + 1);
 				MY_TRACE_STR(name);
 
 				if (!shuttle_manager.get(name)) return name;
@@ -115,7 +115,7 @@ namespace apn::workspace
 		//
 		BOOL create(const std::wstring& name, HWND parent)
 		{
-			MY_TRACE_FUNC("{}, {:#010x}", name, parent);
+			MY_TRACE_FUNC("{/}, {/hex}", name, parent);
 
 			WNDCLASS wc = {};
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
@@ -264,7 +264,7 @@ namespace apn::workspace
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_CREATE, {:#010x}, {:#010x}", hwnd,  wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_CREATE, {/hex}, {/hex}", hwnd,  wParam, lParam);
 
 					// このウィンドウにカテゴリ名を設定します。
 					::SetProp(hwnd, _T("aviutl.plugin.category_name"), (HANDLE)L"サブウィンドウ");
@@ -273,7 +273,7 @@ namespace apn::workspace
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("{:#010x}, WM_CLOSE, {:#010x}, {:#010x}", hwnd,  wParam, lParam);
+					MY_TRACE_FUNC("{/hex}, WM_CLOSE, {/hex}, {/hex}", hwnd,  wParam, lParam);
 
 					if (::GetKeyState(VK_SHIFT) < 0)
 					{
@@ -327,13 +327,13 @@ namespace apn::workspace
 				}
 			case WM_SETFOCUS:
 				{
-					MY_TRACE_FUNC("WM_SETFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_KILLFOCUS:
 				{
-					MY_TRACE_FUNC("WM_KILLFOCUS, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_KILLFOCUS, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
@@ -437,7 +437,7 @@ namespace apn::workspace
 				{
 				case WM_SETTEXT:
 					{
-						MY_TRACE_FUNC("{:#010x}, WM_SETTEXT, {:#010x}, {:#010x}", hwnd,  wParam, lParam);
+						MY_TRACE_FUNC("{/hex}, WM_SETTEXT, {/hex}, {/hex}", hwnd,  wParam, lParam);
 
 						// サブウィンドウにタイマーメッセージを送信します。
 						sub_window->fire_update_window_text();

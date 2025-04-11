@@ -39,13 +39,13 @@ namespace apn::font_preview
 		//
 		BOOL on_draw_item(DRAWITEMSTRUCT* dis)
 		{
-//			MY_TRACE_FUNC("{}", dis->itemID);
+//			MY_TRACE_FUNC("{/}", dis->itemID);
 
 			auto dc = dis->hDC;
 			auto rc = dis->rcItem;
 			auto font_name = my::get_text_from_combobox(dis->hwndItem, dis->itemID);
 
-			MY_TRACE("{}, {}, {:#010x}, {:#010x}\n",
+			MY_TRACE("{/}, {/}, {/hex}, {/hex}\n",
 				font_name, dis->itemID, dis->itemAction, dis->itemState);
 
 			if (dis->itemState & ODS_COMBOBOXEDIT)
@@ -229,7 +229,7 @@ namespace apn::font_preview
 					auto id = LOWORD(wParam);
 					auto control = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#06x}, {:#06x}, {:#010x}", code, id, control);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, id, control);
 
 					// フォントコンボボックスがドロップダウンした瞬間に
 					if (code == CBN_DROPDOWN && control == magi.exin.get_font_combobox())
@@ -254,7 +254,7 @@ namespace apn::font_preview
 				}
 			case WM_CONTEXTMENU:
 				{
-					MY_TRACE_FUNC("WM_CONTEXTMENU, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CONTEXTMENU, {/hex}, {/hex}", wParam, lParam);
 
 					// フォントコンボボックスの場合は
 					auto control = (HWND)wParam;

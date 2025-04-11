@@ -13,7 +13,7 @@ namespace apn::filer_ui
 		//
 		BOOL init(HWND host_window)
 		{
-			MY_TRACE_FUNC("{:#010x}", host_window);
+			MY_TRACE_FUNC("{/hex}", host_window);
 
 			WNDCLASS wc = {};
 			wc.lpszClassName = c_class_name;
@@ -53,21 +53,21 @@ namespace apn::filer_ui
 
 		LRESULT on_init(WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}", wParam, lParam);
 
 			return hive.app->on_init(), 0;
 		}
 
 		LRESULT on_exit(WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}", wParam, lParam);
 
 			return hive.app->on_exit(), 0;
 		}
 
 		LRESULT on_init_filer_window(WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}", wParam, lParam);
 
 			auto filer_window = (HWND)wParam;
 			auto full = (BOOL)lParam;

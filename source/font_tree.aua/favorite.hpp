@@ -147,7 +147,7 @@ namespace apn::font_tree
 				{
 					// ノードを取得します。
 					auto& node = it->second;
-					MY_TRACE("{}, {}, {}, {}\n", node->name, node->alias, node->display_name, node->expanded);
+					MY_TRACE("{/}, {/}, {/}, {/}\n", node->name, node->alias, node->display_name, node->expanded);
 
 					// ノードが展開中の場合は
 					if (node->expanded)
@@ -171,7 +171,7 @@ namespace apn::font_tree
 		//
 		BOOL init(HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			// ツリーコントロールを作成します。
 			return create(
@@ -227,13 +227,13 @@ namespace apn::font_tree
 			my::menu::unique_ptr<> menu(::CreatePopupMenu());
 
 			::AppendMenu(menu.get(), MF_STRING, c_insert,
-				my::format(_T("選択中の\"{}\"の子要素として\"{}\"を追加"), node->display_name, font_name).c_str());
+				my::format(_T("選択中の\"{/}\"の子要素として\"{/}\"を追加"), node->display_name, font_name).c_str());
 			::AppendMenu(menu.get(), MF_STRING, c_erase,
-				my::format(_T("選択中の\"{}\"を削除"), node->display_name).c_str());
+				my::format(_T("選択中の\"{/}\"を削除"), node->display_name).c_str());
 			::AppendMenu(menu.get(), MF_STRING, c_replace_name,
-				my::format(_T("選択中の\"{}\"のフォント名を\"{}\"で置き換える"), node->display_name, font_name).c_str());
+				my::format(_T("選択中の\"{/}\"のフォント名を\"{/}\"で置き換える"), node->display_name, font_name).c_str());
 			::AppendMenu(menu.get(), MF_STRING, c_erase_name,
-				my::format(_T("選択中の\"{}\"のフォント名を消去する"), node->display_name).c_str());
+				my::format(_T("選択中の\"{/}\"のフォント名を消去する"), node->display_name).c_str());
 
 			auto id = ::TrackPopupMenuEx(menu.get(),
 				TPM_NONOTIFY | TPM_RETURNCMD, point.x, point.y, hwnd, nullptr);
@@ -292,13 +292,13 @@ namespace apn::font_tree
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}

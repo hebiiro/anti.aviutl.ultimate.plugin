@@ -48,7 +48,7 @@ namespace apn::audio_visualizer
 		//
 		std::shared_ptr<CoWindow> create_co_window(const std::wstring& name)
 		{
-			MY_TRACE_FUNC("{}", name);
+			MY_TRACE_FUNC("{/}", name);
 
 			// コウィンドウのインスタンスを作成します。
 			auto co_window = std::make_shared<CoWindow>();
@@ -68,7 +68,7 @@ namespace apn::audio_visualizer
 		//
 		BOOL erase_co_window(size_t co_window_index)
 		{
-			MY_TRACE_FUNC("{}", co_window_index);
+			MY_TRACE_FUNC("{/}", co_window_index);
 
 			// コウィンドウを取得します。
 			auto it = collection.begin() + co_window_index;

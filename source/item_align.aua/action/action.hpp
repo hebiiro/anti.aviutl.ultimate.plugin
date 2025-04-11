@@ -182,7 +182,7 @@ namespace apn::item_align
 		//
 		void select_object(int32_t object_index)
 		{
-			MY_TRACE_FUNC("{}", object_index);
+			MY_TRACE_FUNC("{/}", object_index);
 
 			if (object_index < 0) return;
 			auto object = magi.exin.get_object(object_index);
@@ -420,8 +420,7 @@ namespace apn::item_align
 					if (node->after.time_start <= mover->after.time_end &&
 						node->after.time_end >= mover->after.time_start)
 					{
-						std::format_to(std::back_inserter(error),
-							L"レイヤー{}で[{}]のオブジェクトが交差しています\n",
+						error += my::format(L"レイヤー{/}で[{/}]のオブジェクトが交差しています\n",
 							mover->after.layer_set + 1, time_to_str(mover->after.time_start, mover->after.time_end));
 					}
 				}

@@ -53,7 +53,7 @@ namespace apn::dark::skin
 		//
 		HICON create(HICON orig_icon, LPCWSTR icon_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", orig_icon, icon_name);
+			MY_TRACE_FUNC("{/hex}, {/}", orig_icon, icon_name);
 
 			ICONINFO ii = {};
 			::GetIconInfo(orig_icon, &ii);
@@ -146,7 +146,7 @@ namespace apn::dark::skin
 		//
 		void add(HICON icon, LPCWSTR icon_name)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", icon, icon_name);
+			MY_TRACE_FUNC("{/hex}, {/}", icon, icon_name);
 
 			collection[icon] = std::make_shared<Node>(icon_name);
 		}
@@ -156,7 +156,7 @@ namespace apn::dark::skin
 		//
 		HICON get(HICON icon)
 		{
-			MY_TRACE_FUNC("{:#010x}", icon);
+			MY_TRACE_FUNC("{/hex}", icon);
 
 			// アイコンに関連付けられているノードを取得します。
 			auto it = collection.find(icon);

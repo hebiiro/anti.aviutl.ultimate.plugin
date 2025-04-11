@@ -63,7 +63,7 @@ namespace apn
 		//
 		inline BOOL on_free_library(HINSTANCE instance)
 		{
-			MY_TRACE_FUNC("{:#010x}", instance);
+			MY_TRACE_FUNC("{/hex}", instance);
 
 			if (!instance) return FALSE;
 

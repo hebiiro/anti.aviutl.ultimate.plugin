@@ -107,11 +107,11 @@ namespace apn::dialog_size
 
 				if ((DWORD)template_name <= 0x0000FFFF)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
+					MY_TRACE_FUNC("{/hex}, {/}", instance, template_name);
 				}
 				else
 				{
-					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
+					MY_TRACE_FUNC("{/hex}, {/}", instance, template_name);
 
 					if (hook_manager.is_target(instance))
 					{
@@ -153,11 +153,11 @@ namespace apn::dialog_size
 			{
 				if ((DWORD)template_name <= 0x0000FFFF)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
+					MY_TRACE_FUNC("{/hex}, {/}", instance, template_name);
 				}
 				else
 				{
-					MY_TRACE_FUNC("{:#010x}, {}", instance, template_name);
+					MY_TRACE_FUNC("{/hex}, {/}", instance, template_name);
 
 					if (hook_manager.is_target(instance))
 					{

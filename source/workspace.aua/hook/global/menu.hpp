@@ -54,7 +54,7 @@ namespace apn::workspace::hook::global
 		struct {
 			inline static HMENU WINAPI hook_proc(HWND hwnd)
 			{
-//				MY_TRACE_FUNC("{:#010x}", hwnd);
+//				MY_TRACE_FUNC("{/hex}", hwnd);
 
 				hwnd = get_menu_owner(hwnd);
 
@@ -69,7 +69,7 @@ namespace apn::workspace::hook::global
 		struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, HMENU menu)
 			{
-//				MY_TRACE_FUNC("{:#010x}, {:#010x}", hwnd, menu);
+//				MY_TRACE_FUNC("{/hex}, {/hex}", hwnd, menu);
 
 				hwnd = get_menu_owner(hwnd);
 
@@ -84,7 +84,7 @@ namespace apn::workspace::hook::global
 		struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd)
 			{
-//				MY_TRACE_FUNC("{:#010x}", hwnd);
+//				MY_TRACE_FUNC("{/hex}", hwnd);
 
 				hwnd = get_menu_owner(hwnd);
 

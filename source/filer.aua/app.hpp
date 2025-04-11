@@ -171,7 +171,7 @@ namespace apn::filer
 		//
 		virtual BOOL on_destroy_filer(size_t index) override
 		{
-			MY_TRACE_FUNC("{}", index);
+			MY_TRACE_FUNC("{/}", index);
 
 			// インデックスがコレクションの範囲外の場合は何もしません。
 			if (index >= FilerWindow::collection.size()) return FALSE;
@@ -184,8 +184,8 @@ namespace apn::filer
 			MY_TRACE_STR(name);
 
 			// メッセージテキストを構築します。
-			auto text = std::format(
-				_T("ファイラ「{}」を削除しますか？") _T("\n")
+			auto text = my::format(
+				_T("ファイラ「{/}」を削除しますか？") _T("\n")
 				_T("※ファイラを削除するとファイラに登録してあるブックマークも一緒に削除されます"), name);
 			MY_TRACE_STR(text);
 
@@ -208,7 +208,7 @@ namespace apn::filer
 		//
 		virtual BOOL on_edit_filer(size_t index) override
 		{
-			MY_TRACE_FUNC("{}", index);
+			MY_TRACE_FUNC("{/}", index);
 
 			// インデックスがコレクションの範囲外の場合は何もしません。
 			if (index >= FilerWindow::collection.size()) return FALSE;

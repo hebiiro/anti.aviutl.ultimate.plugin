@@ -39,7 +39,7 @@ namespace apn::workspace::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, int show_cmd)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}", hwnd, show_cmd);
+				MY_TRACE_FUNC("{/hex}, {/}", hwnd, show_cmd);
 
 				if (show_cmd)
 				{

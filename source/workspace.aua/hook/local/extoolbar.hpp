@@ -12,7 +12,7 @@ namespace apn::workspace::hook
 		inline static struct {
 			inline static UINT WINAPI hook_proc(HMENU menu, UINT id, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", menu, id, flags);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", menu, id, flags);
 
 				auto result = orig_proc(menu, id, flags);
 				if (result == -1) return 0;

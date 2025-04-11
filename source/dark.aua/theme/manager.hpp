@@ -39,7 +39,7 @@ namespace apn::dark::theme
 		void add_renderer(HWND hwnd, LPCWSTR vsclass, Renderer* renderer)
 		{
 			auto theme = ::OpenThemeData(hwnd, vsclass);
-			MY_TRACE("{} == {:#010x}\n", vsclass, theme);
+			MY_TRACE("{/} == {/hex}\n", vsclass, theme);
 			add_renderer(theme, renderer);
 		}
 
@@ -51,7 +51,7 @@ namespace apn::dark::theme
 			auto dpi = ::GetDpiForWindow(hwnd);
 			auto theme = ::OpenThemeDataForDpi(hwnd, vsclass, dpi);
 //			auto theme = ::OpenThemeDataEx(hwnd, vsclass, OTD_NONCLIENT);
-			MY_TRACE("{} == {:#010x}\n", vsclass, theme);
+			MY_TRACE("{/} == {/hex}\n", vsclass, theme);
 			add_renderer(theme, renderer);
 		}
 	} manager;

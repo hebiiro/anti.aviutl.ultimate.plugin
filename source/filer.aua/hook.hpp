@@ -88,7 +88,7 @@ namespace apn::filer
 			for (auto i = 0; i < ExEdit::Object::MAX_FILTER; i++)
 			{
 				// セクションのapp_nameを取得します。
-				auto app_name = std::format("vo.{}", i);
+				auto app_name = my::format("vo.{/}", i);
 				MY_TRACE_STR(app_name);
 
 				// セクション内の_nameを取得します。
@@ -127,11 +127,11 @@ namespace apn::filer
 				std::replace(section.begin(), section.end(), '\0', '\n');
 
 				// セクションのヘッダーを構築します。
-				auto section_header = std::format("[vo.0]");
+				auto section_header = my::format("[vo.0]");
 				MY_TRACE_STR(section_header);
 
 				// 一時ファイルのファイル名を構築します。
-				auto temp_file_name = std::format("{}\\apn_filer_{}_{}.exa", temp_path, pid, i);
+				auto temp_file_name = my::format("{/}\\apn_filer_{/}_{/}.exa", temp_path, pid, i);
 				MY_TRACE_STR(temp_file_name);
 
 				// 一時ファイルにセクションヘッダーとセクションデータを書き込みます。
@@ -264,7 +264,7 @@ namespace apn::filer
 		//
 		inline static BOOL save_alias(HWND hwnd, int object_index, int filter_index)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}", hwnd, object_index, filter_index);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}", hwnd, object_index, filter_index);
 
 			// オブジェクトを取得します。
 			auto object = magi.exin.get_object(object_index);
@@ -279,22 +279,22 @@ namespace apn::filer
 				{
 				case -2:
 					{
-						title = std::format("オブジェクトの保存");
-						file_name = std::format("{}.exa", name);
+						title = my::format("オブジェクトの保存");
+						file_name = my::format("{/}.exa", name);
 
 						break;
 					}
 				case -1:
 					{
-						title = std::format("全フィルタの保存");
-						file_name = std::format("{}のフィルタ全体.exa", object->dispname);
+						title = my::format("全フィルタの保存");
+						file_name = my::format("{/}のフィルタ全体.exa", object->dispname);
 
 						break;
 					}
 				default:
 					{
-						title = std::format("フィルタの保存");
-						file_name = std::format("{}.exa", name);
+						title = my::format("フィルタの保存");
+						file_name = my::format("{/}.exa", name);
 
 						break;
 					}
@@ -443,7 +443,7 @@ namespace apn::filer
 		struct {
 			inline static BOOL CDECL hook_proc(LPCSTR file_name, BOOL flag1, BOOL flag2, int object_index)
 			{
-				MY_TRACE_FUNC("{}, {}, {}, {}", file_name, flag1, flag2, object_index);
+				MY_TRACE_FUNC("{/}, {/}, {/}, {/}", file_name, flag1, flag2, object_index);
 
 				if (hook_add_alias)
 				{

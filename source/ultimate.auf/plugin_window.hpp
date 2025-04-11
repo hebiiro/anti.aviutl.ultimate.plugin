@@ -189,13 +189,13 @@ namespace apn
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case WM_NCDESTROY:
 				{
-					MY_TRACE_FUNC("WM_NCDESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_NCDESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					MY_TRACE_HWND(hwnd);
 
@@ -203,7 +203,7 @@ namespace apn
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
 
 					// クライアント矩形を取得します。
 					auto rc = my::get_client_rect(*this);
@@ -216,7 +216,7 @@ namespace apn
 				}
 			case c_message.c_update_config_file:
 				{
-					MY_TRACE_FUNC("c_message.c_update_config_file, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_message.c_update_config_file, {/hex}, {/hex}", wParam, lParam);
 
 					auto file_name = (LPCWSTR)lParam;
 					addin_manager.fire_update_config_file(file_name);
@@ -231,13 +231,13 @@ namespace apn
 
 		BOOL func_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
-					MY_TRACE_FUNC("Command, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("Command, {/hex}, {/hex}", wParam, lParam);
 
 					if (wParam == 0 && lParam == 0) return TRUE; // AviUtlの再描画のみ行います。
 

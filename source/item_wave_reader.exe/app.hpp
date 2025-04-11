@@ -40,7 +40,7 @@ namespace apn::item_wave::reader
 		//
 		BOOL init(HINSTANCE instance)
 		{
-			MY_TRACE_FUNC("{:#010x}", instance);
+			MY_TRACE_FUNC("{/hex}", instance);
 
 			// インスタンスハンドルを取得します。
 			this->instance = instance;
@@ -222,7 +222,7 @@ namespace apn::item_wave::reader
 
 			auto end_time = ::timeGetTime();
 
-			MY_TRACE("所要時間 = {}秒\n", (end_time - start_time) / 1000.0);
+			MY_TRACE("所要時間 = {/}秒\n", (end_time - start_time) / 1000.0);
 
 			return TRUE;
 		}

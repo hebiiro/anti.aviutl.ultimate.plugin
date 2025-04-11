@@ -11,7 +11,7 @@ namespace apn::workspace::hook
 		//
 		inline static HWND create_popup_window(HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			constexpr auto c_class_name = _T("apn::workspace::popup_window");
 
@@ -66,7 +66,7 @@ namespace apn::workspace::hook
 			for (auto i = 0; i < 10; i++)
 			{
 				// vsthost_N.aufのファイル名を取得します。
-				auto file_name = std::format(_T("vsthost_{}.auf"), i + 1);
+				auto file_name = my::format(_T("vsthost_{/}.auf"), i + 1);
 				MY_TRACE_STR(file_name);
 
 				// vsthost_N.aufのモジュールハンドルを取得します。

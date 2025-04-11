@@ -12,7 +12,7 @@ namespace apn::item_wave::reader
 		//
 		InputPlugin(LPCTSTR file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			// 入力プラグインをロードします。
 			aui = ::LoadLibrary(file_name);

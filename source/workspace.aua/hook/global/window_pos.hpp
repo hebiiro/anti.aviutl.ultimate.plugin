@@ -72,7 +72,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, int x, int y, int cx, int cy, BOOL repaint)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {}", hwnd, x, y, cx, cy, repaint);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/}", hwnd, x, y, cx, cy, repaint);
 
 				// 代替ウィンドウを取得します。
 				hwnd = get_imposter(hwnd);
@@ -88,7 +88,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, HWND insert_after, int x, int y, int cx, int cy, UINT flags)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {}, {:#010x}", hwnd, insert_after, x, y, cx, cy, flags);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/}, {/}, {/hex}", hwnd, insert_after, x, y, cx, cy, flags);
 
 				// ウィンドウをリサイズする場合は
 				if (!(flags & SWP_NOMOVE) || !(flags & SWP_NOSIZE))
@@ -128,7 +128,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, const WINDOWPLACEMENT* wp)
 			{
-				MY_TRACE_FUNC("{:#010x}", hwnd);
+				MY_TRACE_FUNC("{/hex}", hwnd);
 
 				// 代替ウィンドウを取得します。
 				hwnd = get_imposter(hwnd);
@@ -145,7 +145,7 @@ namespace apn::workspace::hook::global
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HWND hwnd, WINDOWPLACEMENT* wp)
 			{
-				MY_TRACE_FUNC("{:#010x}", hwnd);
+				MY_TRACE_FUNC("{/hex}", hwnd);
 
 				// 代替ウィンドウを取得します。
 				hwnd = get_imposter(hwnd);

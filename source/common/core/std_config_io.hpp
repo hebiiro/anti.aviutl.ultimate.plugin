@@ -28,8 +28,8 @@ namespace apn
 			}
 			catch (const std::exception& error)
 			{
-				error_handler.message_box(std::format(
-					L"{}を読み込み中にエラーが発生しました\n{}",
+				error_handler.message_box(my::format(
+					L"{/}を読み込み中にエラーが発生しました\n{/}",
 					config_file_name, my::ws(error.what())));
 
 				return FALSE;
@@ -55,8 +55,8 @@ namespace apn
 			}
 			catch (const std::exception& error)
 			{
-				error_handler.message_box(std::format(
-					L"{}を書き込み中にエラーが発生しました\n{}",
+				error_handler.message_box(my::format(
+					L"{/}を書き込み中にエラーが発生しました\n{/}",
 					config_file_name, my::ws(error.what())));
 
 				return FALSE;

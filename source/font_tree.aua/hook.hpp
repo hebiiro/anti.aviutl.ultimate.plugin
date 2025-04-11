@@ -70,7 +70,7 @@ namespace apn::font_tree
 		inline static struct {
 			inline static LRESULT WINAPI hook_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 				// まず、デフォルト処理を実行します。
 				auto result = orig_proc(hwnd, message, wParam, lParam);
@@ -97,7 +97,7 @@ namespace apn::font_tree
 		inline static struct {
 			inline static LRESULT WINAPI hook_proc(HWND hwnd, ExEdit::Filter* filter, int32_t font_index, LPCSTR font_name)
 			{
-				MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}", hwnd, filter, font_index, font_name);
+				MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}", hwnd, filter, font_index, font_name);
 
 				// まず、デフォルト処理を実行します。
 				auto result = orig_proc(hwnd, filter, font_index, font_name);

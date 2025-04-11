@@ -143,7 +143,7 @@ namespace apn::reboot::spreader
 		//
 		virtual BOOL on_command(AddinDialogInterface* addin_dialog, uint32_t code, uint32_t control_id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, control_id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, control_id, control);
 
 			// このパート用のコントロールではない場合は何もしません。
 			if (control_id != IDC_SPREADER_ENABLED) return FALSE;
@@ -164,7 +164,7 @@ namespace apn::reboot::spreader
 		//
 		virtual BOOL on_option(AddinDialogInterface* addin_dialog, uint32_t control_id, HWND control, const POINT& point) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", control_id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}", control_id, control);
 
 			// このパート用のコントロールではない場合は何もしません。
 			if (control_id != IDC_SPREADER_ENABLED) return FALSE;

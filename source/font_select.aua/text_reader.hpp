@@ -126,7 +126,7 @@ namespace apn::font_select
 					catch (...)
 					{
 						// 正規表現の文法エラーであることをユーザーに知らせます。
-						node.nodes.emplace_back(MF_STRING, 0, std::format(L"{}は文法エラーです", line));
+						node.nodes.emplace_back(MF_STRING, 0, my::format(L"{/}は文法エラーです", line));
 					}
 				}
 			}

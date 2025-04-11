@@ -21,19 +21,19 @@ namespace apn::settings_browser
 		};
 
 		if (scale)
-			return std::format("{:0.{}f}", (double)value / scale, get_digit(scale) - 1);
+			return my::format("{/0.*f}", my::sfs((double)value / scale, get_digit(scale) - 1));
 		else
-			return std::format("{}", value);
+			return my::format("{/}", value);
 	}
 
 	inline std::string u8(const ExEdit::Exdata::ExdataColor& color)
 	{
-		return std::format("#{:02x}{:02x}{:02x}", color.r, color.g, color.b);
+		return my::format("#{:02x}{:02x}{:02x}", color.r, color.g, color.b);
 	}
 
 	inline std::string u8(const ExEdit::Exdata::ExdataColorOpt& color)
 	{
-		return std::format("#{:02x}{:02x}{:02x}", color.r, color.g, color.b);
+		return my::format("#{:02x}{:02x}{:02x}", color.r, color.g, color.b);
 	}
 
 	inline n_json to_json(const ExEdit::Exdata::ExdataColorYC& color)

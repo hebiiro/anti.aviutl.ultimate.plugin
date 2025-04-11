@@ -72,7 +72,7 @@ namespace my::aviutl
 			{
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("WM_CLOSE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CLOSE, {/hex}, {/hex}", wParam, lParam);
 
 					if (::IsWindowVisible(hwnd))
 					{

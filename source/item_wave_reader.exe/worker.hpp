@@ -42,7 +42,7 @@ namespace apn::item_wave::reader
 			}
 			hive.buffer->volumes[i] = volume;
 
-			MY_TRACE("i = {}, level = {}\n", i, volume.level);
+			MY_TRACE("i = {/}, level = {/}\n", i, volume.level);
 		}
 
 		//

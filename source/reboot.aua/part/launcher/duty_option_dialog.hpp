@@ -65,7 +65,7 @@ namespace apn::reboot::launcher
 					auto id = LOWORD(wParam);
 					auto sender = (HWND)lParam;
 
-					MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, id, sender);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, id, sender);
 
 					switch (id)
 					{

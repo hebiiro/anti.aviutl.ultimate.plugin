@@ -48,7 +48,7 @@ namespace apn::font_tree
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// コモンコントロールを初期化します。
 					INITCOMMONCONTROLSEX icex = {};
@@ -79,7 +79,7 @@ namespace apn::font_tree
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// メインダイアログを終了します。
 					addin_dialog.exit();
@@ -91,7 +91,7 @@ namespace apn::font_tree
 				}
 			case c_message.c_init_preview:
 				{
-					MY_TRACE_FUNC("c_message.c_init_preview, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_message.c_init_preview, {/hex}, {/hex}", wParam, lParam);
 
 					// プレビューを初期化します。
 					preview_manager.init();

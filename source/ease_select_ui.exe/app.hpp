@@ -141,7 +141,7 @@ namespace apn::ease_select_ui
 		//
 		void on_notify(WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}", wParam, lParam);
 
 			// 手動でタイマーメッセージを送信します。
 			// これにより、タイマー周期より早く反応できます。

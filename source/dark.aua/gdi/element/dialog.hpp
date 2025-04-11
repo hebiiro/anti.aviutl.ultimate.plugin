@@ -6,7 +6,7 @@ namespace apn::dark::gdi
 	{
 		virtual HBRUSH on_ctl_color(HWND hwnd, UINT message, HDC dc, HWND control, HBRUSH brush) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, dc, control, brush);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, dc, control, brush);
 
 			if (auto theme = skin::theme::manager.get_theme(VSCLASS_DIALOG))
 			{
@@ -21,7 +21,7 @@ namespace apn::dark::gdi
 
 		virtual BOOL on_fill_rect(MessageState* current_state, HDC dc, LPCRECT rc, HBRUSH brush) override
 		{
-			MY_TRACE_FUNC("{:#010x}, ({}), {:#010x}", dc, safe_string(rc), brush);
+			MY_TRACE_FUNC("{/hex}, ({/}), {/hex}", dc, safe_string(rc), brush);
 #if 1
 			auto instance = (HINSTANCE)::GetWindowLongPtr(current_state->hwnd, GWLP_HINSTANCE);
 			auto style = my::get_style(current_state->hwnd);
@@ -51,28 +51,28 @@ namespace apn::dark::gdi
 
 		virtual BOOL on_draw_frame(MessageState* current_state, HDC dc, LPRECT rc, UINT width, UINT type) override
 		{
-			MY_TRACE_FUNC("{:#010x}, ({}), {}, {:#010x}", dc, safe_string(rc), width, type);
+			MY_TRACE_FUNC("{/hex}, ({/}), {/}, {/hex}", dc, safe_string(rc), width, type);
 
 			return hive.orig.DrawFrame(dc, rc, width, type);
 		}
 
 		virtual BOOL on_draw_frame_control(MessageState* current_state, HDC dc, LPRECT rc, UINT type, UINT state) override
 		{
-			MY_TRACE_FUNC("{:#010x}, ({}), {:#010x}, {:#010x}", dc, safe_string(rc), type, state);
+			MY_TRACE_FUNC("{/hex}, ({/}), {/hex}, {/hex}", dc, safe_string(rc), type, state);
 
 			return hive.orig.DrawFrameControl(dc, rc, type, state);
 		}
 
 		virtual BOOL on_frame_rect(MessageState* current_state, HDC dc, LPCRECT rc, HBRUSH brush) override
 		{
-			MY_TRACE_FUNC("{:#010x}, ({}), {:#010x}", dc, safe_string(rc), brush);
+			MY_TRACE_FUNC("{/hex}, ({/}), {/hex}", dc, safe_string(rc), brush);
 
 			return hive.orig.FrameRect(dc, rc, brush);
 		}
 
 		virtual BOOL on_draw_edge(MessageState* current_state, HDC dc, LPRECT rc, UINT edge, UINT flags) override
 		{
-			MY_TRACE_FUNC("{:#010x}, ({}), {:#010x}, {:#010x}", dc, safe_string(rc), edge, flags);
+			MY_TRACE_FUNC("{/hex}, ({/}), {/hex}, {/hex}", dc, safe_string(rc), edge, flags);
 
 			auto part_id = 0;
 			auto state_id = 0;
@@ -114,21 +114,21 @@ namespace apn::dark::gdi
 
 		virtual BOOL on_draw_focus_rect(MessageState* current_state, HDC dc, LPCRECT rc) override
 		{
-			MY_TRACE_FUNC("{:#010x}, ({})", dc, safe_string(rc));
+			MY_TRACE_FUNC("{/hex}, ({/})", dc, safe_string(rc));
 
 			return hive.orig.DrawFocusRect( dc, rc);
 		}
 
 		virtual BOOL on_draw_state_w(MessageState* current_state, HDC dc, HBRUSH fore, DRAWSTATEPROC cb, LPARAM lData, WPARAM wData, int x, int y, int cx, int cy, UINT flags) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {}, {}, {}, {}, {:#010x}", dc, fore, x, y, cx, cy, flags);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, fore, x, y, cx, cy, flags);
 
 			return hive.orig.DrawStateW(dc, fore, cb, lData, wData, x, y, cx, cy, flags);
 		}
 
 		virtual BOOL on_ext_text_out_w(MessageState* current_state, HDC dc, int x, int y, UINT options, LPCRECT rc, LPCWSTR text, UINT c, CONST INT* dx) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}, {}, {}, {}, {:#010x}, {:#010x}, {:#010x}", dc, x, y, options, safe_string(rc), text, c, dx, ::GetBkColor(dc), ::GetTextColor(dc));
+			MY_TRACE_FUNC("{/hex}, {/}, {/}, {/hex}, {/}, {/}, {/}, {/hex}, {/hex}, {/hex}", dc, x, y, options, safe_string(rc), text, c, dx, ::GetBkColor(dc), ::GetTextColor(dc));
 #if 1
 			if (options == ETO_OPAQUE)
 			{
@@ -159,7 +159,7 @@ namespace apn::dark::gdi
 
 		virtual BOOL on_pat_blt(MessageState* current_state, HDC dc, int x, int y, int w, int h, DWORD rop) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {}, {}, {}, {}, {:#010x}", dc, x, y, w, h, rop);
+			MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}, {/}, {/hex}", dc, x, y, w, h, rop);
 
 			return hive.orig.PatBlt(dc, x, y, w, h, rop);
 		}

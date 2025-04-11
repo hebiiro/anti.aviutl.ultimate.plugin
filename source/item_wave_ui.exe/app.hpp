@@ -146,7 +146,7 @@ namespace apn::item_wave::ui
 		//
 		virtual BOOL receive_cache(DWORD id) override
 		{
-			MY_TRACE_FUNC("{}", id);
+			MY_TRACE_FUNC("{/}", id);
 
 			// リーダーを取得します。
 			if (auto reader = reader_manager.get_reader(id))
@@ -173,7 +173,7 @@ namespace apn::item_wave::ui
 		//
 		BOOL send_cache(const std::shared_ptr<Cache>& cache)
 		{
-			MY_TRACE_FUNC("{}", cache->file_name);
+			MY_TRACE_FUNC("{/}", cache->file_name);
 
 			// 共有メモリを取得します。
 			auto shared = share_manager.main_buffer.get_buffer();

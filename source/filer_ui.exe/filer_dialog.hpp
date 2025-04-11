@@ -16,7 +16,7 @@ namespace apn::filer_ui
 		//
 		inline static std::shared_ptr<FilerDialog> create_instance(HWND filer_window, BOOL full)
 		{
-			MY_TRACE_FUNC("{:#010x}, {}", filer_window, full);
+			MY_TRACE_FUNC("{/hex}, {/}", filer_window, full);
 
 			return collection.emplace_back(std::make_shared<FilerDialog>(
 				my::get_window_text(filer_window).c_str(), filer_window, full));
@@ -29,7 +29,7 @@ namespace apn::filer_ui
 		FilerDialog(LPCTSTR name, HWND filer_window, BOOL full)
 			: filer_window(filer_window)
 		{
-			MY_TRACE_FUNC("{}, {:#010x}", name, filer_window);
+			MY_TRACE_FUNC("{/}, {/hex}", name, filer_window);
 
 			if (!__super::Create(IDD_FILER_DIALOG, AfxGetMainWnd()))
 				throw _T("ファイラダイアログの作成に失敗しました");
@@ -480,7 +480,7 @@ namespace apn::filer_ui
 		//
 		LRESULT on_exit_filer_window(WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}", wParam, lParam);
 
 			return DestroyWindow();
 		}

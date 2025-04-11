@@ -250,7 +250,7 @@ namespace apn::font_tree
 		//
 		HRESULT read_xml(std::wstring file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			try
 			{
@@ -260,7 +260,7 @@ namespace apn::font_tree
 				// xmlファイルを読み込みます。
 				if (document->load(file_name.c_str()) == VARIANT_FALSE)
 				{
-					MY_TRACE("{}を読み込めませんでした\n", file_name);
+					MY_TRACE("{/}を読み込めませんでした\n", file_name);
 
 					return S_FALSE;
 				}
@@ -292,7 +292,7 @@ namespace apn::font_tree
 			{
 				MY_TRACE(
 					"xmlファイルの読み込みに失敗しました\n"
-					"{}\n", e.ErrorMessage());
+					"{/}\n", e.ErrorMessage());
 
 				return e.Error();
 			}

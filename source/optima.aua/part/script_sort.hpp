@@ -56,7 +56,7 @@ namespace apn::optima
 				const auto address = script_sort_auf + offset;
 
 				if (!patch((LPVOID)address, from, to))
-					MY_TRACE("{:#010x}を書き換えられませんでした\n", address);
+					MY_TRACE("{/hex}を書き換えられませんでした\n", address);
 			}
 
 			{
@@ -66,7 +66,7 @@ namespace apn::optima
 				const auto address = script_sort_auf + offset;
 
 				if (!patch((LPVOID)address, from, to))
-					MY_TRACE("{:#010x}を書き換えられませんでした\n", address);
+					MY_TRACE("{/hex}を書き換えられませんでした\n", address);
 			}
 
 			return TRUE;

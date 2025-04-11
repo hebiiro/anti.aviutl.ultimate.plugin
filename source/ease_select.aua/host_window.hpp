@@ -43,7 +43,7 @@ namespace apn::ease_select
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// ウィンドウの初期化が完了したので、
 					// このウィンドウをメインウィンドウに設定します。
@@ -53,13 +53,13 @@ namespace apn::ease_select
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case share::message::c_fire_notify:
 				{
-					MY_TRACE_FUNC("share::message::c_fire_notify, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("share::message::c_fire_notify, {/hex}, {/hex}", wParam, lParam);
 
 					::PostThreadMessage(gui.pi.dwThreadId, share::message::c_notify, 0, 0);
 

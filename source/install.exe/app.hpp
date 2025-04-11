@@ -63,9 +63,9 @@ public:
 		}
 		catch (const std::exception& error)
 		{
-			AfxMessageBox(std::format(
-				L"{}を読込中にエラーが発生しました" L"\n"
-				L"{}",
+			AfxMessageBox(my::format(
+				L"{/}を読込中にエラーが発生しました" L"\n"
+				L"{/}",
 				hive.config_file_name,
 				my::ws(error.what())).c_str());
 
@@ -95,9 +95,9 @@ public:
 		}
 		catch (const std::exception& error)
 		{
-			AfxMessageBox(std::format(
-				L"{}を保存中にエラーが発生しました" L"\n"
-				L"{}",
+			AfxMessageBox(my::format(
+				L"{/}を保存中にエラーが発生しました" L"\n"
+				L"{/}",
 				hive.config_file_name,
 				my::ws(error.what())).c_str());
 

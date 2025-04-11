@@ -81,7 +81,7 @@ namespace apn::dark::skin
 		//
 		BOOL is_available(HWND hwnd)
 		{
-			MY_TRACE_FUNC("{:#010x}", hwnd);
+			MY_TRACE_FUNC("{/hex}", hwnd);
 
 			// トップレベルウィンドウを取得します。
 			while (auto parent = ::GetParent(hwnd))
@@ -97,7 +97,7 @@ namespace apn::dark::skin
 		//
 		void set_window_attribute(HWND hwnd, BOOL activate)
 		{
-//			MY_TRACE_FUNC("{:#010x}, {}", hwnd, activate);
+//			MY_TRACE_FUNC("{/hex}, {/}", hwnd, activate);
 
 			if (!available) return;
 

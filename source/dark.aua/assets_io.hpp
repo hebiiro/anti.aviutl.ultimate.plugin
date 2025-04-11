@@ -119,7 +119,7 @@ namespace apn::dark
 			{
 				MY_TRACE_STR(error.what());
 
-				hive.message_box(my::format(L"{}の読み込みに失敗しました\n{}", stem, error.what()));
+				hive.message_box(my::format(L"{/}の読み込みに失敗しました\n{/}", stem, error.what()));
 
 				return FALSE;
 			}

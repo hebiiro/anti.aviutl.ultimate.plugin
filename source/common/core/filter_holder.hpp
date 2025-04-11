@@ -2,7 +2,7 @@
 
 #define MY_TRACE_FILTER_HOLDER(filter) \
 do { \
-	MY_TRACE(#filter _T(" = {}\n"), filter.get_filter_index()); \
+	MY_TRACE(#filter _T(" = {/}\n"), filter.get_filter_index()); \
 } while (false)
 
 namespace apn

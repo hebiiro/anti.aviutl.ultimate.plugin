@@ -7,7 +7,7 @@ namespace apn::audio_visualizer
 	//
 	inline struct AddinDialog : StdAddinDialog<IDD_MAIN_DIALOG>
 	{
-		static constexpr auto float_format = _T("{:.0f}");
+		inline static constexpr auto float_fmt = _T("{/.0f}");
 
 		//
 		// 指定されたコントロールを有効または無効にします。
@@ -86,7 +86,7 @@ namespace apn::audio_visualizer
 		//
 		BOOL set_window_name(size_t index, LPCTSTR new_name)
 		{
-			MY_TRACE_FUNC("{}, {}", index, new_name);
+			MY_TRACE_FUNC("{/}, {/}", index, new_name);
 
 			if (is_locked()) return FALSE;
 
@@ -288,7 +288,7 @@ namespace apn::audio_visualizer
 		//
 		virtual void on_command(UINT code, UINT id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
 
 			switch (id)
 			{

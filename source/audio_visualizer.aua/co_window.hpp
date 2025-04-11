@@ -58,7 +58,7 @@ namespace apn::audio_visualizer
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// カテゴリ名を設定します。
 					::SetProp(hwnd, L"aviutl.plugin.category_name", (HANDLE)hive.c_display_name);
@@ -70,7 +70,7 @@ namespace apn::audio_visualizer
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					// 外部プロセスにコウィンドウが終了していることを通知します。
 					::PostMessage(hive.ui_window, share::c_message.c_exit_co_window, (WPARAM)hwnd, (LPARAM)get_target());
@@ -79,7 +79,7 @@ namespace apn::audio_visualizer
 				}
 			case WM_GETMINMAXINFO:
 				{
-//					MY_TRACE_FUNC("WM_GETMINMAXINFO, {:#010x}, {:#010x}", wParam, lParam);
+//					MY_TRACE_FUNC("WM_GETMINMAXINFO, {/hex}, {/hex}", wParam, lParam);
 
 					// ウィンドウの最小サイズを0に変更します。
 					auto mmi = (MINMAXINFO*)lParam;
@@ -90,7 +90,7 @@ namespace apn::audio_visualizer
 				}
 			case share::c_message.c_init_co_window:
 				{
-					MY_TRACE_FUNC("c_init_co_window, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_init_co_window, {/hex}, {/hex}", wParam, lParam);
 
 					auto co_window = (HWND)wParam;
 					auto visual = (HWND)lParam;

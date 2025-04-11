@@ -11,7 +11,7 @@ namespace Gdiplus
 	{
 	public:
 
-		MyPoint(const POINT& point) : Point(point.x, point.y){}
+		MyPoint(const POINT& point) : Point(point.x, point.y) {}
 
 		void SetPoint(int x, int y)
 		{

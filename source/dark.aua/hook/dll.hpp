@@ -52,7 +52,7 @@ namespace apn::dark::hook
 				_In_ DWORD cb,
 				_Out_ LPDWORD cb_needed)
 			{
-				MY_TRACE_FUNC("{:#010x}", process);
+				MY_TRACE_FUNC("{/hex}", process);
 
 				// まず、デフォルト処理を行います。
 				auto result = orig_proc(process, modules, cb, cb_needed);

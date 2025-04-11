@@ -147,7 +147,7 @@ namespace apn::item_copy
 
 		STDMETHODIMP OnStateChange(IShellView* shell_view, ULONG change) override
 		{
-			MY_TRACE_FUNC("{:#010x}", change);
+			MY_TRACE_FUNC("{/hex}", change);
 
 			return S_OK;
 		}

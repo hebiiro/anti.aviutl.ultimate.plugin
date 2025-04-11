@@ -53,7 +53,7 @@ namespace apn::optima
 				auto length = strlen(names);
 				auto temp = std::string(names, length);
 				auto sep = temp.find(1);
-				MY_TRACE("{}, {}, {}\n", temp, length, sep);
+				MY_TRACE("{/}, {/}, {/}\n", temp, length, sep);
 
 				if (sep != temp.npos)
 				{
@@ -63,7 +63,7 @@ namespace apn::optima
 					auto it = from_category.find(category);
 					if (it == from_category.end())
 					{
-						MY_TRACE("カテゴリを追加します {} => {}\n", category, from_category.size());
+						MY_TRACE("カテゴリを追加します {/} => {/}\n", category, from_category.size());
 
 						it = from_category.insert({ category, from_category.size() }).first;
 					}

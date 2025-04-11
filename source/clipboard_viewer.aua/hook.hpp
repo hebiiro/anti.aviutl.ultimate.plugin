@@ -53,7 +53,7 @@ namespace apn::clipboard_viewer
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}", dc, x, y, options);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/hex}", dc, x, y, options);
 				MY_TRACE_RECT2(rc[0]); // クリッピング矩形です。
 				MY_TRACE_RECT2(rc[1]); // アイテム全体の矩形です。
 

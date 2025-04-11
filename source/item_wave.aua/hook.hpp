@@ -307,7 +307,7 @@ namespace apn::item_wave
 		inline static struct {
 			inline static void CDECL hook_proc(HDC dc, int32_t object_index)
 			{
-				MY_TRACE_FUNC("{}", object_index);
+				MY_TRACE_FUNC("{/}", object_index);
 
 				// 描画中のアイテムを取得しておきます。
 				hook_manager.current_object_index = object_index;
@@ -327,7 +327,7 @@ namespace apn::item_wave
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(HDC dc, int x, int y, UINT options, LPCRECT rc, LPCSTR text, UINT c, CONST INT* dx)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {}, {:#010x}", dc, x, y, options);
+				MY_TRACE_FUNC("{/hex}, {/}, {/}, {/hex}", dc, x, y, options);
 //				MY_TRACE_RECT2(rc[0]); // クリッピング矩形
 //				MY_TRACE_RECT2(rc[1]); // アイテム全体の矩形
 

@@ -18,7 +18,7 @@ namespace apn::optima
 		inline static void (CDECL* orig_proc)(int32_t object_index) = nullptr;
 		inline static void CDECL hook_proc(int32_t object_index)
 		{
-			MY_TRACE_FUNC("{}", object_index);
+			MY_TRACE_FUNC("{/}", object_index);
 
 			Hive::Locker locker;
 
@@ -57,7 +57,7 @@ namespace apn::optima
 					// コンボボックスのカテゴリを取得します。
 					auto cached_category_id = get_category_id(hwnd);
 
-					MY_TRACE("アニメーション効果 : {}, {:#010x}, {}, {}\n",
+					MY_TRACE("アニメーション効果 : {/}, {/hex}, {/}, {/}\n",
 						filter.index(), (uint32_t)hwnd, filter_category_id, cached_category_id);
 
 					// カテゴリが異なる場合は
@@ -67,7 +67,7 @@ namespace apn::optima
 						auto cached_combobox_index = find_cached_combobox_index(combobox_index,  filter_category_id);
 						if (cached_combobox_index > combobox_index)
 						{
-							MY_TRACE("cached : {} <=> {}\n", combobox_index, cached_combobox_index);
+							MY_TRACE("cached : {/} <=> {/}\n", combobox_index, cached_combobox_index);
 
 							// コンボボックスを入れ替えます。
 							swap_combobox(combobox_index, cached_combobox_index);
@@ -96,7 +96,7 @@ namespace apn::optima
 					// コンボボックスのカテゴリを取得します。
 					auto cached_category_id = get_category_id(hwnd);
 
-					MY_TRACE("残りのコンボボックス : {}, {:#010x}, {}\n",
+					MY_TRACE("残りのコンボボックス : {/}, {/hex}, {/}\n",
 						rest_combobox_index, (uint32_t)hwnd, cached_category_id);
 
 					// コンボボックスのカテゴリが有効の場合は
@@ -106,7 +106,7 @@ namespace apn::optima
 						auto nocached_combobox_index = find_nocached_combobox_index(rest_combobox_index);
 						if (nocached_combobox_index > rest_combobox_index)
 						{
-							MY_TRACE("nocached : {} <=> {}\n", rest_combobox_index, nocached_combobox_index);
+							MY_TRACE("nocached : {/} <=> {/}\n", rest_combobox_index, nocached_combobox_index);
 
 							// コンボボックスを入れ替えます。
 							// これによりカテゴリが有効なコンボボックスがそのまま残ります(キャッシュされます)。

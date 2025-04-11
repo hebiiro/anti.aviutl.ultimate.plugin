@@ -113,7 +113,7 @@ namespace apn::workspace
 		//
 		virtual BOOL change_layout(const std::wstring& file_name) override
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			return PreferenceLoader(hive.c_preference_flag.c_fluid).read_file(file_name, hive);
 		}
@@ -123,7 +123,7 @@ namespace apn::workspace
 		//
 		virtual BOOL enable_fullscreen_preview(BOOL enable) override
 		{
-			MY_TRACE_FUNC("{}", enable);
+			MY_TRACE_FUNC("{/}", enable);
 
 			return hook::local::aviutl.enable_hook(enable);
 		}

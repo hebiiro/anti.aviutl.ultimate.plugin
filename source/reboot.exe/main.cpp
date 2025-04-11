@@ -11,7 +11,7 @@ namespace apn::reboot
 		{
 		case share::c_message.c_reboot:
 			{
-				MY_TRACE_FUNC("share::c_message.c_reboot, {:#010x}, {:#010x}", wParam, lParam);
+				MY_TRACE_FUNC("share::c_message.c_reboot, {/hex}, {/hex}", wParam, lParam);
 
 				// 引数から既存のaviutlプロセスのハンドルを取得します。
 				my::handle::unique_ptr<> process_handle((HANDLE)wParam);

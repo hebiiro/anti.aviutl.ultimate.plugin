@@ -40,7 +40,7 @@ namespace apn::font_select
 		//
 		BOOL on_measure_item(MEASUREITEMSTRUCT* mis)
 		{
-//			MY_TRACE_FUNC("{}", mis->itemID);
+//			MY_TRACE_FUNC("{/}", mis->itemID);
 
 			mis->itemWidth = hive.item_size.cx;
 			mis->itemHeight = hive.item_size.cy;
@@ -53,7 +53,7 @@ namespace apn::font_select
 		//
 		BOOL on_draw_item(DRAWITEMSTRUCT* dis)
 		{
-//			MY_TRACE_FUNC("{}", dis->itemID);
+//			MY_TRACE_FUNC("{/}", dis->itemID);
 
 			auto dc = dis->hDC;
 			auto rc = dis->rcItem;
@@ -61,7 +61,7 @@ namespace apn::font_select
 			auto id = dis->itemID;
 			auto font_name = std::wstring((LPCWSTR)dis->itemData);
 
-			MY_TRACE("{}, {}, {:#010x}, {:#010x}\n", font_name, dis->itemID, dis->itemAction, dis->itemState);
+			MY_TRACE("{/}, {/}, {/hex}, {/hex}\n", font_name, dis->itemID, dis->itemAction, dis->itemState);
 
 			{
 				// ドロップダウンリストのアイテムを描画します。
@@ -126,7 +126,7 @@ namespace apn::font_select
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					if (!addin_dialog.init(hwnd))
 					{
@@ -146,7 +146,7 @@ namespace apn::font_select
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					addin_dialog.exit();
 

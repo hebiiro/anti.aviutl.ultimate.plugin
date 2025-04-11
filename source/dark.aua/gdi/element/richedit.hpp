@@ -11,13 +11,13 @@ namespace apn::dark::gdi
 			{
 			case WM_PAINT:
 				{
-					MY_TRACE_FUNC("WM_PAINT, {:#010x}, {:#010x}", current_state->wParam, current_state->lParam);
+					MY_TRACE_FUNC("WM_PAINT, {/hex}, {/hex}", current_state->wParam, current_state->lParam);
 
 					break;
 				}
 			case WM_ERASEBKGND:
 				{
-					MY_TRACE_FUNC("WM_ERASEBKGND, {:#010x}, {:#010x}", current_state->wParam, current_state->lParam);
+					MY_TRACE_FUNC("WM_ERASEBKGND, {/hex}, {/hex}", current_state->wParam, current_state->lParam);
 
 					auto hwnd = current_state->hwnd;
 					auto dc = (HDC)current_state->wParam;
@@ -43,19 +43,19 @@ namespace apn::dark::gdi
 				}
 			case WM_PRINT:
 				{
-					MY_TRACE_FUNC("WM_PRINT, {:#010x}, {:#010x}", current_state->wParam, current_state->lParam);
+					MY_TRACE_FUNC("WM_PRINT, {/hex}, {/hex}", current_state->wParam, current_state->lParam);
 
 					break;
 				}
 			case WM_PRINTCLIENT:
 				{
-					MY_TRACE_FUNC("WM_PRINTCLIENT, {:#010x}, {:#010x}", current_state->wParam, current_state->lParam);
+					MY_TRACE_FUNC("WM_PRINTCLIENT, {/hex}, {/hex}", current_state->wParam, current_state->lParam);
 
 					break;
 				}
 			default:
 				{
-					MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}",
+					MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}",
 						current_state->hwnd, current_state->message, current_state->wParam, current_state->lParam);
 
 					break;

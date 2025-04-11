@@ -176,7 +176,7 @@ namespace apn::reboot::spreader
 			//
 			inline BOOL init(my::addr_t aviutl)
 			{
-				MY_TRACE_FUNC("{:#010x}", aviutl);
+				MY_TRACE_FUNC("{/hex}", aviutl);
 
 				attach(hook_proc, orig_proc, aviutl + 0x00053320);
 
@@ -295,7 +295,7 @@ namespace apn::reboot::spreader
 			//
 			inline BOOL init(my::addr_t aviutl)
 			{
-				MY_TRACE_FUNC("{:#010x}", aviutl);
+				MY_TRACE_FUNC("{/hex}", aviutl);
 
 				attach(hook_proc, orig_proc, aviutl + 0x00051150);
 
@@ -311,7 +311,7 @@ namespace apn::reboot::spreader
 			inline struct {
 				inline static uint32_t __fastcall hook_proc(HWND preview_window)
 				{
-					MY_TRACE_FUNC("{:#010x}", preview_window);
+					MY_TRACE_FUNC("{/hex}", preview_window);
 
 					auto is_playing = magi.auin.is_playing();
 					auto is_playing_main = magi.auin.is_playing_main();
@@ -337,7 +337,7 @@ namespace apn::reboot::spreader
 			//
 			inline BOOL init(my::addr_t aviutl)
 			{
-				MY_TRACE_FUNC("{:#010x}", aviutl);
+				MY_TRACE_FUNC("{/hex}", aviutl);
 
 				my::hook::attach_call(hook, aviutl + 0x00053629);
 

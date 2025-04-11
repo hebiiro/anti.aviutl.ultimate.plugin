@@ -127,8 +127,8 @@ namespace apn::item_copy
 			SYSTEMTIME local_time = {};
 			::GetLocalTime(&local_time);
 
-			auto file_spec = std::format(
-				L"{}{:04d}年{:02d}月{:02d}日{:02d}時{:02d}分{:02d}.{:03d}秒.{}",
+			auto file_spec = my::format(
+				L"{/}{:04d}年{:02d}月{:02d}日{:02d}時{:02d}分{:02d}.{:03d}秒.{/}",
 				hive.prefix,
 				local_time.wYear,
 				local_time.wMonth,
@@ -248,17 +248,17 @@ namespace apn::item_copy
 				if (scene_height) height = scene_height;
 			}
 
-			ofs << std::format("width={}\r\n", width);
-			ofs << std::format("height={}\r\n", height);
-			ofs << std::format("rate={}\r\n", fi->video_rate);
-			ofs << std::format("scale={}\r\n", fi->video_scale);
-			ofs << std::format("length={}\r\n", *(int32_t*)(exedit + 0x14D3A0));
-			ofs << std::format("audio_rate={}\r\n", fi->audio_rate);
-			ofs << std::format("audio_ch={}\r\n", fi->audio_ch);
+			ofs << my::format("width={/}\r\n", width);
+			ofs << my::format("height={/}\r\n", height);
+			ofs << my::format("rate={/}\r\n", fi->video_rate);
+			ofs << my::format("scale={/}\r\n", fi->video_scale);
+			ofs << my::format("length={/}\r\n", *(int32_t*)(exedit + 0x14D3A0));
+			ofs << my::format("audio_rate={/}\r\n", fi->audio_rate);
+			ofs << my::format("audio_ch={/}\r\n", fi->audio_ch);
 			if (is_scene_alpha_enabled(current_scene_index))
 				ofs << "alpha=1\r\n";
 			if (current_scene && current_scene->name)
-				ofs << std::format("name={}\r\n", current_scene->name);
+				ofs << my::format("name={/}\r\n", current_scene->name);
 
 			return TRUE;
 		}
@@ -280,40 +280,40 @@ namespace apn::item_copy
 			auto string_buffer = *(LPSTR*)(exedit + 0x1A5328);
 			auto fi = (AviUtl::FileInfo*)(exedit + 0x178E78);
 
-			ofs << std::format("[{}]\r\n", write_object_index);
-			ofs << std::format("start={}\r\n", object->frame_begin + 1 - frame_origin);
-			ofs << std::format("end={}\r\n", object->frame_end + 1 - frame_origin);
-			ofs << std::format("layer={}\r\n", object->layer_disp + 1 - layer_origin);
+			ofs << my::format("[{/}]\r\n", write_object_index);
+			ofs << my::format("start={/}\r\n", object->frame_begin + 1 - frame_origin);
+			ofs << my::format("end={/}\r\n", object->frame_end + 1 - frame_origin);
+			ofs << my::format("layer={/}\r\n", object->layer_disp + 1 - layer_origin);
 
 			if (object->group_belong)
-				ofs << std::format("group={}\r\n", object->group_belong);
+				ofs << my::format("group={/}\r\n", object->group_belong);
 
 			auto flag = (uint32_t)object->flag;
 
 			if (flag & 0x50000)
-				ofs << std::format("overlay={}\r\n", 1);
+				ofs << my::format("overlay={/}\r\n", 1);
 
 			if (flag & 0x100)
-				ofs << std::format("clipping={}\r\n", 1);
+				ofs << my::format("clipping={/}\r\n", 1);
 
 			if (flag & 0x200)
 			{
-				ofs << std::format("camera={}\r\n", 1);
+				ofs << my::format("camera={/}\r\n", 1);
 			}
 			else if (flag & 0x10000 && !(flag & 0x20000))
 			{
-				ofs << std::format("camera={}\r\n", 0);
+				ofs << my::format("camera={/}\r\n", 0);
 			}
 
 			if (flag & 0x20000)
-				ofs << std::format("audio={}\r\n", 1);
+				ofs << my::format("audio={/}\r\n", 1);
 
 			auto is_midpt = FALSE;
 
 			if (object->index_midpt_leader >= 0 &&
 				object->index_midpt_leader != object_index)
 			{
-				ofs << std::format("chain={}\r\n", 1);
+				ofs << my::format("chain={/}\r\n", 1);
 
 				is_midpt = TRUE;
 			}
@@ -328,7 +328,7 @@ namespace apn::item_copy
 				// 書き込み用のフィルタのインデックスです。
 				auto write_filter_index = j;
 
-				ofs << std::format("[{}.{}]\r\n", write_object_index, write_filter_index);
+				ofs << my::format("[{/}.{/}]\r\n", write_object_index, write_filter_index);
 
 				const auto write_filter = [&]()
 				{
@@ -406,7 +406,7 @@ namespace apn::item_copy
 				}
 
 				// 書き込み先ファイル名を取得します。
-				auto file_name = dir / std::format(L"{}_{}_{}{}",
+				auto file_name = dir / my::format(L"{/}_{/}_{/}{/}",
 					stem, ++index, normalize_object_name(object), extension);
 
 				// アイテムをファイルに書き込みます。
@@ -448,7 +448,7 @@ namespace apn::item_copy
 				if (object->index_midpt_leader < 0)
 				{
 					// 書き込み先ファイル名を取得します。
-					auto file_name = dir / std::format(L"{}_{}_{}{}",
+					auto file_name = dir / my::format(L"{/}_{/}_{/}{/}",
 						stem, ++index, normalize_object_name(object), extension);
 
 					// バイナリファイル出力ストリームを開きます。
@@ -464,7 +464,7 @@ namespace apn::item_copy
 				else if (object->index_midpt_leader == object_index)
 				{
 					// 書き込み先ファイル名を取得します。
-					auto file_name = dir / std::format(L"{}_{}_{}{}",
+					auto file_name = dir / my::format(L"{/}_{/}_{/}{/}",
 						stem, ++index, normalize_object_name(object), extension);
 
 					// バイナリファイル出力ストリームを開きます。

@@ -18,7 +18,7 @@ namespace apn::filer
 		//
 		BOOL init(HWND parent)
 		{
-			MY_TRACE_FUNC("{:#010x}", parent);
+			MY_TRACE_FUNC("{/hex}", parent);
 
 			return __super::create(hive.instance, MAKEINTRESOURCE(IDD_MAIN_DIALOG), parent);
 		}
@@ -125,7 +125,7 @@ namespace apn::filer
 		//
 		BOOL set_filer_name(size_t index, LPCTSTR new_name)
 		{
-			MY_TRACE_FUNC("{}, {}", index, new_name);
+			MY_TRACE_FUNC("{/}, {/}", index, new_name);
 
 			if (locked) return FALSE;
 

@@ -21,7 +21,6 @@ using namespace std::string_literals;
 #include <unordered_map>
 #include <deque>
 #include <regex>
-#include <format>
 #include <filesystem>
 
 #define WIN32_LEAN_AND_MEAN
@@ -59,6 +58,8 @@ using namespace Gdiplus;
 
 #include "aviutl.hpp"
 #include "exedit.hpp"
+#include "common/sprintfmt/sprintfmt.hpp"
+#include "common/my/format.hpp"
 #include "common/my/utils.hpp"
 #include "common/my/str_utils.hpp"
 #include "common/my/win_utils.hpp"

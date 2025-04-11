@@ -280,7 +280,7 @@ namespace apn::dark
 			auto skin_module_name = get_module_name(hive.skin_list, hive.skin_name);
 			if (skin_module_name.empty())
 			{
-				std::wcout << std::format(L"{}スキンが見つかりませんでした", hive.skin_name) << std::endl;
+				std::wcout << my::format(L"{/}スキンが見つかりませんでした", hive.skin_name) << std::endl;
 
 				return FALSE;
 			}
@@ -289,7 +289,7 @@ namespace apn::dark
 			auto scheme_module_name = get_module_name(hive.scheme_list, hive.scheme_name);
 			if (scheme_module_name.empty())
 			{
-				std::wcout << std::format(L"{}スキームが見つかりませんでした", hive.scheme_name) << std::endl;
+				std::wcout << my::format(L"{/}スキームが見つかりませんでした", hive.scheme_name) << std::endl;
 
 				return FALSE;
 			}
@@ -340,7 +340,7 @@ namespace apn::dark
 		//
 		inline static BOOL redraw_window(HWND hwnd)
 		{
-//			MY_TRACE_FUNC("{:#010x}", hwnd);
+//			MY_TRACE_FUNC("{/hex}", hwnd);
 
 			if (::GetWindowLong(hwnd, GWL_STYLE) & WS_CAPTION)
 				skin::dwm.set_window_attribute(hwnd, hwnd == ::GetActiveWindow());
@@ -381,10 +381,10 @@ namespace apn::dark
 		inline static std::wstring to_string(COLORREF color)
 		{
 #if 0
-			return std::format(LR"(#{:1x}{:1x}{:1x})",
+			return my::format(LR"(#{:1x}{:1x}{:1x})",
 				GetRValue(color) >> 4, GetGValue(color) >> 4, GetBValue(color) >> 4);
 #else
-			return std::format(LR"(#{:02x}{:02x}{:02x})",
+			return my::format(LR"(#{:02x}{:02x}{:02x})",
 				GetRValue(color), GetGValue(color), GetBValue(color));
 #endif
 		}
@@ -393,7 +393,7 @@ namespace apn::dark
 		{
 			auto state = skin::theme::manager.get_state(vsclass_name, part_id, state_id);
 			if (!state) return {};
-			return std::format(LR"(<NamedColor name="{}" fillColor="{}" edgeColor="{}" textForeColor="{}" textBackColor="{}" />)",
+			return my::format(LR"(<NamedColor name="{/}" fillColor="{/}" edgeColor="{/}" textForeColor="{/}" textBackColor="{/}" />)",
 				name,
 				to_string(state->stuff.fill.color),
 				to_string(state->stuff.border.color),
@@ -427,8 +427,8 @@ namespace apn::dark
 			// 設定ファイルを作成します。
 			{
 				std::ofstream ofs(darken_window_settings_path, std::ios::out | std::ios::binary);
-				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
-				ofs << L"\r\n"s << std::format(LR"(<Settings skin="{}" shadowMode="{}" roundMode="{}" />)",
+				ofs << L"\ufeff"s << my::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
+				ofs << L"\r\n"s << my::format(LR"(<Settings skin="{/}" shadowMode="{/}" roundMode="{/}" />)",
 					skin_relative_path.c_str(),
 					hive.draw_shadow ? L"ON" : L"OFF",
 					hive.as_round ? L"ON" : L"OFF");
@@ -437,30 +437,30 @@ namespace apn::dark
 			// スキンファイルを作成します。
 			{
 				std::ofstream ofs(skin_path, std::ios::out | std::ios::binary);
-				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
-				ofs << L"\r\n"s << std::format(LR"(<Settings>)");
-				ofs << L"\r\n\t"s << std::format(LR"(<Skin fileName="{}" />)", skin_settings_relative_path.c_str());
-				ofs << L"\r\n"s << std::format(LR"(</Settings>)");
+				ofs << L"\ufeff"s << my::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
+				ofs << L"\r\n"s << my::format(LR"(<Settings>)");
+				ofs << L"\r\n\t"s << my::format(LR"(<Skin fileName="{/}" />)", skin_settings_relative_path.c_str());
+				ofs << L"\r\n"s << my::format(LR"(</Settings>)");
 			}
 
 			// スキン設定ファイルを作成します。
 			{
 				std::ofstream ofs(skin_settings_path, std::ios::out | std::ios::binary);
-				ofs << L"\ufeff"s << std::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
-				ofs << L"\r\n"s << std::format(LR"(<Skin>)");
-				ofs << L"\r\n\t"s << std::format(LR"(<Attributes>)");
-				ofs << L"\r\n\t\t"s << std::format(LR"(<Dwm)");
-				ofs << L"\r\n\t\t\t"s << std::format(LR"(activeBorderColor="{}" activeCaptionColor="{}" activeTextColor="{}")",
+				ofs << L"\ufeff"s << my::format(LR"(<?xml version="1.0" encoding="UTF-16" standalone="no"?>)");
+				ofs << L"\r\n"s << my::format(LR"(<Skin>)");
+				ofs << L"\r\n\t"s << my::format(LR"(<Attributes>)");
+				ofs << L"\r\n\t\t"s << my::format(LR"(<Dwm)");
+				ofs << L"\r\n\t\t\t"s << my::format(LR"(activeBorderColor="{/}" activeCaptionColor="{/}" activeTextColor="{/}")",
 					to_string(skin::dwm.active.border_color),
 					to_string(skin::dwm.active.caption_color),
 					to_string(skin::dwm.active.text_color));
-				ofs << L"\r\n\t\t\t"s << std::format(LR"(inactiveBorderColor="{}" inactiveCaptionColor="{}" inactiveTextColor="{}")",
+				ofs << L"\r\n\t\t\t"s << my::format(LR"(inactiveBorderColor="{/}" inactiveCaptionColor="{/}" inactiveTextColor="{/}")",
 					to_string(skin::dwm.inactive.border_color),
 					to_string(skin::dwm.inactive.caption_color),
 					to_string(skin::dwm.inactive.text_color));
-				ofs << L"\r\n\t\t\t"s << std::format(LR"(darkMode="{}" cornerMode="{}")", skin::dwm.dark_mode, skin::dwm.corner_mode);
-				ofs << L"\r\n\t\t"s << std::format(LR"(/>)");
-				ofs << L"\r\n\t\t"s << std::format(LR"(<NamedColors>)");
+				ofs << L"\r\n\t\t\t"s << my::format(LR"(darkMode="{/}" cornerMode="{/}")", skin::dwm.dark_mode, skin::dwm.corner_mode);
+				ofs << L"\r\n\t\t"s << my::format(LR"(/>)");
+				ofs << L"\r\n\t\t"s << my::format(LR"(<NamedColors>)");
 
 				ofs << L"\r\n\t\t\t"s << to_string(L"caption_active", VSCLASS_WINDOW, WP_CAPTION, CS_ACTIVE);
 				ofs << L"\r\n\t\t\t"s << to_string(L"caption_inactive", VSCLASS_WINDOW, WP_CAPTION, CS_INACTIVE);
@@ -507,9 +507,9 @@ namespace apn::dark
 				ofs << L"\r\n\t\t\t"s << to_string(L"c5_disabled", VSCLASS_STATIC, STAT_TEXT, PBS_DISABLED);
 				ofs << L"\r\n\t\t\t"s << to_string(L"c5_checked", VSCLASS_BUTTON, BP_CHECKBOX, CBS_CHECKEDNORMAL);
 
-				ofs << L"\r\n\t\t"s << std::format(LR"(</NamedColors>)");
-				ofs << L"\r\n\t"s << std::format(LR"(</Attributes>)");
-				ofs << L"\r\n"s << std::format(LR"(</Skin>)");
+				ofs << L"\r\n\t\t"s << my::format(LR"(</NamedColors>)");
+				ofs << L"\r\n\t"s << my::format(LR"(</Attributes>)");
+				ofs << L"\r\n"s << my::format(LR"(</Skin>)");
 			}
 
 			return TRUE;

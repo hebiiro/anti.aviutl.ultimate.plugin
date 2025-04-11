@@ -12,7 +12,7 @@ namespace apn::workspace::hook
 		inline static struct {
 			inline static BOOL WINAPI hook_proc(LPRECT rc, DWORD style, BOOL menu, DWORD ex_style)
 			{
-				MY_TRACE_FUNC("{:#010x}, {}, {:#010x}", style, menu, ex_style);
+				MY_TRACE_FUNC("{/hex}, {/}, {/hex}", style, menu, ex_style);
 
 				auto result = orig_proc(rc, style | WS_CAPTION, menu, ex_style);
 

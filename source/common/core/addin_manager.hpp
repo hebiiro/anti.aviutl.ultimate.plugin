@@ -288,7 +288,7 @@ namespace apn
 			{
 				// 保存するデータを構築します。
 				{
-					save_data = L"{\"ultimate\":{}";
+					save_data = L"{\"ultimate\":{/}";
 
 					for (const auto& pair : addins.map)
 					{

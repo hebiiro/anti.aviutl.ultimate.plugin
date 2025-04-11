@@ -190,7 +190,7 @@ namespace apn::text_split
 			const std::string& key_name,
 			int32_t value)
 		{
-			return ::WritePrivateProfileStringA(app_name.c_str(), key_name.c_str(), std::format("{}", value).c_str(), file_name.c_str());
+			return ::WritePrivateProfileStringA(app_name.c_str(), key_name.c_str(), my::format("{/}", value).c_str(), file_name.c_str());
 		}
 
 		//
@@ -225,11 +225,11 @@ namespace apn::text_split
 			MY_TRACE_INT(pid);
 
 			// テンポラリファイル名を取得します。
-			temp_file_name = std::format("{}\\text_split_{}.exo", temp_dir, pid);
+			temp_file_name = my::format("{/}\\text_split_{/}.exo", temp_dir, pid);
 			MY_TRACE_STR(temp_file_name);
 
 			// テンポラリファイル名を取得します。(文字列分割後のexoファイル)
-			each_temp_file_name = std::format("{}\\text_split_{}_each.exo", temp_dir, pid);
+			each_temp_file_name = my::format("{/}\\text_split_{/}_each.exo", temp_dir, pid);
 			MY_TRACE_STR(each_temp_file_name);
 
 			return TRUE;
@@ -272,7 +272,7 @@ namespace apn::text_split
 			MY_TRACE_INT(sorted_object_index);
 
 			// アイテムのセクション名を取得します。
-			object_app_name = std::format("{}", sorted_object_index);
+			object_app_name = my::format("{/}", sorted_object_index);
 			MY_TRACE_STR(object_app_name);
 
 			// レイヤーを取得します。
@@ -288,7 +288,7 @@ namespace apn::text_split
 			MY_TRACE_INT(item_end);
 
 			// 最初のフィルタのセクション名を取得します。
-			first_filter_app_name = std::format("{}.0", sorted_object_index);
+			first_filter_app_name = my::format("{/}.0", sorted_object_index);
 			MY_TRACE_STR(first_filter_app_name);
 
 			// _nameをチェックします。
@@ -316,7 +316,7 @@ namespace apn::text_split
 			for (size_t i = 0; i < ExEdit::Object::MAX_FILTER; i++)
 			{
 				// セクション名を作成します。
-				auto app_name = std::format("{}.{}", sorted_object_index, i);
+				auto app_name = my::format("{/}.{/}", sorted_object_index, i);
 				MY_TRACE_STR(app_name);
 
 				// _name を取得します。
@@ -552,17 +552,17 @@ namespace apn::text_split
 			{
 			case c_pos_mode.c_solo:
 				{
-					str = std::format("{:.1f}", value[0]);
+					str = my::format("{:.1f}", value[0]);
 					break;
 				}
 			case c_pos_mode.c_pair:
 				{
-					str = std::format("{:.1f},{:.1f}", value[0], value[1]);
+					str = my::format("{:.1f},{:.1f}", value[0], value[1]);
 					break;
 				}
 			case c_pos_mode.c_animation:
 				{
-					str = std::format("{:.1f},{:.1f},{}", value[0], value[1], pos.animation);
+					str = my::format("{:.1f},{:.1f},{/}", value[0], value[1], pos.animation);
 					break;
 				}
 			}
@@ -592,7 +592,7 @@ namespace apn::text_split
 			write_private_profile_pos(temp_file_name, draw_filter_app_name, "Y", y, item.y);
 			write_private_profile_string(temp_file_name, first_filter_app_name, "text",  str);
 
-			auto each_object_app_name = std::format("{}", each_ojbect_index);
+			auto each_object_app_name = my::format("{/}", each_ojbect_index);
 			MY_TRACE_STR(each_object_app_name);
 
 			copy_private_profile_section(
@@ -601,10 +601,10 @@ namespace apn::text_split
 
 			for (size_t i = 0; i < ExEdit::Object::MAX_FILTER; i++)
 			{
-				auto filter_app_name = std::format("{}.{}", sorted_object_index, i);
+				auto filter_app_name = my::format("{/}.{/}", sorted_object_index, i);
 //				MY_TRACE_STR(filter_app_name);
 
-				auto each_filter_app_name = std::format("{}.{}", each_ojbect_index, i);
+				auto each_filter_app_name = my::format("{/}.{/}", each_ojbect_index, i);
 //				MY_TRACE_STR(each_filter_app_name);
 
 				copy_private_profile_section(
@@ -624,7 +624,7 @@ namespace apn::text_split
 			std::string str;
 			{
 				auto hex = (BYTE*)ch;
-				str = std::format("{:02X}{:02X}", hex[0], hex[1]);
+				str = my::format("{:02X}{:02X}", hex[0], hex[1]);
 				str.resize(4096, '0');
 			}
 			MY_TRACE_STR(str);
@@ -722,7 +722,7 @@ namespace apn::text_split
 					}
 				}
 
-				MY_TRACE("line_index = {}, ch_index = {}, x = ({}, {}), y = ({}, {})\n", current_line_index, ch_index, x[0], x[1], y[0], y[1]);
+				MY_TRACE("line_index = {/}, ch_index = {/}, x = ({/}, {/}), y = ({/}, {/})\n", current_line_index, ch_index, x[0], x[1], y[0], y[1]);
 
 				if (write_ch_item_info(&line[ch_index], x, y))
 					each_ojbect_index++;
@@ -742,7 +742,7 @@ namespace apn::text_split
 			for (size_t i = 0; i < item.x.get_count(); i++)
 				x[i] = item.x.pos[i];
 
-			MY_TRACE("line_index = {}, x = ({}, {}), y = ({}, {})\n", current_line_index, x[0], x[1], y[0], y[1]);
+			MY_TRACE("line_index = {/}, x = ({/}, {/}), y = ({/}, {/})\n", current_line_index, x[0], x[1], y[0], y[1]);
 
 			// 16進数文字に変換されたテキストを取得します。
 			std::string str;
@@ -784,7 +784,7 @@ namespace apn::text_split
 				each_temp_file_name, "exedit");
 
 			// 描画フィルタのセクション名を作成します。
-			draw_filter_app_name = std::format("{}.{}", sorted_object_index, item.draw_filter_index);
+			draw_filter_app_name = my::format("{/}.{/}", sorted_object_index, item.draw_filter_index);
 			MY_TRACE_STR(draw_filter_app_name);
 
 			// アイテムのテキスト情報を初期化します。

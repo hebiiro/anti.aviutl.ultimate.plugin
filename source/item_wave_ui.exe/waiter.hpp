@@ -37,7 +37,7 @@ namespace apn::item_wave::ui
 		//
 		BOOL create_waiter(LPCSTR file_name)
 		{
-			MY_TRACE_FUNC("{}", file_name);
+			MY_TRACE_FUNC("{/}", file_name);
 
 			auto it = std::find_if(collection.begin(), collection.end(),
 				[file_name](const std::shared_ptr<Waiter>& waiter) {

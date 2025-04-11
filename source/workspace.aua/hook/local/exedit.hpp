@@ -18,7 +18,7 @@ namespace apn::workspace::hook::local
 					{
 					case WM_INITDIALOG:
 						{
-							MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+							MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 							// rikky_memory用の処理です。
 							// 子ウィンドウにはWM_NCACTIVATEが通知されないので手動で通知します。
@@ -36,7 +36,7 @@ namespace apn::workspace::hook::local
 						}
 					case WM_DESTROY:
 						{
-							MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+							MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 							if (psdtoolkit) psdtoolkit->undock.exit();
 
@@ -65,7 +65,7 @@ namespace apn::workspace::hook::local
 			inline static struct {
 				inline static COLORREF WINAPI hook_proc(HDC _dc, int x, int y)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}, {}", _dc, x, y);
+					MY_TRACE_FUNC("{/hex}, {/}, {/}", _dc, x, y);
 
 					// すべてのモニタのすべての場所から色を抽出できるようにします。
 

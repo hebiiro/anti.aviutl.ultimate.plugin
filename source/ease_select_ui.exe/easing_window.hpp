@@ -39,7 +39,7 @@ namespace apn::ease_select_ui
 			auto index = image_number - 1;
 
 			auto file_name = magi.get_assets_file_name(
-				std::format(L"ease_select/easing{}.png", image_number));
+				my::format(L"ease_select/easing{/}.png", image_number));
 			MY_TRACE_STR(file_name);
 
 			image.Load(file_name.c_str());
@@ -108,7 +108,7 @@ namespace apn::ease_select_ui
 		//
 		void set_rect(int number, int _x, int _y, const SIZE& size)
 		{
-			MY_TRACE_FUNC("{}, {}, {}", number, _x, _y);
+			MY_TRACE_FUNC("{/}, {/}, {/}", number, _x, _y);
 
 			auto x = ::MulDiv(_x, scale, 100);
 			auto y = ::MulDiv(_y, scale, 100);
@@ -187,7 +187,7 @@ namespace apn::ease_select_ui
 		//
 		void set_easing(int index)
 		{
-			MY_TRACE_FUNC("{}", index);
+			MY_TRACE_FUNC("{/}", index);
 
 			auto target = ::GetForegroundWindow();
 			if (!target) return;
@@ -205,7 +205,7 @@ namespace apn::ease_select_ui
 			MY_TRACE_HWND(child);
 			MY_TRACE_INT(::GetDlgCtrlID(child));
 
-			auto text = std::format(L"{}", easing);
+			auto text = my::format(L"{/}", easing);
 			::SendMessage(child, WM_SETTEXT, 0, (LPARAM)text.c_str());
 			::PostMessage(target, WM_COMMAND, IDOK, 0);
 		}
@@ -215,7 +215,7 @@ namespace apn::ease_select_ui
 		//
 		void show(HWND target)
 		{
-			MY_TRACE_FUNC("{:#010x}", target);
+			MY_TRACE_FUNC("{/hex}", target);
 
 			if (IsWindowVisible()) return;
 

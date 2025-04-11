@@ -35,7 +35,7 @@ namespace apn::workspace
 		//
 		BOOL read(uint32_t flags = hive.c_preference_flag.c_default)
 		{
-			MY_TRACE_FUNC("{:#010x}", flags);
+			MY_TRACE_FUNC("{/hex}", flags);
 
 			return PreferenceLoader(flags).read_file(hive.preference_file_name, hive);
 		}
@@ -45,7 +45,7 @@ namespace apn::workspace
 		//
 		BOOL write(uint32_t flags = hive.c_preference_flag.c_default)
 		{
-			MY_TRACE_FUNC("{:#010x}", flags);
+			MY_TRACE_FUNC("{/hex}", flags);
 
 			return PreferenceSaver(flags).write_file(hive.preference_file_name, hive);
 		}

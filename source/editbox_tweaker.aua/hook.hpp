@@ -104,7 +104,7 @@ namespace apn::editbox_tweaker
 				{
 				case WM_SETFONT:
 					{
-						MY_TRACE("WM_SETFONT, {:#010x}, {:#010x}\n", wParam, lParam);
+						MY_TRACE("WM_SETFONT, {/hex}, {/hex}\n", wParam, lParam);
 
 						wParam = reinterpret_cast<WPARAM>(hive.font.handle.get());
 
@@ -127,7 +127,7 @@ namespace apn::editbox_tweaker
 			inline static HWND WINAPI hook_proc(DWORD ex_style, LPCWSTR class_name, LPCWSTR window_name, DWORD style,
 				int x, int y, int w, int h, HWND parent, HMENU menu, HINSTANCE instance, LPVOID param)
 			{
-				MY_TRACE_FUNC("{}, {}, {}", class_name, w, h);
+				MY_TRACE_FUNC("{/}, {/}, {/}", class_name, w, h);
 
 				auto hwnd = orig_proc(ex_style, class_name, window_name,
 					style, x, y, w, h + hive.delta, parent, menu, instance, param);

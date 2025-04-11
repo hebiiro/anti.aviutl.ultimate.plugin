@@ -520,7 +520,7 @@ namespace apn::workspace
 		//
 		inline static void process_global_mouse_move(const POINT& point)
 		{
-//			MY_TRACE_FUNC("{}, {}", point.x, point.y);
+//			MY_TRACE_FUNC("{/}, {/}", point.x, point.y);
 
 			// 現存するすべてのタブコントロールに
 			// グローバルメッセージを処理させます。
@@ -532,7 +532,7 @@ namespace apn::workspace
 		//
 		BOOL init(HWND owner)
 		{
-			MY_TRACE_FUNC("{:#010x}", owner);
+			MY_TRACE_FUNC("{/hex}", owner);
 
 			// ウィンドウクラスを登録します。
 			WNDCLASS wc = {};
@@ -1137,7 +1137,7 @@ namespace apn::workspace
 		//
 		BOOL notify(uint32_t code)
 		{
-			MY_TRACE_FUNC("{}", code);
+			MY_TRACE_FUNC("{/}", code);
 
 			auto header = NMHDR {
 				.hwndFrom = hwnd,
@@ -1389,7 +1389,7 @@ namespace apn::workspace
 		//
 		LRESULT on_create(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 			// このタブコントロールをコレクションに追加します。
 			tavs.insert(this);
@@ -1402,7 +1402,7 @@ namespace apn::workspace
 		//
 		LRESULT on_destroy(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 			// このタブコントロールをコレクションから削除します。
 			tavs.erase(this);
@@ -1415,7 +1415,7 @@ namespace apn::workspace
 		//
 		LRESULT on_paint(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_PAINT, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_PAINT, {/hex}, {/hex}", wParam, lParam);
 
 			return draw_tav();
 		}
@@ -1425,7 +1425,7 @@ namespace apn::workspace
 		//
 		LRESULT on_mouse_move(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_MOUSEMOVE, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_MOUSEMOVE, {/hex}, {/hex}", wParam, lParam);
 
 			// マウス座標を取得します。
 			auto point = my::lp_to_pt(lParam);
@@ -1502,7 +1502,7 @@ namespace apn::workspace
 		//
 		LRESULT on_global_mouse_move(const POINT& point)
 		{
-//			MY_TRACE_FUNC("{}, {}", point.x, point.y);
+//			MY_TRACE_FUNC("{/}, {/}", point.x, point.y);
 
 			// 親ウィンドウが非表示の場合は何もしません。
 			if (!::IsWindowVisible(::GetParent(*this))) return 0;
@@ -1553,7 +1553,7 @@ namespace apn::workspace
 		//
 		LRESULT on_mouse_leave(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_MOUSELEAVE, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_MOUSELEAVE, {/hex}, {/hex}", wParam, lParam);
 
 			// ホットノードを無効化します。
 			hot_node_index = -1;
@@ -1569,7 +1569,7 @@ namespace apn::workspace
 		//
 		LRESULT on_l_button_down(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_LBUTTONDOWN, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_LBUTTONDOWN, {/hex}, {/hex}", wParam, lParam);
 
 			// マウス座標を取得します。
 			auto point = my::lp_to_pt(lParam);
@@ -1594,7 +1594,7 @@ namespace apn::workspace
 		//
 		LRESULT on_l_button_up(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_LBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_LBUTTONUP, {/hex}, {/hex}", wParam, lParam);
 
 			// マウスキャプチャを終了します。
 			::ReleaseCapture();
@@ -1659,7 +1659,7 @@ namespace apn::workspace
 		//
 		LRESULT on_l_button_dbl_clk(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_LBUTTONDBLCLK, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_LBUTTONDBLCLK, {/hex}, {/hex}", wParam, lParam);
 
 			// 親ウィンドウにNM_DBLCLKを通知します。
 			notify(NM_DBLCLK);
@@ -1672,7 +1672,7 @@ namespace apn::workspace
 		//
 		LRESULT on_r_button_up(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("WM_RBUTTONUP, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("WM_RBUTTONUP, {/hex}, {/hex}", wParam, lParam);
 
 			// 親ウィンドウにNM_RCLICKを通知します。
 			notify(NM_RCLICK);
@@ -1685,7 +1685,7 @@ namespace apn::workspace
 		//
 		LRESULT on_update(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
-			MY_TRACE_FUNC("c_message.c_update, {:#010x}, {:#010x}", wParam, lParam);
+			MY_TRACE_FUNC("c_message.c_update, {/hex}, {/hex}", wParam, lParam);
 
 			// 各ノードの描画位置を更新します。
 			update_node_pos();
@@ -1701,7 +1701,7 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{

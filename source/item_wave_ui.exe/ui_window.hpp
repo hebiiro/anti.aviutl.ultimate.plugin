@@ -53,7 +53,7 @@ namespace apn::item_wave::ui
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
 
 					// 初期化が完了したので、このウィンドウをUIウィンドウに設定します。
 					hive.ui_window = hwnd;
@@ -65,13 +65,13 @@ namespace apn::item_wave::ui
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
 			case share::c_message.c_init_process:
 				{
-					MY_TRACE_FUNC("c_init_process, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_init_process, {/hex}, {/hex}", wParam, lParam);
 
 					// コンフィグを読み込みます。
 					app->read_config();
@@ -80,7 +80,7 @@ namespace apn::item_wave::ui
 				}
 			case share::c_message.c_exit_process:
 				{
-					MY_TRACE_FUNC("c_exit_process, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_exit_process, {/hex}, {/hex}", wParam, lParam);
 
 					// 無駄なチェックを省くために
 					// コンフィグチェッカーを終了しておきます。
@@ -93,7 +93,7 @@ namespace apn::item_wave::ui
 				}
 			case share::c_message.c_create_cache:
 				{
-					MY_TRACE_FUNC("c_create_cache, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_create_cache, {/hex}, {/hex}", wParam, lParam);
 
 					app->create_cache();
 
@@ -101,7 +101,7 @@ namespace apn::item_wave::ui
 				}
 			case share::c_message.c_clear_caches:
 				{
-					MY_TRACE_FUNC("c_clear_caches, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_clear_caches, {/hex}, {/hex}", wParam, lParam);
 
 					app->clear_caches();
 
@@ -109,7 +109,7 @@ namespace apn::item_wave::ui
 				}
 			case share::c_message.c_receive_cache:
 				{
-					MY_TRACE_FUNC("c_receive_cache, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("c_receive_cache, {/hex}, {/hex}", wParam, lParam);
 
 					app->receive_cache((DWORD)wParam);
 

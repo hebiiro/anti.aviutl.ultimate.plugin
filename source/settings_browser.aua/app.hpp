@@ -157,7 +157,7 @@ namespace apn::settings_browser
 			if (midpt_object->index_midpt_leader != midpt_leader) {};
 
 			n_json midpt_node;
-			write_string(midpt_node, "flag", my::format(_T("{:#010x}"), (uint32_t)midpt_object->flag));
+			write_string(midpt_node, "flag", my::format(_T("{/hex}"), (uint32_t)midpt_object->flag));
 			write_string(midpt_node, "display_name", my::ws(midpt_object->dispname));
 			write_int(midpt_node, "index", midpt_object_index);
 			write_int(midpt_node, "index_midpt_leader", midpt_object->index_midpt_leader);
@@ -193,7 +193,7 @@ namespace apn::settings_browser
 				n_json filter_node;
 				write_int(filter_node, "id", filter_param->id);
 				write_string(filter_node, "name", my::ws(filter->name));
-				write_string(filter_node, "flag", my::format(_T("{:#010x}"), (uint32_t)filter->flag));
+				write_string(filter_node, "flag", my::format(_T("{/hex}"), (uint32_t)filter->flag));
 				write_child(filter_node, "track", create_track_nodes(midpt_object, filter_param, filter));
 				write_child(filter_node, "check", create_check_nodes(midpt_object, filter_param, filter));
 				filter_nodes.emplace_back(filter_node);

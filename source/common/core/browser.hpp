@@ -61,7 +61,7 @@ namespace apn
 		//
 		virtual BOOL on_web_message_as_json(const std::wstring& json) override
 		{
-			MY_TRACE_FUNC("{}", json);
+			MY_TRACE_FUNC("{/}", json);
 
 			try
 			{

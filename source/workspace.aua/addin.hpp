@@ -28,7 +28,7 @@ namespace apn::workspace
 		//
 		virtual BOOL on_dll_init(HINSTANCE instance) override
 		{
-			MY_TRACE_FUNC("{:#010x}", instance);
+			MY_TRACE_FUNC("{/hex}", instance);
 
 			// 予め使用予定のコンフィグフォルダを作成しておきます。
 			magi.create_config_folders(hive.c_name, { L"layout" });
@@ -129,13 +129,13 @@ namespace apn::workspace
 		//
 		virtual BOOL on_window_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
 		{
-//			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}, {:#010x}", hwnd, message, wParam, lParam);
+//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
 
 			switch (message)
 			{
 			case AviUtl::FilterPlugin::WindowMessage::ChangeWindow:
 				{
-					MY_TRACE_FUNC("ChangeWindow, {:#010x}, {:#010x}", wParam, lParam);
+					MY_TRACE_FUNC("ChangeWindow, {/hex}, {/hex}", wParam, lParam);
 
 					static BOOL is_initialized = FALSE;
 					if (is_initialized) break;
@@ -170,7 +170,7 @@ namespace apn::workspace
 				//
 				virtual BOOL rename(HWND target, LPCWSTR name) override
 				{
-					MY_TRACE_FUNC("{:#010x}, {}", target, name);
+					MY_TRACE_FUNC("{/hex}, {/}", target, name);
 
 					auto shuttle = apn::workspace::Shuttle::get_pointer(target);
 					if (!shuttle) return FALSE;
@@ -183,7 +183,7 @@ namespace apn::workspace
 				//
 				virtual BOOL is_available_name(LPCWSTR name) override
 				{
-					MY_TRACE_FUNC("{}", name);
+					MY_TRACE_FUNC("{/}", name);
 
 					return !shuttle_manager.get(name);
 				}

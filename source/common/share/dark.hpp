@@ -71,7 +71,7 @@ namespace apn::dark::share
 		//
 		auto __str__() const
 		{
-			return std::format(L"{}, {}", x, y);
+			return my::format(L"{/}, {/}", x, y);
 		}
 
 		//
@@ -185,7 +185,7 @@ namespace apn::dark::share
 		//
 		auto __str__() const
 		{
-			return std::format(L"{}, {}, {}, {}", left, top, right, bottom);
+			return my::format(L"{/}, {/}, {/}, {/}", left, top, right, bottom);
 		}
 
 		//
@@ -242,12 +242,12 @@ namespace apn::dark::share
 		//
 		auto __str__() const
 		{
-			return std::format(
-				L"fill({:#010x}, {:#010x}, {}), "
-				L"border({:#010x}, {}), "
-				L"text({:#010x}, {:#010x}, {:#010x}), "
-				L"accent({:#010x}, {:#010x}), "
-				L"etc({}, {})",
+			return my::format(
+				L"fill({/hex}, {/hex}, {/}), "
+				L"border({/hex}, {/}), "
+				L"text({/hex}, {/hex}, {/hex}), "
+				L"accent({/hex}, {/hex}), "
+				L"etc({/}, {/})",
 				fill.color,
 				fill.sub_color,
 				fill.mode,
@@ -363,7 +363,7 @@ namespace apn::dark::share
 		//
 		auto __str__() const
 		{
-			return std::format(L"theme = {:#010x}, part_id = {}, state_id = {}", theme, part_id, state_id);
+			return my::format(L"theme = {/hex}, part_id = {/}, state_id = {/}", theme, part_id, state_id);
 		}
 
 		//

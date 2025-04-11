@@ -54,7 +54,7 @@ namespace apn::audio_visualizer::ui
 		//
 		std::shared_ptr<Visual> create_visual(HWND co_window)
 		{
-			MY_TRACE_FUNC("{:#010x}", co_window);
+			MY_TRACE_FUNC("{/hex}", co_window);
 
 			// ビジュアルのインスタンスを作成します。
 			auto visual = std::make_shared<Visual>();
@@ -74,7 +74,7 @@ namespace apn::audio_visualizer::ui
 		//
 		BOOL erase_visual(HWND hwnd)
 		{
-			MY_TRACE_FUNC("{:#010x}", hwnd);
+			MY_TRACE_FUNC("{/hex}", hwnd);
 
 			// ビジュアルを取得します。
 			auto it = collection.find(hwnd);
@@ -94,7 +94,7 @@ namespace apn::audio_visualizer::ui
 		//
 		BOOL notify_update_option(HWND visual, const share::Option& option)
 		{
-			MY_TRACE_FUNC("{:#010x}", visual);
+			MY_TRACE_FUNC("{/hex}", visual);
 
 			// jsonを構築します。
 			n_json root = {

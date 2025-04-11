@@ -98,7 +98,7 @@ namespace apn::reboot::launcher
 				const auto& duty = agit.duties[i];
 
 				addin_dialog->set_text(IDC_LAUNCHER_COMMAND_0 + i,
-					duty.name.empty() ? my::format(_T("コマンド {}"), i) : duty.name);
+					duty.name.empty() ? my::format(_T("コマンド {/}"), i) : duty.name);
 			}
 
 			return TRUE;
@@ -109,7 +109,7 @@ namespace apn::reboot::launcher
 		//
 		virtual BOOL on_command(AddinDialogInterface* addin_dialog, uint32_t code, uint32_t control_id, HWND control) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}, {:#010x}", code, control_id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, control_id, control);
 
 			int32_t index = (int32_t)control_id - IDC_LAUNCHER_COMMAND_0;
 
@@ -135,7 +135,7 @@ namespace apn::reboot::launcher
 		//
 		virtual BOOL on_option(AddinDialogInterface* addin_dialog, uint32_t control_id, HWND control, const POINT& point) override
 		{
-			MY_TRACE_FUNC("{:#010x}, {:#010x}", control_id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}", control_id, control);
 
 			int32_t index = (int32_t)control_id - IDC_LAUNCHER_COMMAND_0;
 

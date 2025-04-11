@@ -66,14 +66,14 @@ namespace apn::color_code
 				int xSrc, int ySrc, UINT StartScan, UINT cLines,
 				CONST VOID * lpvBits, CONST BITMAPINFO * lpbmi, UINT ColorUse)
 			{
-				MY_TRACE_FUNC("{}, {}, 変更前", xDest, yDest);
+				MY_TRACE_FUNC("{/}, {/}, 変更前", xDest, yDest);
 
 				// 描画位置をオフセットの分だけずらします。
 
 				xDest += hive.offset.x;
 				yDest += hive.offset.y;
 
-				MY_TRACE_FUNC("{}, {}, 変更後", xDest, yDest);
+				MY_TRACE_FUNC("{/}, {/}, 変更後", xDest, yDest);
 
 				return orig_proc(hdc, xDest, yDest, w, h, xSrc, ySrc, StartScan, cLines, lpvBits, lpbmi, ColorUse);
 			}
@@ -88,7 +88,7 @@ namespace apn::color_code
 				*hive.unlock = FALSE;
 
 				::SetDlgItemText(hive.dialog, IDC_COLOR_CODE,
-					std::format(_T("{:02x}{:02x}{:02x}"), r, g, b).c_str());
+					my::format(_T("{:02x}{:02x}{:02x}"), r, g, b).c_str());
 
 				*hive.unlock = TRUE;
 			}
@@ -114,7 +114,7 @@ namespace apn::color_code
 						{
 						case WM_INITDIALOG:
 							{
-								MY_TRACE_FUNC("WM_INITDIALOG, {:#010x}, {:#010x}", wParam, lParam);
+								MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
 
 								hive.dialog = hdlg;
 								MY_TRACE_HEX(hive.dialog);
@@ -127,7 +127,7 @@ namespace apn::color_code
 								auto id = LOWORD(wParam);
 								auto sender = (HWND)lParam;
 
-								MY_TRACE_FUNC("WM_COMMAND, {:#04x}, {:#04x}, {:#010x}", code, id, sender);
+								MY_TRACE_FUNC("WM_COMMAND, {/hex16}, {/hex16}, {/hex}", code, id, sender);
 
 								if (code == EN_UPDATE && id == IDC_COLOR_CODE && *hive.unlock)
 								{
@@ -167,7 +167,7 @@ namespace apn::color_code
 										b |= b << 4;
 									}
 
-									MY_TRACE("{}, {}, {}\n", r, g, b);
+									MY_TRACE("{/}, {/}, {/}\n", r, g, b);
 
 									set_color_value(r, g, b);
 									set_color.orig_proc(r, g, b);
@@ -199,7 +199,7 @@ namespace apn::color_code
 
 				inline static INT_PTR CDECL hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}, {:#010x}, {:#010x}", instance, template_name, parent, dlg_proc);
+					MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", instance, template_name, parent, dlg_proc);
 
 					if (::lstrcmpiA(template_name, "GET_COLOR") == 0)
 					{
@@ -221,7 +221,7 @@ namespace apn::color_code
 			inline static struct {
 				inline static void CDECL hook_proc(int r, int g, int b)
 				{
-					MY_TRACE_FUNC("{}, {}, {}", r, g, b);
+					MY_TRACE_FUNC("{/}, {/}, {/}", r, g, b);
 
 					orig_proc(r, g, b);
 
@@ -236,7 +236,7 @@ namespace apn::color_code
 			inline static struct {
 				inline static void CDECL hook_proc(HWND hdlg)
 				{
-					MY_TRACE_FUNC("{:#010x}", hdlg);
+					MY_TRACE_FUNC("{/hex}", hdlg);
 
 					orig_proc(hdlg);
 				}
@@ -249,7 +249,7 @@ namespace apn::color_code
 			inline static struct {
 				inline static void CDECL hook_proc(HWND hdlg, int r, int g, int b)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}, {}, {}", hdlg, r, g, b);
+					MY_TRACE_FUNC("{/hex}, {/}, {/}, {/}", hdlg, r, g, b);
 
 					orig_proc(hdlg, r, g, b);
 
@@ -266,7 +266,7 @@ namespace apn::color_code
 			struct {
 				inline static COLORREF WINAPI hook_proc(HDC _dc, int x, int y)
 				{
-					MY_TRACE_FUNC("{:#010x}, {}, {}", _dc, x, y);
+					MY_TRACE_FUNC("{/hex}, {/}, {/}", _dc, x, y);
 
 					// すべてのモニタのすべての場所から色を抽出できるようにします。
 
