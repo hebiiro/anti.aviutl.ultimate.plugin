@@ -8,9 +8,9 @@ namespace apn::font_tree
 	//
 	inline struct AddinWindow : StdAddinWindow
 	{
-		inline static constexpr struct Message {
-			inline static constexpr uint32_t c_init_preview = WM_APP + 1;
-		} c_message;
+		inline static constexpr struct TimerID {
+			inline static constexpr uint32_t c_init_preview = 2025;
+		} c_timer_id;
 
 		//
 		// 初期化処理を実行します。
@@ -73,7 +73,7 @@ namespace apn::font_tree
 					hive.main_window = addin_window;
 
 					// プレビューの初期化を予約します。
-					::PostMessage(hwnd, c_message.c_init_preview, 0, 0);
+					::SetTimer(hwnd, c_timer_id.c_init_preview, 1000, nullptr);
 
 					break;
 				}
@@ -89,12 +89,16 @@ namespace apn::font_tree
 
 					break;
 				}
-			case c_message.c_init_preview:
+			case WM_TIMER:
 				{
-					MY_TRACE_FUNC("c_message.c_init_preview, {/hex}, {/hex}", wParam, lParam);
+					MY_TRACE_FUNC("WM_TIMER, {/hex}, {/hex}", wParam, lParam);
 
-					// プレビューを初期化します。
-					preview_manager.init();
+					if (wParam == c_timer_id.c_init_preview)
+					{
+						// プレビューを初期化します。
+						if (preview_manager.init())
+							::KillTimer(hwnd, wParam);
+					}
 
 					break;
 				}
