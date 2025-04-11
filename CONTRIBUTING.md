@@ -18,15 +18,25 @@
 
 * aviutl_exedit_sdk `$(UserProfile)\source\packages\aviutl_exedit_sdk`
 * detours `$(UserProfile)\source\packages\detours.4.0.1`
-* boost `$(UserProfile)\source\packages\boost.1.84.0`
-* glad `$(UserProfile)\source\packages\glad.2.0.4`
-* NanoVG `$(UserProfile)\source\packages\nanovg.rgb2hsv`
+* JSON for Modern C++ `$(UserProfile)\source\packages\nlohmann`
 
 ## ライブラリ
 
 * `my` アルティメットプラグイン以外のライブラリ。
 * `core` アルティメットプラグインのライブラリ。
 * `share` アルティメットアドインのライブラリ。
+
+## 絵文字
+
+* 🎉初回。
+* 💥大規模な機能や仕様の変更。
+* ♻️小規模な機能や仕様の変更。
+* 🚀大規模な機能の追加。
+* ✨中規模な機能の追加。
+* ⚡️小規模な機能の追加。
+* 🔥機能を削除。
+* 🩹問題に対応。
+* 🎨UIの変更。
 
 ## コーディングパターン
 
