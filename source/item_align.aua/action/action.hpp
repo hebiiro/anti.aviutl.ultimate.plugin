@@ -374,8 +374,8 @@ namespace apn::item_align
 			{
 				if (mover->after.time_start < 0)
 				{
-					std::format_to(std::back_inserter(error),
-						L"レイヤー{}のオブジェクトの開始位置が不正な値になっています\n",
+					error += my::format(
+						L"レイヤー{/}のオブジェクトの開始位置が不正な値になっています\n",
 						mover->after.layer_set + 1);
 
 					continue;
@@ -383,8 +383,8 @@ namespace apn::item_align
 
 				if (mover->after.time_end < 0)
 				{
-					std::format_to(std::back_inserter(error),
-						L"レイヤー{}のオブジェクトの終了位置が不正な値になっています\n",
+					error += my::format(
+						L"レイヤー{/}のオブジェクトの終了位置が不正な値になっています\n",
 						mover->after.layer_set + 1);
 
 					continue;
@@ -392,8 +392,8 @@ namespace apn::item_align
 
 				if (mover->after.time_start >= mover->after.time_end)
 				{
-					std::format_to(std::back_inserter(error),
-						L"レイヤー{}のオブジェクトの長さが不正な値になっています\n",
+					error += my::format(
+						L"レイヤー{/}のオブジェクトの長さが不正な値になっています\n",
 						mover->after.layer_set + 1);
 
 					continue;

@@ -475,7 +475,7 @@ namespace apn::reboot::spreader
 				auto current_time = current_frame * ratio;
 				auto end_time = end_frame * ratio;
 
-				text += my::format(_T("{:02d}:{:02d}:{:06.3f} / {:02d}:{:02d}:{:06.3f}"),
+				text += my::format(_T("{/02d}:{/02d}:{/06.3f} / {/02d}:{/02d}:{/06.3f}"),
 					(int32_t)(current_time / 3600), (int32_t)(current_time / 60), std::fmod(current_time, 60),
 					(int32_t)(end_time / 3600), (int32_t)(end_time / 60), std::fmod(end_time, 60));
 			}

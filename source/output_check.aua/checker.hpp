@@ -72,8 +72,8 @@ namespace apn::output_check
 				Time sel_end(e + 1, fi);
 
 				text += my::format(
-					_T("注意 : 全体の長さが [{:02d}:{:02d}:{:05.2f}] のプロジェクトに対して\n")
-					_T("[{:02d}:{:02d}:{:05.2f}]～[{:02d}:{:02d}:{:05.2f}] の出力範囲が指定されています\n")
+					_T("注意 : 全体の長さが [{/02d}:{/02d}:{/05.2f}] のプロジェクトに対して\n")
+					_T("[{/02d}:{/02d}:{/05.2f}]～[{/02d}:{/02d}:{/05.2f}] の出力範囲が指定されています\n")
 					_T("この設定のままだとプロジェクトの一部分しか出力されません\n\n"),
 					total.hour(), total.min(), total.sec(),
 					sel_start.hour(), sel_start.min(), sel_start.sec(),
@@ -126,8 +126,8 @@ namespace apn::output_check
 
 				text += my::format(
 					_T("注意 : 最終フレーム位置と全アイテムの最終位置が一致しません\n")
-					_T("[{:02d}:{:02d}:{:05.2f}] (最終フレーム位置)\n")
-					_T("[{:02d}:{:02d}:{:05.2f}] (全アイテムの最終位置)\n")
+					_T("[{/02d}:{/02d}:{/05.2f}] (最終フレーム位置)\n")
+					_T("[{/02d}:{/02d}:{/05.2f}] (全アイテムの最終位置)\n")
 					_T("この設定のままだと尺余りが発生する可能性があります\n\n"),
 					frame_time.hour(), frame_time.min(), frame_time.sec(),
 					item_time.hour(), item_time.min(), item_time.sec());

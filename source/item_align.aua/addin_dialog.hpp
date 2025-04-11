@@ -9,7 +9,7 @@ namespace apn::item_align
 	{
 		void apply_sub_time(uint32_t id, double time)
 		{
-			auto text = my::format(_T("{:0.4f}"), time);
+			auto text = my::format(_T("{/0.4f}"), time);
 			set_text(id - 2, text);
 		}
 

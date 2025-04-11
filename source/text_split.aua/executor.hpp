@@ -552,17 +552,17 @@ namespace apn::text_split
 			{
 			case c_pos_mode.c_solo:
 				{
-					str = my::format("{:.1f}", value[0]);
+					str = my::format("{/.1f}", value[0]);
 					break;
 				}
 			case c_pos_mode.c_pair:
 				{
-					str = my::format("{:.1f},{:.1f}", value[0], value[1]);
+					str = my::format("{/.1f},{/.1f}", value[0], value[1]);
 					break;
 				}
 			case c_pos_mode.c_animation:
 				{
-					str = my::format("{:.1f},{:.1f},{/}", value[0], value[1], pos.animation);
+					str = my::format("{/.1f},{/.1f},{/}", value[0], value[1], pos.animation);
 					break;
 				}
 			}
@@ -624,7 +624,7 @@ namespace apn::text_split
 			std::string str;
 			{
 				auto hex = (BYTE*)ch;
-				str = my::format("{:02X}{:02X}", hex[0], hex[1]);
+				str = my::format("{/02X}{/02X}", hex[0], hex[1]);
 				str.resize(4096, '0');
 			}
 			MY_TRACE_STR(str);
@@ -751,7 +751,7 @@ namespace apn::text_split
 				{
 					auto hex = (BYTE*)&ch;
 
-					std::format_to(back_inserter(str), "{:02X}{:02X}", hex[0], hex[1]);
+					str += my::format("{/02X}{/02X}", hex[0], hex[1]);
 				}
 
 				str.resize(4096, '0');

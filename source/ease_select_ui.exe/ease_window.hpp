@@ -191,7 +191,7 @@ namespace apn::ease_select_ui
 		void output_ease_text()
 		{
 			auto str = my::format(
-				_T("({/}, {/}) ({/}, {/}) - {:02d}{:02d}{:02d}{:02d}"),
+				_T("({/}, {/}) ({/}, {/}) - {/02d}{/02d}{/02d}{/02d}"),
 				points[c_points.c_first].x,
 				points[c_points.c_first].y,
 				points[c_points.c_second].x,
@@ -249,7 +249,7 @@ namespace apn::ease_select_ui
 			MY_TRACE_HWND(child);
 			MY_TRACE_INT(::GetDlgCtrlID(child));
 
-			auto str = my::format(_T("{:02d}{:02d}{:02d}{:02d}"),
+			auto str = my::format(_T("{/02d}{/02d}{/02d}{/02d}"),
 				points[c_points.c_first].x, points[c_points.c_first].y,
 				points[c_points.c_second].x, points[c_points.c_second].y);
 			::SendMessage(child, WM_SETTEXT, 0, (LPARAM)str.c_str());

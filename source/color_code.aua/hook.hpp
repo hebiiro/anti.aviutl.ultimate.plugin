@@ -88,7 +88,7 @@ namespace apn::color_code
 				*hive.unlock = FALSE;
 
 				::SetDlgItemText(hive.dialog, IDC_COLOR_CODE,
-					my::format(_T("{:02x}{:02x}{:02x}"), r, g, b).c_str());
+					my::format(_T("{/02x}{/02x}{/02x}"), r, g, b).c_str());
 
 				*hive.unlock = TRUE;
 			}

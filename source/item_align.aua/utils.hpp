@@ -95,7 +95,7 @@ namespace apn::item_align
 		//
 		inline static std::wstring time_to_str(double time)
 		{
-			return my::format(L"{:02d}:{:02d}:{:05.2f}",
+			return my::format(L"{/02d}:{/02d}:{/05.2f}",
 				to_int(time) / 60 / 60, // 時
 				to_int(time) / 60 % 60, // 分
 				std::fmod(time, 60)); // 秒

@@ -28,12 +28,12 @@ namespace apn::settings_browser
 
 	inline std::string u8(const ExEdit::Exdata::ExdataColor& color)
 	{
-		return my::format("#{:02x}{:02x}{:02x}", color.r, color.g, color.b);
+		return my::format("#{/02x}{/02x}{/02x}", color.r, color.g, color.b);
 	}
 
 	inline std::string u8(const ExEdit::Exdata::ExdataColorOpt& color)
 	{
-		return my::format("#{:02x}{:02x}{:02x}", color.r, color.g, color.b);
+		return my::format("#{/02x}{/02x}{/02x}", color.r, color.g, color.b);
 	}
 
 	inline n_json to_json(const ExEdit::Exdata::ExdataColorYC& color)

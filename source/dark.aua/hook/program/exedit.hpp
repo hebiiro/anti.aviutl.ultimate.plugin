@@ -652,7 +652,7 @@ namespace apn::dark::hook
 
 							str = str.substr(0, str.find(L'#')); // 記号より前にある文字列を取り出します。
 
-							::SetDlgItemText(hdlg, control_id, my::format(_T("{/}#{:02x}{:02x}{:02x}"),
+							::SetDlgItemText(hdlg, control_id, my::format(_T("{/}#{/02x}{/02x}{/02x}"),
 								str, GetRValue(color), GetGValue(color), GetBValue(color)).c_str());
 						}
 

@@ -128,7 +128,7 @@ namespace apn::item_copy
 			::GetLocalTime(&local_time);
 
 			auto file_spec = my::format(
-				L"{/}{:04d}年{:02d}月{:02d}日{:02d}時{:02d}分{:02d}.{:03d}秒.{/}",
+				L"{/}{/04d}年{/02d}月{/02d}日{/02d}時{/02d}分{/02d}.{/03d}秒.{/}",
 				hive.prefix,
 				local_time.wYear,
 				local_time.wMonth,

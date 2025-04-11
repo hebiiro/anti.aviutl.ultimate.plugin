@@ -192,21 +192,13 @@ namespace sprintfmt
 		// 指定されている書式を使用します。
 		if (fmt.length())
 		{
-			if constexpr (std::is_same_v<T, std::string>)
+			if constexpr (std::is_same_v<T, std::string> || std::is_convertible_v<T, const char*>)
 			{
-				return sprintf<2048>(utils::prefix + fmt, args..., value.c_str());
+				return utils::from_hs(value);
 			}
-			else if constexpr (std::is_same_v<T, std::wstring>)
+			else if constexpr (std::is_same_v<T, std::wstring> || std::is_convertible_v<T, const wchar_t*>)
 			{
-				return sprintf<2048>(utils::prefix + fmt, args..., value.c_str());
-			}
-			else if constexpr(std::is_convertible_v<T, const char*>)
-			{
-				return sprintf<2048>(utils::prefix + fmt, args..., value);
-			}
-			else if constexpr(std::is_convertible_v<T, const wchar_t*>)
-			{
-				return sprintf<2048>(utils::prefix + fmt, args..., value);
+				return utils::from_ls(value);
 			}
 			else
 			{
@@ -217,13 +209,21 @@ namespace sprintfmt
 		// 型に合わせて書式を設定します。
 		else
 		{
-			if constexpr (std::is_same_v<T, std::string> || std::is_convertible_v<T, const char*>)
+			if constexpr (std::is_same_v<T, std::string>)
 			{
-				return utils::from_hs(value);
+				return sprintf<2048>(utils::prefix + fmt + utils::suffix_hs, args..., value.c_str());
 			}
-			else if constexpr (std::is_same_v<T, std::wstring> || std::is_convertible_v<T, const wchar_t*>)
+			else if constexpr (std::is_same_v<T, std::wstring>)
 			{
-				return utils::from_ls(value);
+				return sprintf<2048>(utils::prefix + fmt + utils::suffix_ls, args..., value.c_str());
+			}
+			else if constexpr(std::is_convertible_v<T, const char*>)
+			{
+				return sprintf<2048>(utils::prefix + fmt + utils::suffix_hs, args..., value);
+			}
+			else if constexpr(std::is_convertible_v<T, const wchar_t*>)
+			{
+				return sprintf<2048>(utils::prefix + fmt + utils::suffix_ls, args..., value);
 			}
 			else if constexpr(std::is_integral_v<T>)
 			{

@@ -381,10 +381,10 @@ namespace apn::dark
 		inline static std::wstring to_string(COLORREF color)
 		{
 #if 0
-			return my::format(LR"(#{:1x}{:1x}{:1x})",
+			return my::format(LR"(#{/1x}{/1x}{/1x})",
 				GetRValue(color) >> 4, GetGValue(color) >> 4, GetBValue(color) >> 4);
 #else
-			return my::format(LR"(#{:02x}{:02x}{:02x})",
+			return my::format(LR"(#{/02x}{/02x}{/02x})",
 				GetRValue(color), GetGValue(color), GetBValue(color));
 #endif
 		}
