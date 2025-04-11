@@ -54,6 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "my", "my", "{00F74984-FDAF-
 		common\my\dialog.hpp = common\my\dialog.hpp
 		common\my\dialog2.hpp = common\my\dialog2.hpp
 		common\my\file_update_checker.hpp = common\my\file_update_checker.hpp
+		common\my\format.hpp = common\my\format.hpp
 		common\my\gdi.hpp = common\my\gdi.hpp
 		common\my\gdiplus.hpp = common\my\gdiplus.hpp
 		common\my\json.hpp = common\my\json.hpp
