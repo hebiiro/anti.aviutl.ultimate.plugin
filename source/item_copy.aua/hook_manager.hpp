@@ -14,6 +14,9 @@ namespace apn::item_copy
 		{
 			MY_TRACE_FUNC("");
 
+			// 誤作動の原因になるのでフックしないようにします。
+			return TRUE;
+
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
