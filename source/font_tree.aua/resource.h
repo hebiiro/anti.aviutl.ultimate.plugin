@@ -4,6 +4,7 @@
 //
 #define IDD_MAIN_DIALOG                 101
 #define IDD_CONFIG                      102
+#define IDD_OPTION                      102
 #define IDC_RECENT                      1001
 #define IDC_FAVORITE                    1002
 #define IDC_FAVORITE_STAT               2000
@@ -13,13 +14,13 @@
 #define IDC_SEPARATOR_FORMAT            2004
 #define IDC_RECENT_STAT                 2100
 #define IDC_PREVIEW_STAT                2200
-#define IDC_PREVIEW_ENABLED             2201
-#define IDC_PREVIEW_LEFT_SIDE           2202
-#define IDC_PREVIEW_ITEM_SIZE_STAT      2203
-#define IDC_PREVIEW_ITEM_SIZE_W         2204
-#define IDC_PREVIEW_ITEM_SIZE_H         2205
-#define IDC_PREVIEW_SAMPLE_FORMAT_STAT  2206
-#define IDC_PREVIEW_SAMPLE_FORMAT       2207
+#define IDC_PREVIEW_MODE_STAT           2201
+#define IDC_PREVIEW_MODE                2202
+#define IDC_PREVIEW_SAMPLE_FORMAT_STAT  2203
+#define IDC_PREVIEW_SAMPLE_FORMAT       2204
+#define IDC_PREVIEW_ITEM_SIZE_STAT      2205
+#define IDC_PREVIEW_ITEM_SIZE_W         2206
+#define IDC_PREVIEW_ITEM_SIZE_H         2207
 #define IDC_PREVIEW_FILL_COLOR_STAT     2208
 #define IDC_PREVIEW_FILL_COLOR          2209
 #define IDC_PREVIEW_TEXT_COLOR_STAT     2210
@@ -31,7 +32,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        103
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         3001
+#define _APS_NEXT_CONTROL_VALUE         3002
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

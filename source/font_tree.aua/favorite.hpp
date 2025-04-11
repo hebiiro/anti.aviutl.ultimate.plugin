@@ -22,7 +22,7 @@ namespace apn::font_tree
 					if (name.length())
 					{
 						// 別名と実名の組み合わせを表示名にします。
-						display_name = hive.display_name_format;
+						display_name = hive.favorite.display_name_format;
 						display_name = my::replace(display_name, L"%alias%", alias);
 						display_name = my::replace(display_name, L"%name%", name);
 					}
@@ -46,7 +46,7 @@ namespace apn::font_tree
 					else
 					{
 						// セパレータを表示名にします。
-						display_name = hive.separator_format;
+						display_name = hive.favorite.separator_format;
 					}
 				}
 

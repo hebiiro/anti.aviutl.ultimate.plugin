@@ -154,7 +154,7 @@
     <ClInclude Include="addin_window.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="app_interface.hpp" />
-    <ClInclude Include="config_dialog.hpp" />
+    <ClInclude Include="option_dialog.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="favorite.hpp" />
     <ClInclude Include="hive.hpp" />

@@ -37,7 +37,7 @@
     <ClInclude Include="favorite.hpp">
       <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="config_dialog.hpp" />
+    <ClInclude Include="option_dialog.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -8,39 +8,9 @@ namespace apn::font_tree
 	inline struct PreviewManager : my::Window
 	{
 		//
-		// TRUEの場合はプレビューを表示します。
-		//
-		BOOL enabled = TRUE;
-
-		//
-		// TRUEの場合はプレビューをリストボックスの左側に表示します。
-		//
-		BOOL left_side = TRUE;
-
-		//
-		// プレビュー項目のサイズです。
-		//
-		SIZE item_size = { 600, 36 };
-
-		//
-		// サンプル文字列の書式です。
-		//
-		std::wstring sample_format = L"プレビュー(%font_name%)";
-
-		//
-		// 項目の背景色です。
-		//
-		COLORREF fill_color = RGB(0x00, 0x00, 0x00);
-
-		//
-		// 項目の文字色です。
-		//
-		COLORREF text_color = RGB(0xff, 0xff, 0xff);
-
-		//
 		// このクラスはプレビューウィンドウです。
 		//
-		struct Preview : my::Window
+		struct PreviewWindow : my::Window
 		{
 			//
 			// ウィンドウプロシージャです。
@@ -65,7 +35,7 @@ namespace apn::font_tree
 
 				return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 			}
-		} preview;
+		} preview_window;
 
 		//
 		// 初期化処理を実行します。
@@ -83,7 +53,7 @@ namespace apn::font_tree
 			::GetComboBoxInfo(font_combobox, &cbi);
 			if (!subclass(cbi.hwndList)) return FALSE;
 
-			constexpr auto class_name = _T("apn::font_tree::preview");
+			constexpr auto class_name = _T("apn::font_tree::preview_window");
 
 			WNDCLASSEX wc = { sizeof(wc) };
 			wc.lpszClassName = class_name;
@@ -94,7 +64,7 @@ namespace apn::font_tree
 			::RegisterClassEx(&wc);
 
 			// プレビューウィンドウを作成します。
-			return preview.create(
+			return preview_window.create(
 				0,
 				class_name,
 				class_name,
@@ -114,7 +84,7 @@ namespace apn::font_tree
 			unsubclass();
 
 			// プレビューウィンドウを削除します。
-			return preview.destroy();
+			return preview_window.destroy();
 		}
 
 		//
@@ -124,8 +94,8 @@ namespace apn::font_tree
 		{
 			MY_TRACE_FUNC("");
 
-			if (enabled)
-				::ShowWindow(preview, SW_SHOWNA);
+			if (hive.preview.mode != hive.preview.c_mode.c_none)
+				::ShowWindow(preview_window, SW_SHOWNA);
 		}
 
 		//
@@ -135,7 +105,7 @@ namespace apn::font_tree
 		{
 			MY_TRACE_FUNC("");
 
-			::ShowWindow(preview, SW_HIDE);
+			::ShowWindow(preview_window, SW_HIDE);
 		}
 
 		//
@@ -145,7 +115,7 @@ namespace apn::font_tree
 		{
 			MY_TRACE_FUNC("");
 
-			my::invalidate(preview);
+			my::invalidate(preview_window);
 		}
 
 		//
@@ -163,9 +133,9 @@ namespace apn::font_tree
 			auto h = my::get_height(base_rc);
 
 			// 非クライアント領域のサイズを取得します。
-			auto style = GetWindowStyle(preview);
-			auto menu = ::GetMenu(preview);
-			auto ex_style = GetWindowExStyle(preview);
+			auto style = GetWindowStyle(preview_window);
+			auto menu = ::GetMenu(preview_window);
+			auto ex_style = GetWindowExStyle(preview_window);
 			auto nc_rc = RECT {};
 			::AdjustWindowRectEx(&nc_rc, style, !!menu, ex_style);
 			auto nc_w = my::get_width(nc_rc);
@@ -177,26 +147,26 @@ namespace apn::font_tree
 			::GetScrollInfo(*this, SB_VERT, &si);
 
 			// ユーザー指定のサイズからウィンドウサイズを算出します。
-			auto w2 = item_size.cx + nc_w;
-			auto h2 = item_size.cy * (int32_t)si.nPage + nc_h;
+			auto w2 = hive.preview.item_size.cx + nc_w;
+			auto h2 = hive.preview.item_size.cy * (int32_t)si.nPage + nc_h;
 
-			if (item_size.cx)
+			if (hive.preview.item_size.cx)
 			{
-				if (left_side)
+				if (hive.preview.mode == hive.preview.c_mode.c_left)
 					x = base_rc.left - w2;
 				else
 					x = base_rc.right;
 				w = w2;
 			}
 
-			if (item_size.cy)
+			if (hive.preview.item_size.cy)
 			{
 				y += (h - h2) / 2;
 				h = h2;
 			}
 
 			// プレビューウィンドウを移動します。
-			::SetWindowPos(preview, HWND_TOPMOST, x, y, w, h, SWP_NOACTIVATE);
+			::SetWindowPos(preview_window, HWND_TOPMOST, x, y, w, h, SWP_NOACTIVATE);
 		}
 
 		//
@@ -214,7 +184,7 @@ namespace apn::font_tree
 			auto font = GetWindowFont(*this);
 			auto lf = LOGFONT {};
 			::GetObject(font, sizeof(lf), &lf);
-			if (item_size.cy) lf.lfHeight = item_size.cy;
+			if (hive.preview.item_size.cy) lf.lfHeight = hive.preview.item_size.cy;
 
 			// リストボックスのスクロール情報を取得します。
 			SCROLLINFO si = { sizeof(si) };
@@ -230,19 +200,19 @@ namespace apn::font_tree
 			// 項目の描画位置を算出します。
 			auto x = rc.left;
 			auto y = rc.top;
-			auto w = item_size.cx ? item_size.cx : item_w;
-			auto h = item_size.cy ? item_size.cy : item_h;
+			auto w = hive.preview.item_size.cx ? hive.preview.item_size.cx : item_w;
+			auto h = hive.preview.item_size.cy ? hive.preview.item_size.cy : item_h;
 
 			// 背景を描画します。
 			{
-				my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(fill_color));
+				my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(hive.preview.fill_color));
 
 				::FillRect(dc, &rc, brush.get());
 			}
 
-			// DCの設定を変更します。
+			// デバイスコンテキストの設定を変更します。
 			auto old_bk_mode = ::SetBkMode(dc, TRANSPARENT);
-			auto old_text_color = ::SetTextColor(dc, text_color);
+			auto old_text_color = ::SetTextColor(dc, hive.preview.text_color);
 
 			for (int32_t i = 0; i < (int32_t)si.nPage; i++)
 			{
@@ -253,7 +223,7 @@ namespace apn::font_tree
 				if (text.length())
 				{
 					// 表示用テキストを取得します。
-					auto display_text = my::replace(sample_format, L"%font_name%", text);
+					auto display_text = my::replace(hive.preview.sample_format, L"%font_name%", text);
 
 					// フォントをセットします。
 					_tcscpy_s(lf.lfFaceName, text.c_str());
@@ -268,7 +238,7 @@ namespace apn::font_tree
 				y += h;
 			}
 
-			// DCの設定を元に戻します。
+			// デバイスコンテキストの設定を元に戻します。
 			::SetBkMode(dc, old_bk_mode);
 			::SetTextColor(dc, old_text_color);
 		}
@@ -343,7 +313,7 @@ namespace apn::font_tree
 		}
 
 		//
-		// 使用履歴を読み込みます。
+		// プレビューの設定を読み込みます。
 		//
 		void read(n_json& node)
 		{
@@ -351,28 +321,26 @@ namespace apn::font_tree
 
 			n_json preview_node;
 			read_child_node(node, "preview", preview_node);
-			read_bool(preview_node, "enabled", enabled);
-			read_bool(preview_node, "left_side", left_side);
-			read_size(preview_node, "item_size", item_size);
-			read_string(preview_node, "sample_format_v2", sample_format);
-			read_color(preview_node, "fill_color", fill_color);
-			read_color(preview_node, "text_color", text_color);
+			read_label(node, "mode", hive.preview.mode, hive.preview.c_mode.labels);
+			read_size(preview_node, "item_size", hive.preview.item_size);
+			read_string(preview_node, "sample_format_v2", hive.preview.sample_format);
+			read_color(preview_node, "fill_color", hive.preview.fill_color);
+			read_color(preview_node, "text_color", hive.preview.text_color);
 		}
 
 		//
-		// 使用履歴を書き込みます。
+		// プレビューの設定を書き込みます。
 		//
 		void write(n_json& node)
 		{
 			MY_TRACE_FUNC("");
 
 			n_json preview_node;
-			write_bool(preview_node, "enabled", enabled);
-			write_bool(preview_node, "left_side", left_side);
-			write_size(preview_node, "item_size", item_size);
-			write_string(preview_node, "sample_format_v2", sample_format);
-			write_color(preview_node, "fill_color", fill_color);
-			write_color(preview_node, "text_color", text_color);
+			write_label(node, "mode", hive.preview.mode, hive.preview.c_mode.labels);
+			write_size(preview_node, "item_size", hive.preview.item_size);
+			write_string(preview_node, "sample_format_v2", hive.preview.sample_format);
+			write_color(preview_node, "fill_color", hive.preview.fill_color);
+			write_color(preview_node, "text_color", hive.preview.text_color);
 			write_child_node(node, "preview", preview_node);
 		}
 	} preview_manager;

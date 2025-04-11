@@ -26,14 +26,60 @@ namespace apn::font_tree
 		HWND main_window = nullptr;
 
 		//
-		// 表示名の書式です。
+		// このクラスはお気に入りフォントの設定です。
 		//
-		std::wstring display_name_format = L"%alias% --- %name%";
+		struct FavoriteOption {
+			//
+			// 表示名の書式です。
+			//
+			std::wstring display_name_format = L"%alias% --- %name%";
+
+			//
+			// セパレータの書式です。
+			//
+			std::wstring separator_format = L"---------";
+		} favorite;
 
 		//
-		// セパレータの書式です。
+		// このクラスはプレビューの設定です。
 		//
-		std::wstring separator_format = L"---------";
+		struct PreviewOption {
+			inline static constexpr struct Mode {
+				inline static constexpr int32_t c_none = 0;
+				inline static constexpr int32_t c_left = 1;
+				inline static constexpr int32_t c_right = 2;
+				inline static constexpr my::Label labels[] = {
+					{ c_none, L"none" },
+					{ c_left, L"left" },
+					{ c_right, L"right" },
+				};
+			} c_mode;
+
+			//
+			// プレビューの表示モードです。
+			//
+			int32_t mode = c_mode.c_left;
+
+			//
+			// プレビュー用文字列の書式です。
+			//
+			std::wstring sample_format = L"プレビュー(%font_name%)";
+
+			//
+			// プレビュー項目のサイズです。
+			//
+			SIZE item_size = { 600, 36 };
+
+			//
+			// プレビュー項目の背景色です。
+			//
+			COLORREF fill_color = RGB(0x00, 0x00, 0x00);
+
+			//
+			// プレビュー項目の文字色です。
+			//
+			COLORREF text_color = RGB(0xff, 0xff, 0xff);
+		} preview;
 
 		//
 		// メッセージボックスを表示します。

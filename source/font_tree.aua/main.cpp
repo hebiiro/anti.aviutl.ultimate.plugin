@@ -6,7 +6,7 @@
 #include "preview.hpp"
 #include "favorite.hpp"
 #include "recent.hpp"
-#include "config_dialog.hpp"
+#include "option_dialog.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
 #include "config_io.hpp"

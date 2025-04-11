@@ -13,30 +13,15 @@ namespace apn::font_tree
 		App() { app = this; }
 
 		//
-		// コンフィグダイアログを表示します。
+		// オプションダイアログを表示します。
 		//
 		virtual BOOL show_config_dialog() override
 		{
-			// コンフィグダイアログです。
-			ConfigDialog dialog;
+			// オプションダイアログです。
+			OptionDialog dialog;
 
-			// コンフィグダイアログを作成します。
-			if (!dialog.init(hive.instance, hive.main_window))
-				return FALSE;
-
-			// ダイアログに変数をバインドします。
-			dialog.bind_text(IDC_DISPLAY_NAME_FORMAT, hive.display_name_format);
-			dialog.bind_text(IDC_SEPARATOR_FORMAT, hive.separator_format);
-			dialog.bind_check(IDC_PREVIEW_ENABLED, preview_manager.enabled);
-			dialog.bind_check(IDC_PREVIEW_LEFT_SIDE, preview_manager.left_side);
-			dialog.bind_int(IDC_PREVIEW_ITEM_SIZE_W, preview_manager.item_size.cx);
-			dialog.bind_int(IDC_PREVIEW_ITEM_SIZE_H, preview_manager.item_size.cy);
-			dialog.bind_text(IDC_PREVIEW_SAMPLE_FORMAT, preview_manager.sample_format);
-			dialog.bind_uint(IDC_PREVIEW_FILL_COLOR, preview_manager.fill_color);
-			dialog.bind_uint(IDC_PREVIEW_TEXT_COLOR, preview_manager.text_color);
-
-			// コンフィグダイアログを表示します。
-			if (IDOK != dialog.do_modal2(hive.main_window))
+			// オプションダイアログを表示します。
+			if (IDOK != dialog.do_modal(hive.main_window))
 				return FALSE;
 
 			return TRUE;
@@ -314,7 +299,7 @@ namespace apn::font_tree
 			{
 				auto setting_element = get_element(node_list, i);
 
-				read_string(setting_element, L"separatorFormat", hive.separator_format);
+				read_string(setting_element, L"separatorFormat", hive.favorite.separator_format);
 			}
 
 			return S_OK;
@@ -334,13 +319,27 @@ namespace apn::font_tree
 			{
 				auto preview_element = get_element(node_list, i);
 
-				read_bool(preview_element, L"enable", preview_manager.enabled);
-				read_bool(preview_element, L"left", preview_manager.left_side);
-				read_int(preview_element, L"itemWidth", preview_manager.item_size.cx);
-				read_int(preview_element, L"itemHeight", preview_manager.item_size.cy);
-//				read_string(preview_element, L"textFormat", preview_manager.sample_format);
-				read_color(preview_element, L"fillColor", preview_manager.fill_color);
-				read_color(preview_element, L"textColor", preview_manager.text_color);
+				BOOL enabled = FALSE;
+				BOOL left_side = TRUE;
+
+				read_bool(preview_element, L"enable", enabled);
+				read_bool(preview_element, L"left", left_side);
+				read_int(preview_element, L"itemWidth", hive.preview.item_size.cx);
+				read_int(preview_element, L"itemHeight", hive.preview.item_size.cy);
+				read_color(preview_element, L"fillColor", hive.preview.fill_color);
+				read_color(preview_element, L"textColor", hive.preview.text_color);
+
+				if (enabled)
+				{
+					if (left_side)
+						hive.preview.mode = hive.preview.c_mode.c_left;
+					else
+						hive.preview.mode = hive.preview.c_mode.c_right;
+				}
+				else
+				{
+					hive.preview.mode = hive.preview.c_mode.c_none;
+				}
 			}
 
 			return S_OK;
