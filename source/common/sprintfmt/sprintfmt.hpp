@@ -101,6 +101,7 @@ namespace sprintfmt
 	//
 	template <> struct Utils<std::string> {
 		inline static const std::string::value_type eos = '\0';
+		inline static const std::string null_pointer = "(null)";
 		inline static const std::string prefix = "%";
 		inline static const std::string suffix_hs = "hs";
 		inline static const std::string suffix_ls = "ls";
@@ -118,7 +119,7 @@ namespace sprintfmt
 			std::string::value_type* buffer, std::string::size_type buffer_size,
 			const std::string::value_type* fmt, auto&&... args)
 		{
-			return ::sprintf_s(buffer, buffer_size, fmt, args...);
+			return ::_snprintf_s(buffer, buffer_size, _TRUNCATE, fmt, args...);
 		}
 	};
 
@@ -127,6 +128,7 @@ namespace sprintfmt
 	//
 	template <> struct Utils<std::wstring> {
 		inline static const std::wstring::value_type eos = L'\0';
+		inline static const std::wstring null_pointer = L"(null)";
 		inline static const std::wstring prefix = L"%";
 		inline static const std::wstring suffix_hs = L"hs";
 		inline static const std::wstring suffix_ls = L"ls";
@@ -144,7 +146,7 @@ namespace sprintfmt
 			std::wstring::value_type* buffer, std::wstring::size_type buffer_size,
 			const std::wstring::value_type* fmt, auto&&... args)
 		{
-			return ::swprintf_s(buffer, buffer_size, fmt, args...);
+			return ::_snwprintf_s(buffer, buffer_size, _TRUNCATE, fmt, args...);
 		}
 	};
 
@@ -192,13 +194,13 @@ namespace sprintfmt
 		// 指定されている書式を使用します。
 		if (fmt.length())
 		{
-			if constexpr (std::is_same_v<T, std::string> || std::is_convertible_v<T, const char*>)
+			if constexpr (std::is_same_v<T, std::string> || std::is_same_v<T, std::wstring>)
 			{
-				return utils::from_hs(value);
+				return sprintf<2048>(utils::prefix + fmt, args..., value.c_str());
 			}
-			else if constexpr (std::is_same_v<T, std::wstring> || std::is_convertible_v<T, const wchar_t*>)
+			else if constexpr(std::is_convertible_v<T, const char*> || std::is_convertible_v<T, const wchar_t*>)
 			{
-				return utils::from_ls(value);
+				return sprintf<2048>(utils::prefix + fmt, args..., value);
 			}
 			else
 			{
@@ -209,21 +211,27 @@ namespace sprintfmt
 		// 型に合わせて書式を設定します。
 		else
 		{
-			if constexpr (std::is_same_v<T, std::string>)
+			if constexpr (std::is_convertible_v<T, const char*>)
 			{
-				return sprintf<2048>(utils::prefix + fmt + utils::suffix_hs, args..., value.c_str());
+				if constexpr (std::is_pointer_v<T>)
+					return value ? utils::from_hs(value) : utils::null_pointer;
+				else
+					return utils::from_hs(value);
+			}
+			else if constexpr (std::is_convertible_v<T, const wchar_t*>)
+			{
+				if constexpr (std::is_pointer_v<T>)
+					return value ? utils::from_ls(value) : utils::null_pointer;
+				else
+					return utils::from_ls(value);
+			}
+			else if constexpr (std::is_same_v<T, std::string>)
+			{
+				return utils::from_hs(value);
 			}
 			else if constexpr (std::is_same_v<T, std::wstring>)
 			{
-				return sprintf<2048>(utils::prefix + fmt + utils::suffix_ls, args..., value.c_str());
-			}
-			else if constexpr(std::is_convertible_v<T, const char*>)
-			{
-				return sprintf<2048>(utils::prefix + fmt + utils::suffix_hs, args..., value);
-			}
-			else if constexpr(std::is_convertible_v<T, const wchar_t*>)
-			{
-				return sprintf<2048>(utils::prefix + fmt + utils::suffix_ls, args..., value);
+				return utils::from_ls(value);
 			}
 			else if constexpr(std::is_integral_v<T>)
 			{
