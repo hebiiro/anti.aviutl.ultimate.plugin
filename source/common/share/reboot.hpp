@@ -14,13 +14,16 @@ namespace apn::reboot::share
 	//
 	// 指定されたファイルを実行します。
 	//
-	inline BOOL shell_execute(LPCTSTR verb, LPCTSTR file, LPCTSTR parameters)
+	inline BOOL shell_execute(LPCTSTR verb, LPCTSTR file, LPCTSTR parameters, LPCTSTR directory = nullptr)
 	{
+		MY_TRACE_FUNC("{/}, {/}, {/}, {/}", verb, file, parameters, directory);
+
 		SHELLEXECUTEINFO sei = { sizeof(sei) };
 		sei.lpVerb = verb;
 		sei.nShow = SW_SHOWNORMAL;
 		sei.lpFile = file;
 		sei.lpParameters = parameters;
+		sei.lpDirectory = directory;
 		return ::ShellExecuteEx(&sei);
 	}
 }

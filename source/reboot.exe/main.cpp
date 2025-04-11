@@ -27,11 +27,25 @@ namespace apn::reboot
 					MY_TRACE_STR(buffer->args);
 
 					// 既存のaviutlプロセスが終了するまで待機します。
-					auto result1 = ::WaitForSingleObject(process_handle.get(), INFINITE);
-					MY_TRACE_INT(result1);
+					auto wait_result = ::WaitForSingleObject(process_handle.get(), INFINITE);
+					MY_TRACE_INT(wait_result);
+
+					// aviutlのパスを取得します。
+					auto path = std::filesystem::path(buffer->path);
+					MY_TRACE_STR(path);
+
+					// aviutlの引数を作成します。
+					// 引数に空白が含まれている場合があるので
+					// 二重引用符で括って対処します。
+					auto args = my::format(_T("\"{/}\""), buffer->args);
+					MY_TRACE_STR(args);
+
+					// aviutlフォルダを取得します。
+					auto dir = path.parent_path();
+					MY_TRACE_STR(dir);
 
 					// 新しいaviutlプロセスを起動します。
-					share::shell_execute(_T("open"), buffer->path, buffer->args);
+					share::shell_execute(_T("open"), path.c_str(), args.c_str(), dir.c_str());
 				}
 
 				// メッセージループを終了します。
