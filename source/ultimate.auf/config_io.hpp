@@ -41,6 +41,7 @@ namespace apn
 			register_addin(L"L", L"item_wave", L"アイテム波形", TRUE, L"", { L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" });
 			register_addin(L"L", L"audio_visualizer", L"音声視覚化", TRUE, L"", { L"LevelMeter.auf" });
 			register_addin(L"L", L"settings_browser", L"設定ブラウザ", TRUE, L"", {});
+			register_addin(L"L", L"selector", L"セレクタ", TRUE, L"", {});
 
 			register_addin(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", { L"CopyFilter.auf" });
 			register_addin(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", { L"DragFilter.auf" });

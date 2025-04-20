@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="framework">
+      <UniqueIdentifier>{c9e913f1-1be6-4091-8312-d5300c60db97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="part">
+      <UniqueIdentifier>{9e0f5401-8992-445d-a3a6-50d6c4debc8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\custom_object">
+      <UniqueIdentifier>{24e6ff87-2bff-4a48-8d31-b3358ca63b05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="etc">
+      <UniqueIdentifier>{9e27e074-9f1c-4e74-8301-1388aff2d237}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="addin_dialog_interface.hpp" />
+    <ClInclude Include="part\part.hpp">
+      <Filter>part</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\agit.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\list_dialog.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\list_window.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\part.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\tree_dialog.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\tree_window.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\exedit_reader.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\action.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\action_interface.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\embedded_tree_builder.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\tree_node_config_dialog.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\dragger.hpp">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\drop_source.hpp">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\list_view.hpp">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\selector_window.hpp">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="etc\tree_view.hpp">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="part\custom_object\spec_reader.hpp">
+      <Filter>part\custom_object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="selector.aua.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+    <None Include="packages.config">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
+      <Filter>framework</Filter>
+    </Natvis>
+  </ItemGroup>
+</Project>

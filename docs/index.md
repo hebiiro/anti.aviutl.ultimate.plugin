@@ -85,6 +85,7 @@ lang: ja_JP
 | [item_wave](./contents/addin/item_wave.html) | アイテム波形 | タイムラインアイテム内に音声波形を表示します。 |
 | [audio_visualizer](./contents/addin/audio_visualizer.html) | 音声視覚化 | 再生中の音声をブラウザ(WebView2)で視覚化します。 |
 | [settings_browser](./contents/addin/settings_browser.html) | 設定ブラウザ | 選択アイテムの設定をブラウザ(WebView2)で表示します。 |
+| [selector](./contents/addin/selector.html) | セレクタ | カスタムオブジェクトをリストから配置できるようにします。 |
 |---|---|---|
 | [filter_copy](./contents/addin/filter_copy.html) | フィルタコピー | 設定ダイアログのフィルタをコピペできるようにします。 |
 | [filter_drag](./contents/addin/filter_drag.html) | フィルタドラッグ | 設定ダイアログのフィルタをドラッグで移動できるようにします。 |
