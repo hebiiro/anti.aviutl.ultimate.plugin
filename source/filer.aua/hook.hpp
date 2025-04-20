@@ -127,7 +127,7 @@ namespace apn::filer
 				std::replace(section.begin(), section.end(), '\0', '\n');
 
 				// セクションのヘッダーを構築します。
-				auto section_header = my::format("[vo.0]");
+				auto section_header = my::format("[vo.0]\n");
 				MY_TRACE_STR(section_header);
 
 				// 一時ファイルのファイル名を構築します。
@@ -414,7 +414,8 @@ namespace apn::filer
 						for (decltype(c) i = 0; i < c; i++)
 						{
 							std::string file_name(MAX_PATH, '\0');
-							::DragQueryFileA(drop, i, file_name.data(), file_name.size());
+							auto length = ::DragQueryFileA(drop, i, file_name.data(), file_name.size());
+							file_name.resize(length);
 							MY_TRACE_STR(file_name);
 
 							if (std::filesystem::path(file_name).extension() == ".exa")
@@ -452,9 +453,9 @@ namespace apn::filer
 
 					auto ret_value = FALSE;
 
-					for (auto file_name : alias_file_names)
+					for (const auto& file_name : alias_file_names)
 					{
-						MY_TRACE_STR(file_name.c_str());
+						MY_TRACE_STR(file_name);
 
 						ret_value |= orig_proc(file_name.c_str(), flag1, flag2, object_index);
 
