@@ -33,10 +33,14 @@ class ComboBox(core.Control):
 		self.add_handler(core.CP_READONLY, core.CBXS_DISABLED, self.draw_combobox, STUFF_DISABLED)
 		self.add_handler(core.CP_READONLY, core.CBXS_HOT, self.draw_combobox, STUFF_HOT)
 		self.add_handler(core.CP_READONLY, core.CBXS_PRESSED, self.draw_combobox, STUFF_PRESSED)
-		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_NORMAL, self.draw_drop_down_button, STUFF_NORMAL)
-		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_DISABLED, self.draw_drop_down_button, STUFF_DISABLED)
-		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_HOT, self.draw_drop_down_button, STUFF_HOT)
-		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_PRESSED, self.draw_drop_down_button, STUFF_PRESSED)
+		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_NORMAL, self.draw_drop_down_button_right, STUFF_NORMAL)
+		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_DISABLED, self.draw_drop_down_button_right, STUFF_DISABLED)
+		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_HOT, self.draw_drop_down_button_right, STUFF_HOT)
+		self.add_handler(core.CP_DROPDOWNBUTTONRIGHT, core.CBXSR_PRESSED, self.draw_drop_down_button_right, STUFF_PRESSED)
+		self.add_handler(core.CP_DROPDOWNBUTTONLEFT, core.CBXSR_NORMAL, self.draw_drop_down_button_left, STUFF_NORMAL)
+		self.add_handler(core.CP_DROPDOWNBUTTONLEFT, core.CBXSR_DISABLED, self.draw_drop_down_button_left, STUFF_DISABLED)
+		self.add_handler(core.CP_DROPDOWNBUTTONLEFT, core.CBXSR_HOT, self.draw_drop_down_button_left, STUFF_HOT)
+		self.add_handler(core.CP_DROPDOWNBUTTONLEFT, core.CBXSR_PRESSED, self.draw_drop_down_button_left, STUFF_PRESSED)
 
 	#
 	# コンボボックスを描画します。
@@ -54,7 +58,19 @@ class ComboBox(core.Control):
 	#
 	# ドロップダウンボタンを描画します。
 	#
-	def draw_drop_down_button(self, args, stuff_name, attrs):
+	def draw_drop_down_button(self, args, stuff_name, attrs, rc):
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (stuff_name):
+			stuff = self.get_stuff(stuff_name)
+			return core.draw_icon(args, stuff, 'Meiryo', '\uE015', rc, font_weight=900)
+			#return core.draw_icon(args, stuff, 'Webdings', '\u0036', rc)
+			#return core.draw_icon(args, stuff, 'Meiryo', '🔽')
+			#return core.draw_icon(args, stuff, 'Meiryo', '⏬')
+
+	#
+	# 右側ドロップダウンボタンを描画します。
+	#
+	def draw_drop_down_button_right(self, args, stuff_name, attrs):
 		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
 		if (stuff_name):
 			stuff = self.get_stuff(stuff_name)
@@ -62,8 +78,19 @@ class ComboBox(core.Control):
 			width = rc.width
 			rc.top = int((rc.top + rc.bottom - width) / 2) - 1
 			rc.bottom = rc.top + width
-			return core.draw_icon(args, stuff, 'Meiryo', '\uE015', rc, font_weight=900)
-			#return core.draw_icon(args, stuff, 'Webdings', '\u0036', rc)
-			#return core.draw_icon(args, stuff, 'Meiryo', '🔽')
-			#return core.draw_icon(args, stuff, 'Meiryo', '⏬')
+			rc.offset(-2, 0)
+			return self.draw_drop_down_button(args, stuff_name, attrs, rc)
 
+	#
+	# 左側ドロップダウンボタンを描画します。
+	#
+	def draw_drop_down_button_left(self, args, stuff_name, attrs):
+		if (core.debug): print(f'{__name__}.{self.__class__.__name__}.{sys._getframe().f_code.co_name}({stuff_name}, {dark.str(args)})')
+		if (stuff_name):
+			stuff = self.get_stuff(stuff_name)
+			rc = dark.RECT(args.rc)
+			width = rc.width
+			rc.top = int((rc.top + rc.bottom - width) / 2) - 1
+			rc.bottom = rc.top + width
+			rc.offset(2, 0)
+			return self.draw_drop_down_button(args, stuff_name, attrs, rc)
