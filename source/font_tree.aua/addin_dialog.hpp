@@ -83,14 +83,14 @@ namespace apn::font_tree
 					if (code == CBN_SELCHANGE)
 					{
 						// 履歴コンボボックスで選択されているフォント名を取得します。
-						auto font_name = cb::get_text(recent_manager, -1);
+						auto font_name = my::combobox::get_text(recent_manager, -1);
 
 						// フォントコンボボックスを取得します。
 						auto font_combobox = magi.exin.get_font_combobox();
 						if (!font_combobox) break;
 
 						// フォントコンボボックスの選択項目を切り替えます。
-						cb::select_text(font_combobox, font_name.c_str());
+						my::combobox::select_text(font_combobox, font_name.c_str());
 					}
 
 					break;
@@ -160,7 +160,7 @@ namespace apn::font_tree
 									if (!node || node->name.empty()) break;
 
 									// フォントコンボボックスの選択項目を変更します。
-									cb::select_text(font_combobox, node->name);
+									my::combobox::select_text(font_combobox, node->name);
 
 									break;
 								}

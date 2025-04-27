@@ -217,7 +217,7 @@ namespace apn::font_tree
 			auto font_combobox = magi.exin.get_font_combobox();
 
 			// フォントコンボボックスからフォント名を取得します。
-			auto font_name = cb::get_text(font_combobox, -1);
+			auto font_name = my::combobox::get_text(font_combobox, -1);
 
 			// メニューアイテムのIDです。
 			constexpr uint32_t c_insert = 1;

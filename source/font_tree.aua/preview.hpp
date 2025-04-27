@@ -217,7 +217,7 @@ namespace apn::font_tree
 			for (int32_t i = 0; i < (int32_t)si.nPage; i++)
 			{
 				// 項目のテキストを取得します。
-				auto text = lb::get_text(*this, i + si.nPos);
+				auto text = my::listbox::get_text(*this, i + si.nPos);
 
 				// 項目のテキストが有効の場合は
 				if (text.length())

@@ -21,7 +21,7 @@ namespace apn::font_tree
 		void insert(LPCWSTR font_name)
 		{
 			// 指定されたフォント名が既存かどうかチェックします。
-			auto index = cb::find_string(*this, font_name);
+			auto index = my::combobox::find_string(*this, font_name);
 			if (index >= 0)
 			{
 				// 既存の場合は一旦このフォント名を削除します。
@@ -39,7 +39,7 @@ namespace apn::font_tree
 		void erase(LPCWSTR font_name)
 		{
 			// 指定されたフォント名が既存かどうかチェックします。
-			auto index = cb::find_string(*this, font_name);
+			auto index = my::combobox::find_string(*this, font_name);
 			if (index >= 0)
 			{
 				// 既存の場合はこのフォント名を削除します。
@@ -90,10 +90,10 @@ namespace apn::font_tree
 			auto font_combobox = magi.exin.get_font_combobox();
 
 			// フォントコンボボックスのカレントテキストを取得します。
-			auto font_name = cb::get_text(font_combobox, -1);
+			auto font_name = my::combobox::get_text(font_combobox, -1);
 
 			// 履歴コンボボックスのカレントテキストを取得します。
-			auto recent_font_name = cb::get_text(*this, -1);
+			auto recent_font_name = my::combobox::get_text(*this, -1);
 
 			// ポップアップメニューのアイテムIDです。
 			constexpr uint32_t c_insert_recent = 1;
@@ -108,7 +108,7 @@ namespace apn::font_tree
 			if (font_name.length())
 			{
 				// 履歴コンボボックスにfont_nameが存在しない場合は
-				if (cb::find_string(*this, font_name.c_str()) < 0)
+				if (my::combobox::find_string(*this, font_name.c_str()) < 0)
 				{
 					::AppendMenu(menu.get(), MF_STRING, c_insert_recent,
 						my::format(_T("{/}を追加"), font_name).c_str());
@@ -229,7 +229,7 @@ namespace apn::font_tree
 			std::vector<std::wstring> recents(ComboBox_GetCount(*this));
 			for (auto& recent : recents)
 			{
-				recent = cb::get_text(*this,
+				recent = my::combobox::get_text(*this,
 					std::distance(recents.data(), &recent));
 			}
 

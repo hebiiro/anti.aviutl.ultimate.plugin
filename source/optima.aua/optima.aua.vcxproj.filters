@@ -26,7 +26,6 @@
     </ClInclude>
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="part.hpp" />
-    <ClInclude Include="combobox.hpp" />
     <ClInclude Include="part\animation_effect_manager.hpp">
       <Filter>part</Filter>
     </ClInclude>

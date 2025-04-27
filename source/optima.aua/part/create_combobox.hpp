@@ -135,10 +135,10 @@ namespace apn::optima
 								auto category_combobox = get_combobox(combobox_index + 1);
 								MY_TRACE("カテゴリコンボボック => {/hex}\n", (uint32_t)category_combobox);
 
-								auto category_index = cb::get_cur_sel(category_combobox);
+								auto category_index = my::combobox::get_cur_sel(category_combobox);
 								MY_TRACE("カテゴリインデックス => {/}\n", category_index);
 #ifdef _DEBUG
-								auto category_text = cb::get_text(category_combobox, -1);
+								auto category_text = my::combobox::get_text(category_combobox, -1);
 								MY_TRACE("カテゴリ文字列 => {/}\n", category_text);
 
 								auto name = animation_effect_manager.get_name(object.get(), filter.index());

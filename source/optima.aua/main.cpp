@@ -3,7 +3,6 @@
 #include "hive.hpp"
 #include "utils.hpp"
 #include "part.hpp"
-#include "combobox.hpp"
 #include "part/script_sort.hpp"
 #include "part/animation_effect_manager.hpp"
 #include "part/create_combobox.hpp"

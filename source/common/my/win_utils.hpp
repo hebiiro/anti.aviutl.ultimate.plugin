@@ -266,17 +266,17 @@ namespace my::combobox
 	//
 	// コンボボックスに項目を追加します。
 	//
-	inline void add_text(HWND combobox, LPCWSTR text)
+	inline void add_text(HWND combobox, const std::wstring& text)
 	{
-		::SendMessageW(combobox, CB_ADDSTRING, 0, (LPARAM)text);
+		::SendMessageW(combobox, CB_ADDSTRING, 0, (LPARAM)text.data());
 	}
 
 	//
 	// コンボボックスに項目を追加します。
 	//
-	inline void insert_text(HWND combobox, LPCWSTR text, int32_t index = -1)
+	inline void insert_text(HWND combobox, const std::wstring& text, int32_t index = -1)
 	{
-		::SendMessageW(combobox, CB_INSERTSTRING, index, (LPARAM)text);
+		::SendMessageW(combobox, CB_INSERTSTRING, index, (LPARAM)text.data());
 	}
 
 	//
