@@ -7,6 +7,15 @@ namespace apn::selector::custom_object
 	//
 	inline struct ListDialog : StdAddinDialog<IDD_CUSTOM_OBJECT_LIST>
 	{
+		inline static constexpr struct Message {
+			inline static constexpr auto c_recalc_layout = WM_APP + 2025;
+		} c_message;
+
+		inline static constexpr struct Filter {
+			inline static constexpr auto c_control_id_front = IDC_SCRIPT_NAME;
+			inline static constexpr auto c_control_id_back = c_control_id_front + agit.c_column.c_max_size - 1;
+		} c_filter;
+
 		//
 		// このクラスはインプレース編集用の変数を保持します。
 		//
@@ -26,15 +35,39 @@ namespace apn::selector::custom_object
 		{
 			MY_TRACE_FUNC("");
 
+			auto list_view = ctrl(IDC_LIST);
+#if 0
+			// リストビューをサブクラス化して
+			// ウィンドウメッセージをハンドルできるようにします。
+			::SetWindowSubclass(list_view,
+				[](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data) -> LRESULT {
+					return ((ListDialog*)ref_data)->on_list_view(hwnd, message, wParam, lParam, subclass_id, ref_data);
+				}, (UINT_PTR)this, (DWORD_PTR)this);
+#endif
 			// インプレース編集用のエディットボックスをサブクラス化して
 			// ウィンドウメッセージをハンドルできるようにします。
 			::SetWindowSubclass(inplace_edit.editbox = ::GetDlgItem(*this, IDC_INPLACE_EDITBOX),
 				[](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data) -> LRESULT {
-					return ((ListDialog*)ref_data)->on_inplace_editbox(
-						hwnd, message, wParam, lParam, subclass_id, ref_data);
-				}, (UINT_PTR)&inplace_edit.editbox, (DWORD_PTR)this);
+					return ((ListDialog*)ref_data)->on_editbox_for_inplace_edit(hwnd, message, wParam, lParam, subclass_id, ref_data);
+				}, (UINT_PTR)this, (DWORD_PTR)this);
 
-			auto list_view = ctrl(IDC_LIST);
+			// すべての絞り込み用コンボボックスを走査します。
+			for (auto i = 0; i < agit.c_column.c_max_size; i++)
+			{
+				// コンボボックスを取得します。
+				auto combobox = ctrl(c_filter.c_control_id_front + i);
+
+				// コンボボックス情報を取得します。
+				COMBOBOXINFO cbi = { sizeof(cbi) };
+				::GetComboBoxInfo(combobox, &cbi);
+
+				// コンボボックス内のエディットボックスをサブクラス化して
+				// ウィンドウメッセージをハンドルできるようにします。
+				::SetWindowSubclass(cbi.hwndItem,
+					[](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data) -> LRESULT {
+						return ((ListDialog*)ref_data)->on_editbox_for_filtering(hwnd, message, wParam, lParam, subclass_id, ref_data);
+					}, (UINT_PTR)this, (DWORD_PTR)this);
+			}
 
 			my::modify_style(list_view, 0, WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 			my::modify_style(inplace_edit.editbox, 0, WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
@@ -86,6 +119,71 @@ namespace apn::selector::custom_object
 
 			// カスタムオブジェクトの数をリストビューに適用します。
 			ListView_SetItemCount(list_view, vec.size());
+
+			return TRUE;
+		}
+
+		//
+		// 絞り込み用コンボボックスを更新します。
+		//
+		BOOL update_filter_comboboxs()
+		{
+			MY_TRACE_FUNC("");
+
+			// 絞り込み用テキストを格納するコンテナです。
+			std::set<std::wstring> texts_array[agit.c_column.c_max_size];
+
+			// コンテナに空文字列を追加します。
+			for (auto i = 0; i < agit.c_column.c_max_size; i++)
+				texts_array[i].emplace(L"");
+
+
+			// リストノードが保持する文字列を
+			// コンテナに絞り込み用テキストを格納していきます。
+			for (const auto& node : agit.list.collection.raw.vec)
+			{
+				for (auto i = 0; i < agit.c_column.c_max_size; i++)
+				{
+					switch (i)
+					{
+					case agit.c_column.c_script_name:
+					case agit.c_column.c_folder_name:
+					case agit.c_column.c_file_name:
+//					case agit.c_column.c_file_time:
+					case agit.c_column.c_author:
+//					case agit.c_column.c_desc:
+					case agit.c_column.c_note:
+						{
+							texts_array[i].emplace(node->get_text(i));
+
+							break;
+						}
+					case agit.c_column.c_tag:
+						{
+							auto& texts = texts_array[i];
+
+							std::wstringstream stream(node->get_text(i));
+							std::wstring text;
+
+							while (std::getline(stream, text, L' '))
+								texts.emplace(text);
+
+							break;
+						}
+					}
+				}
+			}
+
+			// コンテナに格納されたテキストをコンボボックスに追加します。
+			for (auto i = 0; i < agit.c_column.c_max_size; i++)
+			{
+				auto combobox = ctrl(c_filter.c_control_id_front + i);
+
+				my::combobox::clear(combobox);
+
+				for (const auto& text : texts_array[i])
+					my::combobox::add_text(combobox, text);
+			}
 
 			return TRUE;
 		}
@@ -374,6 +472,110 @@ namespace apn::selector::custom_object
 		}
 
 		//
+		// ダイアログレイアウトを更新します。
+		//
+		BOOL recalc_layout()
+		{
+			MY_TRACE_FUNC("");
+
+			// リストビューを取得します
+			auto list_view = ctrl(IDC_LIST);
+
+			// ダイアログのクライアント矩形を取得します。
+			auto client_rc = my::get_client_rect(*this);
+
+			// ダイアログレイアウトの基準となるサイズを取得します。
+			auto base_rc = my::get_window_rect(ctrl(c_filter.c_control_id_front));
+			auto base_w = my::get_width(base_rc);
+			auto base_h = my::get_height(base_rc);
+
+			my::DeferWindowPos dwp(1 + agit.c_column.c_max_size);
+
+			// 絞り込み用コンボボックスのウィンドウ位置を変更します。
+			{
+				auto rc = client_rc;
+				rc.bottom = rc.top + base_h;
+				auto x = client_rc.left;
+
+				int order_array[agit.c_column.c_max_size] = {};
+				ListView_GetColumnOrderArray(list_view, std::size(order_array), order_array);
+
+				for (size_t i = 0; i < std::size(order_array); i++)
+				{
+					auto order = order_array[i];
+
+					LVCOLUMN column = {};
+					column.mask = LVCF_WIDTH | LVCF_ORDER | LVCF_SUBITEM;
+					ListView_GetColumn(list_view, order, &column);
+
+					auto combobox = ctrl(c_filter.c_control_id_front + order);
+
+					rc.left = x; x += column.cx;
+					rc.right = x;
+
+					dwp.set_window_pos(combobox, nullptr, &rc, SWP_NOZORDER | SWP_NOACTIVATE);
+
+					::SendMessage(combobox, CB_SETDROPPEDWIDTH, std::max(my::get_width(rc), 200), 0);
+				}
+			}
+
+			// リストビューのウィンドウ位置を変更します。
+			{
+				auto rc = client_rc;
+				rc.top += base_h;
+
+				dwp.set_window_pos(list_view, nullptr, &rc, SWP_NOZORDER | SWP_NOACTIVATE);
+			}
+
+			return TRUE;
+		}
+
+		//
+		// フィルタ文字列をコンボボックスに追加します。
+		//
+		BOOL insert_filter_text(HWND combobox, const std::wstring& text)
+		{
+			MY_TRACE_FUNC("{/hex}, {/}", combobox, text);
+
+			if (text.empty()) return FALSE;
+
+			// コンボボックス内の文字列を検索します。
+			auto index = my::combobox::find_string(combobox, text);
+			if (index != CB_ERR)
+			{
+				// コンボボックス内の文字列を削除します。
+				my::combobox::erase_text(combobox, index);
+			}
+
+			// コンボボックスの先頭に文字列を追加します。
+			my::combobox::insert_text(combobox, text, 0);
+
+			return TRUE;
+		}
+
+		//
+		// フィルタ文字列をコンボボックスから削除します。
+		//
+		BOOL erase_filter_text(HWND combobox, const std::wstring& text)
+		{
+			MY_TRACE_FUNC("{/hex}, {/}", combobox, text);
+
+			if (text.empty()) return FALSE;
+
+			// コンボボックスの文字列を消去します。
+			::SetWindowText(combobox, L"");
+
+			// コンボボックス内の文字列を検索します。
+			auto index = my::combobox::find_string(combobox, text);
+			if (index == CB_ERR) return FALSE;
+
+			// コンボボックス内の文字列を削除します。
+			my::combobox::erase_text(combobox, index);
+
+			return TRUE;
+		}
+
+		//
 		// コンフィグを更新します。
 		//
 		virtual void on_update_config() override
@@ -397,32 +599,27 @@ namespace apn::selector::custom_object
 			MY_TRACE_FUNC("");
 
 			init_list_view();
-
-			using namespace my::layout;
-
-			auto margin_value = 2;
-			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
-			auto base_size = get_base_size();
-			auto row_size = base_size + margin_value * 2;
-			auto row = std::make_shared<RelativePos>(row_size);
-			auto size_s = std::make_shared<RelativePos>(base_size * 3);
-			auto size_m = std::make_shared<RelativePos>(base_size * 4);
-			auto size_l = std::make_shared<RelativePos>(base_size * 6);
-			auto half = std::make_shared<AbsolutePos>(1, 2);
-			auto full = std::make_shared<AbsolutePos>(2, 2);
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, full);
-				node->add_pane(c_axis.c_horz, c_align.c_left, full, {}, ctrl(IDC_LIST));
-			}
 		}
 
 		//
 		// ダイアログのコマンド処理です。
 		//
-		virtual void on_command(UINT code, UINT id, HWND control) override
+		virtual void on_command(UINT code, UINT control_id, HWND control) override
 		{
-			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, control_id, control);
+
+			if (control_id >= c_filter.c_control_id_front &&
+				control_id <= c_filter.c_control_id_back)
+			{
+				if (code == CBN_SELCHANGE)
+				{
+					// 絞り込み用テキストをセットします。
+					agit.filter.texts[control_id - c_filter.c_control_id_front] = my::combobox::get_text(control, -1);
+
+					// フィルタが変更された可能性があるのでリストを更新します。
+					action->filter_list();
+				}
+			}
 		}
 
 		//
@@ -444,9 +641,30 @@ namespace apn::selector::custom_object
 
 					break;
 				}
+			case WM_SIZE:
+				{
+					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
+
+					// ダイアログレイアウトを更新します。
+					recalc_layout();
+
+					break;
+				}
 			case WM_SETFOCUS:
 				{
 					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
+
+					break;
+				}
+			case WM_KEYDOWN:
+				{
+					MY_TRACE_FUNC("WM_KEYDOWN, {/hex}, {/hex}", wParam, lParam);
+
+					break;
+				}
+			case WM_CHAR:
+				{
+					MY_TRACE_FUNC("WM_CHAR, {/hex}, {/hex}", wParam, lParam);
 
 					break;
 				}
@@ -454,14 +672,15 @@ namespace apn::selector::custom_object
 				{
 //					MY_TRACE_FUNC("WM_NOTIFY, {/hex}, {/hex}", wParam, lParam);
 
-					auto header = (NMHDR*)lParam;
-					if (header->idFrom != IDC_LIST) break;
+					auto nmh = (NMHDR*)lParam;
 
-					switch (header->code)
+					switch (nmh->code)
 					{
 					case LVN_ITEMCHANGED:
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, LVN_ITEMCHANGED");
+
+							if (nmh->idFrom != IDC_LIST) break;
 
 							// 項目が変更されたときの処理です。
 
@@ -471,11 +690,13 @@ namespace apn::selector::custom_object
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, LVN_COLUMNCLICK");
 
+							if (nmh->idFrom != IDC_LIST) break;
+
 							// カラムがクリックされたときの処理です。
 							// クリックされたカラムのテキストを更新します。
 							// クリックされたカラムを基準にリストビューをソートします。
 
-							auto list_view = header->hwndFrom;
+							auto list_view = nmh->hwndFrom;
 							auto nm = (NM_LISTVIEW*)lParam;
 
 							sort_items(list_view, nm->iSubItem);
@@ -486,10 +707,12 @@ namespace apn::selector::custom_object
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, NM_RCLICK");
 
+							if (nmh->idFrom != IDC_LIST) break;
+
 							// リストビューが右クリックされたときの処理です。
 							// クリックされた行用のコンテキストメニューを表示します。
 
-							auto list_view = header->hwndFrom;
+							auto list_view = nmh->hwndFrom;
 							auto nm = (NMITEMACTIVATE*)lParam;
 
 							show_context_menu(list_view, nm->iItem, nm->iSubItem);
@@ -500,10 +723,12 @@ namespace apn::selector::custom_object
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, NM_DBLCLK");
 
+							if (nmh->idFrom != IDC_LIST) break;
+
 							// リストビューがダブルクリックされたときの処理です。
 							// (サブ)項目のインプレース編集を開始します。
 
-							auto list_view = header->hwndFrom;
+							auto list_view = nmh->hwndFrom;
 							auto nm = (NM_LISTVIEW*)lParam;
 
 							if (nm->iSubItem == agit.c_column.c_note)
@@ -517,10 +742,12 @@ namespace apn::selector::custom_object
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, NM_RETURN");
 
+							if (nmh->idFrom != IDC_LIST) break;
+
 							// リストビューでキー操作がされたときの処理です。
 							// (サブ)項目のインプレース編集を開始します。
 
-							auto list_view = header->hwndFrom;
+							auto list_view = nmh->hwndFrom;
 
 							auto item = ListView_GetSelectionMark(list_view);
 
@@ -532,9 +759,11 @@ namespace apn::selector::custom_object
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, LVN_BEGINDRAG");
 
+							if (nmh->idFrom != IDC_LIST) break;
+
 							// リストビューでドラッグが開始されたときの処理です。
 
-							auto list_view = header->hwndFrom;
+							auto list_view = nmh->hwndFrom;
 							auto nm = (NM_LISTVIEW*)lParam;
 
 							begin_drag(list_view, nm->iItem, nm->iSubItem);
@@ -545,7 +774,11 @@ namespace apn::selector::custom_object
 						{
 							MY_TRACE_FUNC("WM_NOTIFY, LVN_GETDISPINFO");
 
-							auto list_view = header->hwndFrom;
+							if (nmh->idFrom != IDC_LIST) break;
+
+							// リストビュー項目の文字列をセットするときの処理です。
+
+							auto list_view = nmh->hwndFrom;
 							auto nm = (NMLVDISPINFO*)lParam;
 
 							// カスタムオブジェクトのフィルタ済みコレクションを取得します。
@@ -562,7 +795,33 @@ namespace apn::selector::custom_object
 
 							break;
 						}
+					case HDN_ENDDRAG:
+					case HDN_ENDTRACK:
+						{
+							MY_TRACE_FUNC("WM_NOTIFY, HDN_ENDDRAG or HDN_ENDTRACK");
+
+							auto list_view = ctrl(IDC_LIST);
+							auto header = nmh->hwndFrom;
+							auto nm = (NMHEADER*)lParam;
+
+							// リストビューのヘッダーコントロールではない場合は何もしません。
+							if (header != ListView_GetHeader(list_view))
+								break;
+
+							::PostMessage(*this, c_message.c_recalc_layout, 0, 0);
+
+							break;
+						}
 					}
+
+					break;
+				}
+			case c_message.c_recalc_layout:
+				{
+					MY_TRACE_FUNC("c_message.c_recalc_layout");
+
+					// ダイアログレイアウトを更新します。
+					recalc_layout();
 
 					break;
 				}
@@ -572,9 +831,17 @@ namespace apn::selector::custom_object
 		}
 
 		//
+		// リストビューのメッセージをハンドルします。
+		//
+		LRESULT on_list_view(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data)
+		{
+			return ::DefSubclassProc(hwnd, message, wParam, lParam);
+		}
+
+		//
 		// インプレース編集用のエディットボックスのメッセージをハンドルします。
 		//
-		LRESULT on_inplace_editbox(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data)
+		LRESULT on_editbox_for_inplace_edit(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data)
 		{
 			switch (message)
 			{
@@ -584,6 +851,8 @@ namespace apn::selector::custom_object
 
 					auto list_view = ctrl(IDC_LIST);
 
+					// エディットボックスがフォーカスを失ったので
+					// インプレース編集を終了します。
 					end_inplace_edit(list_view);
 
 					break;
@@ -598,13 +867,107 @@ namespace apn::selector::custom_object
 					{
 					case VK_RETURN:
 						{
+							// リターンキーが押されたので
+							// インプレース編集を終了します。
 							end_inplace_edit(list_view);
 
 							return 0;
 						}
 					case VK_ESCAPE:
 						{
+							// エスケープキーが押されたので
+							// インプレース編集をキャンセルします。
 							cancel_inplace_edit(list_view);
+
+							return 0;
+						}
+					}
+
+					break;
+				}
+			}
+
+			return ::DefSubclassProc(hwnd, message, wParam, lParam);
+		}
+
+		//
+		// 絞り込み用コンボボックスのエディットボックスのメッセージをハンドルします。
+		//
+		LRESULT on_editbox_for_filtering(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR subclass_id, DWORD_PTR ref_data)
+		{
+			switch (message)
+			{
+			case WM_CHAR:
+				{
+					MY_TRACE_FUNC("WM_CHAR, {/hex}, {/hex}", wParam, lParam);
+
+					// コンボボックスを取得します。
+					auto combobox = ::GetParent(hwnd);
+
+					// コンボボックスのコントロールIDを取得します。
+					auto control_id = ::GetDlgCtrlID(combobox);
+					auto column_index = control_id - c_filter.c_control_id_front;
+					if (column_index >= agit.c_column.c_max_size) break;
+
+					switch (wParam)
+					{
+					case VK_RETURN:
+						{
+							// エディットボックスからテキストを取得します。
+							auto text = my::get_window_text(hwnd);
+#if 1
+							// テキストが有効の場合は
+							if (text.length())
+							{
+								// コンボボックス内にテキストが存在しない場合は
+								if (auto index = my::combobox::find_string(combobox, text); index == CB_ERR)
+								{
+									// コンボボックスの先頭に文字列を追加します。
+									my::combobox::insert_text(combobox, text, 0);
+								}
+							}
+
+							// 絞り込み用テキストをセットします。
+							agit.filter.texts[column_index] = text;
+#else
+							// シフトキーが押されていない場合は
+							if (::GetKeyState(VK_SHIFT) >= 0)
+							{
+								// 絞り込み用テキストを追加します。
+								insert_filter_text(combobox, text);
+
+								// 絞り込み用テキストをセットします。
+								agit.filter.texts[column_index] = text;
+							}
+							// シフトキーが押されている場合は
+							else
+							{
+								// 絞り込み用テキストを削除します。
+								erase_filter_text(combobox, text);
+
+								// 絞り込み用テキストをリセットします。
+								agit.filter.texts[column_index] = L"";
+							}
+#endif
+							// フィルタが変更された可能性があるのでリストを更新します。
+							action->filter_list();
+
+							return 0;
+						}
+					case VK_TAB:
+						{
+							// シフトキーが押されていない場合は
+							if (::GetKeyState(VK_SHIFT) >= 0)
+							{
+								// 次のコンボボックスにフォーカスを移します。
+								::SetFocus(ctrl((control_id == c_filter.c_control_id_back) ? c_filter.c_control_id_front : (control_id + 1)));
+							}
+							// シフトキーが押されている場合は
+							else
+							{
+								// 前のコンボボックスにフォーカスを移します。
+								::SetFocus(ctrl((control_id == c_filter.c_control_id_front) ? c_filter.c_control_id_back : (control_id - 1)));
+							}
 
 							return 0;
 						}

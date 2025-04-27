@@ -334,6 +334,13 @@ namespace apn::selector::custom_object
 		} sort;
 
 		//
+		// このクラスはカスタムオブジェクトを絞り込みます。
+		//
+		struct Filter {
+			std::wstring texts[c_column.c_max_size];
+		} filter;
+
+		//
 		// 指定されたカスタムオブジェクトが組み込みスクリプトの場合はTRUEを返します。
 		//
 		inline BOOL is_embedded(const auto& custom_object)
@@ -431,7 +438,7 @@ namespace apn::selector::custom_object
 		//
 		// 指定されたカスタムオブジェクトが絞り込み対象の場合はTRUEを返します。
 		//
-		BOOL filter(const std::shared_ptr<List::Node>& custom_object, const std::shared_ptr<Tree::Node>& filter_node)
+		BOOL is_filter_target(const std::shared_ptr<List::Node>& custom_object, const std::shared_ptr<Tree::Node>& filter_node)
 		{
 			// フィルタノードが無効の場合は絞り込み対象外です。
 			if (!filter_node) return FALSE;
@@ -467,12 +474,34 @@ namespace apn::selector::custom_object
 			for (const auto& child_node : filter_node->vec)
 			{
 				// 指定されたカスタムオブジェクトが絞り込み対象の場合は
-				if (filter(custom_object, child_node))
+				if (is_filter_target(custom_object, child_node))
 					return TRUE; // TRUEを返します。
 			}
 
-			// 指定されたカスタムオブジェクトは絞り込み対象外です。
-			return FALSE;
+			// 指定されたカスタムオブジェクトは絞り込み対象外なので
+			return FALSE; // FALSEを返します。
+		}
+
+		//
+		// 指定されたカスタムオブジェクトが絞り込み対象の場合はTRUEを返します。
+		//
+		BOOL is_filter_target(const std::shared_ptr<List::Node>& custom_object)
+		{
+			// フィルタ文字列を走査します。
+			for (size_t i = 0; i < std::size(filter.texts); i++)
+			{
+				// フィルタ文字列を取得します。
+				const auto& text = filter.texts[i];
+				if (text.empty()) continue;
+
+				// 指定されたカスタムオブジェクト内に
+				// フィルタ文字列が見つからなかった場合は
+				if (custom_object->get_text(i).find(text) == text.npos)
+					return TRUE; // TRUEを返します。
+			}
+
+			// 指定されたカスタムオブジェクトは絞り込み対象外なので
+			return FALSE; // FALSEを返します。
 		}
 
 		//
@@ -487,8 +516,11 @@ namespace apn::selector::custom_object
 			// すべてのカスタムオブジェクトを走査します。
 			for (const auto& custom_object : list.collection.raw.vec)
 			{
-				// カスタムオブジェクトがツリーノードによってフィルタされた場合は何もしません。
-				if (filter(custom_object, tree.root)) continue;
+				// カスタムオブジェクトが絞り込み対象の場合は何もしません。
+				if (is_filter_target(custom_object)) continue;
+
+				// カスタムオブジェクトが絞り込み対象の場合は何もしません。
+				if (is_filter_target(custom_object, tree.root)) continue;
 
 				// カスタムオブジェクトをフィルタ済みコレクションに追加します。
 				list.collection.filtered.vec.emplace_back(custom_object);

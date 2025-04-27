@@ -327,6 +327,9 @@ namespace apn::selector::custom_object
 			// カスタムオブジェクトのリストを絞り込みます。
 			agit.filter_list();
 
+			// ダイアログの絞り込み用コンボボックスを更新します。
+			list_dialog.update_filter_comboboxs();
+
 			// ダイアログのリストビューを更新します。
 			list_dialog.update_list_view();
 

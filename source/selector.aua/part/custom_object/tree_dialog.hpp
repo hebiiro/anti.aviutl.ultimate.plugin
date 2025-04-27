@@ -624,16 +624,7 @@ namespace apn::selector::custom_object
 
 			using namespace my::layout;
 
-			auto margin_value = 2;
-			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
-			auto base_size = get_base_size();
-			auto row_size = base_size + margin_value * 2;
-			auto row = std::make_shared<RelativePos>(row_size);
-			auto size_s = std::make_shared<RelativePos>(base_size * 3);
-			auto size_m = std::make_shared<RelativePos>(base_size * 4);
-			auto size_l = std::make_shared<RelativePos>(base_size * 6);
-			auto half = std::make_shared<AbsolutePos>(1, 2);
-			auto full = std::make_shared<AbsolutePos>(2, 2);
+			auto full = std::make_shared<AbsolutePos>(1, 1);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, full);
