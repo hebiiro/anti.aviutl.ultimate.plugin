@@ -78,8 +78,6 @@ namespace apn::settings_browser
 		{
 			MY_TRACE_FUNC("");
 
-			controller->put_IsVisible(TRUE);
-
 			return __super::on_post_init();
 		}
 
