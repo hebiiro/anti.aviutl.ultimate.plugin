@@ -288,7 +288,7 @@ namespace apn
 			{
 				// 保存するデータを構築します。
 				{
-					save_data = L"{\"ultimate\":{/}";
+					save_data = L"{\"ultimate\":{}";
 
 					for (const auto& pair : addins.map)
 					{
@@ -296,7 +296,7 @@ namespace apn
 
 						if (auto s = addin->on_get_project_save_data(fp, editp))
 						{
-							// ```,"addin_name":s```の形式で追加します。
+							// `,"addin_name":s`の形式で追加します。
 							save_data += L",\""s + addin->get_addin_name() + L"\":"s + s;
 						}
 					}
