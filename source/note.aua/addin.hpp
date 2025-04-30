@@ -140,6 +140,9 @@ namespace apn::note
 				auto what = my::cp_to_wide(error.what(), CP_UTF8);
 				MY_TRACE_STR(what);
 
+				std::wcout << L"\033[31m" L"プロジェクトデータの読み込みに失敗しました" L"\033[m" << std::endl;
+				std::wcout << what << std::endl;
+
 				return FALSE;
 			}
 		}
