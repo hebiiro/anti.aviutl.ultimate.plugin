@@ -45,12 +45,19 @@ namespace apn
 		{
 			try
 			{
-				// フォルダを作成します。
+				// ファイルパスに変換します。
 				std::filesystem::path path = config_file_name;
+
+				// ファイルパスが空の場合はFALSEを返します。
+				if (path.empty()) return FALSE;
+
+				// フォルダを作成します。
 				std::filesystem::create_directories(path.parent_path());
 
-				std::ofstream ofs(config_file_name);
+				// ストリームを開きます。
+				std::ofstream ofs(path);
 
+				// ストリームに書き込みます。
 				return write_stream(ofs);
 			}
 			catch (const std::exception& error)
