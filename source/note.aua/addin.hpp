@@ -122,7 +122,19 @@ namespace apn::note
 		{
 			try
 			{
+				// データをワイド文字列として読み込みます。
 				auto s = std::wstring((LPCWSTR)data, size / sizeof(WCHAR));
+
+				// 不正なjson構文を正常な構文に変換します。
+				{
+					constexpr auto from = L"{\"ultimate\":{/}";
+					constexpr auto to = L"{\"ultimate\":{ }";
+
+					if (auto pos = s.find(from); pos != s.npos)
+						memcpy(&s[pos], to, wcslen(to) * sizeof(WCHAR));
+				}
+
+				// jsonとして解析します。
 				auto root = nlohmann::json::parse(my::wide_to_cp(s, CP_UTF8));
 				{
 					n_json note_node;
