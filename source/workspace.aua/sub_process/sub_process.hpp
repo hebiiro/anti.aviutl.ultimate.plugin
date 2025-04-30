@@ -303,6 +303,11 @@ namespace apn::workspace
 			// サブプロセスウィンドウの親ウィンドウを変更します。
 			::SetParent(window, hwnd);
 
+			// DPIの変更を通知します。
+			auto dpi = ::GetDpiForWindow(hwnd);
+			auto rc = my::get_client_rect(hwnd);
+			::SendMessage(window, WM_DPICHANGED, MAKEWPARAM(dpi, dpi), (LPARAM)&rc);
+
 			// サブプロセスウィンドウを表示します。
 			// 最小化されている場合は元に戻します。
 			::ShowWindowAsync(window, SW_RESTORE);
