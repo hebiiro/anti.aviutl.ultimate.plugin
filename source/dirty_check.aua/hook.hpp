@@ -11,64 +11,35 @@
 
 namespace apn::dirty_check
 {
-	inline constexpr auto FILTER_NAME = "終了確認";
-	inline constexpr auto FILTER_INFORMATION = "Auls終了確認 v1.2 forked by karoterra";
-
-	inline constexpr auto EXEDIT_NAME = "拡張編集";
-	inline constexpr auto EXEDIT_92 = "拡張編集(exedit) version 0.92 by ＫＥＮくん";
-
 	inline struct DirtyFlag
 	{
+		//
+		// タイトル文字列に付与するマークです。
+		//
+		inline static const std::wstring mark = L"* ";
+
 		const int* g_undo_id_ptr = nullptr;
 		int  g_undo_id_prev = 0;
-		bool g_dirty_flag = false;
+		BOOL g_dirty_flag = FALSE;
 
 		//
-		// 拡張編集のフィルタを返します。
-		//
-		inline static AviUtl::FilterPlugin* get_exedit(AviUtl::FilterPlugin* fp)
-		{
-			AviUtl::SysInfo si = {};
-			fp->exfunc->get_sys_info(nullptr, &si);
-
-			for (decltype(si.filter_n) i = 0; i < si.filter_n; i++)
-			{
-				auto fp1 = static_cast<AviUtl::FilterPlugin*>(fp->exfunc->get_filterp(i));
-
-				if (::lstrcmpA(fp1->name, EXEDIT_NAME) == 0 &&
-					::lstrcmpA(fp1->information, EXEDIT_92) == 0)
-				{
-					return fp1;
-				}
-			}
-			return nullptr;
-		}
-
-		//
-		// 初期化処理を行います。
+		// 初期化処理を実行します。
 		//
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
 			// 拡張編集を取得します。
-			if (auto exedit = get_exedit(fp))
-			{
-				// 拡張編集のアンドゥIDへのポインタを取得します。
-				g_undo_id_ptr = reinterpret_cast<int*>(reinterpret_cast<size_t>(exedit->dll_hinst) + 0x244E08 + 12);
+			auto exedit = magi.exin.get_exedit();
 
-				return TRUE;
-			}
-			else
-			{
-				::MessageBoxA(fp->hwnd, "対応する拡張編集が見つかりません。", FILTER_NAME, MB_OK | MB_ICONERROR);
+			// 拡張編集のアンドゥIDへのポインタを取得します。
+			g_undo_id_ptr = (int32_t*)(exedit + 0x244E08 + 12);
 
-				return FALSE;
-			}
+			return TRUE;
 		}
 
 		//
-		// 指定されたwpがトリガーならtrueを返します。
+		// 指定されたwpがトリガーならTRUEを返します。
 		//
-		bool is_trigger_wp(WPARAM wp)
+		BOOL is_trigger_wp(WPARAM wp)
 		{
 			return wp == 5157	// 閉じる
 				|| wp == 5097	// 開く
@@ -78,44 +49,47 @@ namespace apn::dirty_check
 		}
 
 		//
-		// 指定されたウィンドウメッセージがトリガーならtrueを返します。
+		// 指定されたウィンドウメッセージがトリガーならTRUEを返します。
 		//
-		bool is_trigger_message(UINT msg, WPARAM wp)
+		BOOL is_trigger_message(UINT msg, WPARAM wp)
 		{
-			if (!get()) return false;
-			if (msg == WM_CLOSE) return true;
-			if (msg == WM_COMMAND && is_trigger_wp(wp)) return true;
-			return false;
+			if (!get()) return FALSE;
+			if (msg == WM_CLOSE) return TRUE;
+			if (msg == WM_COMMAND && is_trigger_wp(wp)) return TRUE;
+			return FALSE;
 		}
 
 		//
 		// ダーティーフラグを返します。
 		//
-		bool get()
+		BOOL get()
 		{
 			return g_dirty_flag;
 		}
 
 		//
-		// ダーティーフラグを更新します。
+		// ダーティーフラグをセットします。
 		//
-		void update()
+		void set()
 		{
 			// 現在のアンドゥIDと前回のアンドゥIDが異なる場合は
 			if (!g_dirty_flag && *g_undo_id_ptr != g_undo_id_prev)
-				g_dirty_flag = true; // ダーティーフラグをセットします。
+				g_dirty_flag = TRUE; // ダーティーフラグをセットします。
 		}
 
 		//
-		// ダーティーフラグを初期値に戻します。
+		// ダーティーフラグをリセットします。
 		//
-		void clear()
+		void reset()
 		{
 			g_undo_id_prev = *g_undo_id_ptr;
-			g_dirty_flag = false;
+			g_dirty_flag = FALSE;
 		}
 	} dirty_flag;
 
+	//
+	// このクラスはAviUtlウィンドウをフックします。
+	//
 	inline struct AviUtlWindow : my::Window
 	{
 		//
@@ -136,8 +110,9 @@ namespace apn::dirty_check
 			if (dirty_flag.is_trigger_message(message, wParam))
 			{
 				// メッセージボックスを表示します。
-				auto id = ::MessageBoxA(hwnd, "変更された編集データがあります。保存しますか？",
-					FILTER_NAME, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
+				auto id = hive.message_box(
+					L"変更された編集データがあります。保存しますか？",
+					hwnd, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
 
 				// ユーザーが「はい」を選択した場合は
 				if (id == IDYES)
@@ -182,15 +157,15 @@ namespace apn::dirty_check
 			{
 				if (!fp->exfunc->is_editing(editp)) break;
 
-				// プロジェクトが変更されたかもしれないのでダーティーフラグを更新します。
-				dirty_flag.update();
+				// プロジェクトが変更されたかもしれないのでダーティーフラグをセットします。
+				dirty_flag.set();
 
 				break;
 			}
 		case AviUtl::FilterPlugin::WindowMessage::FileClose:
 			{
-				// プロジェクトが閉じられたのでダーティーフラグをクリアします。
-				dirty_flag.clear();
+				// プロジェクトが閉じられたのでダーティーフラグをリセットします。
+				dirty_flag.reset();
 
 				break;
 			}
@@ -201,28 +176,31 @@ namespace apn::dirty_check
 
 	BOOL func_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void*, int*)
 	{
-		// プロジェクトが保存されたのでダーティーフラグをクリアします。
-		dirty_flag.clear();
+		// プロジェクトが保存されたのでダーティーフラグをリセットします。
+		dirty_flag.reset();
 
 		// フラグをクリアしてもタイトルは変わらないので手動で元に戻します。
 		auto title = my::get_window_text(fp->hwnd_parent);
-		if (title[0] == _T('*') && title[1] == _T(' '))
-			::SetWindowText(fp->hwnd_parent, title.c_str() + 2);
+		if (title.starts_with(dirty_flag.mark))
+			::SetWindowTextW(fp->hwnd_parent, title.c_str() + dirty_flag.mark.length());
 
 		return FALSE;
 	}
 
 	BOOL func_modify_title(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, int frame, LPSTR title, int max_title)
 	{
-		// プロジェクトが変更されたかもしれないのでダーティーフラグを更新します。
-		dirty_flag.update();
+		// プロジェクトが変更されたかもしれないのでダーティーフラグをセットします。
+		dirty_flag.set();
 
-		// ダーティーフラグが立っていない場合は何もしません。
-		if (!dirty_flag.get()) return FALSE;
+		// ダーティーフラグが立っている場合は
+		if (dirty_flag.get())
+		{
+			// タイトルにダーティーマークを付けます。
+			strcpy_s(title, max_title, my::format("{/}{/}", dirty_flag.mark, title).c_str());
 
-		// タイトルにダーティーマークを付けます。
-		strcpy_s(title, max_title, my::format("* {/}", title).c_str());
+			return TRUE;
+		}
 
-		return TRUE;
+		return FALSE;
 	}
 }
