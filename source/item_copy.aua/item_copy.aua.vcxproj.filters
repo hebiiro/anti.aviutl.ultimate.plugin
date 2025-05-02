@@ -43,9 +43,7 @@
     <None Include="main.def">
       <Filter>framework</Filter>
     </None>
-    <None Include="packages.config">
-      <Filter>framework</Filter>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
