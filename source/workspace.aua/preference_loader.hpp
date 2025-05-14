@@ -62,6 +62,13 @@ namespace apn::workspace
 			// フローティングシャトルを読み込みます。
 			read_float_shuttle(node);
 
+			// メインウィンドウが非表示の場合は
+			if (!::IsWindowVisible(hive.main_window))
+			{
+				// メインウィンドウを表示します。
+				::ShowWindow(hive.main_window, SW_SHOW);
+			}
+
 			return TRUE;
 		}
 
