@@ -161,18 +161,18 @@
     <ClInclude Include="app_interface.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="file_cache.hpp" />
+    <ClInclude Include="file_cache_manager.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="hook.hpp" />
     <ClInclude Include="item_cache.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="item_cache_manager.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="addin.hpp" />
-    <ClInclude Include="ui_process_manager.hpp" />
-    <ClInclude Include="share.hpp" />
-    <ClInclude Include="sub_thread.hpp" />
+    <ClInclude Include="sub_process.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -191,8 +191,8 @@
     <ResourceCompile Include="item_wave.aua.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\item_wave_ui.exe\item_wave_ui.exe.vcxproj">
-      <Project>{a3c15d57-d356-4371-9503-cb910970938f}</Project>
+    <ProjectReference Include="..\item_wave_reader.exe\item_wave_reader.exe.vcxproj">
+      <Project>{85aaaa80-3c9c-47e2-9fda-27210dd4487a}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

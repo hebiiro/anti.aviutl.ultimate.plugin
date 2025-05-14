@@ -8,12 +8,17 @@
 #define IDC_SCALE_SPIN                  1003
 #define IDC_NAMECAGE_OFFSET_STAT        1004
 #define IDC_NAMECAGE_OFFSET             1005
+#define IDC_MAX_THREAD_COUNT_STAT       1006
+#define IDC_MAX_THREAD_COUNT            1007
 #define IDC_WAVE_TYPE_STAT              1010
 #define IDC_WAVE_TYPE                   1011
 #define IDC_UPDATE_MODE_STAT            1020
 #define IDC_UPDATE_MODE                 1021
 #define IDC_XOR_MODE_STAT               1030
 #define IDC_XOR_MODE                    1031
+#define IDC_VOLUME_MODE_STAT            1032
+#define IDC_XOR_MODE2                   1033
+#define IDC_VOLUME_MODE                 1033
 #define IDC_SELECT_PEN_COLOR            1040
 #define IDC_SELECT_BRUSH_COLOR          1041
 #define IDC_CLEAR_CACHES                1042

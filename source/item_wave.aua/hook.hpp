@@ -52,20 +52,20 @@ namespace apn::item_wave
 			return TRUE;
 		}
 
-		inline BOOL check_min(std::vector<POINT>& points, int x, int y)
+		//
+		// 音量をボトムアップY座標に変換して返します。
+		//
+		inline static int32_t bottom_up_y_from_volume(const share::Volume& volume, int32_t origin, int32_t scale)
 		{
-			auto& back = points.back();
-			if (back.x != x) return TRUE;
-			back.y = std::min<int>(back.y, y);
-			return FALSE;
+			return origin - (int32_t)(volume.to_real() * scale);
 		}
 
-		inline BOOL check_max(std::vector<POINT>& points, int x, int y)
+		//
+		// 音量をトップダウンY座標に変換して返します。
+		//
+		inline static int32_t top_down_y_from_volume(const share::Volume& volume, int32_t origin, int32_t scale)
 		{
-			auto& back = points.back();
-			if (back.x != x) return TRUE;
-			back.y = std::max<int>(back.y, y);
-			return FALSE;
+			return origin + (int32_t)(volume.to_real() * scale);
 		}
 
 		//
@@ -86,7 +86,7 @@ namespace apn::item_wave
 			if (!object) return;
 
 			// 描画中のアイテムに関連付けられているキャッシュを取得します。
-			auto cache = item_cache_manager.get_cache(current_object_index);
+			auto cache = item_cache_manager.get(current_object_index);
 			if (!cache) return;
 
 			// 描画スケールを取得します。
@@ -115,20 +115,6 @@ namespace apn::item_wave
 			//
 			auto x_from_index = [object](num_t index) {
 				return (num_t)magi.exin.frame_to_x(index + object->frame_begin);
-			};
-
-			//
-			// この関数は音量をボトムアップY座標に変換して返します。
-			//
-			auto bottom_up_y_from_volume = [scale](const auto& volume, num_t origin) {
-				return origin - (num_t)(volume.level * scale);
-			};
-
-			//
-			// この関数は音量をトップダウンY座標に変換して返します。
-			//
-			auto top_down_y_from_volume = [scale](const auto& volume, num_t origin) {
-				return origin + (num_t)(volume.level * scale);
 			};
 
 			//
@@ -214,7 +200,7 @@ namespace apn::item_wave
 					x = x_from_index(i);
 
 					// 音量をY座標に変換します。
-					y = y_from_volume(volume, origin.y);
+					y = y_from_volume(volume, origin.y, scale);
 
 					// 頂点を追加します。
 					add_point(x, y);

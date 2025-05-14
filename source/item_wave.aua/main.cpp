@@ -2,13 +2,12 @@
 #include "resource.h"
 #include "app_interface.hpp"
 #include "hive.hpp"
-#include "share.hpp"
-#include "ui_process_manager.hpp"
-#include "sub_thread.hpp"
-//#include "gui_window_container.hpp"
-//#include "gui_dialog_container.hpp"
 #include "file_cache.hpp"
+#include "sub_process.hpp"
+//#include "sub_thread.hpp"
+#include "file_cache_manager.hpp"
 #include "item_cache.hpp"
+#include "item_cache_manager.hpp"
 #include "hook.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
@@ -24,7 +23,7 @@ namespace apn::item_wave
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		set_logger(args);
 
 		return &addin;
 	}

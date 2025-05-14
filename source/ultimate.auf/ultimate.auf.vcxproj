@@ -304,9 +304,6 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\item_wave_reader.exe\item_wave_reader.exe.vcxproj">
       <Project>{85aaaa80-3c9c-47e2-9fda-27210dd4487a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\item_wave_ui.exe\item_wave_ui.exe.vcxproj">
-      <Project>{a3c15d57-d356-4371-9503-cb910970938f}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\last_frame.aua\last_frame.aua.vcxproj">
       <Project>{4797bb8d-501f-4f13-8c75-e9e1d8a14ef5}</Project>
     </ProjectReference>

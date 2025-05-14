@@ -6,6 +6,7 @@
     <my_packages>$(my_source)\packages</my_packages>
     <aviutl_exedit_sdk>$(my_packages)\aviutl_exedit_sdk</aviutl_exedit_sdk>
     <detours>$(my_packages)\detours.4.0.1</detours>
+    <ffmpeg>$(my_packages)\ffmpeg</ffmpeg>
     <python>$(my_packages)\Python\Python312-32</python>
     <pybind11>$(python)\lib\site-packages\pybind11</pybind11>
     <my_pack_dir>$(my_source)\pack\ultimate</my_pack_dir>
@@ -41,7 +42,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(my_packages);$(aviutl_exedit_sdk);$(detours);$(boost)\include;$(glad);$(nanovg)\include;$(python)\include;$(pybind11)\include;$(microsoft)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(my_packages);$(aviutl_exedit_sdk);$(detours);$(ffmpeg)\include;$(python)\include;$(pybind11)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <PostBuildEvent>
       <Command>md "$(my_module_dir)" &gt; NUL 2&gt;&amp;1
@@ -52,7 +53,7 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     </PostBuildEvent>
     <Link />
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir);$(aviutl_exedit_sdk);$(detours);$(boost)\lib\x86;$(glad);$(nanovg)\lib;$(python)\libs;$(microsoft)\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir);$(aviutl_exedit_sdk);$(detours);$(ffmpeg)\lib;$(python)\libs</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>main.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -68,6 +69,9 @@ copy /Y "$(TargetPath)" "$(my_debug_module_dir)\$(TargetName)"
     </BuildMacro>
     <BuildMacro Include="detours">
       <Value>$(detours)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ffmpeg">
+      <Value>$(ffmpeg)</Value>
     </BuildMacro>
     <BuildMacro Include="python">
       <Value>$(python)</Value>

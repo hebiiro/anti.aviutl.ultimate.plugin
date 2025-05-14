@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup>
+    <PostBuildEvent>
+<Command>md "$(my_module_dir)\x64" &gt; NUL 2&gt;&amp;1
+md "$(my_debug_module_dir)\x64" &gt; NUL 2&gt;&amp;1
+copy /Y "$(TargetPath)" "$(my_module_dir)\x64\$(TargetName)"
+copy /Y "$(TargetPath)" "$(my_debug_module_dir)\x64\$(TargetName)"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+</Project>

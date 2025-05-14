@@ -65,6 +65,15 @@ namespace apn::item_wave
 			};
 		} c_xor_mode;
 
+		inline static constexpr struct VolumeMode {
+			inline static constexpr int32_t c_peak = 0;
+			inline static constexpr int32_t c_rms = 1;
+			inline static constexpr my::Label labels[] = {
+				{ c_peak, L"peak" },
+				{ c_rms, L"rms" },
+			};
+		} c_volume_mode;
+
 		//
 		// このアドインのインスタンスハンドルです。
 		//
@@ -78,17 +87,12 @@ namespace apn::item_wave
 		//
 		// このアドインのメインウィンドウです。
 		//
-		HWND host_window = nullptr;
+		HWND main_window = nullptr;
 
 		//
-		// UIプロセスのウィンドウです。
+		// 現在のファイル情報です。
 		//
-		HWND ui_window = nullptr;
-
-		//
-		// AviUtlのファイル情報です。
-		//
-		AviUtl::FileInfo fi = {};
+		AviUtl::FileInfo current_fi = {};
 
 		//
 		// 波形のサイズです。
@@ -111,14 +115,19 @@ namespace apn::item_wave
 		int32_t xor_mode = c_xor_mode.c_none;
 
 		//
+		// 音量モードです。
+		//
+		int32_t volume_mode = c_volume_mode.c_peak;
+
+		//
 		// 波形の描画に使用するペンの色です。
 		//
-		COLORREF pen_color = RGB(0, 200, 0);
+		COLORREF pen_color = RGB(200, 200, 200);
 
 		//
 		// 波形の描画に使用するブラシの色です。
 		//
-		COLORREF brush_color = RGB(0, 50, 0);
+		COLORREF brush_color = RGB(150, 100, 150);
 
 		//
 		// TRUEの場合は波形を描画します。
@@ -166,12 +175,17 @@ namespace apn::item_wave
 		int32_t namecage_offset = -6;
 
 		//
+		// 同時に稼働できるスレッドの最大数です。
+		//
+		size_t max_thread_count = 4;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text,
 			HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING)
 		{
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }

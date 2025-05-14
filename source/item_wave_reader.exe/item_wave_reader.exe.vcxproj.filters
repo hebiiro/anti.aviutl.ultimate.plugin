@@ -14,9 +14,7 @@
       <Filter>framework</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
-    <ClInclude Include="hive.hpp" />
-    <ClInclude Include="input_plugin.hpp" />
-    <ClInclude Include="worker.hpp" />
+    <ClInclude Include="ffmpeg.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

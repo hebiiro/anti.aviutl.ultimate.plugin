@@ -137,8 +137,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_wave.aua", "item_wave.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_wave_reader.exe", "item_wave_reader.exe\item_wave_reader.exe.vcxproj", "{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_wave_ui.exe", "item_wave_ui.exe\item_wave_ui.exe.vcxproj", "{A3C15D57-D356-4371-9503-CB910970938F}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "settings_browser.aua", "settings_browser.aua\settings_browser.aua.vcxproj", "{6FB0A583-304E-41BE-9E39-2644219C28DF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "install.exe", "install.exe\install.exe.vcxproj", "{8564CFEE-53D8-43E7-A7BB-FD1C772D68BC}"
@@ -422,20 +420,12 @@ Global
 		{D6A15CA8-FD8F-4F7D-ACCC-1BCEEE80D29A}.Release|x86.Build.0 = Release|Win32
 		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Debug|x64.ActiveCfg = Debug|x64
 		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Debug|x64.Build.0 = Debug|x64
-		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Debug|x86.ActiveCfg = Debug|Win32
-		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Debug|x86.Build.0 = Debug|Win32
+		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Debug|x86.ActiveCfg = Debug|x64
+		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Debug|x86.Build.0 = Debug|x64
 		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Release|x64.ActiveCfg = Release|x64
 		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Release|x64.Build.0 = Release|x64
-		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Release|x86.ActiveCfg = Release|Win32
-		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Release|x86.Build.0 = Release|Win32
-		{A3C15D57-D356-4371-9503-CB910970938F}.Debug|x64.ActiveCfg = Debug|x64
-		{A3C15D57-D356-4371-9503-CB910970938F}.Debug|x64.Build.0 = Debug|x64
-		{A3C15D57-D356-4371-9503-CB910970938F}.Debug|x86.ActiveCfg = Debug|Win32
-		{A3C15D57-D356-4371-9503-CB910970938F}.Debug|x86.Build.0 = Debug|Win32
-		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x64.ActiveCfg = Release|x64
-		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x64.Build.0 = Release|x64
-		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x86.ActiveCfg = Release|Win32
-		{A3C15D57-D356-4371-9503-CB910970938F}.Release|x86.Build.0 = Release|Win32
+		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Release|x86.ActiveCfg = Release|x64
+		{85AAAA80-3C9C-47E2-9FDA-27210DD4487A}.Release|x86.Build.0 = Release|x64
 		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x64.ActiveCfg = Debug|x64
 		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x64.Build.0 = Debug|x64
 		{6FB0A583-304E-41BE-9E39-2644219C28DF}.Debug|x86.ActiveCfg = Debug|Win32

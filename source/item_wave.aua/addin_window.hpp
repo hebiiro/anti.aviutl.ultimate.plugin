@@ -56,8 +56,8 @@ namespace apn::item_wave
 					set_target(addin_dialog);
 					resize();
 
-					// 初期化が完了したので、このウィンドウをホストウィンドウに設定します。
-					hive.host_window = hwnd;
+					// 初期化が完了したので、このウィンドウをメインウィンドウに設定します。
+					hive.main_window = hwnd;
 
 					break;
 				}
@@ -66,14 +66,6 @@ namespace apn::item_wave
 					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
 
 					addin_dialog.exit();
-
-					break;
-				}
-			case share::c_message.c_cache_result:
-				{
-					MY_TRACE_FUNC("c_cache_result, {/hex}, {/hex}, {/hex}", hwnd, wParam, lParam);
-
-					app->on_cache_result();
 
 					break;
 				}

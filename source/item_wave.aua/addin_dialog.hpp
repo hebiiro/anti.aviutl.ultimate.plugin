@@ -2,6 +2,9 @@
 
 namespace apn::item_wave
 {
+	//
+	// フォルダ選択ダイアログを表示します。
+	//
 	std::wstring pick_folder(HWND owner, const std::wstring& title, const std::wstring& start_folder)
 	{
 		auto dialog = wil::CoCreateInstance<IFileOpenDialog>(__uuidof(FileOpenDialog));
@@ -40,6 +43,7 @@ namespace apn::item_wave
 			set_combobox_index(IDC_WAVE_TYPE, hive.wave_type);
 			set_combobox_index(IDC_UPDATE_MODE, hive.update_mode);
 			set_combobox_index(IDC_XOR_MODE, hive.xor_mode);
+			set_combobox_index(IDC_VOLUME_MODE, hive.volume_mode);
 			set_check(IDC_SHOW_WAVE, hive.show_wave);
 			set_check(IDC_SHOW_TEXT, hive.show_text);
 			set_check(IDC_NAMECAGE, hive.namecage);
@@ -49,6 +53,7 @@ namespace apn::item_wave
 			set_text(IDC_INCLUDE_FOLDER, hive.include_folder);
 			set_text(IDC_EXCLUDE_FOLDER, hive.exclude_folder);
 			set_int(IDC_NAMECAGE_OFFSET, hive.namecage_offset);
+			set_int(IDC_MAX_THREAD_COUNT, hive.max_thread_count);
 		}
 
 		//
@@ -58,13 +63,14 @@ namespace apn::item_wave
 		{
 			MY_TRACE_FUNC("");
 
-			my::tstring include_layers;
-			my::tstring exclude_layers;
+			std::wstring include_layers;
+			std::wstring exclude_layers;
 
 			get_int(IDC_SCALE, hive.scale);
 			get_combobox_index(IDC_WAVE_TYPE, hive.wave_type);
 			get_combobox_index(IDC_UPDATE_MODE, hive.update_mode);
 			get_combobox_index(IDC_XOR_MODE, hive.xor_mode);
+			get_combobox_index(IDC_VOLUME_MODE, hive.volume_mode);
 			get_check(IDC_SHOW_WAVE, hive.show_wave);
 			get_check(IDC_SHOW_TEXT, hive.show_text);
 			get_check(IDC_NAMECAGE, hive.namecage);
@@ -74,6 +80,7 @@ namespace apn::item_wave
 			get_text(IDC_INCLUDE_FOLDER, hive.include_folder);
 			get_text(IDC_EXCLUDE_FOLDER, hive.exclude_folder);
 			get_int(IDC_NAMECAGE_OFFSET, hive.namecage_offset);
+			get_int(IDC_MAX_THREAD_COUNT, hive.max_thread_count);
 
 			hive.include_layers = string_to_layers(include_layers);
 			hive.exclude_layers = string_to_layers(exclude_layers);
@@ -91,6 +98,7 @@ namespace apn::item_wave
 			init_combobox(IDC_WAVE_TYPE, _T("中央"), _T("下"), _T("上"));
 			init_combobox(IDC_UPDATE_MODE, _T("更新しない"), _T("更新する"), _T("再生中は更新しない"));
 			init_combobox(IDC_XOR_MODE, _T("通常"), _T("XOR"), _T("NotXOR"), _T("Not"));
+			init_combobox(IDC_VOLUME_MODE, _T("ピーク"), _T("RMS"));
 
 			using namespace my::layout;
 
@@ -99,50 +107,27 @@ namespace apn::item_wave
 			auto stat_margin = RECT { 0, 0, margin_value, 0 };
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
-			auto stat = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
-			auto stat2 = std::make_shared<RelativePos>(base_size * 6);
-			auto spin = std::make_shared<RelativePos>(base_size);
-			auto button = std::make_shared<RelativePos>(base_size * 5);
-			auto editbox = std::make_shared<RelativePos>(base_size * 3);
-			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
-			auto combobox = std::make_shared<RelativePos>(base_size * 6);
 			auto rest = std::make_shared<AbsolutePos>(1, 1, 1);
+			auto size_s = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
+			auto size_m = std::make_shared<RelativePos>(base_size * 5 + margin_value * 2);
+			auto size_l = std::make_shared<RelativePos>(base_size * 6 + margin_value * 2);
+			auto spin = std::make_shared<RelativePos>(base_size);
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_UPDATE_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_UPDATE_MODE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SCALE_STAT));
-				{
-					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin);
-					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SCALE_SPIN));
-					sub_node->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_SCALE));
-				}
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_WAVE_TYPE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_WAVE_TYPE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_XOR_MODE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_XOR_MODE));
-			}
-
-			{
-				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_INCLUDE_LAYERS_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_INCLUDE_LAYERS_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_INCLUDE_LAYERS));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXCLUDE_LAYERS_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_EXCLUDE_LAYERS_STAT));
 				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_EXCLUDE_LAYERS));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_INCLUDE_FOLDER_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_INCLUDE_FOLDER_STAT));
 				{
 					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin);
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_INCLUDE_FOLDER_DIR));
@@ -152,7 +137,7 @@ namespace apn::item_wave
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_EXCLUDE_FOLDER_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_EXCLUDE_FOLDER_STAT));
 				{
 					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin);
 					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_EXCLUDE_FOLDER_DIR));
@@ -162,72 +147,113 @@ namespace apn::item_wave
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SHOW_WAVE));
-				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_SHOW_TEXT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_SCALE_STAT));
+				{
+					auto sub_node = node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin);
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, spin, {}, ctrl(IDC_SCALE_SPIN));
+					sub_node->add_pane(c_axis.c_horz, c_align.c_right, rest, {}, ctrl(IDC_SCALE));
+				}
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_UPDATE_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_l, margin, ctrl(IDC_UPDATE_MODE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_BEHIND));
-				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_NAMECAGE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_WAVE_TYPE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_WAVE_TYPE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_XOR_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_XOR_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_VOLUME_MODE_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_VOLUME_MODE));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_NAMECAGE_OFFSET_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, editbox, margin, ctrl(IDC_NAMECAGE_OFFSET));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_l, margin, ctrl(IDC_SHOW_WAVE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_l, margin, ctrl(IDC_SHOW_TEXT));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_SELECT_PEN_COLOR));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_SELECT_BRUSH_COLOR));
-				node->add_pane(c_axis.c_horz, c_align.c_left, button, margin, ctrl(IDC_CLEAR_CACHES));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_l, margin, ctrl(IDC_BEHIND));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_l, margin, ctrl(IDC_NAMECAGE));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_NAMECAGE_OFFSET_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_NAMECAGE_OFFSET));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_MAX_THREAD_COUNT_STAT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_s, margin, ctrl(IDC_MAX_THREAD_COUNT));
+			}
+
+			{
+				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_CLEAR_CACHES));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_SELECT_PEN_COLOR));
+				node->add_pane(c_axis.c_horz, c_align.c_left, size_m, margin, ctrl(IDC_SELECT_BRUSH_COLOR));
 			}
 		}
 
 		//
 		// ダイアログのコマンド処理です。
 		//
-		virtual void on_command(UINT code, UINT id, HWND control) override
+		virtual void on_command(UINT code, UINT control_id, HWND control) override
 		{
-			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, id, control);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", code, control_id, control);
 
-			switch (id)
+			switch (control_id)
 			{
 			// エディットボックス
 			case IDC_SCALE:
 			case IDC_INCLUDE_LAYERS:
 			case IDC_EXCLUDE_LAYERS:
 			case IDC_INCLUDE_FOLDER:
-			case IDC_EXCLUDE_FOLDER: if (code == EN_UPDATE) update_config(); break;
+			case IDC_EXCLUDE_FOLDER:
+			case IDC_NAMECAGE_OFFSET:
+			case IDC_MAX_THREAD_COUNT:
+				{
+					if (code == EN_UPDATE)
+						update_config();
+
+					break;
+				}
 			// コンボボックス
 			case IDC_UPDATE_MODE:
 			case IDC_WAVE_TYPE:
-			case IDC_XOR_MODE: if (code == CBN_SELCHANGE) update_config(); break;
+			case IDC_XOR_MODE:
+			case IDC_VOLUME_MODE:
+				{
+					if (code == CBN_SELCHANGE)
+						update_config();
+
+					break;
+				}
 			// ボタン
 			case IDC_SELECT_PEN_COLOR:
 				{
 					if (IDOK == magi.exin.show_color_dialog(0, &hive.pen_color, 2))
 						magi.exin.invalidate();
+
 					break;
 				}
 			case IDC_SELECT_BRUSH_COLOR:
 				{
 					if (IDOK == magi.exin.show_color_dialog(0, &hive.brush_color, 2))
 						magi.exin.invalidate();
+
 					break;
 				}
 			case IDC_CLEAR_CACHES:
-					{
-						app->clear_caches();
+				{
+					app->clear_caches();
 
-						break;
-					}
+					break;
+				}
 			case IDC_INCLUDE_FOLDER_DIR:
 				{
 					auto folder = pick_folder(*this, L"対象フォルダを選択", hive.include_folder);
-					if (!folder.empty())
+					if (folder.length())
 					{
 						set_text(IDC_INCLUDE_FOLDER, folder);
 						update_config();
@@ -238,7 +264,7 @@ namespace apn::item_wave
 			case IDC_EXCLUDE_FOLDER_DIR:
 				{
 					auto folder = pick_folder(*this, L"除外フォルダを選択", hive.exclude_folder);
-					if (!folder.empty())
+					if (folder.length())
 					{
 						set_text(IDC_EXCLUDE_FOLDER, folder);
 						update_config();
@@ -250,7 +276,12 @@ namespace apn::item_wave
 			case IDC_SHOW_WAVE:
 			case IDC_SHOW_TEXT:
 			case IDC_NAMECAGE:
-			case IDC_BEHIND: update_config(); break;
+			case IDC_BEHIND:
+				{
+					update_config();
+
+					break;
+				}
 			}
 		}
 
@@ -269,12 +300,12 @@ namespace apn::item_wave
 					{
 					case IDC_SCALE_SPIN:
 						{
-							auto header = (NMHDR*)lParam;
-							if (header->code == UDN_DELTAPOS)
+							auto nmh = (NMHDR*)lParam;
+							if (nmh->code == UDN_DELTAPOS)
 							{
 								auto scale = get_int(IDC_SCALE);
 
-								auto nm = (NM_UPDOWN*)header;
+								auto nm = (NM_UPDOWN*)nmh;
 								if (nm->iDelta < 0)
 								{
 									scale += 10;

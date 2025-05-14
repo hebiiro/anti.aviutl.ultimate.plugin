@@ -30,34 +30,7 @@ namespace apn::item_wave
 		{
 			MY_TRACE_FUNC("");
 
-			{
-				// 必須プラグインが存在するか確認します。
-
-				auto path = my::get_module_file_name(nullptr);
-				path = path.parent_path() / _T("plugins") / _T("lwinput.aui");
-				if (!std::filesystem::exists(path))
-				{
-					hive.message_box(
-						L"pluginsフォルダにlwinput.auiが存在しません\n"
-						L"L-SMASH-Worksをpluginsフォルダにインストールしてください\n"
-					);
-
-					return FALSE;
-				}
-			}
-
-			if (!config_io.init()) return FALSE;
-			if (!addin_window.init()) return FALSE;
-			if (!share_manager.init()) return FALSE;
-			if (!ui_process_manager.init()) return FALSE;
-			if (!sub_thread_manager.init()) return FALSE;
-			if (!hook_manager.init()) return FALSE;
-
-			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
-
-			::PostMessage(hive.ui_window, share::c_message.c_init_process, 0, 0);
-
-			return FALSE;
+			return app->init();
 		}
 
 		//
@@ -67,18 +40,7 @@ namespace apn::item_wave
 		{
 			MY_TRACE_FUNC("");
 
-			config_io.write();
-
-			::SendMessage(hive.ui_window, share::c_message.c_exit_process, 0, 0);
-
-			hook_manager.exit();
-			sub_thread_manager.exit();
-			ui_process_manager.exit();
-			share_manager.exit();
-			addin_window.exit();
-			config_io.exit();
-
-			return FALSE;
+			return app->exit();
 		}
 
 		//
@@ -102,6 +64,9 @@ namespace apn::item_wave
 			return FALSE;
 		}
 
+		//
+		// この仮想関数は、音声処理を実行するときに呼ばれます。
+		//
 		virtual BOOL on_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state) override
 		{
 			MY_TRACE_FUNC("");

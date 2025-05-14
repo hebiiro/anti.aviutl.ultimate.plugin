@@ -74,6 +74,7 @@ namespace apn::item_wave
 			read_label(root, "wave_type", hive.wave_type, hive.c_wave_type.labels);
 			read_label(root, "update_mode", hive.update_mode, hive.c_update_mode.labels);
 			read_label(root, "xor_mode", hive.xor_mode, hive.c_xor_mode.labels);
+			read_label(root, "volume_mode", hive.volume_mode, hive.c_volume_mode.labels);
 			read_color(root, "pen_color", hive.pen_color);
 			read_color(root, "brush_color", hive.brush_color);
 			read_bool(root, "show_wave", hive.show_wave);
@@ -84,6 +85,8 @@ namespace apn::item_wave
 			read_string(root, "exclude_layers", exclude_layers);
 			read_string(root, "include_folder", hive.include_folder);
 			read_string(root, "exclude_folder", hive.exclude_folder);
+			read_int(root, "namecage_offset", hive.namecage_offset);
+			read_int(root, "max_thread_count", hive.max_thread_count);
 			read_window_pos(root, "addin_window", addin_window);
 
 			hive.include_layers = string_to_layers(include_layers);
@@ -106,6 +109,7 @@ namespace apn::item_wave
 			write_label(root, "wave_type", hive.wave_type, hive.c_wave_type.labels);
 			write_label(root, "update_mode", hive.update_mode, hive.c_update_mode.labels);
 			write_label(root, "xor_mode", hive.xor_mode, hive.c_xor_mode.labels);
+			write_label(root, "volume_mode", hive.volume_mode, hive.c_volume_mode.labels);
 			write_color(root, "pen_color", hive.pen_color);
 			write_color(root, "brush_color", hive.brush_color);
 			write_bool(root, "show_wave", hive.show_wave);
@@ -116,6 +120,8 @@ namespace apn::item_wave
 			write_string(root, "exclude_layers", exclude_layers);
 			write_string(root, "include_folder", hive.include_folder);
 			write_string(root, "exclude_folder", hive.exclude_folder);
+			write_int(root, "namecage_offset", hive.namecage_offset);
+			write_int(root, "max_thread_count", hive.max_thread_count);
 			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;

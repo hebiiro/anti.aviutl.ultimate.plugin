@@ -5,7 +5,7 @@ namespace apn::item_wave
 	//
 	// このクラスはアプリケーションです。
 	//
-	inline struct App : AppInterface
+	inline struct App : AppInterface, FileCacheManager::Listener
 	{
 		//
 		// コンストラクタです。
@@ -13,85 +13,108 @@ namespace apn::item_wave
 		App() { app = this; }
 
 		//
-		// キャッシュを作成します。
+		// 初期化処理を実行します。
 		//
-		virtual BOOL create_cache(LPCSTR file_name) override
+		BOOL init()
 		{
 			MY_TRACE_FUNC("");
 
-			return sub_thread_manager.create_cache(file_name);
+			if (!config_io.init()) return FALSE;
+			if (!addin_window.init()) return FALSE;
+			if (!file_cache_manager.init(this)) return FALSE;
+			if (!item_cache_manager.init()) return FALSE;
+			if (!hook_manager.init()) return FALSE;
+
+			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
+
+			return TRUE;
 		}
 
 		//
-		// キャッシュを消去します。
+		// 後始末処理を実行します。
+		//
+		BOOL exit()
+		{
+			MY_TRACE_FUNC("");
+
+			config_io.write();
+
+			hook_manager.exit();
+			item_cache_manager.exit();
+			file_cache_manager.exit();
+			addin_window.exit();
+			config_io.exit();
+
+			return TRUE;
+		}
+
+		//
+		// すべてのキャッシュを消去します。
 		//
 		virtual BOOL clear_caches() override
 		{
 			MY_TRACE_FUNC("");
 
-			// 全てのキャッシュを消去します。
-			sub_thread_manager.clear_caches();
-			file_cache_manager.clear_caches();
-			item_cache_manager.clear_caches();
+			// すべてのキャッシュを消去します。
+			file_cache_manager.clear();
+			item_cache_manager.clear();
 
 			magi.exin.invalidate();
 
 			return TRUE;
 		}
 
-		virtual BOOL update_item_caches(BOOL send) override
-		{
-			MY_TRACE_FUNC("{/}", send);
-
-			return item_cache_manager.update(send);
-		}
-
-		virtual BOOL on_cache_result() override
-		{
-			MY_TRACE_FUNC("");
-
-			file_cache_manager.receive_cache();
-			item_cache_manager.update(FALSE);
-
-			return TRUE;
-		}
-
+		//
+		// この仮想関数は、音声処理を実行するときに呼ばれます。
+		//
 		virtual BOOL on_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const Addin::ProcState& proc_state) override
 		{
 			MY_TRACE_FUNC("");
 
-			if (!fp->exfunc->is_editing(fpip->editp))
-				return FALSE; // 編集中ではないときは何もしません。
+			// 編集中ではないときは何もしません。
+			if (!fp->exfunc->is_editing(fpip->editp)) return FALSE;
 
-			if (fp->exfunc->is_saving(fpip->editp))
-				return FALSE; // 音声を保存するときは何もしません。
+			// 音声を保存するときは何もしません。
+			if (fp->exfunc->is_saving(fpip->editp)) return FALSE;
 
-			// ファイル情報を取得しておきます。
-			fp->exfunc->get_file_info(fpip->editp, &hive.fi);
+			// 現在のファイル情報を取得しておきます。
+			fp->exfunc->get_file_info(fpip->editp, &hive.current_fi);
 
 			switch (hive.update_mode)
 			{
 			case hive.c_update_mode.c_off:
 				{
-					return FALSE; // 無効化されているときは何もしません。
+					return FALSE; // キャッシュの更新が無効化されている場合は何もしません。
 				}
 			case hive.c_update_mode.c_on_without_playing:
 				{
-					if (proc_state.is_playing)
-						return FALSE; // 再生中のときは何もしません。
+					// 再生中の場合は何もしません。
+					if (proc_state.is_playing) return FALSE;
 
 					break;
 				}
 			}
 
-			// UIプロセスのウィンドウが作成済みの場合は
-			if (hive.ui_window)
-			{
-				// アイテムキャッシュを更新します。
-				update_item_caches(TRUE);
-			}
+			// 不要なアイテムキャッシュを削除します。
+			item_cache_manager.clean();
+
+			// アイテムキャッシュを更新します。
+			item_cache_manager.update();
 
 			return FALSE;
+		}
+
+		//
+		// この仮想関数は、ファイルキャッシュが更新されたときに呼ばれます。
+		//
+		virtual BOOL on_file_cache_changed(const std::filesystem::path& file_name) override
+		{
+			MY_TRACE_FUNC("{/}", file_name);
+
+			// アイテムキャッシュを更新します。
+			item_cache_manager.update();
+
+			return TRUE;
 		}
 	} app_impl;
 }

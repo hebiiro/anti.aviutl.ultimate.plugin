@@ -1,40 +1,34 @@
 ﻿#include "pch.h"
-#include "hive.hpp"
-#include "input_plugin.hpp"
-#include "worker.hpp"
+#include "ffmpeg.hpp"
 #include "app.hpp"
 
 namespace apn::item_wave::reader
 {
 	int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
 	{
-		struct Initializer
-		{
-			Initializer()
-			{
-				_tsetlocale(LC_CTYPE, _T(""));
-				my::tracer_to_file::init(nullptr);
-				::OleInitialize(nullptr);
-			}
+		_tsetlocale(LC_CTYPE, _T(""));
 
-			~Initializer()
-			{
-				my::tracer_to_file::exit();
-				::OleUninitialize();
-			}
-
+		struct Initializer {
+			Initializer() { my::tracer_to_file::init(nullptr); }
+			~Initializer() { my::tracer_to_file::exit(); }
 		} initializer;
 
-		MY_TRACE_FUNC("");
+		MY_TRACE_FUNC("{/}", cmd_line);
 
-		app.init(instance);
-		app.receive();
-		app.send();
-		app.exit();
+		try
+		{
+			app.main();
 
-		MY_TRACE("プロセスが正常終了しました\n");
+			MY_TRACE("プロセスが正常終了しました\n");
 
-		return 0;
+			return 0;
+		}
+		catch (...)
+		{
+			MY_TRACE("プロセスが異常終了しました\n");
+
+			return 20250512;
+		}
 	}
 }
 
