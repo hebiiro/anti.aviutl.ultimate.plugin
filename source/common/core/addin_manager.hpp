@@ -305,7 +305,7 @@ namespace apn
 				}
 
 				// データサイズを返します。
-				*size = save_data.length() * sizeof(WCHAR);
+				*size = (int32_t)save_data.length() * sizeof(WCHAR);
 			}
 			// データバッファが有効の場合は
 			else

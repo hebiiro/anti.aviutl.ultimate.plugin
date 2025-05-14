@@ -119,7 +119,7 @@ namespace my
 		tstring get_text(UINT id, size_t buffer_length = MAX_PATH)
 		{
 			tstring str(buffer_length, _T('\0'));
-			auto size = ::GetDlgItemText(*this, id, str.data(), str.length());
+			auto size = ::GetDlgItemText(*this, id, str.data(), (int)str.length());
 			str.resize(size);
 			return str;
 		}

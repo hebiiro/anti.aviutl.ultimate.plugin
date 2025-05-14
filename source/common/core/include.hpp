@@ -20,8 +20,11 @@ using namespace std::string_literals;
 #include <map>
 #include <unordered_map>
 #include <deque>
+#include <queue>
 #include <regex>
 #include <filesystem>
+#include <thread>
+#include <future>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

@@ -70,27 +70,27 @@ namespace my
 	}
 
 	//
-	// 与えられ文字列を小文字にして返します。
+	// 指定された文字列を小文字にして返します。
 	//
 	inline tstring to_lower(const tstring& s)
 	{
 		tstring result(s);
-		::CharLowerBuff(result.data(), result.size());
+		::CharLowerBuff(result.data(), (DWORD)result.size());
 		return result;
 	}
 
 	//
-	// 与えられ文字列を大文字にして返します。
+	// 指定された文字列を大文字にして返します。
 	//
 	inline tstring to_upper(const tstring& s)
 	{
 		tstring result(s);
-		::CharUpperBuff(result.data(), result.size());
+		::CharUpperBuff(result.data(), (DWORD)result.size());
 		return result;
 	}
 
 	//
-	// 与えられ文字列が同じならtrueを返します。
+	// 指定された文字列が同じならtrueを返します。
 	//
 	inline bool eq(const tstring& s1, const tstring& s2)
 	{
@@ -108,7 +108,7 @@ namespace my
 	namespace case_insensitive
 	{
 		//
-		// 与えられ文字列が同じならtrueを返します。
+		// 指定された文字列が同じならtrueを返します。
 		// 大文字小文字を無視して比較します。
 		//
 		inline bool eq(const tstring& s1, const tstring& s2)
@@ -178,7 +178,7 @@ namespace my
 	inline std::filesystem::path get_module_file_name(HINSTANCE instance, size_t buffer_length = MAX_PATH)
 	{
 		auto buffer = std::make_unique<TCHAR[]>(buffer_length);
-		::GetModuleFileName(instance, buffer.get(), buffer_length);
+		::GetModuleFileName(instance, buffer.get(), (DWORD)buffer_length);
 		return buffer.get();
 	}
 
@@ -188,7 +188,7 @@ namespace my
 	inline std::filesystem::path get_module_file_name_ex(HANDLE process, HINSTANCE instance, size_t buffer_length = MAX_PATH)
 	{
 		auto buffer = std::make_unique<TCHAR[]>(buffer_length);
-		::GetModuleFileNameEx(process, instance, buffer.get(), buffer_length);
+		::GetModuleFileNameEx(process, instance, buffer.get(), (DWORD)buffer_length);
 		return buffer.get();
 	}
 
@@ -198,7 +198,7 @@ namespace my
 	inline auto get_class_name(HWND hwnd, size_t buffer_length = MAX_PATH)
 	{
 		tstring buffer(buffer_length, _T('\0'));
-		const auto length = ::GetClassName(hwnd, buffer.data(), buffer.length());
+		const auto length = ::GetClassName(hwnd, buffer.data(), (int)buffer.length());
 		buffer.resize(length);
 		return buffer;
 	}
@@ -210,7 +210,7 @@ namespace my
 	{
 		const auto buffer_length = ::GetWindowTextLength(hwnd) + 1;
 		tstring buffer(buffer_length, _T('\0'));
-		::GetWindowText(hwnd, buffer.data(), buffer.length());
+		::GetWindowText(hwnd, buffer.data(), (int)buffer.length());
 		buffer.resize(buffer_length - 1);
 		return buffer;
 	}
@@ -222,7 +222,7 @@ namespace my
 	{
 		tstring buffer;
 		buffer.resize(buffer_length);
-		size_t size = ::GetDlgItemText(hwnd, id, buffer.data(), buffer.length());
+		size_t size = ::GetDlgItemText(hwnd, id, buffer.data(), (int)buffer.length());
 		buffer.resize(size);
 		return buffer;
 	}
@@ -234,7 +234,7 @@ namespace my
 	{
 		const auto buffer_length = ::GetMenuString(menu, item_id, nullptr, 0, flags) + 1;
 		tstring buffer(buffer_length, _T('\0'));
-		::GetMenuString(menu, item_id, buffer.data(), buffer.length(), flags);
+		::GetMenuString(menu, item_id, buffer.data(), (int)buffer.length(), flags);
 		buffer.resize(buffer_length - 1);
 		return buffer;
 	}

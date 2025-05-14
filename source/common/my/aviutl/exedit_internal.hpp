@@ -316,8 +316,8 @@ namespace my
 		//
 		uint8_t* get_exdata(ExEdit::Object* object, int32_t filter_index)
 		{
-			uint8_t* exdata_table = *address.variable.exdata_table;
-			DWORD offset = get_exdata_offset(object, filter_index);
+			auto exdata_table = *address.variable.exdata_table;
+			auto offset = get_exdata_offset(object, filter_index);
 			return exdata_table + offset + 0x0004;
 		}
 
@@ -328,7 +328,7 @@ namespace my
 		{
 			if (!object) return -1;
 
-			return object - *address.variable.object_table;
+			return (int32_t)(object - *address.variable.object_table);
 		}
 
 		//
@@ -338,9 +338,9 @@ namespace my
 		{
 			if (!object) return -1;
 
-			int32_t c = object->countFilters();
+			auto c = object->countFilters();
 
-			for (int32_t i = 0; i < c; i++)
+			for (decltype(c) i = 0; i < c; i++)
 			{
 				if (object->filter_param[i].id == filter_id)
 					return i;
@@ -362,7 +362,7 @@ namespace my
 		//
 		inline static BOOL is_moveable(ExEdit::Object* object, int32_t filter_index)
 		{
-			int32_t id = object->filter_param[filter_index].id;
+			auto id = object->filter_param[filter_index].id;
 			switch (id)
 			{
 			case 0x00: // 動画ファイル
