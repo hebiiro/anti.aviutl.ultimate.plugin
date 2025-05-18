@@ -126,25 +126,31 @@ namespace apn::item_wave
 				// アイテムのインデックスを取得します。
 				auto object_index = magi.exin.get_object_index(object);
 
+				// 音声パラメータを取得します。
+				auto audio_params = get_audio_params(object_index);
+
 				// 既存のアイテムキャッシュを取得できた場合は
 				if (auto cache = get(object_index))
 				{
-					// アイテムキャッシュが無効ではない場合は何もしません。
-					if (!is_item_cache_invalid(cache, object_index)) continue;
+					// 音声パラメータが有効の場合は
+					if (audio_params)
+					{
+						// アイテムキャッシュが無効ではない場合は何もしません。
+						if (!is_item_cache_invalid(cache, audio_params)) continue;
+					}
 				}
 
-				// 音声パラメータを取得できた場合は
-				if (auto audio_params = get_audio_params(object_index))
-				{
-					// このアイテムのキャッシュが要求されていない場合は何もしません。
-					if (!is_item_cache_required(object, audio_params)) continue;
+				// 音声パラメータが無効の場合は何もしません。
+				if (!audio_params) continue;
 
-					// アイテムキャッシュを更新します。
-					if (auto cache = update_item_cache(object_index, audio_params))
-					{
-						// アイテムが配置されているレイヤーを再描画します。
-						magi.exin.redraw_layer(object->layer_set);
-					}
+				// このアイテムのキャッシュが要求されていない場合は何もしません。
+				if (!is_item_cache_required(object, audio_params)) continue;
+
+				// アイテムキャッシュを更新します。
+				if (auto cache = update_item_cache(object_index, audio_params))
+				{
+					// アイテムが配置されているレイヤーを再描画します。
+					magi.exin.redraw_layer(object->layer_set);
 				}
 			}
 
@@ -358,9 +364,7 @@ namespace apn::item_wave
 					return FALSE;
 			}
 
-			auto path = std::filesystem::path(audio_params->file_name);
-			if (path.is_relative()) path = std::filesystem::current_path() / path;
-			path = path.lexically_normal();
+			auto path = audio_params->file_name;
 
 			if (!hive.include_folder.empty())
 			{
@@ -382,7 +386,9 @@ namespace apn::item_wave
 		//
 		// キャッシュが無効の場合はTRUEを返します。
 		//
-		inline static BOOL is_item_cache_invalid(const std::shared_ptr<ItemCache>& cache, int32_t object_index)
+		inline static BOOL is_item_cache_invalid(
+			const std::shared_ptr<ItemCache>& cache,
+			const std::shared_ptr<AudioParams>& audio_params)
 		{
 			//
 			// 指定されたパスが同一の場合はTRUEを返します。
@@ -400,17 +406,13 @@ namespace apn::item_wave
 				return FALSE;
 			};
 
-			// 音声パラメータを取得できた場合は
-			if (auto audio_params = get_audio_params(object_index))
-			{
-				// 音声パラメータが異なる場合はTRUEを返します。
-				if (!eq(cache->audio_params->file_name, audio_params->file_name)) return TRUE;
-				if (cache->audio_params->volume != audio_params->volume) return TRUE;
-				if (cache->audio_params->play_begin != audio_params->play_begin) return TRUE;
-				if (cache->audio_params->play_speed != audio_params->play_speed) return TRUE;
-				if (cache->audio_params->frame_end != audio_params->frame_end) return TRUE;
-				if (cache->audio_params->layer_flag != audio_params->layer_flag) return TRUE;
-			}
+			// 音声パラメータが異なる場合はTRUEを返します。
+			if (!eq(cache->audio_params->file_name, audio_params->file_name)) return TRUE;
+			if (cache->audio_params->volume != audio_params->volume) return TRUE;
+			if (cache->audio_params->play_begin != audio_params->play_begin) return TRUE;
+			if (cache->audio_params->play_speed != audio_params->play_speed) return TRUE;
+			if (cache->audio_params->frame_end != audio_params->frame_end) return TRUE;
+			if (cache->audio_params->layer_flag != audio_params->layer_flag) return TRUE;
 
 			return FALSE;
 		}
