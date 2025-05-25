@@ -201,17 +201,17 @@ namespace apn::output_check
 			// メッセージテキストです。
 			std::wstring text;
 
-			// すべてのオブジェクトの数を取得します。
-			auto c = magi.exin.get_object_count();
+			// すべてのオブジェクト(のインデックス)を取得します。
+			auto object_indexes = magi.exin.get_object_indexes();
 
 			// すべてのオブジェクトを走査します。
-			for (decltype(c) i = 0; i < c; i++)
+			for (auto object_index : object_indexes)
 			{
 				// オブジェクトを取得します。
-				auto object = magi.exin.get_object(i);
+				auto object = magi.exin.get_object(object_index);
 
 				// テキストオブジェクトの拡張データを取得します。
-				if (auto exdata = get_text_exdata(object, i))
+				if (auto exdata = get_text_exdata(object, object_index))
 				{
 					// テキストが空の場合は
 					if (!exdata->text[0])
