@@ -298,18 +298,18 @@ namespace apn::item_wave
 		//
 		inline static ExEdit::Object* get_movie_file_item(ExEdit::Object* object)
 		{
+			// 同じ開始位置で最も近いレイヤーにある動画アイテムを探します。
 			auto result = (ExEdit::Object*)nullptr;
 			auto distance = 100;
 
-			// 同じ開始位置で最も近いレイヤーにある動画アイテムを探します。
-			auto c = magi.exin.get_object_count();
-			for (decltype(c) i = 0; i < c; i++)
+			// すべてのオブジェクト(のインデックス)を取得します。
+			auto object_indexes = magi.exin.get_object_indexes();
+
+			// すべてのオブジェクトを走査します。
+			for (auto object_index : object_indexes)
 			{
 				// アイテムを取得します。
-				auto object2 = magi.exin.get_object(i);
-
-				// アイテムが無効の場合は無視します。
-				if (!(object2->flag & ExEdit::Object::Flag::Exist)) continue;
+				auto object2 = magi.exin.get_object(object_index);
 
 				// シーンが異なるアイテムは無視します。
 				if (object2->scene_set != object->scene_set) continue;
@@ -323,7 +323,7 @@ namespace apn::item_wave
 				// レイヤー位置が遠い場合は無視します。
 				auto distance2 = object->layer_set - object2->layer_set;
 				if (distance2 > distance) continue;
-
+#if 0
 				// 音声ファイルアイテムの場合は
 				if (object2->filter_param[c_audio_file_filter_index].id == c_audio_file_filter_id)
 				{
@@ -332,6 +332,7 @@ namespace apn::item_wave
 					distance = distance2;
 				}
 				else
+#endif
 				{
 					// 動画ファイル以外のアイテムは無視します。
 					if (object2->filter_param[c_movie_file_filter_index].id != c_movie_file_filter_id) continue;
