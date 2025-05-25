@@ -407,5 +407,34 @@ namespace my
 
 			return ExEdit::Object::MAX_FILTER;
 		}
+
+		//
+		// 全アイテム(のインデックス)の配列を返します。
+		//
+		auto get_object_indexes()
+		{
+			// 全アイテムの総数を取得します。
+			auto c = get_object_count();
+
+			// 配列を確保します。
+			std::vector<decltype(c)> result(c);
+
+			// 全アイテムを走査します。
+			for (decltype(c) i = 0, index = 0; i < c; i++, index++)
+			{
+				// アイテムを取得します。
+				auto object = get_object(index);
+
+				// 無効なアイテムは無視します。
+				while (!(object->flag & ExEdit::Object::Flag::Exist))
+					object = get_object(++index);
+
+				// インデックスを配列に格納します。
+				result[i] = index;
+			}
+
+			// 配列を返します。
+			return std::move(result);
+		}
 	};
 }
