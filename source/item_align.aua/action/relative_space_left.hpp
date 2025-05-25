@@ -42,13 +42,16 @@ namespace apn::item_align
 					// 選択ノードの場合は
 					if (is_selected(node))
 					{
+						// アイテムを取得します。
+						auto object = magi.exin.get_object(node->object_index);
+
 						// カレントの中間点リーダーが存在する場合は
 						if (current_midpt_leader)
 						{
 							// 中間点リーダーが存在しない、または
 							// 中間点リーダーがカレントと異なる場合は
-							if (node->object->index_midpt_leader < 0 ||
-								node->object->index_midpt_leader != current_midpt_leader.value())
+							if (object->index_midpt_leader < 0 ||
+								object->index_midpt_leader != current_midpt_leader.value())
 							{
 								// 移動幅を増やします。
 								amplitude++;
@@ -56,7 +59,7 @@ namespace apn::item_align
 						}
 
 						// カレントの中間点リーダーを更新します。
-						current_midpt_leader = node->object->index_midpt_leader;
+						current_midpt_leader = object->index_midpt_leader;
 
 						MY_TRACE_INT(amplitude);
 

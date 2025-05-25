@@ -71,13 +71,16 @@ namespace apn::item_align
 						// 選択ノードの場合は
 						if (is_selected(node))
 						{
+							// アイテムを取得します。
+							auto object = magi.exin.get_object(node->object_index);
+
 							// カレントの中間点リーダーが存在する場合は
 							if (current_midpt_leader.has_value())
 							{
 								// 中間点リーダーが存在しない、または
 								// 中間点リーダーがカレントと異なる場合は
-								if (node->object->index_midpt_leader < 0 ||
-									node->object->index_midpt_leader != current_midpt_leader.value())
+								if (object->index_midpt_leader < 0 ||
+									object->index_midpt_leader != current_midpt_leader.value())
 								{
 									// 列のセカンダリインデックスを増やします。
 									secondary_col_index++;
@@ -88,7 +91,7 @@ namespace apn::item_align
 							MY_TRACE_INT(row_index);
 
 							// カレントの中間点リーダーを更新します。
-							current_midpt_leader = node->object->index_midpt_leader;
+							current_midpt_leader = object->index_midpt_leader;
 
 							// 行を作成します。
 							if (cols.size() < (size_t)secondary_col_index + 1)

@@ -45,17 +45,14 @@ namespace apn::item_align
 			int32_t object_index;
 
 			//
-			// オブジェクトです。
-			//
-			ExEdit::Object* object;
-
-			//
 			// コンストラクタです。
 			//
-			Node(const Action& action, int32_t object_index, ExEdit::Object* object)
+			Node(const Action& action, int32_t object_index)
 				: object_index(object_index)
-				, object(object)
 			{
+				// オブジェクトを取得します。
+				auto object = magi.exin.get_object(object_index);
+
 				before.layer_set = object->layer_set;
 				before.time_start = action.frame_to_time(object->frame_begin);
 				before.time_end = action.frame_to_time(object->frame_end);
@@ -115,11 +112,13 @@ namespace apn::item_align
 
 		//
 		// ノードのコレクションです。
+		// キーはオブジェクトのインデックスです。
 		//
-		std::unordered_map<ExEdit::Object*, std::shared_ptr<Node>> nodes;
+		std::unordered_map<int32_t, std::shared_ptr<Node>> nodes;
 
 		//
 		// レイヤーのコレクションです。
+		// キーはレイヤーのインデックスです。
 		//
 		std::unordered_map<int32_t, std::shared_ptr<Layer>> layers;
 
@@ -157,9 +156,9 @@ namespace apn::item_align
 		// オブジェクトからノードを取得して返します。
 		// 内部的に使用されます。
 		//
-		std::shared_ptr<Node> get_node(ExEdit::Object* object)
+		std::shared_ptr<Node> get_node(int32_t object_index)
 		{
-			auto it = nodes.find(object);
+			auto it = nodes.find(object_index);
 			if (it == nodes.end()) return nullptr;
 			return it->second;
 		}
@@ -184,19 +183,23 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("{/}", object_index);
 
+			// オブジェクトのインテックスが無効の場合は何もしません。
 			if (object_index < 0) return;
+
+			// オブジェクトを取得します。
 			auto object = magi.exin.get_object(object_index);
-			if (!object) return;
+
+			// オブジェクトが無効の場合は何もしません。
 			if (!(object->flag & ExEdit::Object::Flag::Exist)) return;
 
+			// 中間点を取得します。
 			auto midpt_leader = object->index_midpt_leader;
-			MY_TRACE_INT(midpt_leader);
 
 			// 中間点が存在しない場合は
 			if (midpt_leader < 0)
 			{
 				// 引数で与えられたオブジェクトだけを選択します。
-				if (auto node = get_node(object)) select_node(node);
+				if (auto node = get_node(object_index)) select_node(node);
 			}
 			// 中間点が存在する場合は
 			else
@@ -209,15 +212,13 @@ namespace apn::item_align
 				{
 					// オブジェクトを取得します。
 					auto object = magi.exin.get_object(object_index);
-					MY_TRACE_HEX(object);
-					if (!object) break;
 
 					// オブジェクトの中間点先頭オブジェクトをチェックします。
 					MY_TRACE_INT(object->index_midpt_leader);
 					if (object->index_midpt_leader != midpt_leader) break;
 
 					// この中間点オブジェクトを選択します。
-					if (auto node = get_node(object)) select_node(node);
+					if (auto node = get_node(object_index)) select_node(node);
 
 					// 次の中間点に移動します。
 					object_index = magi.exin.get_next_object_index(object_index);
@@ -233,28 +234,21 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			// カレントシーンを取得します。
-			auto current_scene_set = magi.exin.get_current_scene_index();
-
-			// オブジェクトの数を取得します。
-			auto c = magi.exin.get_object_count();
-			MY_TRACE_INT(c);
-
 			// オブジェクトを走査します。
+			auto c = magi.exin.get_sorted_object_count();
 			for (decltype(c) i = 0; i < c; i++)
 			{
 				// オブジェクトを取得します。
-				auto object = magi.exin.get_object(i);
-				MY_TRACE_HEX(object);
-				if (!object) continue;
-				if (!(object->flag & ExEdit::Object::Flag::Exist)) continue;
-				if (object->scene_set != current_scene_set) continue;
+				auto object = magi.exin.get_sorted_object(i);
+
+				// オブジェクトのインデックスを取得します。
+				auto object_index = magi.exin.get_object_index(object);
 
 				// ノードのインスタンスを作成します。
-				auto node = std::make_shared<Node>(*this, i, object);
+				auto node = std::make_shared<Node>(*this, object_index);
 
 				// ノードをコレクションに追加します。
-				nodes[object] = node;
+				nodes[object_index] = node;
 
 				// レイヤーを取得します。
 				auto& layer = layers[object->layer_set];
@@ -350,7 +344,7 @@ namespace apn::item_align
 			for (const auto& mover : selection)
 			{
 				// オブジェクトを取得します。
-				auto object = mover->object;
+				auto object = magi.exin.get_object(mover->object_index);
 
 				// オブジェクトの値を書き換えます。
 				object->layer_disp = mover->after.layer_set;
@@ -408,13 +402,17 @@ namespace apn::item_align
 					// ノードが選択ノードの移動を妨げているかどうか確認します。
 
 					// ノードと選択ノードが同じオブジェクトを保有している場合は何もしません。
-					if (node->object == mover->object) continue;
+					if (node->object_index == mover->object_index) continue;
+
+					// オブジェクトを取得します。
+					auto node_object = magi.exin.get_object(node->object_index);
+					auto mover_object = magi.exin.get_object(mover->object_index);
 
 					// ノードと選択ノードが異なるシーンに存在している場合は何もしません。
-					if (node->object->scene_set != mover->object->scene_set) continue;
+					if (node_object->scene_set != mover_object->scene_set) continue;
 
 					// ノードと選択ノードが異なるレイヤーに存在している場合は何もしません。
-					if (node->object->layer_set != mover->after.layer_set) continue;
+					if (node_object->layer_set != mover->after.layer_set) continue;
 
 					// ノードと選択ノードが重なっている場合は
 					if (node->after.time_start <= mover->after.time_end &&

@@ -32,7 +32,8 @@ namespace apn::item_align
 			// 選択ノードを走査します。
 			for (auto& mover : selection)
 			{
-				auto object = mover->object;
+				// アイテムを取得します。
+				auto object = magi.exin.get_object(mover->object_index);
 
 				auto frame_begin = object->frame_begin;
 				auto frame_end = object->frame_end;

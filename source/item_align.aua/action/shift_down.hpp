@@ -26,7 +26,7 @@ namespace apn::item_align
 			for (auto& node : selection)
 			{
 				// 増幅量です。
-				auto amplitude = node->object->layer_set - base_layer;
+				auto amplitude = node->before.layer_set - base_layer;
 				if (amplitude <= 0) continue;
 				MY_TRACE_INT(amplitude);
 
