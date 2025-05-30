@@ -79,7 +79,7 @@ namespace apn::one_for_text
 
 				// ヘッダーテキストを構築します。
 				auto header_text = my::format(
-					LR"(/[/{{ "sorted_index":{/}, "index":{/}, "scene_set":{/}, "layer_set":{/}, "frame_begin":{/}, "frame_end":{/} }}/]/)",
+					LR"(/[/{ "sorted_index":{/}, "index":{/}, "scene_set":{/}, "layer_set":{/}, "frame_begin":{/}, "frame_end":{/} }/]/)",
 					sorted_index,
 					magi.exin.get_object_index(object),
 					object->scene_set,

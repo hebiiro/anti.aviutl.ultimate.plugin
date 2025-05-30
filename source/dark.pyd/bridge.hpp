@@ -94,7 +94,7 @@ namespace apn::dark
 
 	inline auto TextOutArgs_str(const share::TextOutArgs& args)
 	{
-		return my::format(L"rc = {{{/}}}, options = {/hex}, text = {/}", safe_string(args.rc), args.options, safe_string(args.text, args.c, args.options));
+		return my::format(L"rc = {{/}}, options = {/hex}, text = {/}", safe_string(args.rc), args.options, safe_string(args.text, args.c, args.options));
 	}
 
 	//
