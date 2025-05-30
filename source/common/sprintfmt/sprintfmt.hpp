@@ -356,7 +356,7 @@ namespace sprintfmt
 				if (char_length < 1) break;
 
 				// 文字列内の現在位置がパターンと一致した場合は
-				if (memcmp(p, pattern.c_str(), pattern.length()) == 0)
+				if (strncmp(p, pattern.c_str(), pattern.length()) == 0)
 					return p; // 一致した位置を返します。
 
 				// 文字の長さの分だけ現在位置を進めます。
@@ -416,7 +416,7 @@ namespace sprintfmt
 			for (auto p = str_begin; p <= str_end - pattern.length(); p++)
 			{
 				// 文字列内の現在位置がパターンと一致した場合は
-				if (memcmp(p, pattern.c_str(), pattern.length()) == 0)
+				if (wcsncmp(p, pattern.c_str(), pattern.length()) == 0)
 					return p; // 一致した位置を返します。
 			}
 
