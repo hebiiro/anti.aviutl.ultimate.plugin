@@ -64,12 +64,13 @@ namespace my
 				int32_t* next_object_table = nullptr;
 				int32_t* object_slection_table = nullptr;
 				int32_t* object_selection_count = nullptr;
+				ExEdit::LayerSetting* all_layer_setting_table = nullptr;
+				ExEdit::LayerSetting** current_layer_setting_table = nullptr;
 				ExEdit::SceneSetting* scene_setting_table = nullptr;
 				AviUtl::EditHandle** editp = nullptr;
 				int32_t* layer_width = nullptr;
 				int32_t* layer_height = nullptr;
 				int32_t* layer_visible_count = nullptr;
-				ExEdit::LayerSetting** layer_setting_table = nullptr;
 				int32_t* aviutl_frame_number = nullptr;
 				int32_t* exedit_frame_number = nullptr;
 				int32_t* exedit_current_frame = nullptr;
@@ -151,12 +152,13 @@ namespace my
 			assign_addr(address.variable.next_object_table, exedit + 0x001592d8);
 			assign_addr(address.variable.object_slection_table, exedit + 0x00179230);
 			assign_addr(address.variable.object_selection_count, exedit + 0x00167D88);
+			assign_addr(address.variable.all_layer_setting_table, exedit + 0x00188498);
+			assign_addr(address.variable.current_layer_setting_table, exedit + 0x000A4058);
 			assign_addr(address.variable.scene_setting_table, exedit + 0x00177A50);
 			assign_addr(address.variable.editp, exedit + 0x001A532C);
 			assign_addr(address.variable.layer_width, exedit + 0x001A52FC);
 			assign_addr(address.variable.layer_height, exedit + 0x000A3E20);
 			assign_addr(address.variable.layer_visible_count, exedit + 0x000A3FBC);
-			assign_addr(address.variable.layer_setting_table, exedit + 0x000A4058);
 			assign_addr(address.variable.aviutl_frame_number, exedit + 0x0014D3A0);
 			assign_addr(address.variable.exedit_frame_number, exedit + 0x001A5318);
 			assign_addr(address.variable.exedit_current_frame, exedit + 0x001A5304);
@@ -237,12 +239,13 @@ namespace my
 		int32_t get_next_object_index(int32_t object_index) { return address.variable.next_object_table[object_index]; }
 		int32_t get_object_selection(int32_t i) { return address.variable.object_slection_table[i]; }
 		int32_t get_object_selection_count() { return *address.variable.object_selection_count; }
+		ExEdit::LayerSetting* get_layer_setting(int32_t scene_index, int32_t layer_index) { return address.variable.all_layer_setting_table + scene_index * 100 + layer_index; }
+		ExEdit::LayerSetting* get_layer_setting(int32_t layer_index) { return (*address.variable.current_layer_setting_table) + layer_index; }
 		ExEdit::SceneSetting* get_scene_setting(int32_t scene_index) { return address.variable.scene_setting_table + scene_index; }
 		AviUtl::EditHandle* get_editp() { return *address.variable.editp; }
 		int32_t get_layer_width() { return *address.variable.layer_width; }
 		int32_t get_layer_height() { return *address.variable.layer_height; }
 		int32_t get_layer_visible_count() { return *address.variable.layer_visible_count; }
-		ExEdit::LayerSetting* get_layer_setting(int32_t layer_index) { return (*address.variable.layer_setting_table) + layer_index; }
 		int32_t get_aviUtl_frame_number() { return *address.variable.aviutl_frame_number; }
 		int32_t get_exedit_frame_number() { return *address.variable.exedit_frame_number; }
 		int32_t get_exedit_current_frame() { return *address.variable.exedit_current_frame; }
