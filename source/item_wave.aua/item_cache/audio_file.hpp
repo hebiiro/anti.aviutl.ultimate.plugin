@@ -22,7 +22,7 @@ namespace apn::item_wave::item_cache
 			float play_begin = 0.0f;
 			float play_speed = 1.0f;
 
-			std::shared_ptr<FileCache> file_cache;
+			std::shared_ptr<file_cache::Node> file_cache;
 
 			//
 			// 指定されたアイテムのプロパティが等しい場合はTRUEを返します。
@@ -115,7 +115,7 @@ namespace apn::item_wave::item_cache
 			prop.volume = object->track_value_left[volume_index] / 1000.0f;
 
 			// ファイルキャッシュを取得します。
-			prop.file_cache = file_cache_manager.get(prop.file_name);
+			prop.file_cache = file_cache::manager.get(prop.file_name);
 
 			return prop;
 		}
@@ -228,7 +228,7 @@ namespace apn::item_wave::item_cache
 			if (!file_cache)
 			{
 				// ファイルキャッシュの作成を予約します。
-				file_cache_manager.reserve(prop.file_name);
+				file_cache::manager.reserve(prop.file_name);
 
 				// アイテムキャッシュを用意できなかったので
 				// アイテムのプロパティをリセットしてFALSEを返します。

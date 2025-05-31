@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-namespace apn::item_wave
+namespace apn::item_wave::file_cache
 {
 	//
 	// このクラスはファイル毎のキャッシュを管理します。
 	//
-	inline struct FileCacheManager : my::Window
+	inline struct Manager : my::Window
 	{
 		inline static constexpr struct Message {
 			inline static constexpr uint32_t c_receive = WM_APP + 2025;
@@ -23,7 +23,7 @@ namespace apn::item_wave
 		//
 		// ファイルキャッシュのコレクションです。
 		//
-		std::unordered_map<std::filesystem::path, std::shared_ptr<FileCache>> caches;
+		std::unordered_map<std::filesystem::path, std::shared_ptr<Node>> caches;
 
 		//
 		// 稼働中のスレッドのコレクションです。
@@ -38,7 +38,7 @@ namespace apn::item_wave
 		//
 		// レスポンスのコレクションです。
 		//
-		std::unordered_map<std::filesystem::path, std::shared_ptr<FileCache>> responses;
+		std::unordered_map<std::filesystem::path, std::shared_ptr<Node>> responses;
 
 		//
 		// コレクション(マップ)のキーを返します。
@@ -59,7 +59,7 @@ namespace apn::item_wave
 			this->listener = listener;
 
 			// ウィンドウラクス名です。
-			const auto class_name = _T("apn::item_wave::file_cache_manager");
+			const auto class_name = _T("apn::item_wave::file_cache::manager");
 
 			// ウィンドウクラスを登録します。
 			WNDCLASS wc = {};
@@ -94,7 +94,7 @@ namespace apn::item_wave
 		//
 		// ファイルキャッシュを返します。
 		//
-		std::shared_ptr<FileCache> get(const std::filesystem::path& file_name)
+		std::shared_ptr<Node> get(const std::filesystem::path& file_name)
 		{
 			MY_TRACE_FUNC("{/}", file_name);
 
@@ -145,13 +145,13 @@ namespace apn::item_wave
 				auto thread = std::thread([this](std::filesystem::path file_name)
 				{
 					// ファイルキャッシュを作成します。
-					if (auto file_cache = create(file_name))
+					if (auto cache = create(file_name))
 					{
 						// レスポンスをロックします。
 						std::lock_guard lock(response_mutex);
 
 						// レスポンスを追加します。
-						responses[file_name] = file_cache;
+						responses[file_name] = cache;
 					}
 
 					// メインスレッドに通知します。
@@ -173,7 +173,7 @@ namespace apn::item_wave
 		//
 		// ファイルキャッシュを作成します。
 		//
-		std::shared_ptr<FileCache> create(const std::filesystem::path& file_name)
+		std::shared_ptr<Node> create(const std::filesystem::path& file_name)
 		{
 			MY_TRACE_FUNC("{/}", file_name);
 
@@ -208,7 +208,7 @@ namespace apn::item_wave
 			::ConnectNamedPipe(pipe.get(), nullptr);
 
 			// ファイルキャッシュを作成します。
-			auto cache = std::make_shared<FileCache>();
+			auto cache = std::make_shared<Node>();
 
 			// パイプから計算結果を読み込みます。
 			{
@@ -327,5 +327,5 @@ namespace apn::item_wave
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
-	} file_cache_manager;
+	} manager;
 }

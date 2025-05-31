@@ -5,7 +5,7 @@ namespace apn::item_wave::item_cache
 	//
 	// このクラスはアイテム毎のキャッシュを管理します。
 	//
-	inline struct Manager : Core, FileCacheManager::Listener
+	inline struct Manager : Core, file_cache::Manager::Listener
 	{
 		//
 		// アイテムキャッシュのコレクションです。
@@ -25,7 +25,7 @@ namespace apn::item_wave::item_cache
 		{
 			MY_TRACE_FUNC("");
 
-			return file_cache_manager.init(this);
+			return file_cache::manager.init(this);
 		}
 
 		//
@@ -35,7 +35,7 @@ namespace apn::item_wave::item_cache
 		{
 			MY_TRACE_FUNC("");
 
-			return file_cache_manager.exit();
+			return file_cache::manager.exit();
 		}
 
 		//
@@ -79,10 +79,10 @@ namespace apn::item_wave::item_cache
 		//
 		BOOL refresh(Context& ctx)
 		{
-			auto current_scene_index = magi.exin.get_current_scene_index();
+			MY_TRACE_FUNC("");
 
 			// カレントシーンのアイテムキャッシュを更新します。
-			return refresh_scene(ctx, current_scene_index);
+			return refresh_scene(ctx, magi.exin.get_current_scene_index());
 		}
 
 		//
@@ -155,6 +155,8 @@ namespace apn::item_wave::item_cache
 		//
 		virtual BOOL refresh_scene(Context& ctx, int32_t target_scene_index) override
 		{
+//			MY_TRACE_FUNC("{/}", target_scene_index);
+
 			// この関数の処理結果です。
 			// 全ての音量を用意できた場合はTRUE、それ以外の場合はFALSEになります。
 			auto result = TRUE;
@@ -201,6 +203,8 @@ namespace apn::item_wave::item_cache
 		//
 		virtual BOOL refresh() override
 		{
+			MY_TRACE_FUNC("");
+
 			// コンテキストを作成します。
 			auto ctx = Context { magi.exin.get_object_indexes() };
 
@@ -217,8 +221,9 @@ namespace apn::item_wave::item_cache
 			magi.exin.redraw_layers(ctx.redraw_layers);
 
 			// ファイルキャッシュの作成を促します。
-			file_cache_manager.yield();
+			file_cache::manager.yield();
 
+			// 更新結果を返します。
 			return result;
 		}
 
@@ -229,8 +234,10 @@ namespace apn::item_wave::item_cache
 		{
 			MY_TRACE_FUNC("");
 
+			// アイテムキャッシュが空の場合はFALSEを返します。
 			if (caches.empty()) return FALSE;
 
+			// アイテムキャッシュを消去してTRUEを返します。
 			return caches.clear(), TRUE;
 		}
 
@@ -241,8 +248,10 @@ namespace apn::item_wave::item_cache
 		{
 			MY_TRACE_FUNC("");
 
-			file_cache_manager.clear();
+			// ファイルキャッシュを消去します。
+			file_cache::manager.clear();
 
+			// アイテムキャッシュをリセットします。
 			return reset();
 		}
 

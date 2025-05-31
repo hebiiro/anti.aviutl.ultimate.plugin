@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-namespace apn::item_wave
+namespace apn::item_wave::file_cache
 {
 	//
 	// このクラスはファイル毎のキャッシュです。
 	//
-	struct FileCache {
+	struct Node {
 		std::vector<share::Volume> volumes;
 	};
 }
