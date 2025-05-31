@@ -86,7 +86,7 @@ namespace apn::item_wave
 			if (!object) return;
 
 			// 描画中のアイテムに関連付けられているキャッシュを取得します。
-			auto cache = item_cache_manager.get(current_object_index);
+			auto cache = item_cache::manager.get(current_object_index);
 			if (!cache) return;
 
 			// 描画スケールを取得します。

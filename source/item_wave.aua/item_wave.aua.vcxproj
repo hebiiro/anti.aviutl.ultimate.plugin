@@ -164,11 +164,15 @@
     <ClInclude Include="file_cache_manager.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="hook.hpp" />
-    <ClInclude Include="item_cache.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
-    <ClInclude Include="item_cache_manager.hpp" />
+    <ClInclude Include="item_cache\audio_file.hpp" />
+    <ClInclude Include="item_cache\context.hpp" />
+    <ClInclude Include="item_cache\core.hpp" />
+    <ClInclude Include="item_cache\manager.hpp" />
+    <ClInclude Include="item_cache\node.hpp" />
+    <ClInclude Include="item_cache\scene_audio.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="addin.hpp" />

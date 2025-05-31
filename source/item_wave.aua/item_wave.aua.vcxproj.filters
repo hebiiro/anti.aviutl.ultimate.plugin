@@ -11,6 +11,9 @@
     <Filter Include="element">
       <UniqueIdentifier>{c5684b43-9a1c-4a5b-b130-dbeaf8a3e0f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="element\item_cache">
+      <UniqueIdentifier>{36e357ca-fab7-4ac4-a9cf-78633a7283d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -30,17 +33,29 @@
     <ClInclude Include="file_cache.hpp">
       <Filter>element</Filter>
     </ClInclude>
-    <ClInclude Include="item_cache.hpp">
-      <Filter>element</Filter>
-    </ClInclude>
     <ClInclude Include="sub_process.hpp">
       <Filter>element</Filter>
     </ClInclude>
     <ClInclude Include="file_cache_manager.hpp">
       <Filter>element</Filter>
     </ClInclude>
-    <ClInclude Include="item_cache_manager.hpp">
-      <Filter>element</Filter>
+    <ClInclude Include="item_cache\audio_file.hpp">
+      <Filter>element\item_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="item_cache\core.hpp">
+      <Filter>element\item_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="item_cache\manager.hpp">
+      <Filter>element\item_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="item_cache\node.hpp">
+      <Filter>element\item_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="item_cache\scene_audio.hpp">
+      <Filter>element\item_cache</Filter>
+    </ClInclude>
+    <ClInclude Include="item_cache\context.hpp">
+      <Filter>element\item_cache</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

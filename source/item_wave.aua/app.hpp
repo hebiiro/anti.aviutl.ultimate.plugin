@@ -5,7 +5,7 @@ namespace apn::item_wave
 	//
 	// このクラスはアプリケーションです。
 	//
-	inline struct App : AppInterface, FileCacheManager::Listener
+	inline struct App : AppInterface
 	{
 		//
 		// コンストラクタです。
@@ -21,8 +21,7 @@ namespace apn::item_wave
 
 			if (!config_io.init()) return FALSE;
 			if (!addin_window.init()) return FALSE;
-			if (!file_cache_manager.init(this)) return FALSE;
-			if (!item_cache_manager.init()) return FALSE;
+			if (!item_cache::manager.init()) return FALSE;
 			if (!hook_manager.init()) return FALSE;
 
 			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
@@ -40,8 +39,7 @@ namespace apn::item_wave
 			config_io.write();
 
 			hook_manager.exit();
-			item_cache_manager.exit();
-			file_cache_manager.exit();
+			item_cache::manager.exit();
 			addin_window.exit();
 			config_io.exit();
 
@@ -56,8 +54,7 @@ namespace apn::item_wave
 			MY_TRACE_FUNC("");
 
 			// すべてのキャッシュを消去します。
-			file_cache_manager.clear();
-			item_cache_manager.clear();
+			item_cache::manager.clear();
 
 			magi.exin.invalidate();
 
@@ -77,8 +74,20 @@ namespace apn::item_wave
 			// 音声を保存するときは何もしません。
 			if (fp->exfunc->is_saving(fpip->editp)) return FALSE;
 
-			// 現在のファイル情報を取得しておきます。
-			fp->exfunc->get_file_info(fpip->editp, &hive.current_fi);
+			// 現在のファイル情報を取得します。
+			auto fi = AviUtl::FileInfo {};
+			fp->exfunc->get_file_info(fpip->editp, &fi);
+
+			// プロジェクトのFPSが異なる場合は
+			if (fi.video_rate != hive.current_fi.video_rate ||
+				fi.video_scale != hive.current_fi.video_scale)
+			{
+				// アイテムキャッシュをリセットします。
+				item_cache::manager.reset();
+			}
+
+			// ファイル情報を更新します。
+			hive.current_fi = fi;
 
 			switch (hive.update_mode)
 			{
@@ -95,26 +104,10 @@ namespace apn::item_wave
 				}
 			}
 
-			// 不要なアイテムキャッシュを削除します。
-			item_cache_manager.clean();
-
 			// アイテムキャッシュを更新します。
-			item_cache_manager.update();
+			item_cache::manager.refresh();
 
 			return FALSE;
-		}
-
-		//
-		// この仮想関数は、ファイルキャッシュが更新されたときに呼ばれます。
-		//
-		virtual BOOL on_file_cache_changed(const std::filesystem::path& file_name) override
-		{
-			MY_TRACE_FUNC("{/}", file_name);
-
-			// アイテムキャッシュを更新します。
-			item_cache_manager.update();
-
-			return TRUE;
 		}
 	} app_impl;
 }
