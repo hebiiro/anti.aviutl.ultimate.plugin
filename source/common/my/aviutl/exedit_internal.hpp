@@ -205,7 +205,7 @@ namespace my
 		addr_t get_exedit() { return exedit; }
 
 		//
-		// AviUtlウィンドウを返します。
+		// aviutlウィンドウを返します。
 		//
 		HWND get_aviutl_window() { return *address.variable.aviutl_window; }
 
@@ -219,15 +219,49 @@ namespace my
 		//
 		HWND get_setting_dialog() { return *address.variable.setting_dialog; }
 
+		//
+		// カレントシーンのインデックスを返します。
+		//
 		int32_t get_current_scene_index() { return *address.variable.current_scene_index; }
+
+		//
+		// カレントアイテムのインデックスを返します。
+		//
 		int32_t get_current_object_index() { return *address.variable.current_object_index; }
+
+		//
+		// カレントフィルタのインデックスを返します。
+		//
 		int32_t get_current_filter_index() { return *address.variable.current_filter_index; }
+
+		//
+		// 全アイテムの総数を返します。
+		//
 		int32_t get_object_count() { return *address.variable.object_count; }
+
+		//
+		// カレントシーンのアイテムの総数を返します。
+		//
 		int32_t get_sorted_object_count() { return *address.variable.sorted_object_count; }
+
+		//
+		// アイテムを返します。
+		//
 		ExEdit::Object* get_object(int32_t object_index) { return *address.variable.object_table + object_index; }
+
+		//
+		// カレントシーンのアイテムを返します。
+		//
 		ExEdit::Object* get_sorted_object(int32_t object_index) { return address.variable.sorted_object_table[object_index]; }
+
+		//
+		// フィルタを返します。
+		//
 		ExEdit::Filter* get_filter(int32_t filter_id) { return address.variable.filter_table[filter_id]; }
 
+		//
+		// 指定されたアイテムの指定されたインデックスにあるフィルタを返します。
+		//
 		ExEdit::Filter* get_filter(ExEdit::Object* object, int32_t filter_index)
 		{
 			if (!object) return 0;
@@ -236,23 +270,94 @@ namespace my
 			return get_filter(id);
 		}
 
+		//
+		// 次の中間点アイテムのインデックスを返します。
+		//
 		int32_t get_next_object_index(int32_t object_index) { return address.variable.next_object_table[object_index]; }
+
+		//
+		// 選択アイテムのインデックスを返します。
+		//
 		int32_t get_object_selection(int32_t i) { return address.variable.object_slection_table[i]; }
+
+		//
+		// 選択アイテムの数を返します。
+		//
 		int32_t get_object_selection_count() { return *address.variable.object_selection_count; }
+
+		//
+		// 指定されたシーンの指定されたレイヤーの設定を返します。
+		//
 		ExEdit::LayerSetting* get_layer_setting(int32_t scene_index, int32_t layer_index) { return address.variable.all_layer_setting_table + scene_index * 100 + layer_index; }
+
+		//
+		// カレントシーンの指定されたレイヤーの設定を返します。
+		//
 		ExEdit::LayerSetting* get_layer_setting(int32_t layer_index) { return (*address.variable.current_layer_setting_table) + layer_index; }
+
+		//
+		// 指定されたシーンの設定を返します。
+		//
 		ExEdit::SceneSetting* get_scene_setting(int32_t scene_index) { return address.variable.scene_setting_table + scene_index; }
+
+		//
+		// aviutlの編集用ハンドルを返します。
+		//
 		AviUtl::EditHandle* get_editp() { return *address.variable.editp; }
+
+		//
+		// 拡張編集ウィンドウ内でのレイヤーの幅(px)を返します。
+		//
 		int32_t get_layer_width() { return *address.variable.layer_width; }
+
+		//
+		// 拡張編集ウィンドウ内でのレイヤーの高さ(px)を返します。
+		//
 		int32_t get_layer_height() { return *address.variable.layer_height; }
+
+		//
+		// 拡張編集ウィンドウ内でのレイヤーの表示数を返します。
+		//
 		int32_t get_layer_visible_count() { return *address.variable.layer_visible_count; }
-		int32_t get_aviUtl_frame_number() { return *address.variable.aviutl_frame_number; }
+
+		//
+		// aviutlのフレーム総数を返します。
+		//
+		int32_t get_aviutl_frame_number() { return *address.variable.aviutl_frame_number; }
+
+		//
+		// 拡張編集のフレーム総数を返します。
+		//
 		int32_t get_exedit_frame_number() { return *address.variable.exedit_frame_number; }
+
+		//
+		// 拡張編集の現在フレームを返します。
+		//
 		int32_t get_exedit_current_frame() { return *address.variable.exedit_current_frame; }
+
+		//
+		// 拡張編集のフレームを変更します。
+		//
 		void set_exedit_current_frame(int32_t frame) { *address.variable.exedit_current_frame = frame; }
+
+		//
+		// 設定ダイアログのコンテキストメニューを返します。
+		//
 		HMENU get_setting_dialog_menu(int32_t index) { return *address.variable.setting_dialog_menus[index]; }
+
+		//
+		// 設定ダイアログのコンテキストメニューの数を返します。
+		//
 		int32_t get_setting_dialog_menu_count() { return std::size(address.variable.setting_dialog_menus); }
+
+		//
+		// 選択アイテムの視覚情報の数を返します。
+		//
 		int32_t get_selection_visual_count() { return *address.variable.selection_visual_count; }
+
+		//
+		// 選択アイテムの視覚情報を返します。
+		//
 		SelectionVisual* get_selection_visual(int32_t index) { return &address.variable.selection_visual[index - 1]; }
 
 		//
@@ -286,24 +391,99 @@ namespace my
 		//
 		void create_undo(int32_t object_index, uint32_t flags) { address.function.create_undo(object_index, flags); }
 
+		//
+		// 設定ダイアログのコントロールを非表示にすると思われます。
+		//
 		void hide_controls() { address.function.hide_controls(); }
+
+		//
+		// 設定ダイアログのコントロールを表示にすると思われます。
+		//
 		BOOL show_controls(int32_t object_index) { return address.function.show_controls(object_index); }
+
+		//
+		// 指定されたアイテムの指定されたフィルタを削除します。
+		//
 		void erase_filter(int32_t object_index, int32_t filter_index) { address.function.erase_filter(object_index, filter_index); }
+
+		//
+		// 指定されたアイテムの指定されたフィルタを入れ替えます。
+		//
 		void swap_filter(int32_t object_index, int32_t filter_index, int32_t relative_index) { address.function.swap_filter(object_index, filter_index, relative_index); }
+
+		//
+		// 不明な関数です。
+		//
 		void unknown1(int32_t object_index, int32_t filter_index) { address.function.unknown1(object_index, filter_index); }
+
+		//
+		// 指定されたエイリアスのファイル名を返します。
+		//
 		LPCSTR get_alias_file_name(int32_t alias_id) { return address.function.get_alias_file_name(alias_id); }
+
+		//
+		// 指定されたアイテムに指定されたエイリアスを追加します。
+		//
 		int32_t add_alias(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index) { return address.function.add_alias(file_name, flag1, flag2, object_index); }
+
+		//
+		// 指定されたアイテムの指定されたフレームにある中間点を削除します。
+		//
 		int32_t erase_midpt(int32_t object_index, int32_t frame) { return address.function.erase_midpt(object_index, frame); }
+
+		//
+		// ソート済みアイテムを再構築します。
+		//
 		int32_t update_object_table() { return address.function.update_object_table(); }
+
+		//
+		// 指定されたアイテムの指定されたフィルタをエイリアスとして指定されたファイルに書き込みます。
+		//
 		BOOL save_filter_alias(int32_t object_index, int32_t filter_index, LPCSTR file_name) { return address.function.save_filter_alias(object_index, filter_index, file_name); }
+
+		//
+		// 指定された場所に指定されたexoファイルを読み込みます。
+		//
 		BOOL load_exo(LPCSTR file_name, int32_t frame, int32_t layer, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) { return address.function.load_exo(file_name, frame, layer, fp, editp); }
+
+		//
+		// カレントシーンを指定されたexoファイルに書き込みます。
+		//
 		BOOL save_exo(LPCSTR file_name) { return address.function.save_exo(file_name); }
+
+		//
+		// カレントアイテムを変更します。
+		//
 		void set_current_object(int32_t object_index) { address.function.set_current_object(object_index); }
+
+		//
+		// カレントシーンを変更します。
+		//
 		void set_scene(int32_t scene_index, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) { address.function.set_scene(scene_index, fp, editp); }
+
+		//
+		// アイテムを描画します。
+		//
 		void draw_item(HDC dc, int32_t object_index) { address.function.draw_item(dc, object_index); }
+
+		//
+		// 設定ダイアログを再描画します。
+		//
 		void redraw_setting_dialog(int32_t object_index) { address.function.redraw_setting_dialog(object_index); }
+
+		//
+		// 指定されたレイヤーを再描画します。
+		//
 		void redraw_layer(int32_t layer_index) { address.function.redraw_layer(layer_index); }
+
+		//
+		// 指定された複数のレイヤーを再描画します。
+		//
 		void redraw_layers(int32_t flags[]) { address.function.redraw_layers(flags); }
+
+		//
+		// 拡張編集ウィンドウを再描画します。
+		//
 		void redraw_timeline() { address.function.redraw_timeline(); }
 
 		//
