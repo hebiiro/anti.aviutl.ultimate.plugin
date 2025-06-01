@@ -18,7 +18,7 @@ namespace apn::item_wave::file_cache
 		//
 		// 予約されているリクエストのコレクションです。
 		//
-		std::queue<std::filesystem::path> requests;
+		std::deque<std::filesystem::path> requests;
 
 		//
 		// ファイルキャッシュのコレクションです。
@@ -113,11 +113,14 @@ namespace apn::item_wave::file_cache
 			// 存在しないファイルの場合はFALSEを返します。
 			if (!std::filesystem::exists(file_name)) return FALSE;
 
-			// キャッシュが作成済みまたは作成中の場合はFALSEを返します。
+			// ファイルキャッシュが作成済みまたは作成中の場合はFALSEを返します。
 			if (caches.contains(file_name)) return FALSE;
 
+			// ファイルキャッシュがリクエスト済みの場合はFALSEを返します。
+			if (std::find(requests.begin(), requests.end(), file_name) != requests.end()) return FALSE;
+
 			// リクエストをコレクションに追加します。
-			requests.push(file_name);
+			requests.emplace_back(file_name);
 
 			return TRUE;
 		}
@@ -136,7 +139,7 @@ namespace apn::item_wave::file_cache
 				auto file_name = requests.front();
 
 				// 先頭のリクエストをコレクションから削除します。
-				requests.pop();
+				requests.pop_front();
 
 				// キャッシュを作成中としてマークします。
 				caches[file_name] = nullptr;
