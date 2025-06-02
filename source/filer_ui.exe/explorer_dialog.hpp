@@ -315,10 +315,16 @@ namespace apn::filer_ui
 
 		virtual BOOL PreTranslateMessage(MSG* msg) override
 		{
-			if (shell_view && shell_view->TranslateAccelerator(msg) == S_OK)
-				return TRUE;
+			MY_TRACE_FUNC("/hex}, {/hex}, {/hex}", msg->message, msg->wParam, msg->lParam);
 
-			return CDialogEx::PreTranslateMessage(msg);
+			if (shell_view && shell_view->TranslateAccelerator(msg) == S_OK)
+			{
+				MY_TRACE("このメッセージはシェルビューが処理しました\n");
+
+				return TRUE;
+			}
+
+			return __super::PreTranslateMessage(msg);
 		}
 	};
 }

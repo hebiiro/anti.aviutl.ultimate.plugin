@@ -203,7 +203,7 @@ namespace apn::filer_ui
 		{
 			MY_TRACE_FUNC("");
 
-			CDialogEx::DoDataExchange(pDX);
+			__super::DoDataExchange(pDX);
 			DDX_Control(pDX, IDC_FOLDER, folder_control);
 			DDX_Control(pDX, IDC_SEARCH, search_control);
 			DDX_Control(pDX, IDC_HAS_NAV_PANE, nav_pane_control);
@@ -238,14 +238,14 @@ namespace apn::filer_ui
 				}
 			}
 
-			return CDialogEx::PreTranslateMessage(msg);
+			return __super::PreTranslateMessage(msg);
 		}
 
 		virtual void PostNcDestroy() override
 		{
 			MY_TRACE_FUNC("");
 
-			CDialogEx::PostNcDestroy();
+			__super::PostNcDestroy();
 
 			// thisをコレクションから取り除きます。この処理は実質的にdelete thisと同じです。
 			std::erase_if(collection, [this](const auto& x){ return x.get() == this; });
@@ -255,7 +255,7 @@ namespace apn::filer_ui
 		{
 			MY_TRACE_FUNC("");
 
-			CDialogEx::OnInitDialog();
+			__super::OnInitDialog();
 
 			tooltip.Create(this, TTS_ALWAYSTIP | TTS_NOPREFIX);
 			tooltip.SetMaxTipWidth(INT_MAX);
@@ -322,7 +322,7 @@ namespace apn::filer_ui
 		{
 			MY_TRACE_FUNC("");
 
-			if (CDialogEx::OnCreate(cs) == -1)
+			if (__super::OnCreate(cs) == -1)
 				return -1;
 
 			return 0;
@@ -335,12 +335,12 @@ namespace apn::filer_ui
 			// エクスプローラを削除します。
 			exit_explorer();
 
-			CDialogEx::OnDestroy();
+			__super::OnDestroy();
 		}
 
 		void OnSize(UINT nType, int cx, int cy)
 		{
-			CDialogEx::OnSize(nType, cx, cy);
+			__super::OnSize(nType, cx, cy);
 
 			// エクスプローラをリサイズします。
 			resize_explorer();
@@ -488,7 +488,7 @@ namespace apn::filer_ui
 		DECLARE_MESSAGE_MAP()
 	};
 
-	BEGIN_MESSAGE_MAP(FilerDialog, CDialogEx)
+	BEGIN_MESSAGE_MAP(FilerDialog, ExplorerDialog)
 		ON_WM_CREATE()
 		ON_WM_DESTROY()
 		ON_WM_SIZE()
