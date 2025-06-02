@@ -389,7 +389,7 @@ namespace apn::workspace
 			case WM_COPY:
 			case WM_CUT:
 			case WM_PASTE:
-			case WM_APPCOMMAND:
+//			case WM_APPCOMMAND:
 				{
 					// メッセージをそのままターゲットウィンドウに転送します。
 					return ::SendMessage(content->get_hwnd(), message, wParam, lParam);
