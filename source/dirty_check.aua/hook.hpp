@@ -18,9 +18,9 @@ namespace apn::dirty_check
 		//
 		inline static const std::wstring mark = L"* ";
 
-		const int* g_undo_id_ptr = nullptr;
-		int  g_undo_id_prev = 0;
-		BOOL g_dirty_flag = FALSE;
+		const int* g_undo_id_ptr = {};
+		int g_undo_id_prev = {};
+		BOOL g_dirty_flag = {};
 
 		//
 		// 初期化処理を実行します。
@@ -37,25 +37,21 @@ namespace apn::dirty_check
 		}
 
 		//
-		// 指定されたwpがトリガーならTRUEを返します。
-		//
-		BOOL is_trigger_wp(WPARAM wp)
-		{
-			return wp == 5157	// 閉じる
-				|| wp == 5097	// 開く
-				|| wp == 5118	// 編集プロジェクトを開く
-				|| (5596 <= wp && wp <= 5603)	// 最近使ったファイル1-8
-				;
-		}
-
-		//
 		// 指定されたウィンドウメッセージがトリガーならTRUEを返します。
 		//
 		BOOL is_trigger_message(UINT msg, WPARAM wp)
 		{
 			if (!get()) return FALSE;
 			if (msg == WM_CLOSE) return TRUE;
-			if (msg == WM_COMMAND && is_trigger_wp(wp)) return TRUE;
+			if (msg == WM_COMMAND)
+			{
+				return wp == 5157 // 閉じる
+					|| wp == 5097 // 開く
+					|| wp == 5118 // 編集プロジェクトを開く
+					|| (5596 <= wp && wp <= 5603) // 最近使ったファイル1-8
+					;
+			}
+
 			return FALSE;
 		}
 
@@ -72,9 +68,15 @@ namespace apn::dirty_check
 		//
 		void set()
 		{
-			// 現在のアンドゥIDと前回のアンドゥIDが異なる場合は
-			if (!g_dirty_flag && *g_undo_id_ptr != g_undo_id_prev)
-				g_dirty_flag = TRUE; // ダーティーフラグをセットします。
+			// 前回のアンドゥIDと現在のアンドゥIDが異なる場合は
+			if (g_undo_id_prev != *g_undo_id_ptr)
+			{
+				// アンドゥIDを更新します。
+				g_undo_id_prev = *g_undo_id_ptr;
+
+				// ダーティーフラグを立てます。
+				g_dirty_flag = TRUE;
+			}
 		}
 
 		//
@@ -82,13 +84,13 @@ namespace apn::dirty_check
 		//
 		void reset()
 		{
-			g_undo_id_prev = *g_undo_id_ptr;
+			// ダーティーフラグを消去します。
 			g_dirty_flag = FALSE;
 		}
 	} dirty_flag;
 
 	//
-	// このクラスはAviUtlウィンドウをフックします。
+	// このクラスはaviutlウィンドウをフックします。
 	//
 	inline struct AviUtlWindow : my::Window
 	{
@@ -97,12 +99,12 @@ namespace apn::dirty_check
 		//
 		BOOL init(AviUtl::FilterPlugin* fp)
 		{
-			// AviUtlウィンドウをサブクラス化します。
+			// aviutlウィンドウをサブクラス化します。
 			return subclass(fp->hwnd_parent);
 		}
 
 		//
-		// AviUtlウィンドウのウィンドウプロシージャをフックします。
+		// aviutlウィンドウのウィンドウプロシージャをフックします。
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
@@ -151,6 +153,8 @@ namespace apn::dirty_check
 
 	BOOL func_wndproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
 	{
+		MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", message, wParam, lParam);
+
 		switch (message)
 		{
 		case AviUtl::FilterPlugin::WindowMessage::Update:
@@ -174,15 +178,28 @@ namespace apn::dirty_check
 		return FALSE;
 	}
 
-	BOOL func_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void*, int*)
+	BOOL func_project_save(AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp, void* buffer, int* buffer_size)
 	{
-		// プロジェクトが保存されたのでダーティーフラグをリセットします。
-		dirty_flag.reset();
+		// bufferがnullptrのときとそれ以外のときで2回呼ばれるので
+		// bufferがnullptrのときにだけ処理します。
+		if (!buffer)
+		{
+			// 以下のeditpのデータが
+			// autosaverが保存したときは0、通常保存の場合は0以外になるようなので
+			// 0以外のときにだけ処理します。
+			if (editp->field_34c[5] ||
+				editp->field_34c[6] ||
+				editp->field_34c[7])
+			{
+				// プロジェクトが保存されたのでダーティーフラグをリセットします。
+				dirty_flag.reset();
 
-		// フラグをクリアしてもタイトルは変わらないので手動で元に戻します。
-		auto title = my::get_window_text(fp->hwnd_parent);
-		if (title.starts_with(dirty_flag.mark))
-			::SetWindowTextW(fp->hwnd_parent, title.c_str() + dirty_flag.mark.length());
+				// フラグをクリアしてもタイトルは変わらないので手動で元に戻します。
+				auto title = my::get_window_text(fp->hwnd_parent);
+				if (title.starts_with(dirty_flag.mark))
+					::SetWindowTextW(fp->hwnd_parent, title.c_str() + dirty_flag.mark.length());
+			}
+		}
 
 		return FALSE;
 	}
