@@ -577,7 +577,7 @@ namespace apn::workspace
 			case WM_COPY:
 			case WM_CUT:
 			case WM_PASTE:
-			case WM_APPCOMMAND:
+//			case WM_APPCOMMAND:
 				{
 					MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", message, wParam, lParam);
 
