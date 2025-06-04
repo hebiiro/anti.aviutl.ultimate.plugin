@@ -84,9 +84,6 @@ namespace apn::text_split
 			}
 		};
 
-		AviUtl::EditHandle* editp = nullptr;
-		AviUtl::FilterPlugin* fp = nullptr;
-
 		std::string temp_file_name;
 		std::string each_temp_file_name;
 
@@ -217,7 +214,8 @@ namespace apn::text_split
 			MY_TRACE_FUNC("");
 
 			// テンポラリフォルダのパスを取得します。
-			auto temp_dir = my::hs(my::get_temp_path());
+//			auto temp_dir = my::hs(my::get_temp_path());
+			auto temp_dir = my::hs(magi.get_config_file_name(hive.c_name));
 			MY_TRACE_STR(temp_dir);
 
 			// カレントプロセスのIDを取得します。ファイル名の重複を防ぐのに使用します。
@@ -771,8 +769,8 @@ namespace apn::text_split
 		{
 			MY_TRACE_FUNC("");
 
-			fp = magi.fp;
-			editp = magi.exin.get_editp();
+			auto fp = magi.auin.get_filter_plugin(magi.fp, "拡張編集");
+			auto editp = magi.exin.get_editp();
 			if (!fp || !editp) return FALSE;
 
 			// アイテム情報を初期化します。
@@ -855,21 +853,29 @@ namespace apn::text_split
 				current_line_index++;
 			}
 
+			// 元のアイテムを削除するように設定されている場合は
 			if (hive.erase_orig_item)
 			{
 				// 元のアイテムを削除します。
 				::SendMessage(magi.exin.get_exedit_window(), WM_COMMAND, 0x3E9, 0);
 			}
 
-			magi.exin.load_exo(each_temp_file_name.c_str(), 0, 0, fp, editp);
+			// exoファイルをフラッシュします。
+			auto r4 = ::GetPrivateProfileIntA("exedit", "width", 123, each_temp_file_name.c_str());
+			MY_TRACE_INT(r4);
 
+			// exoファイルを読み込みます。
+			if (!magi.exin.load_exo(each_temp_file_name.c_str(), 0, 0, fp, editp))
+				hive.message_box(L"exoファイルの読み込みに失敗しました");
+
+			// 不要になったテンポラリファイルを削除します。
 			::DeleteFileA(temp_file_name.c_str());
 			::DeleteFileA(each_temp_file_name.c_str());
 
 			// 拡張編集を再描画します。
 			magi.exin.invalidate();
 
-			// AviUtlを再描画します。
+			// aviutlを再描画します。
 			magi.redraw();
 
 			return TRUE;

@@ -41,6 +41,9 @@ namespace apn::text_split
 		{
 			MY_TRACE_FUNC("");
 
+			// 予め使用予定のコンフィグフォルダを作成しておきます。
+			magi.create_config_folders(hive.c_name, {});
+
 			if (!addin_window.init()) return FALSE;
 			if (!config_io.init()) return FALSE;
 
