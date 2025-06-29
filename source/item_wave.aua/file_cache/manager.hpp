@@ -229,11 +229,14 @@ namespace apn::item_wave::file_cache
 				while (index < length)
 				{
 					// 一度に読み込むバイト数です。
-					constexpr auto read_bytes = DWORD { 4096 };
+					constexpr auto c_read_bytes = DWORD { 4096 };
+
+					// 読み込み用の変数です。
+					auto read = DWORD {};
+					auto nb_buffer = std::min<DWORD>(c_read_bytes, length - index);
 
 					// 音量をパイプから読み込みます。
-					auto read = DWORD {};
-					if (!::ReadFile(pipe.get(), &cache->volumes[index], read_bytes, &read, nullptr))
+					if (!::ReadFile(pipe.get(), &cache->volumes[index], nb_buffer, &read, nullptr))
 						break; // 読み込みに失敗した場合はループを終了します。
 
 					// インデックスを進めます。
