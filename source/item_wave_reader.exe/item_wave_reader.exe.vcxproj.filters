@@ -8,13 +8,21 @@
     <Filter Include="framework">
       <UniqueIdentifier>{f95ce0ad-ebd4-47eb-b223-5de909ac6087}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ffmpeg">
+      <UniqueIdentifier>{40e6e380-eac8-4a4e-80ae-aa816b306ba5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>framework</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
-    <ClInclude Include="ffmpeg.hpp" />
+    <ClInclude Include="ffmpeg\common.hpp">
+      <Filter>ffmpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg\session.hpp">
+      <Filter>ffmpeg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -1,38 +1,67 @@
 ﻿#include "pch.h"
-#include "ffmpeg.hpp"
+#include "ffmpeg/common.hpp"
+#include "ffmpeg/session.hpp"
 #include "app.hpp"
 
 namespace apn::item_wave::reader
 {
-	int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
+	//
+	// このクラスはエントリポイントです。
+	//
+	struct WinMain
 	{
-		_tsetlocale(LC_CTYPE, _T(""));
-
-		struct Initializer {
-			Initializer() { my::tracer_to_file::init(nullptr); }
-			~Initializer() { my::tracer_to_file::exit(); }
-		} initializer;
-
-		MY_TRACE_FUNC("{/}", cmd_line);
-
-		try
+		//
+		// コンストラクタです。
+		//
+		WinMain()
 		{
-			app.main();
+			_tsetlocale(LC_CTYPE, _T(""));
 
-			MY_TRACE("プロセスが正常終了しました\n");
+			auto suffix = L"_" + std::to_wstring(::GetCurrentProcessId());
 
-			return 0;
+			my::tracer_to_file::init(nullptr, suffix.c_str());
+
+			MY_TRACE_FUNC("");
 		}
-		catch (...)
+
+		//
+		// デストラクタです。
+		//
+		~WinMain()
 		{
-			MY_TRACE("プロセスが異常終了しました\n");
+			MY_TRACE_FUNC("");
 
-			return 20250512;
+			my::tracer_to_file::exit();
 		}
-	}
+
+		//
+		// メイン処理です。
+		//
+		int main(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
+		{
+			MY_TRACE_FUNC("{/}", cmd_line);
+
+			try
+			{
+				app.main();
+
+				MY_TRACE("プロセスが正常終了しました\n");
+
+				return 0;
+			}
+			catch (...)
+			{
+				MY_TRACE("プロセスが異常終了しました\n");
+
+				return 20250512;
+			}
+		}
+	};
 }
 
 int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
 {
-	return apn::item_wave::reader::WinMain(instance, prev_instance, cmd_line, cmd_show);
+	apn::item_wave::reader::WinMain win_main;
+
+	return win_main.main(instance, prev_instance, cmd_line, cmd_show);
 }

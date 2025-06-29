@@ -22,10 +22,8 @@ namespace apn::item_wave::reader
 			if (c < 4) return FALSE;
 
 			// 音量算出関数です。
-			auto compute_func = compute_peak;
-			auto compute_func_string = (std::wstring)args[1];
-			MY_TRACE_STR(compute_func_string);
-			if (compute_func_string == L"rms") compute_func = compute_rms;
+			auto compute_mode = (std::wstring)args[1];
+			MY_TRACE_STR(compute_mode);
 
 			// 音声ファイルのファイル名を取得します。
 			auto file_name = (std::wstring)args[2];
@@ -45,13 +43,24 @@ namespace apn::item_wave::reader
 
 			// フレーム毎の音量を算出します。
 			{
-				auto start_time = ::timeGetTime();
+				std::vector<uint8_t> volumes;
 
-				auto volumes = extract_rms(my::wide_to_cp(file_name, CP_UTF8), compute_func);
+				// ffmpegを使用して音量を算出します。
+				{
+					auto start_time = ::timeGetTime();
+					{
+						ffmpeg::Session session;
 
-				auto end_time = ::timeGetTime();
+						session.init(my::wide_to_cp(file_name, CP_UTF8));
 
-				MY_TRACE("所要時間 = {/}秒\n", (end_time - start_time) / 1000.0);
+						volumes = session.extract_volumes(my::wide_to_cp(compute_mode, CP_UTF8));
+
+						session.reset();
+					}
+					auto end_time = ::timeGetTime();
+
+					MY_TRACE("所要時間 = {/}秒\n", (end_time - start_time) / 1000.0);
+				}
 
 				// 結果をパイプに書き込みます。
 				{
