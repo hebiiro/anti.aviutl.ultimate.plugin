@@ -110,5 +110,6 @@
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
       <Filter>framework</Filter>
     </Natvis>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>
