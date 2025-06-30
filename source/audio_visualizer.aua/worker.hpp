@@ -550,6 +550,9 @@ namespace apn::audio_visualizer
 				auto mul = 20.0;
 				auto scale_factor = 1.0 / samples.size();
 
+				// 分割数を乗算して振幅が分割減少されるのを相殺します。
+				scale_factor *= spectre_option.div;
+
 				// RMSスケーリングが有効の場合は
 				if (spectre_option.rms_scaling)
 				{
