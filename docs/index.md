@@ -24,6 +24,10 @@ lang: ja_JP
 1. [`python実行環境`をダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
 1. `python実行環境`のzip内の`plugins`フォルダも`aviutlフォルダ`内にコピーします。
 
+## 🔥アンインストール方法
+
+* `plugins`フォルダ内の`ultimate`(フォルダ)、`ultimate.auf`、`ultimate.aul`を削除(またはaviutlとは無関係のフォルダに移動)してください。
+
 ## ⚠問題が発生した場合の対処方法
 
 * **※aviutlが起動しない、アドインが正常に動作しないなどの問題が発生する場合は、**<br>
