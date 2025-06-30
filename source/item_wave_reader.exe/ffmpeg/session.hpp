@@ -7,11 +7,6 @@ namespace ffmpeg
 	//
 	struct Session
 	{
-		inline static constexpr auto TARGET_SAMPLE_RATE = 48000;
-		inline static constexpr auto TARGET_CHANNELS = 1;
-		inline static constexpr auto TARGET_SAMPLE_FMT = AV_SAMPLE_FMT_FLT;
-		inline static constexpr auto SAMPLES_PER_FRAME = TARGET_SAMPLE_RATE / 60;
-
 		avformat_context format_context = {};
 		avcodec_context codec_context = {};
 		avpacket packet = {};
@@ -19,6 +14,7 @@ namespace ffmpeg
 		int stream_index = -1;
 		AVStream* stream = {};
 
+		size_t sample_rate = {};
 		swr_context swr = {};
 
 		//
@@ -64,24 +60,30 @@ namespace ffmpeg
 			if (avcodec_open2(codec_context, codec, nullptr) < 0)
 				return MY_TRACE("avcodec_open2()が失敗しました\n"), false;
 
+			// サンプルレートを取得します。
+			sample_rate = codec_context->sample_rate;
+			MY_TRACE_INT(sample_rate);
+
 			// 音声フォーマット変換用コンテキストを初期化します。
-			swr.reset(swr_alloc());
+			{
+				swr.reset(swr_alloc());
 
-			auto in_ch_layout = codec_context->ch_layout;
-			auto out_ch_layout = decltype(in_ch_layout) {};
-			av_channel_layout_default(&out_ch_layout, TARGET_CHANNELS);
+				auto in_ch_layout = codec_context->ch_layout;
+				auto out_ch_layout = decltype(in_ch_layout) {};
+				av_channel_layout_default(&out_ch_layout, 1);
 
-			av_opt_set_chlayout(swr, "in_chlayout", &in_ch_layout, 0);
-			av_opt_set_int(swr, "in_sample_rate", codec_context->sample_rate, 0);
-			av_opt_set_sample_fmt(swr, "in_sample_fmt", codec_context->sample_fmt, 0);
+				av_opt_set_chlayout(swr, "in_chlayout", &in_ch_layout, 0);
+				av_opt_set_int(swr, "in_sample_rate", codec_context->sample_rate, 0);
+				av_opt_set_sample_fmt(swr, "in_sample_fmt", codec_context->sample_fmt, 0);
 
-			av_opt_set_chlayout(swr, "out_chlayout", &out_ch_layout, 0);
-			av_opt_set_int(swr, "out_sample_rate", TARGET_SAMPLE_RATE, 0);
-			av_opt_set_sample_fmt(swr, "out_sample_fmt", TARGET_SAMPLE_FMT, 0);
+				av_opt_set_chlayout(swr, "out_chlayout", &out_ch_layout, 0); // モノラルに変換します。
+				av_opt_set_int(swr, "out_sample_rate", codec_context->sample_rate, 0); // サンプルレートは変換しません。
+				av_opt_set_sample_fmt(swr, "out_sample_fmt", AV_SAMPLE_FMT_FLT, 0); // floatに変換します。
 
-			swr_init(swr);
+				swr_init(swr);
 
-			av_channel_layout_uninit(&out_ch_layout);
+				av_channel_layout_uninit(&out_ch_layout);
+			}
 
 			// パケットを作成します。
 			packet.reset(av_packet_alloc());
@@ -142,6 +144,32 @@ namespace ffmpeg
 		}
 
 		//
+		// 指定されたフレームのサンプル番号を返します。
+		//
+		inline size_t get_sample_num(size_t frame_num)
+		{
+			return frame_num * sample_rate / 60;
+		};
+
+		//
+		// 指定されたフレームのサンプル数を返します。
+		//
+		inline size_t get_nb_samples_per_frame(size_t current_frame_num)
+		{
+			// 次のフレーム番号を取得します。
+			auto next_frame_num = current_frame_num + 1;
+
+			// 現在のサンプル番号を取得します。
+			auto current_sample_num = get_sample_num(current_frame_num);
+
+			// 次のサンプル番号を取得します。
+			auto next_sample_num = get_sample_num(next_frame_num);
+
+			// フレーム番号の差分を返します。
+			return next_sample_num - current_sample_num;
+		};
+
+		//
 		// 指定された音声ファイルからフレーム(60FPS)毎の音量を算出して返します。
 		//
 		std::vector<uint8_t> extract_volumes(const std::string& compute_mode)
@@ -151,8 +179,10 @@ namespace ffmpeg
 			auto compute_func = compute_peak;
 			if (compute_mode == "rms") compute_func = compute_rms;
 
-			std::vector<uint8_t> volumes;
-			std::vector<float> samples;
+			auto volumes = std::vector<uint8_t> {};
+			auto samples = std::vector<float> {};
+			auto nb_samples_per_frame = get_nb_samples_per_frame(0);
+			MY_TRACE_INT(nb_samples_per_frame);
 
 			while (av_read_frame(format_context, packet) >= 0)
 			{
@@ -187,13 +217,17 @@ namespace ffmpeg
 					if (nb_converted_samples <= 0) break;
 
 					// 音量を算出可能な数のサンプルが蓄積されている場合は
-					while (samples.size() >= SAMPLES_PER_FRAME)
+					while (samples.size() >= nb_samples_per_frame)
 					{
 						// サンプルから音量を算出します。
-						volumes.emplace_back(compute_func(samples.data(), SAMPLES_PER_FRAME));
+						volumes.emplace_back(compute_func(samples.data(), nb_samples_per_frame));
 
 						// 計算が終わったサンプルを取り除きます。
-						samples.erase(samples.begin(), samples.begin() + SAMPLES_PER_FRAME);
+						samples.erase(samples.begin(), samples.begin() + nb_samples_per_frame);
+
+						// フレームあたりのサンプル数を更新します。
+						nb_samples_per_frame = get_nb_samples_per_frame(volumes.size());
+//						MY_TRACE_INT(nb_samples_per_frame);
 					}
 				}
 			}
@@ -201,6 +235,8 @@ namespace ffmpeg
 			// 残りのサンプルから音量を算出します。
 			if (samples.size())
 				volumes.emplace_back(compute_func(samples.data(), samples.size()));
+
+			MY_TRACE_INT(volumes.size());
 
 			// 算出した音量を返します。
 			return volumes;
