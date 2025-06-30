@@ -13,7 +13,6 @@ namespace apn
 		struct ProcState {
 			BOOL is_editing;
 			BOOL is_saving;
-			BOOL is_playing;
 		};
 
 		//

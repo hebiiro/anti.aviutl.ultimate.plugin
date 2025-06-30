@@ -193,7 +193,6 @@ namespace apn
 			Addin::ProcState proc_state = {};
 			proc_state.is_editing = fp->exfunc->is_editing(fpip->editp);
 			proc_state.is_saving = fp->exfunc->is_saving(fpip->editp);
-			proc_state.is_playing = !!((DWORD)fpip->editp->aviutl_window_info.flag & 0x00040000);
 
 			BOOL result = FALSE;
 			for (const auto& pair : addins.map)
@@ -210,7 +209,6 @@ namespace apn
 			Addin::ProcState proc_state = {};
 			proc_state.is_editing = fp->exfunc->is_editing(fpip->editp);
 			proc_state.is_saving = fp->exfunc->is_saving(fpip->editp);
-			proc_state.is_playing = !!((DWORD)fpip->editp->aviutl_window_info.flag & 0x00040000);
 
 			BOOL result = FALSE;
 			for (const auto& pair : addins.map)

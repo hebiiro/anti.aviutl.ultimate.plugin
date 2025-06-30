@@ -123,7 +123,7 @@ namespace apn::audio_visualizer
 			else
 			{
 				// 再生中ではない場合は
-				if (!proc_state.is_playing)
+				if (!magi.auin.is_playing())
 				{
 					// 他のプラグインから呼ばれている可能性があるので何もしません。
 					return FALSE;

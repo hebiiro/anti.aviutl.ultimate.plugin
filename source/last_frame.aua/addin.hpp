@@ -80,7 +80,7 @@ namespace apn::last_frame
 		virtual BOOL on_video_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state) override
 		{
 			// 現在の呼び出し状態をチェックします。
-			if (proc_state.is_saving || proc_state.is_playing)
+			if (proc_state.is_saving || magi.auin.is_playing())
 				return FALSE; // 保存や再生中のときは何もしません。
 
 			// 最終フレームを調整します。

@@ -98,7 +98,7 @@ namespace apn::item_wave
 			case hive.c_update_mode.c_on_without_playing:
 				{
 					// 再生中の場合は何もしません。
-					if (proc_state.is_playing) return FALSE;
+					if (magi.auin.is_playing()) return FALSE;
 
 					break;
 				}

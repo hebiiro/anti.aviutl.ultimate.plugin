@@ -150,7 +150,7 @@ namespace apn::audio_visualizer
 				}
 			case hive.c_mode.c_on_without_playing:
 				{
-					if (proc_state.is_playing)
+					if (magi.auin.is_playing())
 						return FALSE; // 再生中のときは何もしません。
 
 					break;

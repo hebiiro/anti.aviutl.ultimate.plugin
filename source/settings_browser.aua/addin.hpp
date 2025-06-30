@@ -98,7 +98,7 @@ namespace apn::settings_browser
 		{
 			MY_TRACE_FUNC("");
 
-			if (proc_state.is_playing)
+			if (magi.auin.is_playing())
 				return FALSE; // 再生中の場合は何もしません。
 
 			if (proc_state.is_saving)
