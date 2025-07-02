@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-namespace apn::one_for_text
+namespace apn::text_collect
 {
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
 	inline struct Hive
 	{
-		inline static constexpr auto c_name = L"one_for_text";
+		inline static constexpr auto c_name = L"text_collect";
 		inline static constexpr auto c_display_name = L"テキスト一括編集";
 
 		//

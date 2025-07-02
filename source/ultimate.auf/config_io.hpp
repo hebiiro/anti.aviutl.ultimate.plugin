@@ -59,7 +59,7 @@ namespace apn
 			register_addin(L"M", L"font_select", L"フォント選択", FALSE, L"", {});
 			register_addin(L"M", L"note", L"メモ帳", TRUE, L"", {});
 			register_addin(L"M", L"clipboard_viewer", L"クリップボード画像表示", FALSE, L"", {});
-			register_addin(L"M", L"one_for_text", L"テキスト一括編集", FALSE, L"", {});
+			register_addin(L"M", L"text_collect", L"テキスト一括編集", FALSE, L"", {});
 
 			register_addin(L"S", L"namecage", L"アイテム名常時表示", TRUE, L"", { L"NoScrollText.auf", L"ShowWaveform.auf" });
 			register_addin(L"S", L"last_frame", L"最終フレーム自動調整", TRUE, L"", { L"AdjustLastFrame.auf" });

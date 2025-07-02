@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::one_for_text
+namespace apn::text_collect
 {
 	//
 	// ファイル選択ダイアログを表示して読み込み用のパスを取得します。

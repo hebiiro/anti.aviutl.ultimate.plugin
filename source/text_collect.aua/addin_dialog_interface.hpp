@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::one_for_text
+namespace apn::text_collect
 {
 	//
 	// このクラスはアドインダイアログのインターフェイスです。

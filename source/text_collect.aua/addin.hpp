@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-namespace apn::one_for_text
+namespace apn::text_collect
 {
 	//
 	// このクラスはテキストオブジェクトを一括して編集できるようにします。
 	//
-	inline struct OneForText : Addin
+	inline struct TextCollect : Addin
 	{
 		//
 		// この仮想関数は、このアドインの識別名が必要なときに呼ばれます。

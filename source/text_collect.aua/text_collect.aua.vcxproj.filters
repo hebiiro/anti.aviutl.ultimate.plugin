@@ -33,7 +33,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="one_for_text.aua.rc">
+    <ResourceCompile Include="text_collect.aua.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
   </ItemGroup>

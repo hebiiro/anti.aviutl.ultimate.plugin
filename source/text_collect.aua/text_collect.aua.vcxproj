@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{551bbcd2-92a3-4d55-accc-6e8b9d5a5cd8}</ProjectGuid>
-    <RootNamespace>one_for_text_aua</RootNamespace>
+    <RootNamespace>text_collect_aua</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -174,7 +174,7 @@
     <None Include="main.def" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="one_for_text.aua.rc" />
+    <ResourceCompile Include="text_collect.aua.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

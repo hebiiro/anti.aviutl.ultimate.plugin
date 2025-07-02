@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ で生成されたインクルード ファイル。
-// one_for_text.aua.rc で使用
+// text_collect.aua.rc で使用
 //
 #define IDD_MAIN_DIALOG                 101
 #define IDC_WRITE_FILE                  1000

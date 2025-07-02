@@ -259,7 +259,7 @@ const c_default_json = {
 		{ "active": "true", "display_name": "フィルタドラッグ", "name": "filter_drag", "args": "" },
 		{ "active": "false", "display_name": "終了確認", "name": "dirty_check", "args": "" },
 		{ "active": "false", "display_name": "出力確認", "name": "output_check", "args": "" },
-		{ "active": "false", "display_name": "テキスト一括編集", "name": "one_for_text", "args": "" },
+		{ "active": "false", "display_name": "テキスト一括編集", "name": "text_collect", "args": "" },
 		{ "active": "false", "display_name": "テキストドロップ", "name": "text_drop", "args": "" },
 		{ "active": "false", "display_name": "テキスト分解", "name": "text_split", "args": "" },
 		{ "active": "false", "display_name": "アイテム整列", "name": "item_align", "args": "" },

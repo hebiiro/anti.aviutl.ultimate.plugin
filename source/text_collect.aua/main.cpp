@@ -10,7 +10,7 @@
 #include "app.hpp"
 #include "addin.hpp"
 
-namespace apn::one_for_text
+namespace apn::text_collect
 {
 	//
 	// エクスポート関数です。

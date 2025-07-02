@@ -170,7 +170,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reboot.aua", "reboot.aua\re
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reboot.exe", "reboot.exe\reboot.exe.vcxproj", "{F3010617-7A4C-4424-AA4F-00F55E1ABB96}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "one_for_text.aua", "one_for_text.aua\one_for_text.aua.vcxproj", "{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "text_collect.aua", "text_collect.aua\text_collect.aua.vcxproj", "{551BBCD2-92A3-4D55-ACCC-6E8B9D5A5CD8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "text_drop.aua", "text_drop.aua\text_drop.aua.vcxproj", "{FA049444-38D3-4DE1-954E-301FFB536828}"
 EndProject
