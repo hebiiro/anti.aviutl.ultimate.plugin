@@ -96,7 +96,7 @@ namespace my
 				void (CDECL* swap_filter)(int32_t object_index, int32_t filter_index, int32_t relative_index) = nullptr;
 				void (CDECL* unknown1)(int32_t object_index, int32_t filter_index) = nullptr;
 				LPCSTR (CDECL* get_alias_file_name)(int32_t alias_id) = nullptr;
-				int32_t (CDECL* add_alias)(LPCSTR file_name, BOOL flag1, BOOL flag2, int32_t object_index) = nullptr;
+				int32_t (CDECL* add_alias)(LPCSTR file_name, int32_t frame, int32_t layer, int32_t object_index) = nullptr;
 				BOOL (CDECL* save_filter_alias)(int32_t object_index, int32_t filter_index, LPCSTR file_name) = nullptr;
 				BOOL (CDECL* load_exo)(LPCSTR file_name, int32_t frame, int32_t layer, AviUtl::FilterPlugin* fp, AviUtl::EditHandle* editp) = nullptr;
 				BOOL (CDECL* save_exo)(LPCSTR file_name) = nullptr;
