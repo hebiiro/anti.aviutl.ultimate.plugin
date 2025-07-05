@@ -49,7 +49,7 @@ namespace apn::selector::custom_object
 			read_embedded_scripts();
 
 			auto exedit = magi.exin.get_exedit();
-			auto table = (LPCSTR)(exedit + 0xCE090);
+			auto table = magi.exin.get_custom_object_table();
 			auto strings = split_by_zero(table);
 			auto index = 0;
 			for (const auto& s : strings)

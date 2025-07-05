@@ -79,6 +79,9 @@ namespace my
 				SelectionVisual* selection_visual = nullptr;
 				HWND* font_combobox = nullptr;
 				int32_t* bpm = nullptr;
+				LPCSTR animation_effect_table = {};
+				LPCSTR custom_object_table = {};
+				LPCSTR camera_effect_table = {};
 			} variable;
 
 			//
@@ -171,6 +174,9 @@ namespace my
 			assign_addr(address.variable.selection_visual, exedit + 0x00146270 + 0x04);
 			assign_addr(address.variable.font_combobox, exedit + 0x0023630C);
 			assign_addr(address.variable.bpm, exedit + 0x00159190);
+			assign_addr(address.variable.animation_effect_table, exedit + 0xC1F08);
+			assign_addr(address.variable.custom_object_table, exedit + 0xCE090);
+//			assign_addr(address.variable.camera_effect_table, exedit + 0x);
 
 			assign_addr(address.function.show_color_dialog, exedit + 0x0004D2A0);
 			assign_addr(address.function.frame_to_x, exedit + 0x00032BD0);
@@ -370,6 +376,21 @@ namespace my
 		// ※ユーザーが指定した数値の10,000倍になっています。
 		//
 		int32_t get_bpm() { return *address.variable.bpm; }
+
+		//
+		// アニメーション効果のテーブルを返します。
+		//
+		LPCSTR get_animation_effect_table() { return address.variable.animation_effect_table; }
+
+		//
+		// カスタムオブジェクトのテーブルを返します。
+		//
+		LPCSTR get_custom_object_table() { return address.variable.custom_object_table; }
+
+		//
+		// カメラ効果のテーブルを返します。
+		//
+		LPCSTR get_camera_effect_table() { return address.variable.camera_effect_table; }
 
 		//
 		// 拡張編集の「色の選択」ダイアログを表示します。
