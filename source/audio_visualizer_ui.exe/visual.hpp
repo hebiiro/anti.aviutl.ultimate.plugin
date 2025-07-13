@@ -520,7 +520,7 @@ namespace apn::audio_visualizer::ui
 			ofn.Flags = OFN_FILEMUSTEXIST;
 			ofn.lpstrTitle = L"スキームを選択";
 			ofn.lpstrFile = file_name.data();
-			ofn.nMaxFile = file_name.size();
+			ofn.nMaxFile = (DWORD)file_name.size();
 			ofn.lpstrFilter = L"jsonファイル (*.json)\0*.json\0" "すべてのファイル (*.*)\0*.*\0";
 			ofn.lpstrDefExt = L"json";
 

@@ -147,8 +147,8 @@ namespace apn
 								{
 									::SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon.get());
 									::SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon.get());
-									::SetClassLong(hwnd, GCL_HICON, (LONG)icon.get());
-									::SetClassLong(hwnd, GCL_HICONSM, (LONG)icon.get());
+									::SetClassLongPtr(hwnd, GCLP_HICON, (LONG_PTR)icon.get());
+									::SetClassLongPtr(hwnd, GCLP_HICONSM, (LONG_PTR)icon.get());
 								}
 							}
 

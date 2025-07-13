@@ -59,7 +59,7 @@ namespace apn::optima
 			{
 			case CB_RESETCONTENT:
 				{
-					MY_TRACE("{/hex}, CB_RESETCONTENT\n", (uint32_t)hwnd);
+					MY_TRACE("{/hex}, CB_RESETCONTENT\n", hwnd);
 
 					dump_filter_controls();
 
@@ -81,7 +81,7 @@ namespace apn::optima
 						// アニメーション効果の場合は
 						if (filter.get())
 						{
-							MY_TRACE("{/hex} => アニメーション効果\n", (uint32_t)hwnd);
+							MY_TRACE("{/hex} => アニメーション効果\n", hwnd);
 
 							// デフォルト処理をスキップして
 							// コンボボックスのコンテンツを維持します。
@@ -90,7 +90,7 @@ namespace apn::optima
 						// アニメーション効果以外の場合は
 						else
 						{
-							MY_TRACE("{/hex} => アニメーション効果以外\n", (uint32_t)hwnd);
+							MY_TRACE("{/hex} => アニメーション効果以外\n", hwnd);
 
 							// コンボボックスのカテゴリをリセットします。
 							set_category_id(hwnd, 0);
@@ -116,7 +116,7 @@ namespace apn::optima
 						// フラグが立っている場合はデフォルト処理をスキップします。
 						if (skip_default) return result;
 
-						MY_TRACE("{/hex}, CB_INSERTSTRING, {/}, {/hex}, {/}\n", (uint32_t)hwnd, result, lparam, (LPCSTR)lparam);
+						MY_TRACE("{/hex}, CB_INSERTSTRING, {/}, {/hex}, {/}\n", hwnd, result, lparam, (LPCSTR)lparam);
 
 						// 先頭アイテムの場合は
 						if (result == 0)
@@ -133,7 +133,7 @@ namespace apn::optima
 								MY_TRACE("コンボボックスインデックス => {/}\n", combobox_index);
 
 								auto category_combobox = get_combobox(combobox_index + 1);
-								MY_TRACE("カテゴリコンボボック => {/hex}\n", (uint32_t)category_combobox);
+								MY_TRACE("カテゴリコンボボック => {/hex}\n", category_combobox);
 
 								auto category_index = my::combobox::get_cur_sel(category_combobox);
 								MY_TRACE("カテゴリインデックス => {/}\n", category_index);
@@ -237,13 +237,13 @@ $+2F1B0   |.  FFD3           |CALL EBX
 				uint8_t nop_3 = 0x90;
 				uint8_t push_ebx = 0x53;
 				uint8_t call = 0xe8;
-				uint32_t hook_proc;
+				my::addr_t hook_proc;
 			} code;
 			static_assert(sizeof(Code) == 9);
 #pragma pack(pop)
 
-			uint32_t address = magi.exin.exedit + 0x0002F1A9;
-			code.hook_proc = (uint32_t)hook_proc - (address + sizeof(code));
+			auto address = magi.exin.exedit + 0x0002F1A9;
+			code.hook_proc = (my::addr_t)hook_proc - (address + sizeof(code));
 			::WriteProcessMemory(::GetCurrentProcess(),
 				(void*)address, &code, sizeof(code), nullptr);
 

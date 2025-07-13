@@ -36,13 +36,13 @@ namespace apn::dark
 
 			for (size_t i = 0; i < std::size(hive.dark_color); i++)
 			{
-				get_int(IDC_DARK_1_FILL_COLOR + i, hive.dark_color[i].fill);
-				get_int(IDC_DARK_1_BORDER_COLOR + i, hive.dark_color[i].border);
-				get_int(IDC_DARK_1_TEXT_COLOR + i, hive.dark_color[i].text);
+				get_int(IDC_DARK_1_FILL_COLOR + (UINT)i, hive.dark_color[i].fill);
+				get_int(IDC_DARK_1_BORDER_COLOR + (UINT)i, hive.dark_color[i].border);
+				get_int(IDC_DARK_1_TEXT_COLOR + (UINT)i, hive.dark_color[i].text);
 
-				get_int(IDC_LIGHT_1_FILL_COLOR + i, hive.light_color[i].fill);
-				get_int(IDC_LIGHT_1_BORDER_COLOR + i, hive.light_color[i].border);
-				get_int(IDC_LIGHT_1_TEXT_COLOR + i, hive.light_color[i].text);
+				get_int(IDC_LIGHT_1_FILL_COLOR + (UINT)i, hive.light_color[i].fill);
+				get_int(IDC_LIGHT_1_BORDER_COLOR + (UINT)i, hive.light_color[i].border);
+				get_int(IDC_LIGHT_1_TEXT_COLOR + (UINT)i, hive.light_color[i].text);
 			}
 		}
 
@@ -75,13 +75,13 @@ namespace apn::dark
 
 			for (size_t i = 0; i < std::size(hive.dark_color); i++)
 			{
-				set_int(IDC_DARK_1_FILL_COLOR + i, hive.dark_color[i].fill);
-				set_int(IDC_DARK_1_BORDER_COLOR + i, hive.dark_color[i].border);
-				set_int(IDC_DARK_1_TEXT_COLOR + i, hive.dark_color[i].text);
+				set_int(IDC_DARK_1_FILL_COLOR + (UINT)i, hive.dark_color[i].fill);
+				set_int(IDC_DARK_1_BORDER_COLOR + (UINT)i, hive.dark_color[i].border);
+				set_int(IDC_DARK_1_TEXT_COLOR + (UINT)i, hive.dark_color[i].text);
 
-				set_int(IDC_LIGHT_1_FILL_COLOR + i, hive.light_color[i].fill);
-				set_int(IDC_LIGHT_1_BORDER_COLOR + i, hive.light_color[i].border);
-				set_int(IDC_LIGHT_1_TEXT_COLOR + i, hive.light_color[i].text);
+				set_int(IDC_LIGHT_1_FILL_COLOR + (UINT)i, hive.light_color[i].fill);
+				set_int(IDC_LIGHT_1_BORDER_COLOR + (UINT)i, hive.light_color[i].border);
+				set_int(IDC_LIGHT_1_TEXT_COLOR + (UINT)i, hive.light_color[i].text);
 			}
 		}
 
@@ -126,13 +126,13 @@ namespace apn::dark
 				// 取得した配色をコントロールに適用します。
 				for (size_t i = 0; i < std::size(color); i++)
 				{
-					set_uint(fill_id + i, color[i].fill);
-					set_uint(border_id + i, color[i].border);
-					set_uint(text_id + i, color[i].text);
+					set_uint(fill_id + (UINT)i, color[i].fill);
+					set_uint(border_id + (UINT)i, color[i].border);
+					set_uint(text_id + (UINT)i, color[i].text);
 
-					my::invalidate(ctrl(fill_id + i));
-					my::invalidate(ctrl(border_id + i));
-					my::invalidate(ctrl(text_id + i));
+					my::invalidate(ctrl(fill_id + (UINT)i));
+					my::invalidate(ctrl(border_id + (UINT)i));
+					my::invalidate(ctrl(text_id + (UINT)i));
 				}
 
 				// コントロールが変更されたことをアプリに通知します。
@@ -492,7 +492,7 @@ namespace apn::dark
 					if (header->code == UDN_DELTAPOS)
 					{
 						auto nm = (NMUPDOWN*)header;
-						auto edit_id = header->idFrom - 1;
+						auto edit_id = (UINT)header->idFrom - 1;
 
 						switch (edit_id)
 						{

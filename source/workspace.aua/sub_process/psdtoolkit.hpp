@@ -44,14 +44,14 @@ namespace apn::workspace
 
 				// サブプロセスウィンドウの元の状態を取得しておきます。
 				parent = ::GetParent(hwnd);
-				owner = (HWND)::GetWindowLong(hwnd, GWL_HWNDPARENT);
+				owner = (HWND)::GetWindowLongPtr(hwnd, GWLP_HWNDPARENT);
 				style = ::GetWindowLong(hwnd, GWL_STYLE);
 				ex_style = ::GetWindowLong(hwnd, GWL_EXSTYLE);
 
 				// フローティング状態になるようにサブプロセスウィンドウの状態を変更します。
 				::ShowWindow(hwnd, SW_HIDE);
 				::SetParent(hwnd, nullptr);
-//				::SetWindowLong(hwnd, GWL_HWNDPARENT, 0); // この処理は必要ないようです。
+//				::SetWindowLongPtr(hwnd, GWL_HWNDPARENT, 0); // この処理は必要ないようです。
 				::SetWindowLong(hwnd, GWL_STYLE, WS_CAPTION | WS_SYSMENU |
 					WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS);
 				::SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS | SWP_FRAMECHANGED);
@@ -68,7 +68,7 @@ namespace apn::workspace
 
 				// サブプロセスウィンドウの後ろに行かないように、
 				// ダイアログの親ウィンドウをサブプロセスウィンドウに変更します。
-				::SetWindowLong(dialog, GWL_HWNDPARENT, (LONG)hwnd);
+				::SetWindowLongPtr(dialog, GWLP_HWNDPARENT, (LONG_PTR)hwnd);
 			}
 
 			//

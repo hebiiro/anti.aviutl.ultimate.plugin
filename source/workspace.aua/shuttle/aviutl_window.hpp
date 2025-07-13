@@ -17,13 +17,13 @@ namespace apn::workspace
 			__super::init(name, hwnd);
 
 			// フローティングコンテナのアイコンを設定します。
-			auto icon = (HICON)::GetClassLong(*this, GCL_HICON);
+			auto icon = (HICON)::GetClassLongPtr(*this, GCLP_HICON);
 			::SendMessage(*float_container, WM_SETICON, ICON_SMALL, (LPARAM)icon);
 			::SendMessage(*float_container, WM_SETICON, ICON_BIG, (LPARAM)icon);
 
 			// メインウィンドウのアイコンを設定します。
-			::SetClassLong(hive.main_window, GCL_HICON, (LONG)icon);
-			::SetClassLong(hive.main_window, GCL_HICONSM, (LONG)icon);
+			::SetClassLongPtr(hive.main_window, GCLP_HICON, (LONG_PTR)icon);
+			::SetClassLongPtr(hive.main_window, GCLP_HICONSM, (LONG_PTR)icon);
 		}
 
 		//

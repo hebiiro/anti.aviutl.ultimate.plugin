@@ -145,7 +145,7 @@ namespace apn::selector
 		ofn.Flags = flags;
 		ofn.lpstrTitle = title;
 		ofn.lpstrFile = file_name.data();
-		ofn.nMaxFile = file_name.size();
+		ofn.nMaxFile = (DWORD)file_name.size();
 		ofn.lpstrFilter = filter;
 
 		// ファイル選択ダイアログを表示します。
@@ -179,7 +179,7 @@ namespace apn::selector
 		ofn.Flags = flags;
 		ofn.lpstrTitle = title;
 		ofn.lpstrFile = file_name.data();
-		ofn.nMaxFile = file_name.size();
+		ofn.nMaxFile = (DWORD)file_name.size();
 		ofn.lpstrFilter = filter;
 		ofn.lpstrDefExt = default_extension;
 

@@ -231,7 +231,7 @@ namespace apn::font_tree
 					my::gdi::selector font_selector(dc, font.get());
 
 					// 表示用テキストを描画します。
-					::TextOut(dc, x, y, display_text.c_str(), display_text.length());
+					::TextOut(dc, x, y, display_text.c_str(), (int)display_text.length());
 				}
 
 				// 次の描画位置に移動します。

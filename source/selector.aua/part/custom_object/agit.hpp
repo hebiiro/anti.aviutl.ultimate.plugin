@@ -496,7 +496,7 @@ namespace apn::selector::custom_object
 
 				// 指定されたカスタムオブジェクト内に
 				// フィルタ文字列が見つからなかった場合は
-				if (custom_object->get_text(i).find(text) == text.npos)
+				if (custom_object->get_text((int32_t)i).find(text) == text.npos)
 					return TRUE; // TRUEを返します。
 			}
 

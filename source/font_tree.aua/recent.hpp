@@ -230,7 +230,7 @@ namespace apn::font_tree
 			for (auto& recent : recents)
 			{
 				recent = my::combobox::get_text(*this,
-					std::distance(recents.data(), &recent));
+					(int32_t)std::distance(recents.data(), &recent));
 			}
 
 			// 使用履歴を書き込みます。

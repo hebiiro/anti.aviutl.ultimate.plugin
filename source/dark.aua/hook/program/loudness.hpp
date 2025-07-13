@@ -44,7 +44,7 @@ namespace apn::dark::hook
 				if (auto theme = skin::theme::manager.get_theme(VSCLASS_STATIC))
 				{
 					auto str = my::ws(std::string(text, c));
-					return python.call_text_out(gdi::manager.current_state.hwnd, theme, dc, STAT_TEXT, 0, x, y, 0, 0, str.c_str(), str.length(), 0);
+					return python.call_text_out(gdi::manager.current_state.hwnd, theme, dc, STAT_TEXT, 0, x, y, 0, 0, str.c_str(), (UINT)str.length(), 0);
 				}
 
 				return orig_proc(dc, x, y, text, c);

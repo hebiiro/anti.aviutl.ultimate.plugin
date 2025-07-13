@@ -20,7 +20,7 @@ namespace apn::audio_visualizer
 		std::vector<unsigned int>index(buf.size());
 		for (size_t i = 0; i < index.size(); ++i)
 		{
-			unsigned int tmp = i;
+			auto tmp = (unsigned int)i;
 			for (unsigned int n = 0; n < exponent; ++n)
 			{
 				index[i] <<= 1;

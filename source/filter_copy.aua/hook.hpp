@@ -242,7 +242,7 @@ namespace apn::filter_copy
 
 				magi.exin.push_undo();
 				magi.exin.create_undo(object_index, 1);
-				for (int32_t i = order.filters.size() - 1; i >= 0; i--)
+				for (auto i = (int32_t)order.filters.size() - 1; i >= 0; i--)
 					magi.exin.erase_filter(object_index, order.filters[i].index);
 				magi.exin.redraw_setting_dialog(object_index);
 				magi.exin.hide_controls();
@@ -457,7 +457,7 @@ namespace apn::filter_copy
 								if (filter_id < 0) break;
 
 								// フィルタを作成するコマンドを発行します。
-								hook_manager.create_filter_command_id = wParam;
+								hook_manager.create_filter_command_id = (uint32_t)wParam;
 								auto result = ::DefSubclassProc(hwnd, message, 2000 + filter_id, lParam);
 								hook_manager.create_filter_command_id = 0;
 								return result;

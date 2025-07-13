@@ -288,7 +288,7 @@ namespace apn::workspace::hook::global
 //				MY_TRACE_FUNC("{/hex}, {/}, {/hex}", hwnd, index, new_long);
 
 				// 「拡張ツールバー」用の処理です。
-				if (index == GWL_HWNDPARENT)
+				if (index == GWLP_HWNDPARENT)
 				{
 					if (auto shuttle = Shuttle::get_pointer(hwnd))
 					{

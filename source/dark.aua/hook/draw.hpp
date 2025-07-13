@@ -2,6 +2,7 @@
 
 namespace apn::dark::hook
 {
+#ifdef _M_IX86
 	//
 	// リターン先のアドレスを返します。
 	//
@@ -12,7 +13,7 @@ namespace apn::dark::hook
 			RETN
 		}
 	}
-
+#endif
 	//
 	// このクラスは描画関係のフックを担当します。
 	//

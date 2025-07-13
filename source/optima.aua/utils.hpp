@@ -71,15 +71,15 @@ namespace apn::optima
 	//
 	int32_t get_category_id(HWND hwnd)
 	{
-		return (int32_t)::GetPropA(hwnd, "optima.reuse_combobox.category_id");
+		return (int32_t)(intptr_t)::GetPropA(hwnd, "optima.reuse_combobox.category_id");
 	}
 
 	//
 	// コンボボックスにカテゴリを関連付けます。
 	//
-	int32_t set_category_id(HWND hwnd, int32_t category_id)
+	BOOL set_category_id(HWND hwnd, int32_t category_id)
 	{
-		return (int32_t)::SetPropA(hwnd, "optima.reuse_combobox.category_id", (HANDLE)category_id);
+		return ::SetPropA(hwnd, "optima.reuse_combobox.category_id", (HANDLE)(intptr_t)category_id);
 	}
 
 	//

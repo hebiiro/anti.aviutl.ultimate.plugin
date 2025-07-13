@@ -88,7 +88,7 @@ namespace apn::workspace::hook::win_hook
 //						MY_TRACE("ショートカットキーを発動するかどうかチェックします\n");
 
 						// ショートカットキーshow_captionが活性化されている場合は
-						if (hive.shortcut_key.show_caption.is_active(msg->wParam))
+						if (hive.shortcut_key.show_caption.is_active((int)msg->wParam))
 						{
 							// カーソル位置を取得します。
 							auto point = my::get_cursor_pos();

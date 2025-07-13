@@ -87,7 +87,7 @@ namespace apn::workspace
 			{
 				si.nMax = content_size[i] - 1;
 				si.nPage = container_size[i];
-				::SetScrollInfo(*this, i, &si, TRUE);
+				::SetScrollInfo(*this, (int)i, &si, TRUE);
 			}
 
 			// NC領域の変更を通知します。
@@ -136,7 +136,7 @@ namespace apn::workspace
 			// スクロール量を取得します。
 			int scroll_pos[2] = {};
 			for (size_t i = 0; i < std::size(scroll_pos); i++)
-				scroll_pos[i] = ::GetScrollPos(*this, i);
+				scroll_pos[i] = ::GetScrollPos(*this, (int)i);
 
 			// コンテナのクライアント矩形(の左上座標)を取得します。
 			auto rc = RECT { 0, 0 };
@@ -184,7 +184,7 @@ namespace apn::workspace
 			// 現在のコンテナのスクロール位置を取得しておきます。
 			int scroll_pos[2] = {};
 			for (size_t i = 0; i < std::size(scroll_pos); i++)
-				scroll_pos[i] = ::GetScrollPos(parent, i);
+				scroll_pos[i] = ::GetScrollPos(parent, (int)i);
 
 			// このコンテナの位置を変更します。
 			__super::set_container_position(rc);
@@ -195,7 +195,7 @@ namespace apn::workspace
 
 			// 現在のコンテナのスクロール位置をこのコンテナに適用します。
 			for (size_t i = 0; i < std::size(scroll_pos); i++)
-				::SetScrollPos(*this, i, scroll_pos[i], TRUE);
+				::SetScrollPos(*this, (int)i, scroll_pos[i], TRUE);
 
 			// スクロール位置が更新されたのでコンテンツの位置を更新します。
 			update_content_pos();

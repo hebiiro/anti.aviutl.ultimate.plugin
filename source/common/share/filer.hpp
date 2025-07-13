@@ -29,19 +29,19 @@ namespace apn::filer::share
 			return (HWND)::GetProp(host_window, prop_name::client_window);
 		}
 
-		inline HWND set_client_window(HWND host_window, HWND client_window)
+		inline BOOL set_client_window(HWND host_window, HWND client_window)
 		{
-			return (HWND)::SetProp(host_window, prop_name::client_window, client_window);
+			return ::SetProp(host_window, prop_name::client_window, client_window);
 		}
 
 		inline BOOL get_dark(HWND host_window)
 		{
-			return (BOOL)::GetProp(host_window, prop_name::dark);
+			return !!::GetProp(host_window, prop_name::dark);
 		}
 
 		inline BOOL set_dark(HWND host_window, BOOL dark)
 		{
-			return (BOOL)::SetProp(host_window, prop_name::dark, (HANDLE)dark);
+			return ::SetProp(host_window, prop_name::dark, (HANDLE)(intptr_t)dark);
 		}
 	}
 
@@ -57,9 +57,9 @@ namespace apn::filer::share
 			return (HWND)::GetProp(filer_window, prop_name::c_browser);
 		}
 
-		inline HWND set_browser(HWND filer_window, HWND browser)
+		inline BOOL set_browser(HWND filer_window, HWND browser)
 		{
-			return (HWND)::SetProp(filer_window, prop_name::c_browser, browser);
+			return ::SetProp(filer_window, prop_name::c_browser, browser);
 		}
 	}
 }

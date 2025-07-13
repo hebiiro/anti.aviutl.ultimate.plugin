@@ -30,7 +30,7 @@ namespace apn::workspace::hook::local
 		};
 
 		inline BOOL movieplaymain = FALSE;
-
+#ifdef _M_IX86
 		namespace play_main
 		{
 			inline my::addr_t orig = 0;
@@ -276,6 +276,7 @@ namespace apn::workspace::hook::local
 				return DetourDetach(&(PVOID&)orig, hook);
 			}
 		}
+#endif
 	}
 
 	inline struct AviUtl : Entity
@@ -304,7 +305,7 @@ namespace apn::workspace::hook::local
 				MY_TRACE_FUNC("{/hex}, {/hex}", hwnd, icon);
 
 				// ボタンにアイコンをセットします。
-				::SetWindowLongA(hwnd, 0, (LONG)icon);
+				::SetWindowLongPtrA(hwnd, 0, (LONG_PTR)icon);
 
 				// デフォルト処理で上書き描画するのではなく、ボタンを再描画します。
 				my::invalidate(hwnd);
@@ -322,7 +323,7 @@ namespace apn::workspace::hook::local
 				MY_TRACE_FUNC("{/hex}, {/hex}", hwnd, icon);
 
 				// ボタンにアイコンをセットします。
-				::SetWindowLongA(hwnd, 0, (LONG)icon);
+				::SetWindowLongPtrA(hwnd, 0, (LONG_PTR)icon);
 
 				// デフォルト処理で上書き描画するのではなく、ボタンを再描画します。
 				my::invalidate(hwnd);

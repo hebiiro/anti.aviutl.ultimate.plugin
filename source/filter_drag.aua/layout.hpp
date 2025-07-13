@@ -106,7 +106,7 @@ namespace apn::filter_drag
 			{
 				if (!::PtInRect(&panes[i], pos)) continue;
 
-				FilterHolder filter(object, i);
+				FilterHolder filter(object, (int32_t)i);
 				if (filter.is_moveable()) return filter;
 
 				break;
@@ -124,7 +124,7 @@ namespace apn::filter_drag
 			{
 				if (!::PtInRect(&panes[i], pos)) continue;
 
-				FilterHolder filter(object, i);
+				FilterHolder filter(object, (int32_t)i);
 				if (filter.is_moveable()) return filter;
 
 				// フィルタが先頭要素の場合はその次のフィルタを返します。

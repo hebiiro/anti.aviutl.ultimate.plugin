@@ -1141,10 +1141,10 @@ namespace apn::workspace
 
 			auto header = NMHDR {
 				.hwndFrom = hwnd,
-				.idFrom = (UINT_PTR)::GetWindowLongPtr(hwnd, GWLP_ID),
+				.idFrom = (UINT_PTR)::GetWindowLong(hwnd, GWLP_ID),
 				.code = code,
 			};
-			return ::SendMessage(::GetParent(hwnd), WM_NOTIFY, header.idFrom, (LPARAM)&header);
+			return !!::SendMessage(::GetParent(hwnd), WM_NOTIFY, header.idFrom, (LPARAM)&header);
 		}
 
 		//

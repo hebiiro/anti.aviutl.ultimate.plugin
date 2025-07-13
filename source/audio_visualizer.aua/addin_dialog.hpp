@@ -355,7 +355,7 @@ namespace apn::audio_visualizer
 					if (header->code == UDN_DELTAPOS)
 					{
 						auto nm = (NMUPDOWN*)header;
-						auto edit_id = header->idFrom - 1;
+						auto edit_id = (UINT)header->idFrom - 1;
 
 						switch (edit_id)
 						{

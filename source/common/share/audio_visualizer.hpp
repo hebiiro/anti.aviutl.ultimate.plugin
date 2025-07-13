@@ -15,19 +15,19 @@ namespace apn::audio_visualizer::share
 			return (HWND)::GetProp(host_window, prop_name::ui_window);
 		}
 
-		inline HWND set_ui_window(HWND host_window, HWND ui_window)
+		inline BOOL set_ui_window(HWND host_window, HWND ui_window)
 		{
-			return (HWND)::SetProp(host_window, prop_name::ui_window, ui_window);
+			return ::SetProp(host_window, prop_name::ui_window, ui_window);
 		}
 
 		inline BOOL get_dark(HWND host_window)
 		{
-			return (BOOL)::GetProp(host_window, prop_name::dark);
+			return !!::GetProp(host_window, prop_name::dark);
 		}
 
 		inline BOOL set_dark(HWND host_window, BOOL dark)
 		{
-			return (BOOL)::SetProp(host_window, prop_name::dark, (HANDLE)dark);
+			return ::SetProp(host_window, prop_name::dark, (HANDLE)!!dark);
 		}
 	}
 
@@ -54,7 +54,7 @@ namespace apn::audio_visualizer::share
 		//
 		// パワースペクトルの分割数です。
 		//
-		size_t div;
+		int32_t div;
 
 		//
 		// パワースペクトルをRMS基準にスケーリングします。

@@ -186,9 +186,9 @@ namespace my
 
 	inline void set_editbox_text_no_notify(HWND editbox, LPCTSTR text)
 	{
-		auto id = ::SetWindowLongPtr(editbox, GWLP_ID, 0);
+		auto id = ::SetWindowLong(editbox, GWLP_ID, 0);
 		::SetWindowText(editbox, text);
-		::SetWindowLongPtr(editbox, GWLP_ID, id);
+		::SetWindowLong(editbox, GWLP_ID, id);
 	}
 
 	inline void set_editbox_text_no_notify(HWND dialog, UINT id, LPCTSTR text)

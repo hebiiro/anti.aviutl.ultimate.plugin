@@ -190,9 +190,9 @@ namespace apn::filer_ui
 			TOOLINFO ti { sizeof(ti) };
 			ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | TTF_TRANSPARENT;
 			ti.hwnd = GetSafeHwnd();
-			ti.uId = (UINT)GetDlgItem(id)->GetSafeHwnd();
+			ti.uId = (UINT_PTR)GetDlgItem(id)->GetSafeHwnd();
 			ti.lpszText = const_cast<LPTSTR>(text);
-			return tooltip.SendMessage(TTM_ADDTOOL, 0, (LPARAM)&ti);
+			return !!tooltip.SendMessage(TTM_ADDTOOL, 0, (LPARAM)&ti);
 		}
 
 #ifdef AFX_DESIGN_TIME

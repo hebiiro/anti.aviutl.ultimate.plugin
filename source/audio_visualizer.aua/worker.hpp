@@ -466,13 +466,13 @@ namespace apn::audio_visualizer
 
 				if (index_range.start > limit)
 				{
-					range.start = limit;
+					range.start = (double)limit;
 					index_range.start = limit;
 				}
 
 				if (index_range.end > limit)
 				{
-					range.end = limit;
+					range.end = (double)limit;
 					index_range.end = limit;
 				}
 
@@ -596,7 +596,7 @@ namespace apn::audio_visualizer
 				audio_artifact->spectre_option = audio_sample->option.spectre_option;
 				audio_artifact->spectre_option.div = std::min(
 					audio_artifact->spectre_option.div,
-					std::size(audio_artifact->channels->spectre));
+					(int32_t)std::size(audio_artifact->channels->spectre));
 
 				for (int32_t ch = 0; ch < audio_sample->audio_ch; ch++)
 					calc(audio_sample, audio_artifact, ch);

@@ -194,7 +194,7 @@ namespace apn::text_drop
 				}
 			}
 
-			write_as_exo(ofs, 0, 0, get_item_range(max_length), 0, drop_text);
+			write_as_exo(ofs, 0, 0, get_item_range((int32_t)max_length), 0, drop_text);
 
 			return TRUE;
 		}
@@ -222,7 +222,7 @@ namespace apn::text_drop
 				// キャリッジリターンを除去します。
 				if (line.ends_with(L"\r")) line.pop_back();
 
-				auto item_range = get_item_range(get_length(line));
+				auto item_range = get_item_range((int32_t)get_length(line));
 				auto frame_offset = item_range + hive.space_range;
 				auto layer_offset = 1;
 
@@ -326,7 +326,7 @@ namespace apn::text_drop
 				// 空行の場合は段落の終わりとみなします。
 				else
 				{
-					auto item_range = get_item_range(max_length);
+					auto item_range = get_item_range((int32_t)max_length);
 					auto frame_offset = item_range + hive.space_range;
 					auto layer_offset = 1;
 
@@ -347,7 +347,7 @@ namespace apn::text_drop
 			// テキストが残っている場合は
 			if (text.length())
 			{
-				auto item_range = get_item_range(max_length);
+				auto item_range = get_item_range((int32_t)max_length);
 
 				auto frame_end = frame_begin + item_range;
 

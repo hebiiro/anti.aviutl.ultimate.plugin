@@ -94,7 +94,7 @@ namespace apn::filer
 				// セクション内の_nameを取得します。
 				std::string name(MAX_PATH, '\0');
 				auto name_length = ::GetPrivateProfileStringA(
-					app_name.c_str(), "_name", "", name.data(), name.size(), file_name);
+					app_name.c_str(), "_name", "", name.data(), (DWORD)name.size(), file_name);
 				name.resize(name_length);
 				MY_TRACE_STR(name);
 
@@ -122,7 +122,7 @@ namespace apn::filer
 				// セクションデータを取得します。
 				section.clear();
 				section.resize(32767, '\0');
-				auto size = ::GetPrivateProfileSectionA(app_name.c_str(), section.data(), section.size(), file_name);
+				auto size = ::GetPrivateProfileSectionA(app_name.c_str(), section.data(), (DWORD)section.size(), file_name);
 				section.resize(size);
 				std::replace(section.begin(), section.end(), '\0', '\n');
 
@@ -317,7 +317,7 @@ namespace apn::filer
 			ofn.lpstrTitle = title.c_str();
 			ofn.lpstrInitialDir = folder_name.c_str();
 			ofn.lpstrFile = file_name.data();
-			ofn.nMaxFile = file_name.size();
+			ofn.nMaxFile = (DWORD)file_name.size();
 			ofn.lpstrFilter = "エイリアスファイル (*.exa)\0*.exa\0" "すべてのファイル (*.*)\0*.*\0";
 			ofn.lpstrDefExt = "exa";
 
@@ -414,7 +414,7 @@ namespace apn::filer
 						for (decltype(c) i = 0; i < c; i++)
 						{
 							std::string file_name(MAX_PATH, '\0');
-							auto length = ::DragQueryFileA(drop, i, file_name.data(), file_name.size());
+							auto length = ::DragQueryFileA(drop, i, file_name.data(), (UINT)file_name.size());
 							file_name.resize(length);
 							MY_TRACE_STR(file_name);
 

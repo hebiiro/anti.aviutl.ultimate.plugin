@@ -58,7 +58,7 @@ namespace apn::optima
 					auto cached_category_id = get_category_id(hwnd);
 
 					MY_TRACE("アニメーション効果 : {/}, {/hex}, {/}, {/}\n",
-						filter.index(), (uint32_t)hwnd, filter_category_id, cached_category_id);
+						filter.index(), hwnd, filter_category_id, cached_category_id);
 
 					// カテゴリが異なる場合は
 					if (filter_category_id != cached_category_id)
@@ -97,7 +97,7 @@ namespace apn::optima
 					auto cached_category_id = get_category_id(hwnd);
 
 					MY_TRACE("残りのコンボボックス : {/}, {/hex}, {/}\n",
-						rest_combobox_index, (uint32_t)hwnd, cached_category_id);
+						rest_combobox_index, hwnd, cached_category_id);
 
 					// コンボボックスのカテゴリが有効の場合は
 					if (cached_category_id)

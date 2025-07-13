@@ -145,7 +145,7 @@ namespace apn::workspace
 			__super::init(name, hwnd);
 
 			// フローティングコンテナのアイコンを設定します。
-			auto icon = (HICON)::GetClassLong(hive.aviutl_window, GCL_HICON);
+			auto icon = (HICON)::GetClassLongPtr(hive.aviutl_window, GCLP_HICON);
 			::SendMessage(*float_container, WM_SETICON, ICON_SMALL, (LPARAM)icon);
 			::SendMessage(*float_container, WM_SETICON, ICON_BIG, (LPARAM)icon);
 

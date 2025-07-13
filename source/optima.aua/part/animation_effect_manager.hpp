@@ -65,7 +65,7 @@ namespace apn::optima
 					{
 						MY_TRACE("カテゴリを追加します {/} => {/}\n", category, from_category.size());
 
-						it = from_category.insert({ category, from_category.size() }).first;
+						it = from_category.insert({ category, (int32_t)from_category.size() }).first;
 					}
 
 					from_name[name] = it->second;

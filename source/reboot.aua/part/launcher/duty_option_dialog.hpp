@@ -21,7 +21,7 @@ namespace apn::reboot::launcher
 			ofn.Flags = OFN_FILEMUSTEXIST;
 			ofn.lpstrTitle = L"ファイルを選択";
 			ofn.lpstrFile = file_name.data();
-			ofn.nMaxFile = file_name.size();
+			ofn.nMaxFile = (DWORD)file_name.size();
 			ofn.lpstrFilter = L"すべてのファイル (*.*)\0*.*\0";
 
 			// ファイル選択ダイアログを表示します。

@@ -54,7 +54,7 @@ namespace apn::reboot::spreader
 			// デフォルト処理を行います。
 			return call_orig_proc();
 		}
-
+#ifdef _M_IX86
 		//
 		// aviutlウィンドウで再生する場合の処理です。
 		//
@@ -302,7 +302,7 @@ namespace apn::reboot::spreader
 				return TRUE;
 			}
 		}
-
+#endif
 		//
 		// aviutlウィンドウで再生を停止する関数をフックします。
 		//

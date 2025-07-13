@@ -42,15 +42,15 @@ namespace apn::workspace
 		//
 		inline static int32_t get_type(HWND hwnd)
 		{
-			return (int32_t)::GetProp(hwnd, c_prop_name.c_type);
+			return (int32_t)(intptr_t)::GetProp(hwnd, c_prop_name.c_type);
 		}
 
 		//
 		// 指定されたコンテナタイプをウィンドウに関連付けます。
 		//
-		inline static int32_t set_type(HWND hwnd, int32_t type)
+		inline static BOOL set_type(HWND hwnd, int32_t type)
 		{
-			return (int32_t)::SetProp(hwnd, c_prop_name.c_type, (HANDLE)type);
+			return ::SetProp(hwnd, c_prop_name.c_type, (HANDLE)(intptr_t)type);
 		}
 
 		//

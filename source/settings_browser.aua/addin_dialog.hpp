@@ -153,7 +153,7 @@ namespace apn::settings_browser
 					ofn.lpstrInitialDir = hive.assets_folder_name.c_str();
 					ofn.lpstrTitle = L"htmlファイルを選択";
 					ofn.lpstrFile = file_name.data();
-					ofn.nMaxFile = file_name.size();
+					ofn.nMaxFile = (DWORD)file_name.size();
 					ofn.lpstrFilter = L"htmlファイル (*.html)\0*.html\0" "すべてのファイル (*.*)\0*.*\0";
 					ofn.lpstrDefExt = L"html";
 					if (!::GetOpenFileNameW(&ofn))

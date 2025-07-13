@@ -53,8 +53,13 @@ using namespace Gdiplus;
 #include <psapi.h>
 
 #include "nlohmann/json.hpp"
+#ifdef _M_IX86
 #include "detours/detours.h"
 #pragma comment(lib, "detours/detours.lib")
+#else
+#include "detours/x64/detours.h"
+#pragma comment(lib, "detours/x64/detours.lib")
+#endif
 
 #undef min
 #undef max

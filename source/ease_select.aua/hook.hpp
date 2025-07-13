@@ -52,7 +52,7 @@ namespace apn::ease_select
 		inline static struct {
 			inline static INT_PTR WINAPI hook_proc(HINSTANCE instance, LPCSTR template_name, HWND parent, DLGPROC dlg_proc, LPARAM init_param)
 			{
-				if ((DWORD)template_name > 0x0000FFFF &&
+				if ((ULONG_PTR)template_name > 0x0000FFFF &&
 					::lstrcmpA(template_name, "GET_PARAM_SMALL") == 0)
 				{
 					MY_TRACE("ダイアログをサブクラス化します\n");

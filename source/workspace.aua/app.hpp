@@ -70,7 +70,7 @@ namespace apn::workspace
 			ofn.Flags = OFN_FILEMUSTEXIST;
 			ofn.lpstrTitle = L"レイアウトのインポート";
 			ofn.lpstrFile = file_name.data();
-			ofn.nMaxFile = file_name.size();
+			ofn.nMaxFile = (DWORD)file_name.size();
 			ofn.lpstrFilter = L"レイアウトファイル (*.json)\0*.json\0" "すべてのファイル (*.*)\0*.*\0";
 			ofn.lpstrDefExt = L"json";
 			if (!::GetOpenFileNameW(&ofn))
@@ -98,7 +98,7 @@ namespace apn::workspace
 			ofn.Flags = OFN_OVERWRITEPROMPT;
 			ofn.lpstrTitle = L"レイアウトのエクスポート";
 			ofn.lpstrFile = file_name.data();
-			ofn.nMaxFile = file_name.size();
+			ofn.nMaxFile = (DWORD)file_name.size();
 			ofn.lpstrFilter = L"レイアウトファイル (*.json)\0*.json\0" "すべてのファイル (*.*)\0*.*\0";
 			ofn.lpstrDefExt = L"json";
 			if (!::GetSaveFileNameW(&ofn))

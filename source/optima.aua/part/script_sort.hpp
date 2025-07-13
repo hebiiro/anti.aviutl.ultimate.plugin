@@ -46,7 +46,7 @@ namespace apn::optima
 		{
 			MY_TRACE_FUNC("");
 
-			auto script_sort_auf = (uint32_t)::GetModuleHandle(_T("script_sort.auf"));
+			auto script_sort_auf = (my::addr_t)::GetModuleHandle(_T("script_sort.auf"));
 			if (!script_sort_auf) return FALSE;
 
 			{

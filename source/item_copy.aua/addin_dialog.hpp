@@ -110,7 +110,7 @@ namespace apn::item_copy
 			auto c = ::DragQueryFileW(handle, -1, nullptr, 0);
 			for (decltype(c) i = 0; i < c; i++) {
 				auto& file_name = selection.emplace_back(MAX_PATH, L'\0');
-				::DragQueryFileW(handle, i, file_name.data(), file_name.size());
+				::DragQueryFileW(handle, i, file_name.data(), (UINT)file_name.size());
 				file_name.resize(::lstrlenW(file_name.data()));
 			}
 			::DragFinish(handle);

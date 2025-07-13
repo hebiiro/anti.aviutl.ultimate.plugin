@@ -29,7 +29,7 @@ namespace apn::audio_visualizer::ui
 				arg = argv[1]; // 2番目の引数を使用します。
 			MY_TRACE_STR(arg);
 
-			return (HWND)wcstoul(arg, nullptr, 0);
+			return (HWND)wcstoull(arg, nullptr, 0);
 		}
 
 		//

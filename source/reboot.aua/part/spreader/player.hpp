@@ -523,7 +523,7 @@ namespace apn::reboot::spreader
 			ComPtr<IDWriteTextLayout> text_layout;
 			hr = dw_factory->CreateTextLayout(
 				text.c_str(),
-				text.length(),
+				(UINT32)text.length(),
 				text_format.Get(),
 				(float)rc_w,
 				(float)rc_h,
@@ -675,7 +675,7 @@ namespace apn::reboot::spreader
 			MY_TRACE_FUNC("{/}", wParam);
 
 			// プレイヤーの表示状態を切り替えます。
-			::ShowWindow(hwnd, wParam);
+			::ShowWindow(hwnd, (int)wParam);
 
 			return 0;
 		}

@@ -39,7 +39,7 @@ namespace apn::dark::gdi
 			if (class_name == WC_HEADER)
 			{
 #if 0
-				auto instance = (HINSTANCE)::GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+				auto instance = (HINSTANCE)::GetWindowLong(hwnd, GWLP_HINSTANCE);
 				if (instance == ::GetModuleHandle(_T("shell32.dll")))
 					return std::make_shared<ShellHeaderRenderer>();
 #endif
@@ -48,7 +48,7 @@ namespace apn::dark::gdi
 			if (class_name == WC_LISTVIEW)
 			{
 #if 0
-				auto instance = (HINSTANCE)::GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+				auto instance = (HINSTANCE)::GetWindowLong(hwnd, GWLP_HINSTANCE);
 				if (instance == ::GetModuleHandle(_T("shell32.dll")))
 					return std::make_shared<ShellListViewRenderer>();
 #endif

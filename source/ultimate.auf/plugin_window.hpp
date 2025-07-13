@@ -128,7 +128,7 @@ namespace apn
 						MY_TRACE_HEX(file.get());
 						while (::ReadDirectoryChangesW(
 							file.get(),
-							buffer.data(), buffer.size(),
+							buffer.data(), (DWORD)buffer.size(),
 							TRUE,
 //							FILE_NOTIFY_CHANGE_FILE_NAME |
 //							FILE_NOTIFY_CHANGE_DIR_NAME |

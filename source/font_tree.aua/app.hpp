@@ -43,7 +43,7 @@ namespace apn::font_tree
 			ofn.Flags = OFN_FILEMUSTEXIST;
 			ofn.lpstrTitle = L"旧形式のデータをインポート";
 			ofn.lpstrFile = file_name.data();
-			ofn.nMaxFile = file_name.size();
+			ofn.nMaxFile = (DWORD)file_name.size();
 			ofn.lpstrFilter = L"xmlファイル (*.xml)\0*.xml\0" "すべてのファイル (*.*)\0*.*\0";
 			ofn.lpstrDefExt = L"xml";
 

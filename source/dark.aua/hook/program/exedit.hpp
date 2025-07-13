@@ -258,7 +258,7 @@ namespace apn::dark::hook
 				{
 					auto str = my::ws(std::string(text, c));
 
-					if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCENE_BUTTON, x, y, options, rc, str.c_str(), str.length(), dx))
+					if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCENE_BUTTON, x, y, options, rc, str.c_str(), (UINT)str.length(), dx))
 						return TRUE;
 				}
 
@@ -321,7 +321,7 @@ namespace apn::dark::hook
 						// レイヤーボタンの文字列を描画します。
 #if 1
 						if (python.call_draw_text(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, state_id,
-							str.c_str(), str.length(), DT_CENTER | DT_VCENTER | DT_SINGLELINE, rc))
+							str.c_str(), (int)str.length(), DT_CENTER | DT_VCENTER | DT_SINGLELINE, rc))
 							return TRUE;
 #else
 						if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, state_id,
@@ -431,7 +431,7 @@ namespace apn::dark::hook
 					if (rc.left > 0) options |= ETO_CLIPPED;
 
 					if (python.call_text_out(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
-						rc.left, rc.top, options, &rc, str.c_str(), str.length(), nullptr)) return;
+						rc.left, rc.top, options, &rc, str.c_str(), (UINT)str.length(), nullptr)) return;
 #else
 					if (python.call_draw_text(magi.exin.get_exedit_window(), theme, dc, WP_EXEDIT, EES_SCALE_PRIMARY,
 						str.c_str(), str.length(), DT_LEFT | DT_VCENTER | DT_SINGLELINE, &rc)) return;

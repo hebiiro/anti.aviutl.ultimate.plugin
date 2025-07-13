@@ -484,7 +484,7 @@ namespace apn::dark
 					"dark_text_out",
 					share::TextOutArgs {
 						{ (share::HTHEME)theme, part_id, state_id },
-						(share::HWND)hwnd, (share::HDC)dc, rc, s.c_str(), s.length(), options, x, y, (my::addr_t)dx,
+						(share::HWND)hwnd, (share::HDC)dc, rc, s.c_str(), (UINT)s.length(), options, x, y, (my::addr_t)dx,
 					});
 			}
 		}

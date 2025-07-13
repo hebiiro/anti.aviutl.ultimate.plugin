@@ -37,7 +37,7 @@ namespace apn::workspace
 					NMHDR header = {};
 					header.code = NM_DBLCLK;
 					header.hwndFrom = hwnd;
-					header.idFrom = ::GetWindowLongPtr(hwnd, GWLP_ID);
+					header.idFrom = ::GetWindowLong(hwnd, GWLP_ID);
 					::SendMessage(parent, WM_NOTIFY, header.idFrom, (LPARAM)&header);
 
 					break;
