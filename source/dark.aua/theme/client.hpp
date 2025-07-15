@@ -19,6 +19,7 @@ namespace apn::dark::theme
 
 			manager.add_renderer_nc(hwnd, VSCLASS_MENU, &menu_renderer);
 			manager.add_renderer(hwnd, VSCLASS_MENU, &menu_renderer);
+			manager.add_renderer_nc(hwnd, VSCLASS_SCROLLBAR, &scrollbar_renderer);
 			manager.add_renderer(hwnd, VSCLASS_SCROLLBAR, &scrollbar_renderer);
 			manager.add_renderer(hwnd, VSCLASS_STATIC, &static_renderer);
 			manager.add_renderer(hwnd, VSCLASS_BUTTON, &button_renderer);
@@ -37,6 +38,7 @@ namespace apn::dark::theme
 
 			manager.add_renderer_nc(hwnd, L"Explorer::" VSCLASS_MENU, &menu_renderer);
 			manager.add_renderer(hwnd, L"Explorer::" VSCLASS_MENU, &menu_renderer);
+			manager.add_renderer_nc(hwnd, L"Explorer::" VSCLASS_SCROLLBAR, &scrollbar_renderer);
 			manager.add_renderer(hwnd, L"Explorer::" VSCLASS_SCROLLBAR, &scrollbar_renderer);
 			manager.add_renderer(hwnd, L"Explorer::" VSCLASS_STATIC, &static_renderer);
 			manager.add_renderer(hwnd, L"Explorer::" VSCLASS_BUTTON, &button_renderer);
@@ -60,6 +62,7 @@ namespace apn::dark::theme
 			manager.add_renderer(hwnd, L"CFD::" VSCLASS_TREEVIEW, &treeview_renderer);
 			manager.add_renderer_nc(hwnd, L"ItemsView::" VSCLASS_HEADER, &header_renderer);
 			manager.add_renderer_nc(hwnd, L"ItemsView::" VSCLASS_LISTVIEW, &listview_renderer);
+			manager.add_renderer_nc(hwnd, L"ItemsViewAccessible::" VSCLASS_HEADER, &header_renderer);
 			manager.add_renderer(hwnd, L"Placesbar::" VSCLASS_TOOLBAR, &toolbar_renderer);
 			manager.add_renderer(hwnd, L"AddressComposited::" VSCLASS_COMBOBOX, &combobox_renderer);
 			manager.add_renderer_nc(hwnd, L"CommandModule", &command_module_renderer);
