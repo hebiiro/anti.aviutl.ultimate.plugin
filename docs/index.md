@@ -24,11 +24,12 @@ lang: ja_JP
 1. [`python実行環境`をダウンロード](https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/tag/r36)します。
 1. `python実行環境`のzip内の`plugins`フォルダも`aviutlフォルダ`内にコピーします。
 
-* **アイテム波形**を使用する場合は[こちらの導入方法](./contents/addin/item_wave.html)を参照してください。
+* **※`アイテム波形`を使用する場合は[こちらの導入方法](./contents/addin/item_wave.html)を参照してください。**
 
 ## 🔥アンインストール方法
 
-* `plugins`フォルダ内の`ultimate`(フォルダ)、`ultimate.auf`、`ultimate.aul`を削除(またはaviutlとは無関係のフォルダに移動)してください。
+* `plugins`フォルダ内の`ultimate`(フォルダ)、`ultimate.auf`、`ultimate.aul`を<br>
+削除(またはaviutlとは無関係のフォルダに移動)してください。
 
 ## ⚠問題が発生した場合の対処方法
 
@@ -97,7 +98,7 @@ lang: ja_JP
 | [filter_drag](./contents/addin/filter_drag.html) | フィルタドラッグ | 設定ダイアログのフィルタをドラッグで移動できるようにします。 |
 | [dirty_check](./contents/addin/dirty_check.html) | 終了確認 | 終了する前にプロジェクトの変更を確認します。 |
 | [output_check](./contents/addin/output_check.html) | 出力確認 | 動画を出力する前に設定を確認します。 |
-| [text_editor](./contents/addin/text_editor.html) | テキスト編集 | テキストアイテムのテキストを別窓の広いエディットボックスで編集できるようにします。 |
+| [text_editor](./contents/addin/text_editor.html) | テキスト編集 | テキストアイテムのテキストを広い別窓で編集できるようにします。 |
 | [text_collect](./contents/addin/text_collect.html) | テキスト一括編集 | テキストアイテムのテキストを一括編集できるようにします。 |
 | [text_drop](./contents/addin/text_drop.html) | テキストドロップ | ドラッグアンドドロップでテキストアイテムを作成します。 |
 | [text_split](./contents/addin/text_split.html) | テキスト分解 | テキストアイテムを文字毎に別々のアイテムに分解します。 |
