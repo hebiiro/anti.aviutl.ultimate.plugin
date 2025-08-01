@@ -340,6 +340,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\text_drop.aua\text_drop.aua.vcxproj">
       <Project>{fa049444-38d3-4de1-954e-301ffb536828}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\text_editor.aua\text_editor.aua.vcxproj">
+      <Project>{2c3b28ed-a44b-48c7-91c6-8e29c19b7d10}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\text_split.aua\text_split.aua.vcxproj">
       <Project>{f53a67a7-245c-4d2f-9215-b77aa8429e80}</Project>
     </ProjectReference>

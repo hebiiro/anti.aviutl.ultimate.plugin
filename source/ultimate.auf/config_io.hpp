@@ -47,6 +47,8 @@ namespace apn
 			register_addin(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", { L"DragFilter.auf" });
 			register_addin(L"M", L"dirty_check", L"終了確認", FALSE, L"", { L"auls_confirmclose.auf", L"DirtyCheck.auf" });
 			register_addin(L"M", L"output_check", L"出力確認", FALSE, L"", { L"ConfigChecker.auf" });
+			register_addin(L"M", L"text_editor", L"テキスト編集", FALSE, L"", {});
+			register_addin(L"M", L"text_collect", L"テキスト一括編集", FALSE, L"", {});
 			register_addin(L"M", L"text_drop", L"テキストドロップ", FALSE, L"", {});
 			register_addin(L"M", L"text_split", L"テキスト分解", FALSE, L"", { L"SplitText.auf" });
 			register_addin(L"M", L"item_align", L"アイテム整列", FALSE, L"", { L"BuildStairs.auf" });
@@ -59,7 +61,6 @@ namespace apn
 			register_addin(L"M", L"font_select", L"フォント選択", FALSE, L"", {});
 			register_addin(L"M", L"note", L"メモ帳", TRUE, L"", {});
 			register_addin(L"M", L"clipboard_viewer", L"クリップボード画像表示", FALSE, L"", {});
-			register_addin(L"M", L"text_collect", L"テキスト一括編集", FALSE, L"", {});
 
 			register_addin(L"S", L"namecage", L"アイテム名常時表示", TRUE, L"", { L"NoScrollText.auf", L"ShowWaveform.auf" });
 			register_addin(L"S", L"last_frame", L"最終フレーム自動調整", TRUE, L"", { L"AdjustLastFrame.auf" });

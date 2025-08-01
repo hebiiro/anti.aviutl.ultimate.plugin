@@ -95,8 +95,10 @@ lang: ja_JP
 | [filter_drag](./contents/addin/filter_drag.html) | フィルタドラッグ | 設定ダイアログのフィルタをドラッグで移動できるようにします。 |
 | [dirty_check](./contents/addin/dirty_check.html) | 終了確認 | 終了する前にプロジェクトの変更を確認します。 |
 | [output_check](./contents/addin/output_check.html) | 出力確認 | 動画を出力する前に設定を確認します。 |
-| [text_drop](./contents/addin/text_drop.html) | テキストドロップ | ドラッグアンドドロップでテキストオブジェクトを作成します。 |
-| [text_split](./contents/addin/text_split.html) | テキスト分解 | テキストオブジェクトを文字毎に別々のオブジェクトに分解します。 |
+| [text_editor](./contents/addin/text_editor.html) | テキスト編集 | テキストアイテムのテキストを別窓の広いエディットボックスで編集できるようにします。 |
+| [text_collect](./contents/addin/text_collect.html) | テキスト一括編集 | テキストアイテムのテキストを一括編集できるようにします。 |
+| [text_drop](./contents/addin/text_drop.html) | テキストドロップ | ドラッグアンドドロップでテキストアイテムを作成します。 |
+| [text_split](./contents/addin/text_split.html) | テキスト分解 | テキストアイテムを文字毎に別々のアイテムに分解します。 |
 | [item_align](./contents/addin/item_align.html) | アイテム整列 | タイムラインのアイテムを整列します。 |
 | [image_export](./contents/addin/image_export.html) | 画像エクスポート | 現在のフレームまたは選択アイテムを画像としてエクスポートします。 |
 | [scene_select](./contents/addin/scene_select.html) | シーン選択 | シーンをボタンで選択できるようにします。 |
@@ -107,7 +109,6 @@ lang: ja_JP
 | [font_select](./contents/addin/font_select.html) | フォント選択 | カスタムメニューからフォントを選択できるようにします。 |
 | [note](./contents/addin/note.html) | メモ帳 | aviutl内にリッチエディットコントロールを表示します。 |
 | [clipboard_viewer](./contents/addin/clipboard_viewer.html) | クリップボード画像表示 | クリップボードにコピーされた画像を表示します。 |
-| [text_collect](./contents/addin/text_collect.html) | テキスト一括編集 | テキストオブジェクトのテキストを一括編集できるようにします。 |
 |---|---|---|
 | [namecage](./contents/addin/namecage.html) | アイテム名常時表示 | アイテム名がタイムラインから出ないようにします。 |
 | [last_frame](./contents/addin/last_frame.html) | 最終フレーム自動調整 | 最終フレームを自動的に調整します。 |
