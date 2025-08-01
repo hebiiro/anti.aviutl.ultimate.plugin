@@ -424,7 +424,7 @@ namespace apn::audio_visualizer
 				auto range = Range<double> { option.freq_min, option.freq_max };
 				auto step = (range.end - range.start) / option.div;
 
-				for (size_t i = 0; i < option.div; i++)
+				for (decltype(option.div) i = 0; i < option.div; i++)
 				{
 					bands[i] = {
 						range.start + (i + 0) * step,
@@ -444,7 +444,7 @@ namespace apn::audio_visualizer
 				auto range = Range<double> { log10(option.freq_min), log10(option.freq_max) };
 				auto step = (range.end - range.start) / option.div;
 
-				for (size_t i = 0; i < option.div; i++)
+				for (decltype(option.div) i = 0; i < option.div; i++)
 				{
 					bands[i] = {
 						pow(10, range.start + (i + 0) * step),
