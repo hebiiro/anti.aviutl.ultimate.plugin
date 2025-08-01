@@ -78,6 +78,8 @@ namespace my
 				int32_t* selection_visual_count = nullptr;
 				SelectionVisual* selection_visual = nullptr;
 				HWND* font_combobox = nullptr;
+				HWND* text_editbox = nullptr;
+				HWND* script_editbox = nullptr;
 				int32_t* bpm = nullptr;
 				LPCSTR animation_effect_table = {};
 				LPCSTR custom_object_table = {};
@@ -173,6 +175,8 @@ namespace my
 			assign_addr(address.variable.selection_visual_count, exedit + 0x0017921C);
 			assign_addr(address.variable.selection_visual, exedit + 0x00146270 + 0x04);
 			assign_addr(address.variable.font_combobox, exedit + 0x0023630C);
+			assign_addr(address.variable.text_editbox, exedit + 0x00236328);
+			assign_addr(address.variable.script_editbox, exedit + 0x00230C78);
 			assign_addr(address.variable.bpm, exedit + 0x00159190);
 			assign_addr(address.variable.animation_effect_table, exedit + 0xC1F08);
 			assign_addr(address.variable.custom_object_table, exedit + 0xCE090);
@@ -367,9 +371,19 @@ namespace my
 		SelectionVisual* get_selection_visual(int32_t index) { return &address.variable.selection_visual[index - 1]; }
 
 		//
-		// フォントコンボボックスを返します。
+		// フォント選択コンボボックスを返します。
 		//
 		HWND get_font_combobox() { return *address.variable.font_combobox; }
+
+		//
+		// テキスト編集エディットボックスを返します。
+		//
+		HWND get_text_editbox() { return *address.variable.text_editbox; }
+
+		//
+		// スクリプト編集エディットボックスを返します。
+		//
+		HWND get_script_editbox() { return *address.variable.script_editbox; }
 
 		//
 		// 拡張編集のBPMを返します。
