@@ -212,6 +212,12 @@ namespace apn::workspace
 			dock_container = create_dock_container();
 			float_container = create_float_container();
 
+			// ドッキングコンテナウィンドウにコンテナタイプを関連付けます。
+			dock_container->set_type(*dock_container, dock_container->c_type.c_dock);
+
+			// フローティングコンテナウィンドウにコンテナタイプを関連付けます。
+			float_container->set_type(*float_container, float_container->c_type.c_float);
+
 			// ターゲットのウィンドウスタイルを変更します。
 			auto style = on_get_target_new_style();
 			my::set_style(*this, style | WS_CHILD);
@@ -312,9 +318,6 @@ namespace apn::workspace
 				(std::shared_ptr<Container>)std::make_shared<FixedSpreadContainer>(this, dock_style, dock_ex_style) :
 				(std::shared_ptr<Container>)std::make_shared<ScrollContainer>(this, dock_style, dock_ex_style);
 
-			// コンテナウィンドウにコンテナタイプを関連付けます。
-			container->set_type(*container, container->c_type.c_dock);
-
 			// 作成したドッキンググコンテナを返します。
 			return container;
 		}
@@ -338,9 +341,6 @@ namespace apn::workspace
 			auto container = (style & WS_THICKFRAME) ?
 				(std::shared_ptr<Container>)std::make_shared<SpreadContainer>(this, float_style, float_ex_style) :
 				(std::shared_ptr<Container>)std::make_shared<Container>(this, float_style, float_ex_style);
-
-			// コンテナウィンドウにコンテナタイプを関連付けます。
-			container->set_type(*container, container->c_type.c_float);
 
 			// 作成したフローティングコンテナを返します。
 			return container;
