@@ -44,6 +44,7 @@
 #include "hook/local/extoolbar.hpp"
 #include "hook/local/z_ram_preview.hpp"
 #include "hook/local/jumpbarx.hpp"
+#include "hook/local/cutedit.hpp"
 #include "preference_loader.hpp"
 #include "preference_saver.hpp"
 #include "preference_io.hpp"

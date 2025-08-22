@@ -181,6 +181,9 @@
       <Filter>element\pane\shuttle</Filter>
     </ClInclude>
     <ClInclude Include="utils.hpp" />
+    <ClInclude Include="hook\local\cutedit.hpp">
+      <Filter>hook\local</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -175,6 +175,7 @@
     <ClInclude Include="hook\global\window_pos.hpp" />
     <ClInclude Include="hook\local\aviutl.hpp" />
     <ClInclude Include="hook\local\color_palette.hpp" />
+    <ClInclude Include="hook\local\cutedit.hpp" />
     <ClInclude Include="hook\local\exedit.hpp" />
     <ClInclude Include="hook\local\extoolbar.hpp" />
     <ClInclude Include="hook\local\jumpbarx.hpp" />
