@@ -3,12 +3,12 @@
 namespace apn::item_copy
 {
 	//
-	// このクラスはドロップソースです。
+	// このクラスはシェルブラウザです。
 	//
 	struct ShellBrowser : IShellBrowser, ICommDlgBrowser, IServiceProvider
 	{
 		//
-		// このクラスはドロップソースの生成を担当します。
+		// このクラスはシェルブラウザの生成を担当します。
 		//
 		struct Allocator
 		{
