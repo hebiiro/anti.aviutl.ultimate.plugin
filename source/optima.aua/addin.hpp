@@ -30,7 +30,7 @@ namespace apn::optima
 		{
 			MY_TRACE_FUNC("");
 
-			if (!part_manager.init()) return FALSE;
+			if (!part::manager.init()) return FALSE;
 
 			return TRUE;
 		}
@@ -42,7 +42,7 @@ namespace apn::optima
 		{
 			MY_TRACE_FUNC("");
 
-			part_manager.exit();
+			part::manager.exit();
 
 			return TRUE;
 		}
@@ -54,9 +54,9 @@ namespace apn::optima
 		{
 			MY_TRACE_FUNC("");
 
+			if (!part::manager.window_init()) return FALSE;
 			if (!addin_window.init()) return FALSE;
 			if (!config_io.init()) return FALSE;
-
 			if (!config_io.read()) MY_TRACE("コンフィグの読み込みに失敗しました\n");
 
 			return FALSE;
@@ -70,9 +70,9 @@ namespace apn::optima
 			MY_TRACE_FUNC("");
 
 			config_io.write();
-
 			config_io.exit();
 			addin_window.exit();
+			part::manager.window_exit();
 
 			return FALSE;
 		}

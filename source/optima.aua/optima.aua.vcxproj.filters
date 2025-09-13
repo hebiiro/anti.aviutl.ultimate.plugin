@@ -11,6 +11,18 @@
     <Filter Include="part">
       <UniqueIdentifier>{5dc6ffb2-e001-41ed-ba9e-9443535870c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ult_combobox">
+      <UniqueIdentifier>{39830b0d-5ceb-4187-8124-e1d6b51f75b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ult_combobox\popup">
+      <UniqueIdentifier>{2a36edd6-c56f-46ad-8722-a7ce510f7298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ult_combobox\drop_down_list">
+      <UniqueIdentifier>{ad903911-71b9-423b-9d91-dda6e42fed0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="part\node">
+      <UniqueIdentifier>{dc621d52-4abc-42a1-ab6b-91d3c2f9077c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -25,25 +37,53 @@
       <Filter>resource</Filter>
     </ClInclude>
     <ClInclude Include="utils.hpp" />
-    <ClInclude Include="part.hpp" />
-    <ClInclude Include="part\animation_effect_manager.hpp">
+    <ClInclude Include="ult_combobox\drop_down_list\combobox.hpp">
+      <Filter>ult_combobox\drop_down_list</Filter>
+    </ClInclude>
+    <ClInclude Include="ult_combobox\popup\listbox.hpp">
+      <Filter>ult_combobox\popup</Filter>
+    </ClInclude>
+    <ClInclude Include="ult_combobox\core.hpp">
+      <Filter>ult_combobox</Filter>
+    </ClInclude>
+    <ClInclude Include="ult_combobox\manager.hpp">
+      <Filter>ult_combobox</Filter>
+    </ClInclude>
+    <ClInclude Include="ult_combobox\node.hpp">
+      <Filter>ult_combobox</Filter>
+    </ClInclude>
+    <ClInclude Include="part\manager.hpp">
       <Filter>part</Filter>
     </ClInclude>
-    <ClInclude Include="part\create_combobox.hpp">
+    <ClInclude Include="part\node.hpp">
       <Filter>part</Filter>
     </ClInclude>
-    <ClInclude Include="part\script_sort.hpp">
+    <ClInclude Include="part\node_base.hpp">
       <Filter>part</Filter>
     </ClInclude>
-    <ClInclude Include="part\set_current_object.hpp">
-      <Filter>part</Filter>
+    <ClInclude Include="part\node\create_window_hook.hpp">
+      <Filter>part\node</Filter>
+    </ClInclude>
+    <ClInclude Include="part\node\script_sort_patch.hpp">
+      <Filter>part\node</Filter>
+    </ClInclude>
+    <ClInclude Include="part\node\set_current_object.hpp">
+      <Filter>part\node</Filter>
+    </ClInclude>
+    <ClInclude Include="part\node\test.hpp">
+      <Filter>part\node</Filter>
+    </ClInclude>
+    <ClInclude Include="ult_combobox\utils.hpp">
+      <Filter>ult_combobox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>framework</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def">

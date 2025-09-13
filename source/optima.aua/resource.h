@@ -3,7 +3,6 @@
 // optima.aua.rc で使用
 //
 #define IDD_MAIN_DIALOG                 100
-#define IDC_REUSE_COMBOBOX              1000
 
 // Next default values for new objects
 // 

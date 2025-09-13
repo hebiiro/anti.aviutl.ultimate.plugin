@@ -2,11 +2,19 @@
 #include "resource.h"
 #include "hive.hpp"
 #include "utils.hpp"
-#include "part.hpp"
-#include "part/script_sort.hpp"
-#include "part/animation_effect_manager.hpp"
-#include "part/create_combobox.hpp"
-#include "part/set_current_object.hpp"
+#include "ult_combobox/utils.hpp"
+#include "ult_combobox/node.hpp"
+#include "ult_combobox/manager.hpp"
+#include "ult_combobox/core.hpp"
+#include "ult_combobox/popup/listbox.hpp"
+#include "ult_combobox/drop_down_list/combobox.hpp"
+#include "part/node_base.hpp"
+#include "part/manager.hpp"
+#include "part/node.hpp"
+#include "part/node/create_window_hook.hpp"
+#include "part/node/script_sort_patch.hpp"
+#include "part/node/set_current_object.hpp"
+#include "part/node/test.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
 #include "config_io.hpp"
@@ -20,7 +28,7 @@ namespace apn::optima
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		set_logger(args);
 
 		return &addin;
 	}

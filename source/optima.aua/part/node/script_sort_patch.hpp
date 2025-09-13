@@ -1,22 +1,12 @@
 ﻿#pragma once
 
-namespace apn::optima
+namespace apn::optima::part
 {
 	//
-	// このクラスはスクリプト並び替えプラグインを改造します。
+	// このクラスはスクリプト並び替えプラグインにパッチを当てます。
 	//
-	inline struct ScriptSort : Part
+	inline struct ScriptSortPatch : Node
 	{
-		//
-		// コンストラクタです。
-		//
-		ScriptSort()
-		{
-			MY_TRACE_FUNC("");
-
-			part_manager.add(this);
-		}
-
 		//
 		// 指定されたアドレスにパッチを当てます。
 		//
@@ -81,5 +71,5 @@ namespace apn::optima
 
 			return TRUE;
 		}
-	} script_sort;
+	} script_sort_patch;
 }
