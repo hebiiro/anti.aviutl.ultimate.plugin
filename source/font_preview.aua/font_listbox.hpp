@@ -3,10 +3,13 @@
 namespace apn::font_preview
 {
 	//
-	// このクラスは設定ダイアログのサブクラスです。
+	// このクラスはフォントコンボボックスのドロップダウンリストボックスのサブクラスです。
 	//
 	inline struct FontListBox : my::Window
 	{
+		//
+		//フォントコンボボックスです。
+		//
 		HWND combobox = nullptr;
 
 		//
