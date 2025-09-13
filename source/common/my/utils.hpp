@@ -8,6 +8,15 @@ namespace my
 	using addr_t = uintptr_t;
 
 	//
+	// このクラスはスコープ終了処理を実行します。
+	//
+	template <typename F>
+	struct scope_exit {
+		F func;
+		~scope_exit() { func(); }
+	};
+
+	//
 	// 指定された変数をリセットします。
 	//
 	template <typename T>
