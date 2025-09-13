@@ -76,6 +76,28 @@ namespace apn::ult_combobox
 		}
 
 		//
+		// ウィンドウテキストの文字数を返します。
+		//
+		int get_window_text_len()
+		{
+			if ((size_t)current_index >= items.size()) return 0;
+
+			return (int)items[current_index]->text.length();
+		}
+
+		//
+		// ウィンドウテキストを返します。
+		//
+		int get_window_text(int buffer_size, LPWSTR buffer)
+		{
+			if ((size_t)current_index >= items.size()) return 0;
+
+			::lstrcpynW(buffer, items[current_index]->text.c_str(), buffer_size);
+
+			return ::lstrlenW(buffer);
+		}
+
+		//
 		// アイテムの数を返します。
 		//
 		int get_count()

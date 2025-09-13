@@ -2,6 +2,7 @@
 
 namespace apn::optima::part
 {
+#if 1
 	//
 	// このクラスはウィンドウの作成をフックします。
 	//
@@ -80,4 +81,5 @@ namespace apn::optima::part
 			inline static decltype(&hook_proc) orig_proc = ::CreateWindowExA;
 		} CreateWindowExA;
 	} create_window_hook;
+#endif
 }

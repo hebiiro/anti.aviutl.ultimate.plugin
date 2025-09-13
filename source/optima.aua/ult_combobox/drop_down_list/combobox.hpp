@@ -268,8 +268,8 @@ namespace apn::ult_combobox::drop_down_list
 			my::gdi::selector font_selector(dc, font);
 
 			// 親ウィンドウからブラシを取得します。
-			auto static_brush = fire_ctl_color(hwnd, dc, WM_CTLCOLORSTATIC);
 			auto edit_brush = fire_ctl_color(hwnd, dc, WM_CTLCOLOREDIT);
+			auto static_brush = fire_ctl_color(hwnd, dc, WM_CTLCOLORSTATIC);
 
 			// 背景を描画します。
 			::FillRect(dc, &rc, static_brush);
@@ -630,6 +630,8 @@ namespace apn::ult_combobox::drop_down_list
 			case WM_KEYDOWN: return on_key_down(hwnd, message, w_param, l_param);
 			case WM_KEYUP: return on_key_up(hwnd, message, w_param, l_param);
 			case WM_SYSKEYDOWN: return on_sys_key_down(hwnd, message, w_param, l_param);
+			case WM_GETTEXT: return (LRESULT)get_window_text((int)w_param, (LPWSTR)l_param);
+			case WM_GETTEXTLENGTH: return (LRESULT)get_window_text_len();
 			case CB_GETEDITSEL:
 			case CB_LIMITTEXT:
 			case CB_SETEDITSEL:

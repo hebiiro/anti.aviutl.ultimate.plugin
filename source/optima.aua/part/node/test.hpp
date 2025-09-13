@@ -104,7 +104,7 @@ namespace apn::optima::part
 		virtual BOOL func_init(AviUtl::FilterPlugin* fp) override
 		{
 			MY_TRACE_FUNC("");
-
+#if 1
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
@@ -117,7 +117,7 @@ namespace apn::optima::part
 
 				return FALSE;
 			}
-
+#endif
 			return TRUE;
 		}
 

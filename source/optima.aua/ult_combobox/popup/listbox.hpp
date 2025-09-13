@@ -581,14 +581,18 @@ namespace apn::ult_combobox::popup
 			// マウスカーソルの座標にある項目を取得します。
 			auto index = hittest(client_pt);
 
-			// 選択項目と異なる場合は
-			if (selected_index != index)
+			// 項目が有効の場合は
+			if (index != CB_ERR)
 			{
-				// 選択項目を更新します。
-				selected_index = index;
+				// 選択項目と異なる場合は
+				if (selected_index != index)
+				{
+					// 選択項目を更新します。
+					selected_index = index;
 
-				// 再描画します。
-				redraw();
+					// 再描画します。
+					redraw();
+				}
 			}
 
 			// 左クリックしている場合は
@@ -757,6 +761,8 @@ namespace apn::ult_combobox::popup
 			case WM_VSCROLL: return on_v_scroll(hwnd, message, w_param, l_param);
 			case WM_KEYDOWN: return on_key_down(hwnd, message, w_param, l_param);
 			case WM_SYSKEYDOWN: return on_sys_key_down(hwnd, message, w_param, l_param);
+			case WM_GETTEXT: return (LRESULT)core->get_window_text((int)w_param, (LPWSTR)l_param);
+			case WM_GETTEXTLENGTH: return (LRESULT)core->get_window_text_len();
 			case LB_ADDSTRING: return (LRESULT)core->add_string((LPCWSTR)l_param);
 			case LB_DELETESTRING: return (LRESULT)core->delete_string((int)w_param);
 			case LB_GETCOUNT: return (LRESULT)core->get_count();
