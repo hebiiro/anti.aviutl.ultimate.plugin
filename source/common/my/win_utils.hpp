@@ -1,5 +1,15 @@
 ﻿#pragma once
 
+inline POINT operator+(const POINT& a, const POINT& b)
+{
+	return POINT { a.x + b.x, a.y + b.y };
+}
+
+inline POINT operator-(const POINT& a, const POINT& b)
+{
+	return POINT { a.x - b.x, a.y - b.y };
+}
+
 namespace my
 {
 	inline int get_width(const RECT& rc)
@@ -22,6 +32,16 @@ namespace my
 		return (rc.top + rc.bottom) / 2;
 	}
 
+	inline POINT get_near(const RECT& rc)
+	{
+		return { rc.left, rc.top };
+	}
+
+	inline POINT get_far(const RECT& rc)
+	{
+		return { rc.right, rc.bottom };
+	}
+
 	inline POINT lp_to_pt(LPARAM lParam)
 	{
 		return { (short)LOWORD(lParam), (short)HIWORD(lParam) };
@@ -30,16 +50,6 @@ namespace my
 	inline LPARAM pt_to_lp(POINT pt)
 	{
 		return MAKELPARAM(pt.x, pt.y);
-	}
-
-	inline POINT operator+(const POINT& a, const POINT& b)
-	{
-		return POINT { a.x + b.x, a.y + b.y };
-	}
-
-	inline POINT operator-(const POINT& a, const POINT& b)
-	{
-		return POINT { a.x - b.x, a.y - b.y };
 	}
 
 	inline auto get_cursor_pos()
@@ -186,9 +196,9 @@ namespace my
 
 	inline void set_editbox_text_no_notify(HWND editbox, LPCTSTR text)
 	{
-		auto id = ::SetWindowLong(editbox, GWLP_ID, 0);
+		auto id = ::SetWindowLongPtr(editbox, GWLP_ID, 0);
 		::SetWindowText(editbox, text);
-		::SetWindowLong(editbox, GWLP_ID, id);
+		::SetWindowLongPtr(editbox, GWLP_ID, id);
 	}
 
 	inline void set_editbox_text_no_notify(HWND dialog, UINT id, LPCTSTR text)
