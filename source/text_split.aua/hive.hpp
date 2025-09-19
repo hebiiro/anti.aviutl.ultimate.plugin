@@ -41,10 +41,6 @@ namespace apn::text_split
 			};
 		} c_fit_mode;
 
-		struct App {
-			virtual BOOL split_text() = 0;
-		} *app = nullptr;
-
 		//
 		// このアドインのインスタンスハンドルです。
 		//
@@ -102,7 +98,7 @@ namespace apn::text_split
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }

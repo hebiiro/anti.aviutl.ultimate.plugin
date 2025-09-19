@@ -162,11 +162,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="executor.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="ini_file.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="addin.hpp" />

@@ -4,3 +4,4 @@
 	processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include "common/core/include.hpp"
+#include <io.h>

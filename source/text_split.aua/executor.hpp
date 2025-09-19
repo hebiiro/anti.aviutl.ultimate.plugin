@@ -85,7 +85,10 @@ namespace apn::text_split
 		};
 
 		std::string temp_file_name;
+		IniFile temp_file;
+
 		std::string each_temp_file_name;
+		IniFile each_temp_file;
 
 		int32_t sorted_object_index = -1;
 
@@ -129,65 +132,60 @@ namespace apn::text_split
 		int32_t each_ojbect_index = 0;
 
 		inline static BOOL copy_private_profile_section(
-			const std::string& src_file_name, const std::string& src_app_name,
-			const std::string& dst_file_name, const std::string& dst_app_name)
+			IniFile& src_ini_file, const std::string& src_app_name,
+			IniFile& dst_ini_file, const std::string& dst_app_name)
 		{
-			static std::vector<char> section_buffer(70000);
-
-			::GetPrivateProfileSectionA(src_app_name.c_str(), section_buffer.data(), section_buffer.size(), src_file_name.c_str());
-			if (::GetLastError() != 0) return FALSE;
-			return ::WritePrivateProfileSectionA(dst_app_name.c_str(), section_buffer.data(), dst_file_name.c_str());
+			if (auto section = src_ini_file.get_section(src_app_name))
+				return dst_ini_file.add_section(dst_app_name, section->clone()), TRUE;
+			return FALSE;
 		}
 
 		//
 		// iniファイルから文字列を読み込みます。
 		//
 		inline static auto read_private_profile_string(
-			const std::string& file_name,
+			IniFile& ini_file,
 			const std::string& app_name,
 			const std::string& key_name,
-			const std::string& default_value = "",
-			size_t buffer_length = MAX_PATH)
+			const std::string& default_value = {})
 		{
-			std::string buffer(buffer_length, '\0');
-			auto length = ::GetPrivateProfileStringA(app_name.c_str(), key_name.c_str(), default_value.c_str(), buffer.data(), buffer.size(), file_name.c_str());
-			buffer.resize(length);
-			return buffer;
+			return ini_file.get_string(app_name, key_name, default_value);
 		}
 
 		//
 		// iniファイルから整数を読み込みます。
 		//
 		inline static auto read_private_profile_int(
-			const std::string& file_name,
+			IniFile& ini_file,
 			const std::string& app_name,
 			const std::string& key_name,
-			int32_t default_value = 0)
+			int32_t default_value = {})
 		{
-			return ::GetPrivateProfileIntA(app_name.c_str(), key_name.c_str(), default_value, file_name.c_str());
+			return ini_file.get_int(app_name, key_name, default_value);
 		}
+
 		//
 		// iniファイルに文字列を書き込みます。
 		//
-		inline static BOOL write_private_profile_string(
-			const std::string& file_name,
+		inline static auto write_private_profile_string(
+			IniFile& ini_file,
 			const std::string& app_name,
 			const std::string& key_name,
 			const std::string& value)
 		{
-			return ::WritePrivateProfileStringA(app_name.c_str(), key_name.c_str(), value.c_str(), file_name.c_str());
+			return ini_file.set_string(app_name, key_name, value);
 		}
 
 		//
 		// iniファイルに整数を書き込みます。
 		//
-		inline static BOOL write_private_profile_int(
-			const std::string& file_name,
+		inline static auto write_private_profile_int(
+			IniFile& ini_file,
 			const std::string& app_name,
 			const std::string& key_name,
 			int32_t value)
 		{
-			return ::WritePrivateProfileStringA(app_name.c_str(), key_name.c_str(), my::format("{/}", value).c_str(), file_name.c_str());
+			return ini_file.set_int(app_name, key_name, value);
 		}
 
 		//
@@ -207,9 +205,9 @@ namespace apn::text_split
 		}
 
 		//
-		// 一時ファイル名を初期化します。
+		// 一時ファイルを初期化します。
 		//
-		BOOL init_temp_file_name()
+		BOOL init_temp_file()
 		{
 			MY_TRACE_FUNC("");
 
@@ -229,6 +227,12 @@ namespace apn::text_split
 			// テンポラリファイル名を取得します。(文字列分割後のexoファイル)
 			each_temp_file_name = my::format("{/}\\text_split_{/}_each.exo", temp_dir, pid);
 			MY_TRACE_STR(each_temp_file_name);
+
+			// 現在のシーンをexoファイルに書き込みます。
+			magi.exin.save_exo(temp_file_name.c_str());
+
+			// 書き込んだexoファイルをiniファイルとして読み込みます。
+			temp_file.read_file(temp_file_name);
 
 			return TRUE;
 		}
@@ -259,10 +263,8 @@ namespace apn::text_split
 			if (std::string(first_filter->name) != "テキスト")
 				return FALSE; // 選択アイテムがテキストアイテムではなかったので終了します。
 
-			init_temp_file_name();
-
-			// 現在のシーンをexoファイルに保存します。
-			magi.exin.save_exo(temp_file_name.c_str());
+			// 一時ファイルを初期化します。
+			init_temp_file();
 
 			// ソート済みアイテムのインデックスを取得します。
 			// このインデックスがexoファイル内の番号になります。
@@ -274,15 +276,15 @@ namespace apn::text_split
 			MY_TRACE_STR(object_app_name);
 
 			// レイヤーを取得します。
-			item_layer = read_private_profile_int(temp_file_name, object_app_name, "layer", 1);
+			item_layer = read_private_profile_int(temp_file, object_app_name, "layer", 1);
 			MY_TRACE_INT(item_layer);
 
 			// 開始フレームを取得します。
-			item_start = read_private_profile_int(temp_file_name, object_app_name, "start", 1);
+			item_start = read_private_profile_int(temp_file, object_app_name, "start", 1);
 			MY_TRACE_INT(item_start);
 
 			// 終了フレームを取得します。
-			item_end = read_private_profile_int(temp_file_name, object_app_name, "end", 1);
+			item_end = read_private_profile_int(temp_file, object_app_name, "end", 1);
 			MY_TRACE_INT(item_end);
 
 			// 最初のフィルタのセクション名を取得します。
@@ -290,20 +292,20 @@ namespace apn::text_split
 			MY_TRACE_STR(first_filter_app_name);
 
 			// _nameをチェックします。
-			auto _name = read_private_profile_string(temp_file_name, first_filter_app_name, "_name");
+			auto _name = read_private_profile_string(temp_file, first_filter_app_name, "_name");
 			MY_TRACE_STR(_name);
 			if (_name != "テキスト") return FALSE; // テキストアイテムではなかったので終了します。
 
 			// テキストアイテムの属性を取得します。
-			item.font.size = read_private_profile_int(temp_file_name, first_filter_app_name, "サイズ", 1);
-			item.font.bold = read_private_profile_int(temp_file_name, first_filter_app_name, "B", FALSE);
-			item.font.italic = read_private_profile_int(temp_file_name, first_filter_app_name, "I", FALSE);
-			item.font.align = read_private_profile_int(temp_file_name, first_filter_app_name, "align", 0);
-			item.font.spacing.x = (signed char)(BYTE)read_private_profile_int(temp_file_name, first_filter_app_name, "spacing_x", 0);
-			item.font.spacing.y = (signed char)(BYTE)read_private_profile_int(temp_file_name, first_filter_app_name, "spacing_y", 0);
+			item.font.size = read_private_profile_int(temp_file, first_filter_app_name, "サイズ", 1);
+			item.font.bold = read_private_profile_int(temp_file, first_filter_app_name, "B", FALSE);
+			item.font.italic = read_private_profile_int(temp_file, first_filter_app_name, "I", FALSE);
+			item.font.align = read_private_profile_int(temp_file, first_filter_app_name, "align", 0);
+			item.font.spacing.x = (signed char)(BYTE)read_private_profile_int(temp_file, first_filter_app_name, "spacing_x", 0);
+			item.font.spacing.y = (signed char)(BYTE)read_private_profile_int(temp_file, first_filter_app_name, "spacing_y", 0);
 
 			// フォント名を取得します。
-			item.font.name = read_private_profile_string(temp_file_name, first_filter_app_name, "font");
+			item.font.name = read_private_profile_string(temp_file, first_filter_app_name, "font");
 			MY_TRACE_STR(item.font.name);
 
 			// アイテムのXとYを取得します。
@@ -318,7 +320,7 @@ namespace apn::text_split
 				MY_TRACE_STR(app_name);
 
 				// _name を取得します。
-				auto _name = read_private_profile_string(temp_file_name, app_name, "_name");
+				auto _name = read_private_profile_string(temp_file, app_name, "_name");
 				MY_TRACE_STR(_name);
 
 				// 標準描画でも拡張描画でもない場合は
@@ -345,7 +347,7 @@ namespace apn::text_split
 		{
 			auto separator = ',';
 
-			auto value = read_private_profile_string(temp_file_name, app_name, key_name);
+			auto value = read_private_profile_string(temp_file, app_name, key_name);
 			MY_TRACE_STR(value);
 
 			auto sep1 = value.find(separator);
@@ -542,7 +544,11 @@ namespace apn::text_split
 		//
 		// iniファイルにアイテムの位置情報を書き込みます。
 		//
-		BOOL write_private_profile_pos(const std::string& file_name, const std::string& app_name, const std::string& key_name, double value[2], const Pos& pos)
+		BOOL write_private_profile_pos(
+			IniFile& ini_file,
+			const std::string& app_name,
+			const std::string& key_name,
+			double value[2], const Pos& pos)
 		{
 			std::string str;
 
@@ -567,7 +573,7 @@ namespace apn::text_split
 
 			MY_TRACE_STR(str);
 
-			write_private_profile_string(file_name, app_name, key_name, str);
+			write_private_profile_string(ini_file, app_name, key_name, str);
 
 			return TRUE;
 		}
@@ -583,19 +589,19 @@ namespace apn::text_split
 			// 出力レイヤーを決定します。
 			auto output_layer = get_output_layer();
 
-			write_private_profile_int(temp_file_name, object_app_name, "layer", output_layer);
-			write_private_profile_int(temp_file_name, object_app_name, "start", item_start + frame_offset);
-			write_private_profile_int(temp_file_name, object_app_name, "end", item_end + frame_offset);
-			write_private_profile_pos(temp_file_name, draw_filter_app_name, "X", x, item.x);
-			write_private_profile_pos(temp_file_name, draw_filter_app_name, "Y", y, item.y);
-			write_private_profile_string(temp_file_name, first_filter_app_name, "text",  str);
+			write_private_profile_int(temp_file, object_app_name, "layer", output_layer);
+			write_private_profile_int(temp_file, object_app_name, "start", item_start + frame_offset);
+			write_private_profile_int(temp_file, object_app_name, "end", item_end + frame_offset);
+			write_private_profile_pos(temp_file, draw_filter_app_name, "X", x, item.x);
+			write_private_profile_pos(temp_file, draw_filter_app_name, "Y", y, item.y);
+			write_private_profile_string(temp_file, first_filter_app_name, "text",  str);
 
 			auto each_object_app_name = my::format("{/}", each_ojbect_index);
 			MY_TRACE_STR(each_object_app_name);
 
 			copy_private_profile_section(
-				temp_file_name, object_app_name,
-				each_temp_file_name, each_object_app_name);
+				temp_file, object_app_name,
+				each_temp_file, each_object_app_name);
 
 			for (size_t i = 0; i < ExEdit::Object::MAX_FILTER; i++)
 			{
@@ -606,8 +612,8 @@ namespace apn::text_split
 //				MY_TRACE_STR(each_filter_app_name);
 
 				copy_private_profile_section(
-					temp_file_name, filter_app_name,
-					each_temp_file_name, each_filter_app_name);
+					temp_file, filter_app_name,
+					each_temp_file, each_filter_app_name);
 			}
 
 			return TRUE;
@@ -778,8 +784,8 @@ namespace apn::text_split
 
 			// [exedit]をバッファにコピーします。
 			copy_private_profile_section(
-				temp_file_name, "exedit",
-				each_temp_file_name, "exedit");
+				temp_file, "exedit",
+				each_temp_file, "exedit");
 
 			// 描画フィルタのセクション名を作成します。
 			draw_filter_app_name = my::format("{/}.{/}", sorted_object_index, item.draw_filter_index);
@@ -860,17 +866,21 @@ namespace apn::text_split
 				::SendMessage(magi.exin.get_exedit_window(), WM_COMMAND, 0x3E9, 0);
 			}
 
-			// exoファイルをフラッシュします。
-			auto r4 = ::GetPrivateProfileIntA("exedit", "width", 123, each_temp_file_name.c_str());
-			MY_TRACE_INT(r4);
+			// exoファイルに書き込みます。
+			if (!each_temp_file.write_file(each_temp_file_name))
+			{
+				hive.message_box(L"exoファイルの書き込みに失敗しました");
+
+				return FALSE;
+			}
 
 			// exoファイルを読み込みます。
 			if (!magi.exin.load_exo(each_temp_file_name.c_str(), 0, 0, fp, editp))
 				hive.message_box(L"exoファイルの読み込みに失敗しました");
 
 			// 不要になったテンポラリファイルを削除します。
-			::DeleteFileA(temp_file_name.c_str());
-			::DeleteFileA(each_temp_file_name.c_str());
+			std::filesystem::remove(temp_file_name);
+			std::filesystem::remove(each_temp_file_name);
 
 			// 拡張編集を再描画します。
 			magi.exin.invalidate();

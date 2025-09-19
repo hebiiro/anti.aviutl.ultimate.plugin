@@ -23,12 +23,16 @@
     <ClInclude Include="addin_window.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="ini_file.hpp" />
+    <ClInclude Include="app_interface.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>framework</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="text_split.aua.rc">

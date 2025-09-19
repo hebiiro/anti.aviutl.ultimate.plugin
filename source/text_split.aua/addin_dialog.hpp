@@ -111,7 +111,7 @@ namespace apn::text_split
 			switch (id)
 			{
 			// ボタン
-			case IDC_SPLIT_TEXT: hive.app->split_text(); break;
+			case IDC_SPLIT_TEXT: app->split_text(); break;
 
 			// エディットボックス
 			case IDC_SHIFT_OFFSET:

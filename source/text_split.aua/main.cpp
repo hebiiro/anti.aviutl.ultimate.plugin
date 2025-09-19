@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "resource.h"
 #include "hive.hpp"
+#include "ini_file.hpp"
+#include "app_interface.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
 #include "config_io.hpp"
@@ -16,7 +18,7 @@ namespace apn::text_split
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!::StrStrIW(args, L"debug")) my::Tracer::logger = 0;
+		set_logger(args);
 
 		return &addin;
 	}
