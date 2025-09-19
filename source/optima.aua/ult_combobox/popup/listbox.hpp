@@ -734,6 +734,9 @@ namespace apn::ult_combobox::popup
 		{
 			MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
+			// コアが無効の場合は何もしません。
+			if (!core) return __super::on_wnd_proc(hwnd, message, w_param, l_param);
+
 			switch (message)
 			{
 			case WM_MOUSEACTIVATE:
