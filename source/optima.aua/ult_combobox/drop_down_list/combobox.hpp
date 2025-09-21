@@ -394,6 +394,30 @@ namespace apn::ult_combobox::drop_down_list
 		}
 
 		//
+		// WM_MOUSEWHEELを処理します。
+		//
+		LRESULT on_mouse_wheel(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param)
+		{
+			// 現在の選択項目を取得しておきます。
+			auto current_index = get_cur_sel();
+
+			// 引数を取得します。
+			auto delta = (short)HIWORD(w_param);
+
+			// 選択項目を変更します。
+			set_cur_sel(get_cur_sel() + ((delta > 0) ? -1 : +1));
+
+			// 選択項目が変更された場合は
+			if (get_cur_sel() != current_index)
+			{
+				// 親ウィンドウに通知コードを送信します。
+				fire_command(hwnd, CBN_SELCHANGE);
+			}
+
+			return 0; // 親ウィンドウに処理させないようにします。
+		}
+
+		//
 		// WM_KEYDOWNを処理します。
 		//
 		LRESULT on_key_down(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param)
@@ -627,6 +651,7 @@ namespace apn::ult_combobox::drop_down_list
 			case WM_LBUTTONDOWN: return on_l_button_down(hwnd, message, w_param, l_param);
 			case WM_MOUSEMOVE: return on_mouse_move(hwnd, message, w_param, l_param);
 			case WM_MOUSELEAVE: return on_mouse_leave(hwnd, message, w_param, l_param);
+			case WM_MOUSEWHEEL: return on_mouse_wheel(hwnd, message, w_param, l_param);
 			case WM_KEYDOWN: return on_key_down(hwnd, message, w_param, l_param);
 			case WM_KEYUP: return on_key_up(hwnd, message, w_param, l_param);
 			case WM_SYSKEYDOWN: return on_sys_key_down(hwnd, message, w_param, l_param);
