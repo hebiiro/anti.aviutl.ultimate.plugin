@@ -10,7 +10,7 @@ namespace apn::ult_combobox
 		//
 		// テキストの描画に使用するパディングです。
 		//
-		inline static constexpr int c_padding = 4;
+		inline static constexpr int c_padding = 3;
 
 		//
 		// このクラスは項目です。

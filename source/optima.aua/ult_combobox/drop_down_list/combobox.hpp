@@ -124,7 +124,8 @@ namespace apn::ult_combobox::drop_down_list
 			TEXTMETRICW tm = {};
 			::GetTextMetricsW(dc, &tm);
 
-			body_height = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
+			body_height = tm.tmHeight + c_padding * 2;
+//			body_height = tm.tmHeight + tm.tmInternalLeading + tm.tmExternalLeading;
 			item_height = tm.tmHeight;
 		}
 
@@ -299,9 +300,11 @@ namespace apn::ult_combobox::drop_down_list
 			auto drop_down_rc = rc;
 			drop_down_rc.left = right_drop_down;
 
-			auto text_rc = rc;
+			auto focus_rc = rc;
+			::InflateRect(&focus_rc, -c_padding, -c_padding);
+
+			auto text_rc = focus_rc;
 			text_rc.right = right_drop_down;
-			::InflateRect(&text_rc, -c_padding, -c_padding);
 
 			auto text = std::wstring {};
 			if ((size_t)current_index < items.size())
@@ -311,19 +314,11 @@ namespace apn::ult_combobox::drop_down_list
 
 			::DrawThemeBackground(theme.get(), dc, CP_READONLY, body_state_id, &rc, nullptr);
 			::DrawThemeBackground(theme.get(), dc, CP_DROPDOWNBUTTONRIGHT, button_state_id, &drop_down_rc, nullptr);
-			::DrawThemeText(theme.get(), dc, CP_READONLY, body_state_id, text.c_str(), (int)text.length(), DT_SINGLELINE | DT_NOPREFIX, 0, &text_rc);
+			::DrawThemeText(theme.get(), dc, CP_READONLY, body_state_id, text.c_str(), (int)text.length(),
+				DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX, 0, &text_rc);
 
 			if (hwnd == ::GetFocus())
 			{
-				auto focus_rc = text_rc;
-#if 1
-				// フォーカス矩形を少しだけ広げます。
-				::InflateRect(&focus_rc, 1, 1);
-#else
-				// フォーカス矩形を広げます。
-				::InflateRect(&focus_rc, c_padding / 2, c_padding / 2);
-#endif
-
 #if 1
 				// 破線を描画するためのコスメティックペンを作成します。
 				LOGBRUSH lb = {};
