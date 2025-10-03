@@ -168,6 +168,7 @@
     <ClInclude Include="dock\drawer_manager.hpp" />
     <ClInclude Include="dock\layout_list.hpp" />
     <ClInclude Include="dock\main_window.hpp" />
+    <ClInclude Include="dock\slimbar.hpp" />
     <ClInclude Include="dock\sub_window.hpp" />
     <ClInclude Include="hook\entity.hpp" />
     <ClInclude Include="hook\global\menu.hpp" />

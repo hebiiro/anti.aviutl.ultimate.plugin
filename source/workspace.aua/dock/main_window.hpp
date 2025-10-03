@@ -6,7 +6,7 @@ namespace apn::workspace
 	// このクラスはメインウィンドウです。
 	// このウィンドウはシャトルをドッキングさせることができます。
 	//
-	struct MainWindow : DockSite<my::Window>
+	struct MainWindow : DockSite<SlimBar>
 	{
 		inline static constexpr struct CommandID {
 			inline static constexpr uint32_t c_begin = 1;
@@ -392,6 +392,9 @@ namespace apn::workspace
 
 			// コンフィグダイアログを表示します。
 			if (IDOK != dialog.do_modal(*this)) return FALSE;
+
+			// スリムバーを更新します。
+			apply_slimbar();
 
 			// コンフィグを更新します。
 			update_config();
@@ -790,6 +793,10 @@ namespace apn::workspace
 				bind_combobox_index(IDC_LAYOUT_LIST_MODE, hive.layout_list_mode, _T("なし"), _T("上"), _T("下"));
 				bind_uint(IDC_BORDER_WIDTH, hive.border_width);
 				bind_uint(IDC_CAPTION_HEIGHT, hive.caption_height);
+
+				// スリムバーの設定
+				bind_check(IDC_SLIMBAR_FLAG_USE, hive.slimbar.flag_use);
+				bind_text(IDC_SLIMBAR_TITLE_FORMAT, hive.slimbar.title_format);
 
 				// チェックボックス
 				bind_check(IDC_USE_THEME, hive.use_theme);

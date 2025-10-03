@@ -52,6 +52,8 @@ namespace apn::workspace
 				write_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
 				write_bool(node, "ignore_ctrl_key_up", hive.ignore_ctrl_key_up);
 				write_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
+				write_bool(node, "slimbar.flag_use", hive.slimbar.flag_use);
+				write_string(node, "slimbar.title_format", hive.slimbar.title_format);
 			}
 
 			// メインウィンドウを書き込みます。

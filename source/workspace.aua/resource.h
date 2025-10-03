@@ -25,6 +25,10 @@
 #define IDC_SHOW_TAB_FORCE              1033
 #define IDC_BYPASS_KEYBOARD_MESSAGE     1034
 #define IDC_IGNORE_CTRL_KEY_UP          1035
+#define IDC_SLIMBAR_GROUPBOX            1100
+#define IDC_SLIMBAR_FLAG_USE            1101
+#define IDC_SLIMBAR_TITLE_FORMAT_STAT   1102
+#define IDC_SLIMBAR_TITLE_FORMAT        1103
 #define IDC_PANE_X_STAT                 2000
 #define IDC_PANE_X                      2001
 #define IDC_PANE_Y_STAT                 2002

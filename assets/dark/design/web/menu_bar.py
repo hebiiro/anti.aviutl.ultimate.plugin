@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import win32gui
 import win32api
 import win32ui
@@ -27,9 +27,12 @@ class MenuBar(base.MenuBar):
 			stuff = self.get_stuff(stuff_name)
 			rc = dark.RECT(args.rc)
 			rc.bottom += 1
-			# 模様を描画します。
-			dark.exports.painter.fill_rect(args.dc, rc, stuff)
-			draw_pattern(args, stuff)
+			if (hasattr(args, 'text')):
+				dark.draw_str(args, stuff)
+			else:
+				# 模様を描画します。
+				dark.exports.painter.fill_rect(args.dc, rc, stuff)
+				draw_pattern(args, stuff)
 		return True
 
 	#

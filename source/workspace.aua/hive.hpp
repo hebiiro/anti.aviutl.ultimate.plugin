@@ -392,6 +392,22 @@ namespace apn::workspace
 		BOOL omit_window_initialize = FALSE;
 
 		//
+		// このクラスはスリムバーの設定です。
+		//
+		struct SlimBar
+		{
+			//
+			// TRUEの場合はメニューバーをタイトルバーと一体化します。
+			//
+			BOOL flag_use = FALSE;
+
+			//
+			// スリムバー時のタイトルの書式です。
+			//
+			std::wstring title_format = L"AviUtl - %title%";
+		} slimbar;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {

@@ -59,4 +59,29 @@ namespace apn::workspace::share
 			return TRUE;
 		}
 	};
+
+	//
+	// このクラスはスリムバーです。
+	//
+	struct SlimBar
+	{
+		//
+		// ウィンドウメッセージです。
+		//
+		inline static constexpr struct Message {
+			inline static const auto c_draw = ::RegisterWindowMessageW(L"apn::workspace::slimbar::draw");
+		} c_message;
+
+		//
+		// 描画コンテキストです。
+		//
+		struct DrawContext {
+			HWND hwnd;
+			HTHEME theme;
+			HDC dc;
+			int part_id;
+			int state_id;
+			LPCRECT rc;
+		};
+	};
 }

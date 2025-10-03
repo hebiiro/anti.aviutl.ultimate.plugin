@@ -8,3 +8,4 @@
 #include <pybind11/stl.h>
 namespace py = pybind11;
 #include "common/share/dark.hpp"
+#include "common/share/workspace.hpp"
