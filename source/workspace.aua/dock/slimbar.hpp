@@ -442,7 +442,7 @@ namespace apn::workspace
 			auto mmi = (MINMAXINFO*)lParam;
 			auto rc = my::get_monitor_rect(hwnd);
 
-			mmi->ptMaxSize.y = my::get_height(rc) - mmi->ptMaxPosition.y * 2; // 何故か2倍にすると丁度良くなります。
+			mmi->ptMaxTrackSize.y = my::get_height(rc) - mmi->ptMaxPosition.y * 2; // 何故か2倍にすると丁度良くなります。
 
 			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 		}
