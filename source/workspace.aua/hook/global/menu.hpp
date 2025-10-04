@@ -17,6 +17,7 @@ namespace apn::workspace::hook::global
 			my::hook::attach(GetMenu);
 			my::hook::attach(SetMenu);
 			my::hook::attach(DrawMenuBar);
+			my::hook::attach(DrawThemeBackground);
 
 			return TRUE;
 		}
@@ -92,5 +93,40 @@ namespace apn::workspace::hook::global
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DrawMenuBar;
 		} DrawMenuBar;
+
+		//
+		// このクラスは::DrawThemeBackground()をフックします。
+		//
+		struct {
+			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, LPCRECT rc_clip)
+			{
+				// デフォルト処理の後に実行します。
+				my::scope_exit scope_exit([&]()
+				{
+					if (part_id == MENU_BARBACKGROUND)
+					{
+						auto rc2 = *rc;
+						rc2.bottom += 1; // クリップ矩形を使用すると、この1ピクセルが上書き描画できるようになります。
+
+						// デバイスコンテキストからウィンドウを取得します。
+						if (auto hwnd = ::WindowFromDC(dc))
+						{
+							using SlimBar = workspace::share::SlimBar;
+
+							// 描画コンテキストを作成します。
+							auto context = SlimBar::DrawContext {
+								hwnd, theme, dc, part_id, state_id, rc,
+							};
+
+							// スリムバーを描画します。
+							::SendMessage(hwnd, SlimBar::c_message.c_draw, 0, (LPARAM)&context);
+						}
+					}
+				});
+
+				return orig_proc(theme, dc, part_id, state_id, rc, rc_clip);
+			}
+			inline static decltype(&hook_proc) orig_proc = ::DrawThemeBackground;
+		} DrawThemeBackground;
 	} menu;
 }

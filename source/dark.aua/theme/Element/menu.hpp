@@ -44,29 +44,6 @@ namespace apn::dark::theme
 #endif
 		}
 
-		//
-		// メニューバーを描画します。
-		//
-		HRESULT draw_menubar(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc)
-		{
-			// デバイスコンテキストからウィンドウを取得します。
-			if (auto hwnd = ::WindowFromDC(dc))
-			{
-				using SlimBar = workspace::share::SlimBar;
-
-				// 描画コンテキストを作成します。
-				auto context = SlimBar::DrawContext {
-					hwnd, theme, dc, part_id, state_id, rc,
-				};
-
-				// スリムバーを描画します。
-				if (::SendMessage(hwnd, SlimBar::c_message.c_draw, 0, (LPARAM)&context))
-					return S_OK;
-			}
-
-			return S_OK;
-		}
-
 		HRESULT on_draw_theme_parent_background(HWND hwnd, HDC dc, LPCRECT rc) override
 		{
 			MY_TRACE_FUNC("{/hex}, {/hex}, ({/})", hwnd, dc, safe_string(rc));
@@ -111,17 +88,7 @@ namespace apn::dark::theme
 				painter::gdiplus::FixOrg fix_org(hive.fix_dpi_scaling);
 
 				if (python.call_draw_figure(gdi::manager.current_state.hwnd, theme, dc, part_id, state_id, rc))
-				{
-					if (part_id == MENU_BARBACKGROUND)
-					{
-						auto rc2 = *rc;
-						rc2.bottom += 1; // クリップ矩形を使用すると、この1ピクセルが上書き描画できるようになります。
-
-						return draw_menubar(theme, dc, part_id, state_id, &rc2);
-					}
-
 					return S_OK;
-				}
 			}
 
 			return hive.orig.DrawThemeBackground(theme, dc, part_id, state_id, rc, rc_clip);
