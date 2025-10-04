@@ -544,6 +544,20 @@ namespace apn::workspace
 
 			// スリムバーの中央にタイトルを描画します。
 			{
+				// ウィンドウ矩形を取得します。
+				auto window_rc = my::get_window_rect(hwnd);
+
+				// 一番右にあるメニュー項目の矩形を取得します。
+				auto menu = ::GetMenu(hwnd);
+				auto c = ::GetMenuItemCount(menu);
+				auto back_rc = RECT {};
+				::GetMenuItemRect(hwnd, menu, c - 1, &back_rc);
+
+				// タイトル描画位置の矩形を取得します。
+				auto text_rc = bar_rc;
+				auto inflate = back_rc.right - window_rc.left - text_rc.left;
+				::InflateRect(&text_rc, -inflate, -inflate);
+
 				// ウィンドウテキストを取得します。
 				auto text = my::get_window_text(hwnd);
 
@@ -563,7 +577,8 @@ namespace apn::workspace
 				// タイトルを描画します。
 				::DrawThemeText(theme, dc, part_id, state_id,
 					text.c_str(), (int)text.length(),
-					DT_CENTER | DT_VCENTER | DT_SINGLELINE, 0, &bar_rc);
+					DT_CENTER | DT_VCENTER | DT_SINGLELINE |
+					DT_END_ELLIPSIS | DT_NOPREFIX | DT_NOCLIP, 0, &text_rc);
 			}
 
 			// スリムバーボタンを走査します。
