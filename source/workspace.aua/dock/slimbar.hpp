@@ -658,7 +658,7 @@ namespace apn::workspace
 					MY_TRACE("*** {/} を終了します ***\n", text);
 				}
 #else
-				ScopeText(LPCWSTR text) {}
+				ScopeText(const std::wstring& text) {}
 				~ScopeText() {}
 #endif
 			};
