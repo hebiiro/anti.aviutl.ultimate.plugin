@@ -645,9 +645,9 @@ namespace apn::workspace
 			struct ScopeText
 			{
 #ifdef _DEBUG
-				LPCWSTR text;
+				std::wstring text;
 
-				ScopeText(LPCWSTR text) : text(text)
+				ScopeText(const std::wstring& text) : text(text)
 				{
 					MY_TRACE("*** {/} を開始します ***\n", text);
 				}
@@ -666,79 +666,79 @@ namespace apn::workspace
 			{
 			case WM_ACTIVATE:
 				{
-					ScopeText scope_text(L"WM_ACTIVATE");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 				}
 			case WM_NCPAINT:
 				{
-					ScopeText scope_text(L"WM_NCPAINT");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 				}
 			case WM_NCACTIVATE:
 				{
-					ScopeText scope_text(L"WM_NCACTIVATE");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 				}
 			case WM_NCCALCSIZE:
 				{
-					ScopeText scope_text(L"WM_NCCALCSIZE");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 				}
 			case WM_NCHITTEST:
 				{
-					ScopeText scope_text(L"WM_NCHITTEST");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_nc_hittest(hwnd, message, wParam, lParam);
 				}
 			case WM_NCLBUTTONDOWN:
 				{
-					ScopeText scope_text(L"WM_NCLBUTTONDOWN");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_nc_l_button_down(hwnd, message, wParam, lParam);
 				}
 			case WM_NCRBUTTONDOWN:
 				{
-					ScopeText scope_text(L"WM_NCRBUTTONDOWN");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_nc_r_button_down(hwnd, message, wParam, lParam);
 				}
 			case WM_NCMOUSEMOVE:
 				{
-					ScopeText scope_text(L"WM_NCMOUSEMOVE");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 				}
 			case WM_NCMOUSELEAVE:
 				{
-					ScopeText scope_text(L"WM_NCMOUSELEAVE");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_nc_mouse_leave(hwnd, message, wParam, lParam);
 				}
 			case WM_STYLECHANGED:
 				{
-					ScopeText scope_text(L"WM_STYLECHANGED");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_style_changed(hwnd, message, wParam, lParam);
 				}
 			case WM_GETMINMAXINFO:
 				{
-					ScopeText scope_text(L"WM_GETMINMAXINFO");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_get_min_max_info(hwnd, message, wParam, lParam);
 				}
 			case WM_SIZE:
 				{
-					ScopeText scope_text(L"WM_SIZE");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_size(hwnd, message, wParam, lParam);
 				}
 			case WM_SETTEXT:
 				{
-					ScopeText scope_text(L"WM_SETTEXT");
+					ScopeText scope_text(my::message_to_string(message));
 
 					return on_set_text(hwnd, message, wParam, lParam);
 				}
