@@ -594,49 +594,35 @@ namespace apn::workspace
 					::DrawThemeBackground(theme, dc, MENU_BARITEM, MBI_HOT, &button.rc, nullptr);
 				}
 
+				// アイコン矩形を取得します。
+				auto icon_rc = button.icon_rc;
+				::InflateRect(&icon_rc, 2, 2);
+
+				// アイコンのパートIDです。
+				auto part_id = 0;
+
 				switch (button.ht)
 				{
-				case HTCLOSE:
-					{
-						// 閉じるボタンを描画します。
-						::DrawThemeBackground(theme, dc, MENU_SYSTEMCLOSE, state_id, &button.icon_rc, nullptr);
-
-						break;
-					}
-				case HTMAXBUTTON:
-					{
-						// 最大化されている場合は
-						if (::IsZoomed(hwnd))
-						{
-							// 元に戻すボタンを描画します。
-							::DrawThemeBackground(theme, dc, MENU_SYSTEMRESTORE, state_id, &button.icon_rc, nullptr);
-						}
-						// 最大化されていない場合は
-						else
-						{
-							// 最大化ボタンを描画します。
-							::DrawThemeBackground(theme, dc, MENU_SYSTEMMAXIMIZE, state_id, &button.icon_rc, nullptr);
-						}
-
-						break;
-					}
-				case HTMINBUTTON:
-					{
-						// 最小化ボタンを描画します。
-						::DrawThemeBackground(theme, dc, MENU_SYSTEMMINIMIZE, state_id, &button.icon_rc, nullptr);
-
-						break;
-					}
+				case HTCLOSE: part_id = MENU_SYSTEMCLOSE; break;
+				case HTMAXBUTTON: part_id = ::IsZoomed(hwnd) ? MENU_SYSTEMRESTORE : MENU_SYSTEMMAXIMIZE; break;
+				case HTMINBUTTON: part_id = MENU_SYSTEMMINIMIZE; break;
 				case HTSYSMENU:
 					{
 						// システムメニューアイコンを描画します。
 						auto icon = (HICON)::GetClassLongPtr(hwnd, GCLP_HICON);
-						auto icon_size = my::get_height(button.icon_rc);
-						::DrawIconEx(dc, button.icon_rc.left, button.icon_rc.top,
+						auto icon_size = my::get_height(icon_rc);
+						::DrawIconEx(dc, icon_rc.left, icon_rc.top,
 							icon, icon_size, icon_size, 0, nullptr, DI_NORMAL);
 
 						break;
 					}
+				}
+
+				// アイコンのパートIDが有効の場合は
+				if (part_id)
+				{
+					// テーマを使用してアイコンを描画します。
+					::DrawThemeBackground(theme, dc, part_id, state_id, &icon_rc, nullptr);
 				}
 			}
 
