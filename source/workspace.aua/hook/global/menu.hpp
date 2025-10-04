@@ -103,11 +103,9 @@ namespace apn::workspace::hook::global
 				// デフォルト処理の後に実行します。
 				my::scope_exit scope_exit([&]()
 				{
-					if (part_id == MENU_BARBACKGROUND)
+					// メニューバー全体を描画する場合は
+					if (part_id == MENU_BARBACKGROUND && !rc_clip)
 					{
-						auto rc2 = *rc;
-						rc2.bottom += 1; // クリップ矩形を使用すると、この1ピクセルが上書き描画できるようになります。
-
 						// デバイスコンテキストからウィンドウを取得します。
 						if (auto hwnd = ::WindowFromDC(dc))
 						{
