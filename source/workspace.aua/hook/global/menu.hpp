@@ -109,15 +109,13 @@ namespace apn::workspace::hook::global
 						// デバイスコンテキストからウィンドウを取得します。
 						if (auto hwnd = ::WindowFromDC(dc))
 						{
-							using SlimBar = workspace::share::SlimBar;
-
 							// 描画コンテキストを作成します。
-							auto context = SlimBar::DrawContext {
+							auto context = my::slimbar_t::draw_context_t {
 								hwnd, theme, dc, part_id, state_id, rc,
 							};
 
 							// スリムバーを描画します。
-							::SendMessage(hwnd, SlimBar::c_message.c_draw, 0, (LPARAM)&context);
+							::SendMessage(hwnd, my::slimbar_t::c_message.c_draw, 0, (LPARAM)&context);
 						}
 					}
 				});

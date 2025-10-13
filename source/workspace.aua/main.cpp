@@ -28,7 +28,6 @@
 #include "dock/dock_site.hpp"
 #include "dock/sub_window.hpp"
 #include "dock/layout_list.hpp"
-#include "dock/slimbar.hpp"
 #include "dock/main_window.hpp"
 #include "hook/entity.hpp"
 #include "hook/manager.hpp"

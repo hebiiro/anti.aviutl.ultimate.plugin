@@ -184,9 +184,6 @@
     <ClInclude Include="hook\local\cutedit.hpp">
       <Filter>hook\local</Filter>
     </ClInclude>
-    <ClInclude Include="dock\slimbar.hpp">
-      <Filter>element\dock</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
