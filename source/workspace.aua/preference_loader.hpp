@@ -48,13 +48,6 @@ namespace apn::workspace
 				read_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
 				read_bool(node, "ignore_ctrl_key_up", hive.ignore_ctrl_key_up);
 				read_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
-				read_bool(node, "slimbar.flag_use", my::slimbar_t::config.flag_use);
-				read_bool(node, "slimbar.flag_whole_title", my::slimbar_t::config.flag_whole_title);
-				read_int(node, "slimbar.button_width", my::slimbar_t::config.button_width);
-				read_string(node, "slimbar.title_format", my::slimbar_t::config.title_format);
-
-				// スリムバーの設定を適用します。
-				main_window->slimbar_t::apply_config();
 			}
 
 			// 事前にサブウィンドウを読み込みます。
