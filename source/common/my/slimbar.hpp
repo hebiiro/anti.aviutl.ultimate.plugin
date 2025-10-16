@@ -10,10 +10,9 @@ namespace my
 		//
 		// ウィンドウメッセージです。
 		//
-		inline static constexpr struct Message {
-			inline static const auto c_draw = ::RegisterWindowMessageW(L"hebiiro::slimbar::draw");
-			inline static const auto c_apply_config = ::RegisterWindowMessageW(L"hebiiro::slimbar::apply_config");
-			inline static const auto c_update_layout = ::RegisterWindowMessageW(L"hebiiro::slimbar::update_layout");
+		inline static constexpr struct message_t {
+			inline static const auto c_apply_config = ::RegisterWindowMessageW(L"uah::slimbar::apply_config");
+			inline static const auto c_update_layout = ::RegisterWindowMessageW(L"uah::slimbar::update_layout");
 		} c_message;
 
 		//
@@ -41,18 +40,6 @@ namespace my
 			//
 			int32_t button_width = 200;
 		} config;
-
-		//
-		// 描画コンテキストです。
-		//
-		struct draw_context_t {
-			HWND hwnd;
-			HTHEME theme;
-			HDC dc;
-			int part_id;
-			int state_id;
-			LPCRECT rc;
-		};
 
 		//
 		// このクラスはスリムバーのボタンです。
@@ -83,6 +70,11 @@ namespace my
 		// タイトルの描画位置です。
 		//
 		RECT title_rc = {};
+
+		//
+		// TRUEの場合はアクティブなスリムバーを描画します。
+		//
+		BOOL is_active = {};
 
 		//
 		// スリムバーの設定をウィンドウに適用します。
@@ -620,13 +612,42 @@ namespace my
 		}
 
 		//
+		// WM_UAHDRAWMENUを処理します。
+		// メニューバーを描画した後にスリムバーを描画します。
+		//
+		LRESULT on_uah_draw_menu(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param)
+		{
+			// デフォルト処理の後に実行します。
+			my::scope_exit scope_exit([&]()
+			{
+				// 引数を取得します。
+				auto uah_menu = (UAHMENU*)l_param;
+
+				// テーマを取得します。
+				my::theme::unique_ptr<> theme(::OpenThemeData(hwnd, VSCLASS_MENU));
+				auto part_id = MENU_BARBACKGROUND;
+				auto state_id = is_active ? MB_ACTIVE : MB_INACTIVE;
+
+				// ウィンドウ矩形を取得します。
+				auto window_rc = my::get_window_rect(hwnd);
+
+				// スリムバー矩形を取得します。
+				auto bar_rc = get_bar_rc(hwnd);
+				::OffsetRect(&bar_rc, -window_rc.left, -window_rc.top);
+
+				// スリムバーを描画します。
+				return on_draw(hwnd, theme.get(), uah_menu->hdc, part_id, state_id, &bar_rc);
+			});
+
+			// デフォルト処理を実行します。
+			return __super::on_wnd_proc(hwnd, message, w_param, l_param);
+		}
+
+		//
 		// スリムバーを描画します。
 		//
 		BOOL on_draw(HWND hwnd, HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc)
 		{
-			// スリムバーを使用しない場合は何もしません。
-			if (!config.flag_use) return FALSE;
-
 			// スリムバー矩形を取得します。
 			auto bar_rc = *rc;
 
@@ -752,6 +773,19 @@ namespace my
 #endif
 			};
 
+			switch (message)
+			{
+			case WM_NCACTIVATE:
+				{
+					ScopeText scope_text(L"WM_NCACTIVATE");
+
+					// アクティブ状態を取得しておきます。
+					is_active = !!w_param;
+
+					return __super::on_wnd_proc(hwnd, message, w_param, l_param);
+				}
+			}
+
 			if (message == c_message.c_apply_config)
 			{
 				ScopeText scope_text(L"c_message.c_apply_config");
@@ -759,7 +793,7 @@ namespace my
 				return apply_config();
 			}
 
-			// スリムバーを使用しない場合は何もしません。
+			// スリムバーを使用しない場合は以下のメッセージは処理しません。
 			if (!config.flag_use)
 				return __super::on_wnd_proc(hwnd, message, w_param, l_param);
 
@@ -774,12 +808,6 @@ namespace my
 			case WM_NCPAINT:
 				{
 					ScopeText scope_text(L"WM_NCPAINT");
-
-					return __super::on_wnd_proc(hwnd, message, w_param, l_param);
-				}
-			case WM_NCACTIVATE:
-				{
-					ScopeText scope_text(L"WM_NCACTIVATE");
 
 					return __super::on_wnd_proc(hwnd, message, w_param, l_param);
 				}
@@ -843,18 +871,15 @@ namespace my
 
 					return on_set_text(hwnd, message, w_param, l_param);
 				}
-			}
-
-			if (message == c_message.c_draw)
-			{
-				if (auto context = (draw_context_t*)l_param)
+			case WM_UAHDRAWMENU:
 				{
-					ScopeText scope_text(L"c_message.c_draw");
+					ScopeText scope_text(L"WM_UAHDRAWMENU");
 
-					return on_draw(hwnd, context->theme, context->dc, context->part_id, context->state_id, context->rc);
+					return on_uah_draw_menu(hwnd, message, w_param, l_param);
 				}
 			}
-			else if (message == c_message.c_update_layout)
+
+			if (message == c_message.c_update_layout)
 			{
 				ScopeText scope_text(L"c_message.c_update_layout");
 

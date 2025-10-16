@@ -17,7 +17,6 @@ namespace apn::workspace::hook::global
 			my::hook::attach(GetMenu);
 			my::hook::attach(SetMenu);
 			my::hook::attach(DrawMenuBar);
-			my::hook::attach(DrawThemeBackground);
 
 			return TRUE;
 		}
@@ -93,36 +92,5 @@ namespace apn::workspace::hook::global
 			}
 			inline static decltype(&hook_proc) orig_proc = ::DrawMenuBar;
 		} DrawMenuBar;
-
-		//
-		// このクラスは::DrawThemeBackground()をフックします。
-		//
-		struct {
-			inline static HRESULT WINAPI hook_proc(HTHEME theme, HDC dc, int part_id, int state_id, LPCRECT rc, LPCRECT rc_clip)
-			{
-				// デフォルト処理の後に実行します。
-				my::scope_exit scope_exit([&]()
-				{
-					// メニューバー全体を描画する場合は
-					if (part_id == MENU_BARBACKGROUND && !rc_clip)
-					{
-						// デバイスコンテキストからウィンドウを取得します。
-						if (auto hwnd = ::WindowFromDC(dc))
-						{
-							// 描画コンテキストを作成します。
-							auto context = my::slimbar_t::draw_context_t {
-								hwnd, theme, dc, part_id, state_id, rc,
-							};
-
-							// スリムバーを描画します。
-							::SendMessage(hwnd, my::slimbar_t::c_message.c_draw, 0, (LPARAM)&context);
-						}
-					}
-				});
-
-				return orig_proc(theme, dc, part_id, state_id, rc, rc_clip);
-			}
-			inline static decltype(&hook_proc) orig_proc = ::DrawThemeBackground;
-		} DrawThemeBackground;
 	} menu;
 }
