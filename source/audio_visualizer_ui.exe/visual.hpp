@@ -465,8 +465,27 @@ namespace apn::audio_visualizer::ui
 			{
 				if (scheme_file_name.empty()) return FALSE;
 
+				// スキームファイルが存在しない場合は
+				if (!std::filesystem::exists(scheme_file_name))
+				{
+					// メッセージボックスを表示します。
+					hive.message_box(my::format(L"{/}が存在しません", scheme_file_name), *this);
+
+					return FALSE;
+				}
+
 				// スキームファイルを読み込みます。
 				std::ifstream ifs(scheme_file_name);
+
+				// スキームファイルを読み込めなかった場合は
+				if (!ifs)
+				{
+					// メッセージボックスを表示します。
+					hive.message_box(my::format(L"{/}を読み込めませんでした", scheme_file_name), *this);
+
+					return FALSE;
+				}
+
 				auto root = n_json::parse(ifs);
 				auto visual_node = root.at("visual");
 				auto editor_node = root.at("editor");

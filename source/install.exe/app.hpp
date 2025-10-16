@@ -51,6 +51,18 @@ public:
 		try
 		{
 			std::ifstream ifs(hive.config_file_name);
+
+			// コンフィグファイルを読み込めなかった場合は
+			if (!ifs)
+			{
+				// メッセージボックスを表示します。
+				AfxMessageBox(my::format(
+					L"{/}を読み込めませんでした",
+					hive.config_file_name).c_str());
+
+				return FALSE;
+			}
+
 			n_json root; ifs >> root;
 
 			read_file_name(root, "aviutl_file_name", hive.aviutl_file_name);

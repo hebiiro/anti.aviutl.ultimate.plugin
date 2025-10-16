@@ -181,6 +181,16 @@ namespace apn::text_split
 				// 入力ストリームを作成します。
 				std::ifstream stream(ini_file_name);
 
+				// iniファイルを読み込めなかった場合は
+				if (!stream)
+				{
+					// メッセージボックスでユーザーに通知します。
+					hive.message_box(my::format(
+						L"{/}を読み込めませんでした", ini_file_name));
+
+					return FALSE;
+				}
+
 				// 一行ずつ読み込みます。
 				std::string line;
 				while (std::getline(stream, line))

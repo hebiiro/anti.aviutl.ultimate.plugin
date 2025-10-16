@@ -150,6 +150,8 @@ namespace apn::local_web_app
 
 						// 指定されたファイルを読み込みます。
 						std::ifstream ifs(abs_path);
+						if (!ifs) return FALSE;
+
 						auto data = n_json::parse(ifs);
 
 						n_json root = {

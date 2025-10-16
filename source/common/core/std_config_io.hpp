@@ -22,7 +22,28 @@ namespace apn
 
 			try
 			{
+				// コンフィグファイルが存在しない場合は
+				if (!std::filesystem::exists(config_file_name))
+				{
+					// メッセージボックスを表示します。
+					error_handler.message_box(my::format(
+						L"{/}が存在しません", config_file_name));
+
+					return FALSE;
+				}
+
+				// コンフィグファイルを読み込みます。
 				std::ifstream ifs(config_file_name);
+
+				// コンフィグファイルを読み込めなかった場合は
+				if (!ifs)
+				{
+					// メッセージボックスを表示します。
+					error_handler.message_box(my::format(
+						L"{/}を読み込めませんでした", config_file_name));
+
+					return FALSE;
+				}
 
 				return read_stream(ifs);
 			}
@@ -56,6 +77,16 @@ namespace apn
 
 				// ストリームを開きます。
 				std::ofstream ofs(path);
+
+				// ストリームを開けなかった場合は
+				if (!ofs)
+				{
+					// メッセージボックスを表示します。
+					error_handler.message_box(my::format(
+						L"{/}を開けませんでした", config_file_name));
+
+					return FALSE;
+				}
 
 				// ストリームに書き込みます。
 				return write_stream(ofs);

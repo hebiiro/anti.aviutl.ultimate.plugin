@@ -160,6 +160,18 @@ public:
 		try
 		{
 			std::ifstream ifs(hive.spec_file_name);
+
+			// スペックファイルを読み込めなかった場合は
+			if (!ifs)
+			{
+				// メッセージボックスを表示します。
+				AfxMessageBox(my::format(
+					L"{/}を読み込めませんでした",
+					hive.spec_file_name).c_str());
+
+				return FALSE;
+			}
+
 			n_json root; ifs >> root;
 
 			if (hive.uninstall_old_version)
