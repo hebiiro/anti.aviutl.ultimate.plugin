@@ -121,6 +121,7 @@ lang: ja_JP
 | [dialog_position](./contents/addin/dialog_position.html) | ダイアログ位置調整 | ダイアログがモニター外に表示されないように調整します。 |
 | [dialog_size](./contents/addin/dialog_size.html) | ダイアログサイズ調整 | DPIに合わせてダイアログのサイズを調整します。 |
 | [optima](./contents/addin/optima.html) | 最適化 | aviutl等の一部の処理を最適化します。 |
+| [slimming](./contents/addin/slimming.html) | スリム化 | タイトルバーとメニューバーを一体化してスリムにします。 |
 
 ## 🎞️紹介動画
 
