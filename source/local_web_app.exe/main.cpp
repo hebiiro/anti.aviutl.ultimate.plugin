@@ -86,8 +86,16 @@ namespace apn::local_web_app
 
 				hive.current_file_path = dummy_path;
 			}
+			catch (const std::exception& error)
+			{
+				hive.message_box(my::ws(error.what()));
+
+				return -1;
+			}
 			catch (...)
 			{
+				hive.message_box(L"例外が発生しました");
+
 				return -1;
 			}
 		}
@@ -95,7 +103,7 @@ namespace apn::local_web_app
 		// アプリケーションを初期化します。
 		if (!app->init())
 		{
-			MY_TRACE("アプリケーションの初期化に失敗しました\n");
+			hive.message_box(L"アプリケーションの初期化に失敗しました");
 
 			return -1;
 		}
