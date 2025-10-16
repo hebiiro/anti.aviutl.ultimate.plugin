@@ -66,18 +66,24 @@ namespace apn::local_web_app
 				// ダミーファイルのパスを取得します。
 				dummy_path = orig_path + L".html";
 				MY_TRACE_STR(dummy_path);
-#if 1
-				// まず、作成先ファイルを削除します。
-				std::filesystem::remove(dummy_path);
 
-				// ダミーファイル(ハードリンク)を作成します。
-				std::filesystem::create_hard_link(orig_path, dummy_path);
-#else
-				// ダミーファイルを作成します。
-				std::filesystem::copy(orig_path, dummy_path,
-					std::filesystem::copy_options::overwrite_existing |
-					std::filesystem::copy_options::recursive);
-#endif
+				try
+				{
+					// まず、作成先ファイルを削除します。
+					std::filesystem::remove(dummy_path);
+
+					// ダミーファイル(ハードリンク)を作成します。
+					std::filesystem::create_hard_link(orig_path, dummy_path);
+				}
+				// ハードリンクを作成できなかった場合は
+				catch (...)
+				{
+					// 通常のダミーファイルを作成します。
+					std::filesystem::copy(orig_path, dummy_path,
+						std::filesystem::copy_options::overwrite_existing |
+						std::filesystem::copy_options::recursive);
+				}
+
 				hive.current_file_path = dummy_path;
 			}
 			catch (...)
