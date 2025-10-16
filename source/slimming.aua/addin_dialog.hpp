@@ -5,7 +5,7 @@ namespace apn::slimming
 	//
 	// このクラスはアドインダイアログです。
 	//
-	inline struct AddinDialog : AddinDialogInterface
+	inline struct AddinDialog : StdAddinDialog<IDD_MAIN_DIALOG>
 	{
 		//
 		// コンフィグを更新します。
