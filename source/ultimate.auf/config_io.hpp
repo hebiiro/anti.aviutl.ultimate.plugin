@@ -70,6 +70,7 @@ namespace apn
 			register_addin(L"S", L"dialog_position", L"ダイアログ位置調整", TRUE, L"", { L"AdjustDialogPosition.auf" });
 			register_addin(L"S", L"dialog_size", L"ダイアログサイズ調整", TRUE, L"", { L"BigDialog.aul" });
 			register_addin(L"S", L"optima", L"最適化", TRUE, L"", { L"combobox_patch.auf" });
+			register_addin(L"S", L"slimming", L"スリム化", TRUE, L"", {});
 
 			read_file(hive.config_file_name, hive);
 

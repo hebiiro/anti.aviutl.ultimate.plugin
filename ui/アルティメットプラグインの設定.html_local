@@ -283,6 +283,7 @@ const c_default_json = {
 		{ "active": "true", "display_name": "ダイアログ位置調整", "name": "dialog_position", "args": "" },
 		{ "active": "true", "display_name": "ダイアログサイズ調整", "name": "dialog_size", "args": "" },
 		{ "active": "true", "display_name": "最適化", "name": "optima", "args": "" },
+		{ "active": "true", "display_name": "スリム化", "name": "slimming", "args": "" },
 		{ "name": "" }
 	]
 };
