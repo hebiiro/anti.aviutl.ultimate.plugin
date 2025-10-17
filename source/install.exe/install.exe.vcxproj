@@ -187,8 +187,6 @@ copy /Y "$(VC_CppRuntimeFilesPath_x86)\Microsoft.VC143.CRT\*" "$(my_runtime_dir)
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -232,8 +230,6 @@ copy /Y "$(VC_CppRuntimeFilesPath_x86)\Microsoft.VC143.CRT\*" "$(my_runtime_dir)
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
