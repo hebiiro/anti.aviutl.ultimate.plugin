@@ -69,7 +69,7 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
     <Import Project="..\..\..\..\nuget.packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('..\..\..\..\nuget.packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
-    <Import Project="..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3405.78\build\native\Microsoft.Web.WebView2.targets" Condition="Exists('..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3405.78\build\native\Microsoft.Web.WebView2.targets')" />
+    <Import Project="..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3537.50\build\native\Microsoft.Web.WebView2.targets" Condition="Exists('..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3537.50\build\native\Microsoft.Web.WebView2.targets')" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -178,6 +178,6 @@
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\..\nuget.packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\nuget.packages\Microsoft.Windows.ImplementationLibrary.1.0.250325.1\build\native\Microsoft.Windows.ImplementationLibrary.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3405.78\build\native\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3405.78\build\native\Microsoft.Web.WebView2.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3537.50\build\native\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\nuget.packages\Microsoft.Web.WebView2.1.0.3537.50\build\native\Microsoft.Web.WebView2.targets'))" />
   </Target>
 </Project>
