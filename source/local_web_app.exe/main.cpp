@@ -74,6 +74,16 @@ namespace apn::local_web_app
 
 					// ダミーファイル(ハードリンク)を作成します。
 					std::filesystem::create_hard_link(orig_path, dummy_path);
+
+					// ハードリンクを作成できなかった場合は
+					if (!std::filesystem::exists(dummy_path))
+					{
+						// 例外を投げます。
+						throw std::filesystem::filesystem_error(
+							"ハードリンクの作成に失敗しました",
+							dummy_path,
+							std::make_error_code(std::errc::no_such_file_or_directory));
+					}
 				}
 				// ハードリンクを作成できなかった場合は
 				catch (...)
@@ -82,6 +92,16 @@ namespace apn::local_web_app
 					std::filesystem::copy(orig_path, dummy_path,
 						std::filesystem::copy_options::overwrite_existing |
 						std::filesystem::copy_options::recursive);
+				}
+
+				// ファイルを作成できなかった場合は
+				if (!std::filesystem::exists(dummy_path))
+				{
+					// 例外を投げます。
+					throw std::filesystem::filesystem_error(
+						"ダミーファイルの作成に失敗しました",
+						dummy_path,
+						std::make_error_code(std::errc::no_such_file_or_directory));
 				}
 
 				hive.current_file_path = dummy_path;
