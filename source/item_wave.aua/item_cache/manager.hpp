@@ -217,8 +217,18 @@ namespace apn::item_wave::item_cache
 			// 次回更新用に、アイテムキャッシュを準備します。
 			prepare(ctx);
 
-			// レイヤーを再描画します。
-			magi.exin.redraw_layers(ctx.redraw_layers);
+			// 再描画レイヤーを走査します。
+			for (auto redraw_layer : ctx.redraw_layers)
+			{
+				// 再描画レイヤーが有効の場合は
+				if (redraw_layer)
+				{
+					// レイヤーを再描画します。
+					magi.exin.redraw_layers(ctx.redraw_layers);
+
+					break;
+				}
+			}
 
 			// ファイルキャッシュの作成を促します。
 			file_cache::manager.yield();
