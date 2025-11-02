@@ -5,7 +5,7 @@ namespace apn::image_export
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct config_io_t : StdConfigIO
 	{
 		//
 		// 初期化処理を実行します。
@@ -67,12 +67,15 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			read_int(root, "quality", hive.quality);
 			read_label(root, "mode", hive.mode, hive.c_mode.labels);
 			read_string(root, "file_name", hive.file_name);
 			read_int(root, "index", hive.index);
 			read_int(root, "number_width", hive.number_width);
-			read_bool(root, "use_pargb", hive.use_pargb);
+			read_int(root, "quality", hive.quality);
+			read_bool(root, "flag_use_pargb", hive.flag_use_pargb);
+			read_string(root, "target_layer", hive.target_layer);
+			read_string(root, "frame_layer", hive.frame_layer);
+			read_string(root, "name_layer", hive.name_layer);
 			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -85,12 +88,15 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			write_int(root, "quality", hive.quality);
 			write_label(root, "mode", hive.mode, hive.c_mode.labels);
 			write_string(root, "file_name", hive.file_name);
 			write_int(root, "index", hive.index);
 			write_int(root, "number_width", hive.number_width);
-			write_bool(root, "use_pargb", hive.use_pargb);
+			write_int(root, "quality", hive.quality);
+			write_bool(root, "flag_use_pargb", hive.flag_use_pargb);
+			write_string(root, "target_layer", hive.target_layer);
+			write_string(root, "frame_layer", hive.frame_layer);
+			write_string(root, "name_layer", hive.name_layer);
 			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;

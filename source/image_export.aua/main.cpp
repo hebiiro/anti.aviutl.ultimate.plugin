@@ -2,10 +2,14 @@
 #include "resource.h"
 #include "app_interface.hpp"
 #include "hive.hpp"
+#include "utils.hpp"
+#include "executor/core.hpp"
+#include "executor/export.hpp"
+#include "executor/export_layer.hpp"
+#include "executor/copy.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
 #include "config_io.hpp"
-#include "executor.hpp"
 #include "app.hpp"
 #include "addin.hpp"
 
@@ -17,7 +21,7 @@ namespace apn::image_export
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		set_logger(args);
 
 		return &addin;
 	}

@@ -8,6 +8,9 @@
     <Filter Include="framework">
       <UniqueIdentifier>{4d49c3c3-420e-4610-9d8b-5a018f38fe18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="executor">
+      <UniqueIdentifier>{f0a99dca-a531-4cc2-977f-b62cb91f5990}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -20,16 +23,30 @@
     <ClInclude Include="resource.h">
       <Filter>resource</Filter>
     </ClInclude>
-    <ClInclude Include="executor.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="executor\copy.hpp">
+      <Filter>executor</Filter>
+    </ClInclude>
+    <ClInclude Include="executor\core.hpp">
+      <Filter>executor</Filter>
+    </ClInclude>
+    <ClInclude Include="executor\export.hpp">
+      <Filter>executor</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="executor\export_layer.hpp">
+      <Filter>executor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>framework</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="image_export.aua.rc">

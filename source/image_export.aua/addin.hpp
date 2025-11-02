@@ -5,7 +5,7 @@ namespace apn::image_export
 	//
 	// このクラスはフレームまたはアイテムの画像をエクスポートします。
 	//
-	inline struct ImageExport : Addin
+	inline struct image_export_t : Addin
 	{
 		//
 		// この仮想関数は、このアドインの識別名が必要なときに呼ばれます。

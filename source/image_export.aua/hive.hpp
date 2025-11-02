@@ -5,12 +5,12 @@ namespace apn::image_export
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
-	inline struct Hive
+	inline struct hive_t
 	{
 		inline static constexpr auto c_name = L"image_export";
 		inline static constexpr auto c_display_name = L"画像エクスポート";
 
-		inline static constexpr struct Mode {
+		inline static constexpr struct mode_t {
 			inline static constexpr int32_t c_manual = 0;
 			inline static constexpr int32_t c_auto = 1;
 			inline static constexpr int32_t c_overwrite = 2;
@@ -37,11 +37,6 @@ namespace apn::image_export
 		HWND main_window = nullptr;
 
 		//
-		// JPEGの出力品質です。
-		//
-		int32_t quality = 90;
-
-		//
 		// 出力モードです。
 		//
 		int32_t mode = c_mode.c_manual;
@@ -62,15 +57,35 @@ namespace apn::image_export
 		int32_t number_width = 6;
 
 		//
+		// JPEGの出力品質です。
+		//
+		int32_t quality = 90;
+
+		//
 		// TRUEの場合は乗算済みアルファでクリップボードにコピーします。
 		//
-		BOOL use_pargb = FALSE;
+		BOOL flag_use_pargb = FALSE;
+
+		//
+		// 対象レイヤーです。
+		//
+		std::wstring target_layer = L"";
+
+		//
+		// フレーム参照用のレイヤーです。
+		//
+		std::wstring frame_layer = L"";
+
+		//
+		// 名前参照用のレイヤーです。
+		//
+		std::wstring name_layer = L"";
 
 		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }

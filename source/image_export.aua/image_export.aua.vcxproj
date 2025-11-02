@@ -158,15 +158,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app_interface.hpp" />
-    <ClInclude Include="executor.hpp" />
     <ClInclude Include="app.hpp" />
     <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="executor\copy.hpp" />
+    <ClInclude Include="executor\core.hpp" />
+    <ClInclude Include="executor\export.hpp" />
+    <ClInclude Include="executor\export_layer.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
     <ClInclude Include="addin_window.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="addin.hpp" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

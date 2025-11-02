@@ -3,33 +3,9 @@
 namespace apn::image_export
 {
 	//
-	// このクラスはHive::Appの実装です。
+	// このクラスはアプリケーションの実装です。
 	//
-	inline struct App : AppInterface
+	inline struct app_t : app_interface_t
 	{
-		//
-		// コンストラクタです。
-		//
-		App() { app = this; }
-
-		virtual std::wstring browse() override
-		{
-			constexpr LPCSTR filter = "PNG / BMP / JPG / GIF / TIFF File\0*.png;*.bmp;*.jpg;*.gif;*.tiff\0All File (*.*)\0*.*\0";
-			constexpr LPCSTR def = nullptr;
-
-			char file_name[MAX_PATH] = {};
-			if (!magi.fp->exfunc->dlg_get_save_name(file_name, filter, def)) return {};
-			return my::ts(file_name);
-		}
-
-		virtual BOOL export_image(const std::wstring& file_name, BOOL has_alpha, BOOL sel_item_only) override
-		{
-			return Executor().export_image(file_name, has_alpha, sel_item_only);
-		}
-
-		virtual BOOL copy_image(BOOL has_alpha, BOOL sel_item_only) override
-		{
-			return Executor().copy_image(has_alpha, sel_item_only);
-		}
 	} app_impl;
 }

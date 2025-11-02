@@ -5,10 +5,8 @@ namespace apn::image_export
 	//
 	// このクラスはアドインダイアログです。
 	//
-	inline struct AddinDialog : StdAddinDialog<IDD_MAIN_DIALOG>
+	inline struct addin_dialog_t : StdAddinDialog<IDD_MAIN_DIALOG>
 	{
-		my::aviutl::SliderPanel<> quality;
-
 		//
 		// コントロールを更新します。
 		//
@@ -16,12 +14,15 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			quality.set_value(hive.quality);
 			set_combobox_index(IDC_MODE, hive.mode);
 			set_text(IDC_FILE_NAME, hive.file_name);
 			set_int(IDC_INDEX, hive.index);
 			set_int(IDC_NUMBER_WIDTH, hive.number_width);
-			set_check(IDC_USE_PARGB, hive.use_pargb);
+			set_int(IDC_QUALITY, hive.quality);
+			set_check(IDC_USE_PARGB, hive.flag_use_pargb);
+			set_text(IDC_TARGET_LAYER, hive.target_layer);
+			set_text(IDC_FRAME_LAYER, hive.frame_layer);
+			set_text(IDC_NAME_LAYER, hive.name_layer);
 		}
 
 		//
@@ -31,12 +32,15 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			quality.get_value(hive.quality);
 			get_combobox_index(IDC_MODE, hive.mode);
 			get_text(IDC_FILE_NAME, hive.file_name);
 			get_int(IDC_INDEX, hive.index);
 			get_int(IDC_NUMBER_WIDTH, hive.number_width);
-			get_check(IDC_USE_PARGB, hive.use_pargb);
+			get_int(IDC_QUALITY, hive.quality);
+			get_check(IDC_USE_PARGB, hive.flag_use_pargb);
+			get_text(IDC_TARGET_LAYER, hive.target_layer);
+			get_text(IDC_FRAME_LAYER, hive.frame_layer);
+			get_text(IDC_NAME_LAYER, hive.name_layer);
 		}
 
 		//
@@ -46,13 +50,11 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			quality.init(0, 100, *this, IDC_QUALITY_SLIDER, IDC_QUALITY);
-
 			init_combobox(IDC_MODE,
 				_T("保存の度に選択"),
 				_T("予め指定されたファイルに保存"),
 				_T("予め指定されたファイルに上書き保存"));
-
+#if 0
 			using namespace my::layout;
 
 			auto margin_value = 2;
@@ -138,6 +140,7 @@ namespace apn::image_export
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
 				node->add_pane(c_axis.c_horz, c_align.c_left, l_control, margin, ctrl(IDC_USE_PARGB));
 			}
+#endif
 		}
 
 		//
@@ -154,6 +157,8 @@ namespace apn::image_export
 			case IDC_EXPORT_FRAME_RGBA: export_image(TRUE, FALSE); break;
 			case IDC_EXPORT_ITEM_RGB: export_image(FALSE, TRUE); break;
 			case IDC_EXPORT_ITEM_RGBA: export_image(TRUE, TRUE); break;
+			case IDC_EXPORT_LAYER_RGB: export_layer_image(FALSE); break;
+			case IDC_EXPORT_LAYER_RGBA: export_layer_image(TRUE); break;
 			case IDC_COPY_FRAME_RGB: copy_image(FALSE, FALSE); break;
 			case IDC_COPY_FRAME_RGBA: copy_image(TRUE, FALSE); break;
 			case IDC_COPY_ITEM_RGB: copy_image(FALSE, TRUE); break;
@@ -161,18 +166,34 @@ namespace apn::image_export
 			case IDC_FILE_NAME_DIR: on_file_name_dir(); break;
 
 			// チェックボックス
-			case IDC_USE_PARGB: update_config(); break;
+			case IDC_USE_PARGB:
+				{
+					update_config();
 
+					break;
+				}
 			// エディットボックス
 			case IDC_FILE_NAME:
 			case IDC_INDEX:
-			case IDC_NUMBER_WIDTH: if (code == EN_CHANGE) update_config(); break;
+			case IDC_NUMBER_WIDTH:
+			case IDC_QUALITY:
+			case IDC_TARGET_LAYER:
+			case IDC_FRAME_LAYER:
+			case IDC_NAME_LAYER:
+				{
+					if (code == EN_CHANGE)
+						update_config();
 
-			// スライダー
-			case IDC_QUALITY: if (code == EN_CHANGE) hive.quality = quality.on_change_text(); break;
-
+					break;
+				}
 			// コンボボックス
-			case IDC_MODE: if (code == CBN_SELCHANGE) update_config(); break;
+			case IDC_MODE:
+				{
+					if (code == CBN_SELCHANGE)
+						update_config();
+
+					break;
+				}
 			}
 		}
 
@@ -232,7 +253,7 @@ namespace apn::image_export
 			case hive.c_mode.c_manual:
 				{
 					// ユーザーが選択したファイル名を返します。
-					return app->browse();
+					return utils::browse();
 				}
 			case hive.c_mode.c_auto:
 			case hive.c_mode.c_overwrite:
@@ -268,9 +289,17 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("{/}, {/}", has_alpha, sel_item_only);
 
-			auto file_name = get_file_name();
-			if (file_name.empty()) return FALSE;
-			return app->export_image(file_name.c_str(), has_alpha, sel_item_only);
+			return executor::export_t().export_image(get_file_name(), has_alpha, sel_item_only);
+		}
+
+		//
+		// レイヤー画像をファイルにエクスポートします。
+		//
+		BOOL export_layer_image(BOOL has_alpha)
+		{
+			MY_TRACE_FUNC("{/}", has_alpha);
+
+			return executor::export_layer_t().export_image(get_file_name(), has_alpha);
 		}
 
 		//
@@ -280,7 +309,7 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("{/}, {/}", has_alpha, sel_item_only);
 
-			return app->copy_image(has_alpha, sel_item_only);
+			return executor::copy_t().copy_image(has_alpha, sel_item_only);
 		}
 
 		//
@@ -290,32 +319,10 @@ namespace apn::image_export
 		{
 			MY_TRACE_FUNC("");
 
-			auto file_name = app->browse();
+			auto file_name = utils::browse();
 			if (file_name.empty()) return FALSE;
 
 			return set_text(IDC_FILE_NAME, file_name.c_str());
-		}
-
-		//
-		// ダイアログプロシージャです。
-		//
-		virtual INT_PTR on_dlg_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
-		{
-			switch (message)
-			{
-			case WM_HSCROLL:
-				{
-					MY_TRACE_FUNC("WM_HSCROLL, {/hex}, {/hex}", wParam, lParam);
-
-					auto control = (HWND)lParam;
-
-					if (control == quality.slider) hive.quality = quality.on_change_pos();
-
-					break;
-				}
-			}
-
-			return __super::on_dlg_proc(hwnd, message, wParam, lParam);
 		}
 	} addin_dialog;
 }
