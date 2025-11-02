@@ -96,7 +96,7 @@ namespace apn::item_wave
 			MY_TRACE_FUNC("");
 
 			init_combobox(IDC_WAVE_TYPE, _T("中央"), _T("下"), _T("上"));
-			init_combobox(IDC_UPDATE_MODE, _T("更新しない"), _T("更新する"), _T("再生中は更新しない"));
+			init_combobox(IDC_UPDATE_MODE, _T("更新しない"), _T("更新する"));
 			init_combobox(IDC_XOR_MODE, _T("通常"), _T("XOR"), _T("NotXOR"), _T("Not"));
 			init_combobox(IDC_VOLUME_MODE, _T("ピーク"), _T("RMS"));
 

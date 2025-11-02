@@ -44,11 +44,9 @@ namespace apn::item_wave
 		inline static constexpr struct UpdateMode {
 			inline static constexpr int32_t c_off = 0;
 			inline static constexpr int32_t c_on = 1;
-			inline static constexpr int32_t c_on_without_playing = 2;
 			inline static constexpr my::Label labels[] = {
 				{ c_off, L"off" },
 				{ c_on, L"on" },
-				{ c_on_without_playing, L"on_without_playing" },
 			};
 		} c_update_mode;
 

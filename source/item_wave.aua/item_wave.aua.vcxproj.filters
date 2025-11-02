@@ -65,7 +65,9 @@
     <ClCompile Include="pch.cpp">
       <Filter>framework</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def">

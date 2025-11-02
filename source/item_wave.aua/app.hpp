@@ -95,7 +95,7 @@ namespace apn::item_wave
 				{
 					return FALSE; // キャッシュの更新が無効化されている場合は何もしません。
 				}
-			case hive.c_update_mode.c_on_without_playing:
+			case hive.c_update_mode.c_on:
 				{
 					// 再生中の場合は何もしません。
 					if (magi.auin.is_playing()) return FALSE;
