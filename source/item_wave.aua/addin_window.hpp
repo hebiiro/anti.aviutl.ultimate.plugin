@@ -6,7 +6,7 @@ namespace apn::item_wave
 	// このクラスはアドインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	inline struct AddinWindow : StdAddinWindow
+	inline struct addin_window_t : StdAddinWindow
 	{
 		//
 		// 初期化処理を実行します。

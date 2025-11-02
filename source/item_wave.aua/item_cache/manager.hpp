@@ -5,18 +5,18 @@ namespace apn::item_wave::item_cache
 	//
 	// このクラスはアイテム毎のキャッシュを管理します。
 	//
-	inline struct Manager : Core, file_cache::Manager::Listener
+	inline struct manager_t : core_t, file_cache::manager_t::listener_t
 	{
 		//
 		// アイテムキャッシュのコレクションです。
 		// キーはオブジェクトのインデックスです。
 		//
-		std::map<int32_t, std::shared_ptr<Node>> caches;
+		std::map<int32_t, std::shared_ptr<node_t>> caches;
 
 		//
 		// コンストラクタです。
 		//
-		Manager() { core = this; }
+		manager_t() { core = this; }
 
 		//
 		// 初期化処理を実行します。
@@ -41,7 +41,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 無効なアイテムキャッシュを削除します。
 		//
-		BOOL clean(Context& ctx)
+		BOOL clean(context_t& ctx)
 		{
 			MY_TRACE_FUNC("");
 
@@ -77,7 +77,7 @@ namespace apn::item_wave::item_cache
 		//
 		// カレントシーンのアイテムキャッシュを更新します。
 		//
-		BOOL refresh(Context& ctx)
+		BOOL refresh(context_t& ctx)
 		{
 			MY_TRACE_FUNC("");
 
@@ -88,7 +88,7 @@ namespace apn::item_wave::item_cache
 		//
 		// アイテムキャッシュを準備します。
 		//
-		BOOL prepare(Context& ctx)
+		BOOL prepare(context_t& ctx)
 		{
 			MY_TRACE_FUNC("");
 
@@ -111,7 +111,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 指定されたアイテムに対応するアイテムキャシュを返します。
 		//
-		virtual std::shared_ptr<Node> get(int32_t object_index) override
+		virtual std::shared_ptr<node_t> get(int32_t object_index) override
 		{
 //			MY_TRACE_FUNC("{/}", object_index);
 
@@ -123,7 +123,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 指定されたアイテムに対応するアイテムキャッシュを作成して返します。
 		//
-		virtual std::shared_ptr<Node> create(int32_t object_index) override
+		virtual std::shared_ptr<node_t> create(int32_t object_index) override
 		{
 //			MY_TRACE_FUNC("{/}", object_index);
 
@@ -133,8 +133,8 @@ namespace apn::item_wave::item_cache
 			// 先頭のフィルタIDで分岐します。
 			switch (object->filter_param[0].id)
 			{
-			case c_audio_file_filter_id: return caches[object_index] = std::make_shared<AudioFile>();
-			case c_scene_audio_filter_id: return caches[object_index] = std::make_shared<SceneAudio>();
+			case c_audio_file_filter_id: return caches[object_index] = std::make_shared<audio_file_t>();
+			case c_scene_audio_filter_id: return caches[object_index] = std::make_shared<scene_audio_t>();
 			}
 
 			return nullptr;
@@ -153,7 +153,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 対象シーンのアイテムキャッシュを更新します。
 		//
-		virtual BOOL refresh_scene(Context& ctx, int32_t target_scene_index) override
+		virtual BOOL refresh_scene(context_t& ctx, int32_t target_scene_index) override
 		{
 //			MY_TRACE_FUNC("{/}", target_scene_index);
 
@@ -206,7 +206,7 @@ namespace apn::item_wave::item_cache
 			MY_TRACE_FUNC("");
 
 			// コンテキストを作成します。
-			auto ctx = Context { magi.exin.get_object_indexes() };
+			auto ctx = context_t { magi.exin.get_object_indexes() };
 
 			// 不要なアイテムキャッシュを削除します。
 			clean(ctx);

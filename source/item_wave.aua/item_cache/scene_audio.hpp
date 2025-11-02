@@ -5,12 +5,12 @@ namespace apn::item_wave::item_cache
 	//
 	// このクラスはシーン(音声)アイテムのキャッシュです。
 	//
-	struct SceneAudio : Node
+	struct scene_audio_t : node_t
 	{
 		//
 		// このクラスはアイテムのプロパティです。
 		//
-		struct Prop
+		struct prop_t
 		{
 			int32_t frame_begin = 0;
 			int32_t frame_end = 0;
@@ -25,7 +25,7 @@ namespace apn::item_wave::item_cache
 			//
 			// 指定されたアイテムのプロパティが等しい場合はTRUEを返します。
 			//
-			inline friend BOOL operator==(const Prop& lhs, const Prop& rhs)
+			inline friend BOOL operator==(const prop_t& lhs, const prop_t& rhs)
 			{
 				return !operator!=(lhs, rhs);
 			}
@@ -33,7 +33,7 @@ namespace apn::item_wave::item_cache
 			//
 			// 指定されたアイテムのプロパティが異なる場合はTRUEを返します。
 			//
-			inline friend BOOL operator!=(const Prop& lhs, const Prop& rhs)
+			inline friend BOOL operator!=(const prop_t& lhs, const prop_t& rhs)
 			{
 				if (lhs.loop != rhs.loop) return TRUE;
 				if (lhs.link != rhs.link) return TRUE;
@@ -50,7 +50,7 @@ namespace apn::item_wave::item_cache
 		//
 		// アイテムのプロパティです。
 		//
-		std::optional<Prop> prop;
+		std::optional<prop_t> prop;
 
 		//
 		// 音量が作成済みの場合はTRUEになります。
@@ -60,7 +60,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 指定されたアイテムのプロパティを返します。
 		//
-		inline static std::optional<Prop> get_prop(const Context& ctx, int32_t object_index)
+		inline static std::optional<prop_t> get_prop(const context_t& ctx, int32_t object_index)
 		{
 			// アイテムを取得します。
 			auto object = magi.exin.get_object(object_index);
@@ -78,7 +78,7 @@ namespace apn::item_wave::item_cache
 			auto play_begin_index = object->filter_param[scene_audio_filter_index].track_begin + 0;
 			auto play_speed_index = object->filter_param[scene_audio_filter_index].track_begin + 1;
 
-			auto prop = Prop {};
+			auto prop = prop_t {};
 			prop.loop = object->check_value[0];
 			prop.link = object->check_value[1];
 
@@ -123,7 +123,7 @@ namespace apn::item_wave::item_cache
 		//
 		// シーン(音声)アイテムと連携しているシーンアイテムを返します。
 		//
-		inline static ExEdit::Object* get_scene_item(const Context& ctx, ExEdit::Object* object)
+		inline static ExEdit::Object* get_scene_item(const context_t& ctx, ExEdit::Object* object)
 		{
 			auto result = (ExEdit::Object*)nullptr;
 			auto distance = 100;
@@ -181,7 +181,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 音量を用意できた場合はTRUEを返します。
 		//
-		virtual BOOL refresh(Context& ctx, int32_t self_object_index) override
+		virtual BOOL refresh(context_t& ctx, int32_t self_object_index) override
 		{
 			{
 				// アイテムのプロパティを取得します。
@@ -260,7 +260,7 @@ namespace apn::item_wave::item_cache
 		//
 		// アイテムキャッシュを準備します。
 		//
-		virtual BOOL prepare(Context& ctx, int32_t self_object_index) override
+		virtual BOOL prepare(context_t& ctx, int32_t self_object_index) override
 		{
 			// アイテムのプロパティが無効の場合は何もしません。
 			if (!prop) return FALSE;

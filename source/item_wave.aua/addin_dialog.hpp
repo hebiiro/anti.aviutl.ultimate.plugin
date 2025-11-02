@@ -27,7 +27,7 @@ namespace apn::item_wave
 	//
 	// このクラスはアドインダイアログです。
 	//
-	inline struct AddinDialog : StdAddinDialog<IDD_MAIN_DIALOG>
+	inline struct addin_dialog_t : StdAddinDialog<IDD_MAIN_DIALOG>
 	{
 		//
 		// コントロールを更新します。

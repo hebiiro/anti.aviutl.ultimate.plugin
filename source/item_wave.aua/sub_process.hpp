@@ -5,7 +5,7 @@ namespace apn::item_wave
 	//
 	// このクラスはサブプロセスです。
 	//
-	struct SubProcess
+	struct sub_process_t
 	{
 		HANDLE job_object = {};
 		PROCESS_INFORMATION pi = {};
@@ -13,7 +13,7 @@ namespace apn::item_wave
 		//
 		// コンストラクタです。
 		//
-		SubProcess(const std::wstring& dir, const std::wstring& arg_command_line, BOOL show = TRUE)
+		sub_process_t(const std::wstring& dir, const std::wstring& arg_command_line, BOOL show = TRUE)
 		{
 			// ジョブオブジェクトを作成します。
 			job_object = ::CreateJobObject({}, {});
@@ -56,7 +56,7 @@ namespace apn::item_wave
 		//
 		// デストラクタです。
 		//
-		~SubProcess()
+		~sub_process_t()
 		{
 			// サブプロセスのハンドルを閉じます。
 			::CloseHandle(job_object);

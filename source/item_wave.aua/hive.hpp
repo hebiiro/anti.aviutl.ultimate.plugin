@@ -25,12 +25,12 @@ namespace apn::item_wave
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
-	inline struct Hive
+	inline struct hive_t
 	{
 		inline static constexpr auto c_name = L"item_wave";
 		inline static constexpr auto c_display_name = L"アイテム波形";
 
-		inline static constexpr struct WaveType {
+		inline static constexpr struct wave_type_t {
 			inline static constexpr int32_t c_center = 0;
 			inline static constexpr int32_t c_bottom_up = 1;
 			inline static constexpr int32_t c_top_down = 2;
@@ -41,7 +41,7 @@ namespace apn::item_wave
 			};
 		} c_wave_type;
 
-		inline static constexpr struct UpdateMode {
+		inline static constexpr struct update_mode_t {
 			inline static constexpr int32_t c_off = 0;
 			inline static constexpr int32_t c_on = 1;
 			inline static constexpr my::Label labels[] = {
@@ -50,7 +50,7 @@ namespace apn::item_wave
 			};
 		} c_update_mode;
 
-		inline static constexpr struct XORMode {
+		inline static constexpr struct xor_mode_t {
 			inline static constexpr int32_t c_none = 0;
 			inline static constexpr int32_t c_xor = 1;
 			inline static constexpr int32_t c_not_xor = 2;
@@ -63,7 +63,7 @@ namespace apn::item_wave
 			};
 		} c_xor_mode;
 
-		inline static constexpr struct VolumeMode {
+		inline static constexpr struct volume_mode_t {
 			inline static constexpr int32_t c_peak = 0;
 			inline static constexpr int32_t c_rms = 1;
 			inline static constexpr my::Label labels[] = {

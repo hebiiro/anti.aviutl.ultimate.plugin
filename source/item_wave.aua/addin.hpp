@@ -5,7 +5,7 @@ namespace apn::item_wave
 	//
 	// このクラスはタイムラインアイテム内に波形を表示します。
 	//
-	inline struct ItemWave : Addin
+	inline struct item_wave_t : Addin
 	{
 		//
 		// この仮想関数は、このアドインの識別名が必要なときに呼ばれます。

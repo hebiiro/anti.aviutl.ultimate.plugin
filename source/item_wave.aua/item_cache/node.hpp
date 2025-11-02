@@ -56,12 +56,12 @@ namespace apn::item_wave::item_cache
 	//
 	// このクラスはアイテム毎のキャッシュです。
 	//
-	struct Node
+	struct node_t
 	{
 		//
 		// フレーム毎の音量の配列です。
 		//
-		std::vector<share::Volume> volumes;
+		std::vector<share::volume_t> volumes;
 
 		//
 		// この仮想関数は、アイテムキャッシュが有効かどうか確認するために呼び出されます。
@@ -71,11 +71,11 @@ namespace apn::item_wave::item_cache
 		//
 		// この仮想関数は、アイテムキャッシュを更新するために呼び出されます。
 		//
-		virtual BOOL refresh(Context& ctx, int32_t self_object_index) = 0;
+		virtual BOOL refresh(context_t& ctx, int32_t self_object_index) = 0;
 
 		//
 		// この仮想関数は、アイテムキャッシュを準備するために呼び出されます。
 		//
-		virtual BOOL prepare(Context& ctx, int32_t self_object_index) = 0;
+		virtual BOOL prepare(context_t& ctx, int32_t self_object_index) = 0;
 	};
 }

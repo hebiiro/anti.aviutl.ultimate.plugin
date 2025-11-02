@@ -5,12 +5,12 @@ namespace apn::item_wave::item_cache
 	//
 	// このクラスは音声ファイルアイテムのキャッシュです。
 	//
-	struct AudioFile : Node
+	struct audio_file_t : node_t
 	{
 		//
 		// このクラスはアイテムのプロパティです。
 		//
-		struct Prop
+		struct prop_t
 		{
 			int32_t frame_begin = 0;
 			int32_t frame_end = 0;
@@ -22,12 +22,12 @@ namespace apn::item_wave::item_cache
 			float play_begin = 0.0f;
 			float play_speed = 1.0f;
 
-			std::shared_ptr<file_cache::Node> file_cache;
+			std::shared_ptr<file_cache::node_t> file_cache;
 
 			//
 			// 指定されたアイテムのプロパティが等しい場合はTRUEを返します。
 			//
-			inline friend BOOL operator==(const Prop& lhs, const Prop& rhs)
+			inline friend BOOL operator==(const prop_t& lhs, const prop_t& rhs)
 			{
 				return !operator!=(lhs, rhs);
 			}
@@ -35,7 +35,7 @@ namespace apn::item_wave::item_cache
 			//
 			// 指定されたアイテムのプロパティが異なる場合はTRUEを返します。
 			//
-			inline friend BOOL operator!=(const Prop& lhs, const Prop& rhs)
+			inline friend BOOL operator!=(const prop_t& lhs, const prop_t& rhs)
 			{
 				if (lhs.loop != rhs.loop) return TRUE;
 				if (lhs.link != rhs.link) return TRUE;
@@ -52,12 +52,12 @@ namespace apn::item_wave::item_cache
 		//
 		// アイテムのプロパティです。
 		//
-		std::optional<Prop> prop;
+		std::optional<prop_t> prop;
 
 		//
 		// 指定されたアイテムのプロパティを返します。
 		//
-		inline static std::optional<Prop> get_prop(const Context& ctx, int32_t object_index)
+		inline static std::optional<prop_t> get_prop(const context_t& ctx, int32_t object_index)
 		{
 			// アイテムを取得します。
 			auto object = magi.exin.get_object(object_index);
@@ -75,7 +75,7 @@ namespace apn::item_wave::item_cache
 			auto play_begin_index = object->filter_param[audio_file_filter_index].track_begin + 0;
 			auto play_speed_index = object->filter_param[audio_file_filter_index].track_begin + 1;
 
-			auto prop = Prop {};
+			auto prop = prop_t {};
 			prop.loop = object->check_value[0];
 			prop.link = object->check_value[1];
 
@@ -123,7 +123,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 音声ファイルアイテムと連携している動画ファイルアイテムを返します。
 		//
-		inline static ExEdit::Object* get_movie_file_item(const Context& ctx, ExEdit::Object* object)
+		inline static ExEdit::Object* get_movie_file_item(const context_t& ctx, ExEdit::Object* object)
 		{
 			auto result = (ExEdit::Object*)nullptr;
 			auto distance = 100;
@@ -180,7 +180,7 @@ namespace apn::item_wave::item_cache
 		//
 		// 音量を用意できた場合はTRUEを返します。
 		//
-		virtual BOOL refresh(Context& ctx, int32_t self_object_index) override
+		virtual BOOL refresh(context_t& ctx, int32_t self_object_index) override
 		{
 			{
 				// アイテムのプロパティを取得します。
@@ -242,7 +242,7 @@ namespace apn::item_wave::item_cache
 			auto fps = (float)hive.current_fi.video_rate / hive.current_fi.video_scale;
 
 			// フレームレート変換倍率を算出します。
-			auto scale = share::Volume::c_resolution / fps;
+			auto scale = share::volume_t::c_resolution / fps;
 
 			// アイテムのフレーム数を取得します。
 			auto c = object->frame_end + 1 - object->frame_begin;
@@ -283,7 +283,7 @@ namespace apn::item_wave::item_cache
 		//
 		// アイテムキャッシュを準備します。
 		//
-		virtual BOOL prepare(Context& ctx, int32_t self_object_index) override
+		virtual BOOL prepare(context_t& ctx, int32_t self_object_index) override
 		{
 			// アイテムのプロパティが無効の場合は何もしません。
 			if (!prop) return FALSE;

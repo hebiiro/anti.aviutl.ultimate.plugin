@@ -5,13 +5,13 @@ namespace apn::item_wave::file_cache
 	//
 	// このクラスはファイル毎のキャッシュを管理します。
 	//
-	inline struct Manager : my::Window
+	inline struct manager_t : my::Window
 	{
-		inline static constexpr struct Message {
+		inline static constexpr struct message_t {
 			inline static constexpr uint32_t c_receive = WM_APP + 2025;
 		} c_message;
 
-		struct Listener {
+		struct listener_t {
 			virtual BOOL on_file_cache_changed(const std::filesystem::path& file_name) = 0;
 		} *listener = {};
 
@@ -23,7 +23,7 @@ namespace apn::item_wave::file_cache
 		//
 		// ファイルキャッシュのコレクションです。
 		//
-		std::unordered_map<std::filesystem::path, std::shared_ptr<Node>> caches;
+		std::unordered_map<std::filesystem::path, std::shared_ptr<node_t>> caches;
 
 		//
 		// 稼働中のスレッドのコレクションです。
@@ -38,7 +38,7 @@ namespace apn::item_wave::file_cache
 		//
 		// レスポンスのコレクションです。
 		//
-		std::unordered_map<std::filesystem::path, std::shared_ptr<Node>> responses;
+		std::unordered_map<std::filesystem::path, std::shared_ptr<node_t>> responses;
 
 		//
 		// コレクション(マップ)のキーを返します。
@@ -51,7 +51,7 @@ namespace apn::item_wave::file_cache
 		//
 		// 初期化処理を実行します。
 		//
-		BOOL init(Listener* listener)
+		BOOL init(listener_t* listener)
 		{
 			MY_TRACE_FUNC("");
 
@@ -94,7 +94,7 @@ namespace apn::item_wave::file_cache
 		//
 		// ファイルキャッシュを返します。
 		//
-		std::shared_ptr<Node> get(const std::filesystem::path& file_name)
+		std::shared_ptr<node_t> get(const std::filesystem::path& file_name)
 		{
 			MY_TRACE_FUNC("{/}", file_name);
 
@@ -176,7 +176,7 @@ namespace apn::item_wave::file_cache
 		//
 		// ファイルキャッシュを作成します。
 		//
-		std::shared_ptr<Node> create(const std::filesystem::path& file_name)
+		std::shared_ptr<node_t> create(const std::filesystem::path& file_name)
 		{
 			MY_TRACE_FUNC("{/}", file_name);
 
@@ -201,7 +201,7 @@ namespace apn::item_wave::file_cache
 				reader_process_file_path, volume_mode, file_name, pipe_name);
 
 			// リーダープロセスを作成します。
-			SubProcess reader_process(reader_process_folder_path, command_line, FALSE);
+			sub_process_t reader_process(reader_process_folder_path, command_line, FALSE);
 
 			// リーダープロセスを開始します。
 			// リーダープロセスを開始できなかった場合はnullptrを返します。
@@ -211,7 +211,7 @@ namespace apn::item_wave::file_cache
 			::ConnectNamedPipe(pipe.get(), nullptr);
 
 			// ファイルキャッシュを作成します。
-			auto cache = std::make_shared<Node>();
+			auto cache = std::make_shared<node_t>();
 
 			// パイプから計算結果を読み込みます。
 			{

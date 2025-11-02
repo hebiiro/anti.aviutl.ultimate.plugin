@@ -2,7 +2,10 @@
 
 namespace apn::item_wave::reader
 {
-	inline struct App
+	//
+	// このクラスはアプリケーションです。
+	//
+	inline struct app_t
 	{
 		//
 		// メイン処理を実行します。
@@ -49,7 +52,7 @@ namespace apn::item_wave::reader
 				{
 					auto start_time = ::timeGetTime();
 					{
-						mft::Session session;
+						mft::session_t session;
 
 						session.init(file_name);
 

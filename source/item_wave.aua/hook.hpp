@@ -5,7 +5,7 @@ namespace apn::item_wave
 	//
 	// このクラスはフックを管理します。
 	//
-	inline struct HookManager
+	inline struct hook_manager_t
 	{
 		//
 		// 描画中のアイテムのインデックスです。
@@ -55,7 +55,7 @@ namespace apn::item_wave
 		//
 		// 音量をボトムアップY座標に変換して返します。
 		//
-		inline static int32_t bottom_up_y_from_volume(const share::Volume& volume, int32_t origin, int32_t scale)
+		inline static int32_t bottom_up_y_from_volume(const share::volume_t& volume, int32_t origin, int32_t scale)
 		{
 			return origin - (int32_t)(volume.to_real() * scale);
 		}
@@ -63,7 +63,7 @@ namespace apn::item_wave
 		//
 		// 音量をトップダウンY座標に変換して返します。
 		//
-		inline static int32_t top_down_y_from_volume(const share::Volume& volume, int32_t origin, int32_t scale)
+		inline static int32_t top_down_y_from_volume(const share::volume_t& volume, int32_t origin, int32_t scale)
 		{
 			return origin + (int32_t)(volume.to_real() * scale);
 		}

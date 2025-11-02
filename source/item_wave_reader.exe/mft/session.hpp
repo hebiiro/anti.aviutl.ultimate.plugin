@@ -5,7 +5,7 @@ namespace mft
 	//
 	// このクラスはセッションです。
 	//
-	struct Session
+	struct session_t
 	{
 		inline static constexpr auto c_fps = 60;
 

@@ -5,13 +5,8 @@ namespace apn::item_wave
 	//
 	// このクラスはアプリケーションです。
 	//
-	inline struct App : AppInterface
+	inline struct app_t : app_interface_t
 	{
-		//
-		// コンストラクタです。
-		//
-		App() { app = this; }
-
 		//
 		// 初期化処理を実行します。
 		//

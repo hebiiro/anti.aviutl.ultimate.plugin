@@ -5,7 +5,7 @@ namespace apn::item_wave::share
 	//
 	// このクラスは音量です。
 	//
-	struct Volume
+	struct volume_t
 	{
 		inline static constexpr int32_t c_resolution = 60; // 時間軸方向の分解能をFPSで指定します。
 

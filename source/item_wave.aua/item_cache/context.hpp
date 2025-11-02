@@ -5,7 +5,7 @@ namespace apn::item_wave::item_cache
 	//
 	// このクラスはアイテムキャッシュのコンテキストです。
 	//
-	struct Context
+	struct context_t
 	{
 		//
 		// アイテムインデックスのコレクションです。
