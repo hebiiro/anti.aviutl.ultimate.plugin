@@ -45,15 +45,15 @@ namespace apn::item_wave::reader
 			{
 				std::vector<uint8_t> volumes;
 
-				// ffmpegを使用して音量を算出します。
+				// Media Foundationを使用して音量を算出します。
 				{
 					auto start_time = ::timeGetTime();
 					{
-						ffmpeg::Session session;
+						mft::Session session;
 
-						session.init(my::wide_to_cp(file_name, CP_UTF8));
+						session.init(file_name);
 
-						volumes = session.extract_volumes(my::wide_to_cp(compute_mode, CP_UTF8));
+						volumes = session.extract_volumes(compute_mode);
 
 						session.reset();
 					}

@@ -1,6 +1,5 @@
 ﻿#include "pch.h"
-#include "ffmpeg/common.hpp"
-#include "ffmpeg/session.hpp"
+#include "mft/session.hpp"
 #include "app.hpp"
 
 namespace apn::item_wave::reader
@@ -57,11 +56,11 @@ namespace apn::item_wave::reader
 			}
 		}
 	};
-}
 
-int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
-{
-	apn::item_wave::reader::WinMain win_main;
+	EXTERN_C int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
+	{
+		WinMain win_main;
 
-	return win_main.main(instance, prev_instance, cmd_line, cmd_show);
+		return win_main.main(instance, prev_instance, cmd_line, cmd_show);
+	}
 }

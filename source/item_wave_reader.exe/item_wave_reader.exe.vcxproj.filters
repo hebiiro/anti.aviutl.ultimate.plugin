@@ -8,8 +8,8 @@
     <Filter Include="framework">
       <UniqueIdentifier>{f95ce0ad-ebd4-47eb-b223-5de909ac6087}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ffmpeg">
-      <UniqueIdentifier>{40e6e380-eac8-4a4e-80ae-aa816b306ba5}</UniqueIdentifier>
+    <Filter Include="mft">
+      <UniqueIdentifier>{692a7340-6952-40bc-b92e-dc7890fbb679}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -17,18 +17,17 @@
       <Filter>framework</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
-    <ClInclude Include="ffmpeg\common.hpp">
-      <Filter>ffmpeg</Filter>
-    </ClInclude>
-    <ClInclude Include="ffmpeg\session.hpp">
-      <Filter>ffmpeg</Filter>
+    <ClInclude Include="mft\session.hpp">
+      <Filter>mft</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>framework</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def">

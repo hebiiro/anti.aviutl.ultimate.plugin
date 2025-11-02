@@ -155,8 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="app.hpp" />
-    <ClInclude Include="ffmpeg\common.hpp" />
-    <ClInclude Include="ffmpeg\session.hpp" />
+    <ClInclude Include="mft\session.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
