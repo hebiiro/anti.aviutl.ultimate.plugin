@@ -113,7 +113,7 @@ namespace apn
 		//
 		virtual BOOL read_stream(std::ifstream& ifs)
 		{
-			nlohmann::json root;
+			n_json root;
 			ifs >> root;
 			return read_node(root);
 		}
@@ -121,7 +121,7 @@ namespace apn
 		//
 		// 指定されたノードからコンフィグを読み込みます。
 		//
-		virtual BOOL read_node(nlohmann::json& root)
+		virtual BOOL read_node(n_json& root)
 		{
 			return TRUE;
 		}
@@ -131,7 +131,7 @@ namespace apn
 		//
 		virtual BOOL write_stream(std::ofstream& ofs)
 		{
-			nlohmann::json root;
+			n_json root;
 			write_node(root);
 			ofs << root.dump(1, '\t');
 			return TRUE;
@@ -140,7 +140,7 @@ namespace apn
 		//
 		// 指定されたノードにコンフィグを書き込みます。
 		//
-		virtual BOOL write_node(nlohmann::json& root)
+		virtual BOOL write_node(n_json& root)
 		{
 			return TRUE;
 		}

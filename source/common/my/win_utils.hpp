@@ -630,6 +630,19 @@ namespace my
 	}
 
 	//
+	// ウィンドウハンドルを文字列化して返します。
+	//
+	inline std::wstring hwnd_to_string(HWND hwnd)
+	{
+#if 1
+		return my::format(L"({/hex}, {/})", hwnd, my::get_class_name(hwnd));
+#else
+		return my::format(L"({/hex}, {/}, {/})", hwnd,
+			my::get_window_text(hwnd), my::get_class_name(hwnd));
+#endif
+	}
+
+	//
 	// ウィンドウスタイルを文字列に変換して返します。
 	//
 	inline std::wstring style_to_string(DWORD style, const std::wstring& class_name)

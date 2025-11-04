@@ -5,7 +5,7 @@ namespace my
 	//
 	// このクラスはスリムバーです。
 	//
-	struct slimbar_t : my::Window
+	struct slimbar_t : my::WindowT<slimbar_t>
 	{
 		//
 		// ウィンドウメッセージです。

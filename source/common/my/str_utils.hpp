@@ -209,6 +209,7 @@ namespace my
 	inline auto get_window_text(HWND hwnd)
 	{
 		const auto buffer_length = ::GetWindowTextLength(hwnd) + 1;
+		if (buffer_length <= 0) return tstring {};
 		tstring buffer(buffer_length, _T('\0'));
 		::GetWindowText(hwnd, buffer.data(), (int)buffer.length());
 		buffer.resize(buffer_length - 1);

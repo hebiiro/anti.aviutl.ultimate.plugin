@@ -168,7 +168,7 @@ namespace apn::note
 			{
 				auto project_text = my::get_window_text(project_note.richedit);
 
-				nlohmann::json note_node;
+				n_json note_node;
 				write_string(note_node, "project_text", project_text);
 				save_data = my::cp_to_wide(note_node.dump(), CP_UTF8);
 

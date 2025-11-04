@@ -99,9 +99,11 @@ namespace my
 			{
 			case WM_NCDESTROY:
 				{
-					auto lr = ::DefSubclassProc(hwnd, message, wParam, lParam);
+//					MY_TRACE_FUNC("{/}, {/}", my::hwnd_to_string(hwnd), my::message_to_string(message));
+
 					post_nc_destroy();
-					return lr;
+
+					break;
 				}
 			}
 

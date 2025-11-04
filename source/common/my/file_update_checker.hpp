@@ -96,6 +96,13 @@ namespace my
 			init(file_name, hwnd, handler);
 		}
 
+		//
+		// デストラクタです。
+		//
+		virtual ~FileUpdateChecker2()
+		{
+		}
+
 		void init(LPCWSTR file_name, HWND hwnd, Handler* handler)
 		{
 			__super::init(file_name);
@@ -117,5 +124,45 @@ namespace my
 		{
 			::KillTimer(hwnd, (UINT_PTR)this);
 		}
+	};
+
+	//
+	// このクラスはファイルウォッチャーの基本クラスです。
+	//
+	using FileWatcherBase = FileUpdateChecker2;
+
+	//
+	// このクラスは指定されたファイルが更新されたときに
+	// 指定された関数オブジェクトを実行します。
+	//
+	template <typename T>
+	struct FileWatcher : FileWatcherBase, FileWatcherBase::Handler
+	{
+		//
+		// ファイルの更新をハンドルする関数オブジェクトです。
+		//
+		T func;
+
+		//
+		// コンストラクタです。
+		//
+		FileWatcher(LPCWSTR file_name, HWND hwnd, T func)
+			: func(func)
+		{
+			__super::init(file_name, hwnd, this);
+		}
+
+		//
+		// デストラクタです。
+		//
+		virtual ~FileWatcher() override
+		{
+			__super::exit();
+		}
+
+		//
+		// ファイルの更新をハンドルして関数オブジェクトにバイパスします。
+		//
+		virtual void on_file_update(FileWatcherBase* watcher) override { func(); }
 	};
 }
