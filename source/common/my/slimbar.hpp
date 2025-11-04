@@ -573,21 +573,12 @@ namespace my
 			// ウィンドウが最大化される場合は
 			if (!(wp->flags & SWP_NOMOVE) && !(wp->flags & SWP_NOSIZE) && ::IsZoomed(hwnd))
 			{
-				// このタイミングだとウィンドウは最大化されていますが、
-				// ウィンドウ位置は(-32000, -32000)のように無効な数値になっているので
-				// ::MonitorFromWindow()が正常に動作しません。
 #if 1
-				// ウィンドウ矩形を取得します。
-				auto window_rc = RECT { wp->x, wp->y, wp->x + wp->cx, wp->y + wp->cy };
-
-				// ウィンドウ矩形が存在するモニタを取得します。
-				auto monitor = ::MonitorFromRect(&window_rc, MONITOR_DEFAULTTONEAREST);
+				// マウスカーソルが存在するモニタを取得します。
+				auto monitor = ::MonitorFromPoint(my::get_cursor_pos(), MONITOR_DEFAULTTONEAREST);
 #else
-				// ウィンドウの中心座標を取得します。
-				auto center_of_window = POINT { wp->x + wp->cx / 2, wp->y + wp->cy / 2 };
-
-				// ウィンドウの中心座標が存在するモニタを取得します。
-				auto monitor = ::MonitorFromPoint(center_of_window, MONITOR_DEFAULTTONEAREST);
+				// ウィンドウが存在するモニタを取得します。
+				auto monitor = ::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 #endif
 				// モニタ情報を取得します。
 				MONITORINFOEX mi = { sizeof(mi) };
@@ -597,7 +588,7 @@ namespace my
 				auto rc = mi.rcWork;
 
 				// 最大化位置になるように矩形を広げます。
-				::InflateRect(&rc, -wp->x, -wp->y);
+				::InflateRect(&rc, rc.left - wp->x, rc.top - wp->y);
 
 				// 算出した矩形をウィンドウ位置に設定します。
 				wp->x = rc.left;
