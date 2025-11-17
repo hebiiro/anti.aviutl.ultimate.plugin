@@ -316,6 +316,19 @@ namespace apn::image_export::executor
 					targets.emplace_back(object, frame_object, name_object);
 				}
 
+				{
+					// メッセージボックスに表示する文字列です。
+					auto s = my::format(
+						L"\"{/}\"\n"
+						L"フォルダ内に\"{/}.exo\"と{/}個の画像ファイルを作成します\n"
+						L"続行しますか？"
+						, directory, stem, targets.size());
+
+					// 処理を実行するかユーザーに確認します。
+					if (IDYES != hive.message_box(s, hive.main_window, MB_YESNO))
+						return FALSE;
+				}
+
 				// exoファイルのパスを取得します。
 				auto exo_path = directory / (stem + L".exo");
 
