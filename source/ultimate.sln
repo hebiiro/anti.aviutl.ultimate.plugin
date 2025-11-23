@@ -185,6 +185,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "text_editor.aua", "text_edi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "slimming.aua", "slimming.aua\slimming.aua.vcxproj", "{59EB9DE9-80D4-47E2-A428-C1BA1E050709}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sprintfmt", "sprintfmt", "{DDB4EF12-CC4E-5E88-E6FC-71A802F4DE97}"
+	ProjectSection(SolutionItems) = preProject
+		common\sprintfmt\sprintfmt.hpp = common\sprintfmt\sprintfmt.hpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -578,6 +583,7 @@ Global
 		{9759D4C9-AC69-47A6-B960-F56698BF33A0} = {BE989537-3C2C-4203-B191-68FAB3DCA4BA}
 		{00F74984-FDAF-436E-AD13-CF1C80ADEFD5} = {BE989537-3C2C-4203-B191-68FAB3DCA4BA}
 		{A4CD8F73-BC82-4B97-8E94-92FF409C5D96} = {00F74984-FDAF-436E-AD13-CF1C80ADEFD5}
+		{DDB4EF12-CC4E-5E88-E6FC-71A802F4DE97} = {BE989537-3C2C-4203-B191-68FAB3DCA4BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {483B1548-7CEB-4168-9525-A4CC4E5C6250}
