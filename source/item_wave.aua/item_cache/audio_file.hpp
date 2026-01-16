@@ -101,8 +101,12 @@ namespace apn::item_wave::item_cache
 			}
 			else
 			{
+				// 拡張データを持つアイテムを取得します。
+				auto exdata_object = (object->index_midpt_leader < 0) ?
+					object : magi.exin.get_object(object->index_midpt_leader);
+
 				// 音声ファイルアイテムから拡張データを取得します。
-				auto exdata = (ExEdit::Exdata::efAudioFile*)magi.exin.get_exdata(object, 0);
+				auto exdata = (ExEdit::Exdata::efAudioFile*)magi.exin.get_exdata(exdata_object, 0);
 
 				prop.file_name = std::filesystem::absolute(exdata->file);
 				prop.play_begin = object->track_value_left[play_begin_index] / 100.0f;
@@ -133,6 +137,9 @@ namespace apn::item_wave::item_cache
 			{
 				// アイテムを取得します。
 				auto object2 = magi.exin.get_object(object_index);
+
+				// 中間点は無視します。
+				if (object2->index_midpt_leader >= 0) continue;
 
 				// シーンが異なるアイテムは無視します。
 				if (object2->scene_set != object->scene_set) continue;
