@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{7a65c606-a6a5-45ff-a2d0-cebf62ccd0ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element">
+      <UniqueIdentifier>{70f8de1a-3def-4ac6-b4aa-567d02dc630b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element\main_thread">
+      <UniqueIdentifier>{1e343392-9f8f-4084-b2d4-2c9f9e5840e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="element\sub_thread">
+      <UniqueIdentifier>{88dc3a28-260c-4255-9154-ea50ff3096ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="main_thread\view.hpp">
+      <Filter>element\main_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="main_thread\controller.hpp">
+      <Filter>element\main_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_thread\controller.hpp">
+      <Filter>element\sub_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_thread\model.hpp">
+      <Filter>element\sub_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_thread\view.hpp">
+      <Filter>element\sub_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="volume.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="paint_option.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="raw_audio_data.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
+    <ClInclude Include="main_thread\model.hpp">
+      <Filter>element\main_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="sub_thread\painter.hpp">
+      <Filter>element\sub_thread</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="volume_meter.aua.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>framework</Filter>
+    </None>
+  </ItemGroup>
+</Project>
