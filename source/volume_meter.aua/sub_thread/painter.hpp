@@ -121,6 +121,9 @@ namespace apn::volume_meter::sub_thread
 		{
 			const auto& font = model.paint_option.fonts[font_index];
 
+			// フォント名が空の場合は描画しません。
+			if (font.name.empty()) return FALSE;
+
 			my::gdi::selector font_selector(dc, cache.fonts[font_index].get());
 
 			x += font.text_offset.x;
@@ -144,6 +147,9 @@ namespace apn::volume_meter::sub_thread
 		inline static BOOL draw_text(HDC dc, const std::wstring& s, LPRECT rc, UINT format, size_t font_index)
 		{
 			const auto& font = model.paint_option.fonts[font_index];
+
+			// フォント名が空の場合は描画しません。
+			if (font.name.empty()) return FALSE;
 
 			my::gdi::selector font_selector(dc, cache.fonts[font_index].get());
 
@@ -303,6 +309,9 @@ namespace apn::volume_meter::sub_thread
 		//
 		void draw_level()
 		{
+			// レベルの幅が無効の場合は描画しません。
+			if (model.paint_option.level_width <= 0) return;
+
 			// チャンネルコンテキストを走査します。
 			for (size_t i = 0; i < nb_channels; i++)
 			{
@@ -363,6 +372,9 @@ namespace apn::volume_meter::sub_thread
 		//
 		void draw_total_peak()
 		{
+			// 全体ピークの矩形が無効の場合は描画しません。
+			if (my::get_height(text_rc) <= 0) return;
+
 			// 全体のピークを算出します。
 			auto peak = -100.0f;
 			for (size_t i = 0; i < nb_channels; i++)

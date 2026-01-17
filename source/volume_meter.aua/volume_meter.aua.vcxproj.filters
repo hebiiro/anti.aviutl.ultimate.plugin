@@ -59,6 +59,12 @@
     <ClInclude Include="sub_thread\painter.hpp">
       <Filter>element\sub_thread</Filter>
     </ClInclude>
+    <ClInclude Include="main_thread\paint_option_dialog.hpp">
+      <Filter>element\main_thread</Filter>
+    </ClInclude>
+    <ClInclude Include="font_dialog.hpp">
+      <Filter>element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

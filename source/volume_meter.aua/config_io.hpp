@@ -14,6 +14,9 @@ namespace apn::volume_meter
 		{
 			MY_TRACE_FUNC("");
 
+			if (main_thread::paint_option_dialog)
+				return main_thread::paint_option_dialog.update_controls();
+
 			// コンフィグをサブスレッドにも適用します。
 			return sub_thread::controller.set_paint_option(main_thread::model.paint_option);
 		}

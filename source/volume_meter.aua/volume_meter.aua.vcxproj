@@ -144,7 +144,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="addin.hpp" />
+    <ClInclude Include="font_dialog.hpp" />
     <ClInclude Include="main_thread\model.hpp" />
+    <ClInclude Include="main_thread\paint_option_dialog.hpp" />
     <ClInclude Include="sub_thread\painter.hpp" />
     <ClInclude Include="volume.hpp" />
     <ClInclude Include="main_thread\controller.hpp" />

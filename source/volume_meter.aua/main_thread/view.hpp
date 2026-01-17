@@ -33,6 +33,9 @@ namespace apn::volume_meter::main_thread
 		{
 			MY_TRACE_FUNC("");
 
+			// 描画設定ダイアログを終了します。
+			paint_option_dialog.exit();
+
 			// ウィンドウを破壊します。
 			return destroy();
 		}
@@ -91,6 +94,8 @@ namespace apn::volume_meter::main_thread
 						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_mode.c_off, L"無効");
 						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_mode.c_on, L"有効");
 						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_mode.c_on_without_playing, L"有効 (再生中以外)");
+						::AppendMenuW(menu.get(), MF_SEPARATOR, 0, nullptr);
+						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_paint_option, L"描画設定");
 					}
 
 					// メニュー項目にチェックを追加します。
@@ -100,6 +105,9 @@ namespace apn::volume_meter::main_thread
 							c_command_id.c_mode.c_on_without_playing,
 							c_command_id.c_mode.c_off + hive.mode,
 							MF_BYCOMMAND);
+
+						if (::IsWindowVisible(paint_option_dialog))
+							::CheckMenuItem(menu.get(), c_command_id.c_paint_option, MF_BYCOMMAND | MF_CHECKED);
 					}
 
 					// ポップアップメニューの表示位置を取得します。
@@ -114,6 +122,23 @@ namespace apn::volume_meter::main_thread
 					case c_command_id.c_mode.c_off: hive.mode = hive.c_mode.c_off; break;
 					case c_command_id.c_mode.c_on: hive.mode = hive.c_mode.c_on; break;
 					case c_command_id.c_mode.c_on_without_playing: hive.mode = hive.c_mode.c_on_without_playing; break;
+					case c_command_id.c_paint_option:
+						{
+							// 描画設定ダイアログがまだ作成されていない場合は
+							if (!::IsWindow(paint_option_dialog))
+							{
+								// 描画設定ダイアログを作成します。
+								paint_option_dialog.init(hive.instance, hwnd);
+
+								// 描画設定ダイアログのコントロールを初期化します。
+								paint_option_dialog.update_controls();
+							}
+
+							// 描画設定ダイアログを表示します。
+							::ShowWindow(paint_option_dialog, SW_SHOW);
+
+							break;
+						}
 					}
 
 					break;
