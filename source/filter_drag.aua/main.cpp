@@ -1,10 +1,13 @@
 ﻿#include "pch.h"
+#include "resource.h"
 #include "hive.hpp"
 #include "layout.hpp"
 #include "aim.hpp"
 #include "sight.hpp"
 #include "keyboard_hook.hpp"
 #include "hook.hpp"
+#include "addin_dialog.hpp"
+#include "addin_window.hpp"
 #include "config_io.hpp"
 #include "config_checker.hpp"
 #include "addin.hpp"
@@ -17,7 +20,7 @@ namespace apn::filter_drag
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		set_logger(args);
 
 		return &addin;
 	}

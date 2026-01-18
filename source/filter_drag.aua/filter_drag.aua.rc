@@ -1,0 +1,114 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 (日本) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+idd_main DIALOGEX 0, 0, 220, 76
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_SYSMENU
+EXSTYLE WS_EX_NOPARENTNOTIFY | WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    RTEXT           "グリッパーの高さ",idc_gripper_height_stc,6,6,54,12,SS_CENTERIMAGE
+    EDITTEXT        idc_gripper_height,66,6,36,12,ES_RIGHT | ES_AUTOHSCROLL | ES_WANTRETURN | NOT WS_BORDER,WS_EX_CLIENTEDGE
+    CONTROL         "ドラッグ元を表示",idc_show_aim_src,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,60,12
+    CONTROL         "ドラッグ先を表示",idc_show_aim_dst,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,72,24,60,12
+    CONTROL         "サイトを表示",idc_show_sight,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,138,24,60,12
+    CTEXT           "ドラッグ開始に必要なキー",idc_key_stc,6,42,210,12,SS_CENTERIMAGE,WS_EX_STATICEDGE
+    CONTROL         "shift",idc_use_shift,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,48,12
+    CONTROL         "ctrl",idc_use_ctrl,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,60,48,12
+    CONTROL         "alt",idc_use_alt,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,114,60,48,12
+    CONTROL         "win",idc_use_win,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,168,60,48,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    idd_main, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 213
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 69
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+idd_main AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // 日本語 (日本) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

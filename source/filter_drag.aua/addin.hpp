@@ -37,6 +37,7 @@ namespace apn::filter_drag
 			if (!hook_manager.init()) return FALSE;
 			if (!keyboard_hook.init()) return FALSE;
 			if (!config_checker.init()) return FALSE;
+			if (!addin_window.init()) return FALSE;
 
 			aim_src.available = TRUE;
 			aim_src.alpha = 100;
@@ -60,6 +61,7 @@ namespace apn::filter_drag
 
 			config_io.write();
 
+			addin_window.exit();
 			config_checker.exit();
 			keyboard_hook.exit();
 			hook_manager.exit();
@@ -67,6 +69,27 @@ namespace apn::filter_drag
 			aim_dst.exit();
 			aim_src.exit();
 			config_io.exit();
+
+			return FALSE;
+		}
+
+		//
+		// この仮想関数は、ウィンドウコマンドを実行するときに呼ばれます。
+		//
+		virtual BOOL on_window_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override
+		{
+			switch (wParam)
+			{
+			case magi.c_command_id.c_addin.c_command:
+				{
+					MY_TRACE_FUNC("magi.c_command_id.c_addin.c_command");
+
+					// アドインウィンドウを表示します。
+					if (::IsWindow(addin_window)) addin_window.show();
+
+					break;
+				}
+			}
 
 			return FALSE;
 		}

@@ -59,7 +59,7 @@ namespace apn::filter_drag
 
 			sight.update_context();
 
-			return TRUE;
+			return addin_dialog.update_controls();
 		}
 
 		//
@@ -107,6 +107,8 @@ namespace apn::filter_drag
 				read_real(sight_node, "rotate", sight.config.rotate);
 				read_point(sight_node, "start_offset", sight.config.start_offset);
 			}
+
+			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}
@@ -156,6 +158,8 @@ namespace apn::filter_drag
 				write_point(sight_node, "start_offset", sight.config.start_offset);
 				write_child_node(root, "sight", sight_node);
 			}
+
+			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
 		}

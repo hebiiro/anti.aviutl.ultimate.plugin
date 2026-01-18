@@ -21,6 +21,11 @@ namespace apn::filter_drag
 		std::wstring config_file_name;
 
 		//
+		// このアドインのメインウィンドウです。
+		//
+		HWND main_window = nullptr;
+
+		//
 		// グリッパーのサイズです。
 		//
 		int32_t gripper_height = 16;
@@ -29,7 +34,7 @@ namespace apn::filter_drag
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }
