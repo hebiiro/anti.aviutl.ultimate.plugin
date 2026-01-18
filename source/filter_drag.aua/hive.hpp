@@ -21,6 +21,11 @@ namespace apn::filter_drag
 		std::wstring config_file_name;
 
 		//
+		// グリッパーのサイズです。
+		//
+		int32_t gripper_height = 16;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {

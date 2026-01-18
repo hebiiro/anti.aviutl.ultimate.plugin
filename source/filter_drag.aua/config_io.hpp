@@ -69,6 +69,7 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
+			read_int(root, "gripper_height", hive.gripper_height);
 			read_bool(root, "use_shift", keyboard_hook.use_shift);
 			read_bool(root, "use_ctrl", keyboard_hook.use_ctrl);
 			read_bool(root, "use_alt", keyboard_hook.use_alt);
@@ -117,6 +118,7 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
+			write_int(root, "gripper_height", hive.gripper_height);
 			write_bool(root, "use_shift", keyboard_hook.use_shift);
 			write_bool(root, "use_ctrl", keyboard_hook.use_ctrl);
 			write_bool(root, "use_alt", keyboard_hook.use_alt);

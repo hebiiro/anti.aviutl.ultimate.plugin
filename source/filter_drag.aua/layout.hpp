@@ -102,16 +102,30 @@ namespace apn::filter_drag
 		//
 		FilterHolder get_src_filter(const POINT& pos, const ObjectHolder& object) const
 		{
+			// ペインを走査します。
 			for (size_t i = 0; i < panes.size(); i++)
 			{
+				// ペイン外の場合は何もしません。
 				if (!::PtInRect(&panes[i], pos)) continue;
 
+				// グリッパーのサイズが有効の場合は
+				if (hive.gripper_height > 0)
+				{
+					// グリッパー外の場合は何もしません。
+					if (pos.y - panes[i].top > hive.gripper_height) continue;
+				}
+
+				// フィルタ構造体を作成します。
 				FilterHolder filter(object, (int32_t)i);
+
+				// フィルタがドラッグ可能な場合はフィルタ構造体を返します。
 				if (filter.is_moveable()) return filter;
 
 				break;
 			}
 
+			// ドラッグできるフィルタが見つからなかった場合は
+			// 無効なフィルタ構造体を返します。
 			return FilterHolder(object, -1);
 		}
 
