@@ -96,7 +96,7 @@ namespace apn::reboot::spreader
 				~DpiSetter() { ::SetThreadDpiAwarenessContext(context); }
 			} dpi_setter;
 
-			// NC領域が存在しない非表示のオーバラップウィンドウを作成します。
+			// NC領域が存在しない非表示のオーバーラップウィンドウを作成します。
 			return __super::create(
 				0,
 				wc.lpszClassName,

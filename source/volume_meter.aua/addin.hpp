@@ -3,7 +3,7 @@
 namespace apn::volume_meter
 {
 	//
-	// このクラスは音声を視覚化して表示します。
+	// このクラスはaviutlに音量メーターを追加します。
 	//
 	inline struct volume_meter_t : Addin
 	{
