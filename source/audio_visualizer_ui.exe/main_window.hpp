@@ -23,7 +23,7 @@ namespace apn::audio_visualizer::ui
 			wc.lpszClassName = _T("audio_visualizer.ui_window");
 			::RegisterClassExW(&wc);
 
-			// 非表示のオーバラップウィンドウを作成します。
+			// 非表示のオーバーラップウィンドウを作成します。
 			return __super::create(
 				WS_EX_NOPARENTNOTIFY,
 				wc.lpszClassName,

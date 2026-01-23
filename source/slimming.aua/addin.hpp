@@ -3,10 +3,9 @@
 namespace apn::slimming
 {
 	//
-	// このクラスはテキストアイテムのテキストを別のエディットボックス(edits)で編集できるようにします。
-	// (editsとはアドインダイアログ内に配置されているエディットボックスのことです)
+	// このクラスはaviutlウィンドウをスリム化(タイトルバーとメニューバーを一体化)します。
 	//
-	inline struct TextEditor : Addin
+	inline struct slimming_t : Addin
 	{
 		//
 		// この仮想関数は、このアドインの識別名が必要なときに呼ばれます。
