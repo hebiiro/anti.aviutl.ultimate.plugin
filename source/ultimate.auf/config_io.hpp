@@ -36,13 +36,14 @@ namespace apn
 			register_addin(L"L", L"dark", L"ダークモード化", TRUE, L"", { L"DarkenWindow.aul" });
 			register_addin(L"L", L"workspace", L"ワークスペース化", TRUE, L"", { L"SplitWindow.aul" });
 			register_addin(L"L", L"filer", L"ファイラ", TRUE, L"", { L"ObjectExplorer.auf" });
+			register_addin(L"L", L"selector", L"セレクタ", FALSE, L"", {});
 			register_addin(L"L", L"reboot", L"リブート", FALSE, L"", {});
 			register_addin(L"L", L"item_copy", L"アイテムコピー", FALSE, L"", {});
 			register_addin(L"L", L"item_wave", L"アイテム波形", FALSE, L"", { L"namecage.aua", L"NoScrollText.auf", L"ShowWaveform.auf" });
 			register_addin(L"L", L"audio_visualizer", L"音声視覚化", FALSE, L"", { L"LevelMeter.auf" });
-			register_addin(L"L", L"volume_meter", L"音量メーター", TRUE, L"", { L"LevelMeter.auf" });
+			register_addin(L"L", L"volume_meter", L"音量メーター", FALSE, L"", { L"LevelMeter.auf" });
+			register_addin(L"L", L"timeline_map", L"タイムラインマップ", FALSE, L"", {});
 			register_addin(L"L", L"settings_browser", L"設定ブラウザ", FALSE, L"", {});
-			register_addin(L"L", L"selector", L"セレクタ", FALSE, L"", {});
 
 			register_addin(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", { L"CopyFilter.auf" });
 			register_addin(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", { L"DragFilter.auf" });

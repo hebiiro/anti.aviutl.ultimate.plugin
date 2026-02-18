@@ -254,6 +254,8 @@ const c_default_json = {
 		{ "active": "false", "display_name": "アイテムコピー", "name": "item_copy", "args": "" },
 		{ "active": "false", "display_name": "アイテム波形", "name": "item_wave", "args": "" },
 		{ "active": "false", "display_name": "音声視覚化", "name": "audio_visualizer", "args": "" },
+		{ "active": "false", "display_name": "音量メーター", "name": "volume_meter", "args": "" },
+		{ "active": "false", "display_name": "タイムラインマップ", "name": "timeline_map", "args": "" },
 		{ "active": "false", "display_name": "設定ブラウザ", "name": "settings_browser", "args": "" },
 		{ "name": "" },
 		{ "active": "true", "display_name": "フィルタコピー", "name": "filter_copy", "args": "" },
