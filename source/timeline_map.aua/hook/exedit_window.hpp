@@ -21,6 +21,7 @@ namespace apn::timeline_map::hook
 			DetourTransactionBegin();
 			DetourUpdateThread(::GetCurrentThread());
 
+			my::hook::attach(redraw_layers, magi.exin.address.function.redraw_layers);
 			my::hook::attach(redraw_exedit_window, magi.exin.address.function.redraw_exedit_window);
 
 			if (DetourTransactionCommit() == NO_ERROR)
@@ -46,6 +47,19 @@ namespace apn::timeline_map::hook
 
 			return TRUE;
 		}
+
+		//
+		// このクラスは拡張編集内のredraw_layers()の呼び出しをフックします。
+		//
+		inline static struct {
+			inline static void CDECL hook_proc(int32_t flags[])
+			{
+				main_thread::view.redraw();
+
+				return orig_proc(flags);
+			}
+			inline static decltype(&hook_proc) orig_proc = nullptr;
+		} redraw_layers;
 
 		//
 		// このクラスは拡張編集内のredraw_exedit_window()の呼び出しをフックします。
