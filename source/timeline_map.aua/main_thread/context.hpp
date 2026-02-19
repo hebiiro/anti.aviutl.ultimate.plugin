@@ -455,15 +455,33 @@ namespace apn::timeline_map::main_thread
 		BOOL draw_rounded_rectangle(const D2D1_ROUNDED_RECT& rc,
 			ID2D1Brush* fill_brush, ID2D1Brush* stroke_brush, float stroke_width)
 		{
-			// 角丸矩形を塗りつぶします。
-			state.render_target->FillRoundedRectangle(rc, fill_brush);
-
-			// 縁の幅が有効の場合は
-			if (stroke_width > 0.0f)
+			// 丸め半径が有効の場合は
+			if (rc.radiusX > 0.0f || rc.radiusY > 0.0f)
 			{
-				// 角丸矩形の縁を描画します。
-				state.render_target->DrawRoundedRectangle(
-					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
+				// 角丸矩形を塗りつぶします。
+				state.render_target->FillRoundedRectangle(rc, fill_brush);
+
+				// 縁の幅が有効の場合は
+				if (stroke_width > 0.0f)
+				{
+					// 角丸矩形の縁を描画します。
+					state.render_target->DrawRoundedRectangle(
+						deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
+				}
+			}
+			// 丸め半径が無効の場合は
+			else
+			{
+				// 矩形を塗りつぶします。
+				state.render_target->FillRectangle(rc.rect, fill_brush);
+
+				// 縁の幅が有効の場合は
+				if (stroke_width > 0.0f)
+				{
+					// 矩形の縁を描画します。
+					state.render_target->DrawRectangle(
+						deflate(rc.rect, stroke_width / 2.0f), stroke_brush, stroke_width);
+				}
 			}
 
 			return TRUE;
