@@ -121,6 +121,10 @@ namespace apn::timeline_map::main_thread
 				read_point(root, "shadow_offset", property.text.shadow_offset);
 				read_label(root, "horz_align", property.text.horz_align, property.text.c_horz_align.labels);
 				read_label(root, "vert_align", property.text.vert_align, property.text.c_vert_align.labels);
+				read_bool(root, "flag_draw_text", property.text.flag_draw_text);
+				read_bool(root, "flag_draw_shadow", property.text.flag_draw_shadow);
+				read_int(root, "min_draw_width", property.text.min_draw_width);
+
 			});
 
 			read_node(root, "layer", [&](const n_json& root) {
@@ -194,6 +198,9 @@ namespace apn::timeline_map::main_thread
 				write_point(root, "shadow_offset", property.text.shadow_offset);
 				write_label(root, "horz_align", property.text.horz_align, property.text.c_horz_align.labels);
 				write_label(root, "vert_align", property.text.vert_align, property.text.c_vert_align.labels);
+				write_bool(root, "flag_draw_text", property.text.flag_draw_text);
+				write_bool(root, "flag_draw_shadow", property.text.flag_draw_shadow);
+				write_int(root, "min_draw_width", property.text.min_draw_width);
 			});
 
 			write_node(root, "layer", [&](n_json& root) {

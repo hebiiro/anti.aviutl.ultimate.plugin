@@ -54,6 +54,9 @@ namespace apn::timeline_map::main_thread
 			get_int(idc_text_shadow_offset_y, property.text.shadow_offset.y);
 			get_combobox_index(idc_text_horz_align, property.text.horz_align);
 			get_combobox_index(idc_text_vert_align, property.text.vert_align);
+			get_check(idc_text_flag_draw_text, property.text.flag_draw_text);
+			get_check(idc_text_flag_draw_shadow, property.text.flag_draw_shadow);
+			get_int(idc_text_min_draw_width, property.text.min_draw_width);
 
 			get_int(idc_layer_top_space, property.layer.top_space);
 			get_rgba(idc_layer_odd_color, property.layer.odd_color);
@@ -110,6 +113,9 @@ namespace apn::timeline_map::main_thread
 			set_int(idc_text_shadow_offset_y, property.text.shadow_offset.y);
 			set_combobox_index(idc_text_horz_align, property.text.horz_align);
 			set_combobox_index(idc_text_vert_align, property.text.vert_align);
+			set_check(idc_text_flag_draw_text, property.text.flag_draw_text);
+			set_check(idc_text_flag_draw_shadow, property.text.flag_draw_shadow);
+			set_int(idc_text_min_draw_width, property.text.min_draw_width);
 
 			set_int(idc_layer_top_space, property.layer.top_space);
 			set_rgba(idc_layer_odd_color, property.layer.odd_color);
@@ -216,12 +222,21 @@ namespace apn::timeline_map::main_thread
 					break;
 				}
 
+			// チェックボックスの場合の処理です。
+			case idc_text_flag_draw_text:
+			case idc_text_flag_draw_shadow:
+				{
+					// コントロールの値でコンフィグを更新します。
+					from_ui(FALSE); break;
+				}
+
 			// エディットボックスの場合の処理です。
 			case idc_text_font_size:
 			case idc_text_padding_x:
 			case idc_text_padding_y:
 			case idc_text_shadow_offset_x:
 			case idc_text_shadow_offset_y:
+			case idc_text_min_draw_width:
 			case idc_layer_top_space:
 			case idc_layer_undisp_stroke_width:
 			case idc_layer_locked_stroke_width:

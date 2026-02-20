@@ -64,6 +64,11 @@ namespace apn::timeline_map::main_thread
 		ComPtr<ID2D1PathGeometry> midpt_path = {};
 
 		//
+		// テキストを描画するかどうかを判定するアイテムの幅の閾値です。
+		//
+		float text_min_draw_width = {};
+
+		//
 		// コンストラクタです。
 		//
 		context_t(HWND hwnd)
@@ -127,6 +132,9 @@ namespace apn::timeline_map::main_thread
 
 			// レイヤー上部のスペースの高さを算出します。
 			layer_top_space = layer_height * property.layer.top_space / 100.0f;
+
+			// テキストの最小幅を算出します。
+			text_min_draw_width = layer_height * property.text.min_draw_width / 100.0f;
 
 			// 中間点図形用のパスを作成します。
 			{
@@ -502,6 +510,8 @@ namespace apn::timeline_map::main_thread
 		BOOL draw_text(const std::wstring& text, const D2D1_RECT_F& item_rc_, UINT text_flags,
 			IDWriteTextFormat* text_format, ID2D1Brush* text_brush, ID2D1Brush* text_shadow_brush)
 		{
+			if (!property.text.flag_draw_text) return FALSE;
+
 			// アイテム枠の分だけ矩形を縮めます。
 			auto item_rc = deflate(item_rc_, property.item.stroke_width / 100.0f);
 
@@ -519,19 +529,24 @@ namespace apn::timeline_map::main_thread
 			if (!text_layout) return FALSE;
 
 			// 影を描画する場合は
-			if (property.text.shadow_offset.x > 0 ||
-				property.text.shadow_offset.y > 0)
+			if (property.text.flag_draw_shadow)
 			{
-				auto shadow_offset = D2D1::Point2F(
-					property.text.shadow_offset.x / 100.f,
-					property.text.shadow_offset.y / 100.f);
+				// 影のオフセットが有効の場合は
+				if (property.text.shadow_offset.x > 0 ||
+					property.text.shadow_offset.y > 0)
+				{
+					// 影のオフセットを算出します。
+					auto shadow_offset = D2D1::Point2F(
+						property.text.shadow_offset.x / 100.f,
+						property.text.shadow_offset.y / 100.f);
 
-				// 影を描画します。
-				state.render_target->DrawTextLayout(
-					D2D1::Point2F(x + shadow_offset.x, y + shadow_offset.y),
-					text_layout.Get(),
-					text_shadow_brush,
-					D2D1_DRAW_TEXT_OPTIONS_CLIP);
+					// 影を描画します。
+					state.render_target->DrawTextLayout(
+						D2D1::Point2F(x + shadow_offset.x, y + shadow_offset.y),
+						text_layout.Get(),
+						text_shadow_brush,
+						D2D1_DRAW_TEXT_OPTIONS_CLIP);
+				}
 			}
 
 			// テキストを描画します。
@@ -697,19 +712,23 @@ namespace apn::timeline_map::main_thread
 				// アイテム名を描画します。
 //				if (0)
 				{
-					// アイテムの表示名を取得します。
-					auto text = get_display_name(object);
+					// アイテムの幅がテキストの最小幅より大きい場合は
+					if ((item_rc.rect.right - item_rc.rect.left) > text_min_draw_width)
 					{
-						static const std::wregex re(L"\r\n");
-						static const std::wstring fmt = L"\\n";
+						// アイテムの表示名を取得します。
+						auto text = get_display_name(object);
+						{
+							static const std::wregex re(L"\r\n");
+							static const std::wstring fmt = L"\\n";
 
-						// 改行を置換します。
-						text = std::regex_replace(text, re, fmt);
+							// 改行を置換します。
+							text = std::regex_replace(text, re, fmt);
+						}
+
+						// アイテム名を描画します。
+						draw_text(text, item_rc.rect, text_flags, text_format.Get(),
+							state.text.brush.Get(), state.text.shadow_brush.Get());
 					}
-
-					// アイテム名を描画します。
-					draw_text(text, item_rc.rect, text_flags, text_format.Get(),
-						state.text.brush.Get(), state.text.shadow_brush.Get());
 				}
 			}
 

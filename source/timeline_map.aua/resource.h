@@ -20,6 +20,9 @@
 #define idc_text_shadow_offset_y_spin   10014
 #define idc_text_horz_align             10015
 #define idc_text_vert_align             10016
+#define idc_text_flag_draw_text         10017
+#define idc_text_flag_draw_shadow       10018
+#define idc_text_min_draw_width         10019
 #define idc_layer_top_space             10100
 #define idc_layer_top_space_spin        10101
 #define idc_layer_odd_color             10102
@@ -108,7 +111,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1001
+#define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
