@@ -651,8 +651,8 @@ namespace apn::timeline_map::main_thread
 							control_range_rc.rect.bottom = bottom;
 
 							// 制御範囲矩形を描画します。
-							draw_rounded_rectangle(control_range_rc, state.control_range_brush.Get(),
-								state.control_range_stroke_brush.Get(), property.control_range.stroke_width / 100.0f);
+							draw_rounded_rectangle(control_range_rc, state.control_range.brush.Get(),
+								state.control_range.stroke_brush.Get(), property.control_range.stroke_width / 100.0f);
 
 							break;
 						}
@@ -660,7 +660,7 @@ namespace apn::timeline_map::main_thread
 				}
 
 				// アイテム矩形を描画します。
-				if (0)
+//				if (0)
 				{
 					// アイテム用のブラシを作成します。
 					auto item_fill_brush = state.create_gradient_brush(
@@ -671,7 +671,7 @@ namespace apn::timeline_map::main_thread
 
 					// アイテム矩形を描画します。
 					draw_rounded_rectangle(item_rc, item_fill_brush.Get(),
-						state.item_stroke_brush.Get(), property.item.stroke_width / 100.0f);
+						state.item.stroke_brush.Get(), property.item.stroke_width / 100.0f);
 				}
 
 				// 中間点を走査します。
@@ -679,7 +679,7 @@ namespace apn::timeline_map::main_thread
 				{
 					// (midpt_x, start_point.y) の位置に中間点図形を描画します。
 					state.render_target->SetTransform(D2D1::Matrix3x2F::Translation(midpt_x, start_point.y));
-					state.render_target->FillGeometry(midpt_path.Get(), state.midpt_brush.Get());
+					state.render_target->FillGeometry(midpt_path.Get(), state.midpt.brush.Get());
 					state.render_target->SetTransform(D2D1::Matrix3x2F::Identity());
 
 					// 中間点の線幅が有効の場合は
@@ -689,7 +689,7 @@ namespace apn::timeline_map::main_thread
 						state.render_target->DrawLine(
 							D2D1::Point2F(midpt_x, item_rc.rect.top),
 							D2D1::Point2F(midpt_x, item_rc.rect.bottom),
-							state.midpt_line_brush.Get(),
+							state.midpt.line_brush.Get(),
 							property.midpt.line_width / 100.0f);
 					}
 				}
@@ -709,7 +709,7 @@ namespace apn::timeline_map::main_thread
 
 					// アイテム名を描画します。
 					draw_text(text, item_rc.rect, text_flags, text_format.Get(),
-						state.text_brush.Get(), state.text_shadow_brush.Get());
+						state.text.brush.Get(), state.text.shadow_brush.Get());
 				}
 			}
 
@@ -780,7 +780,7 @@ namespace apn::timeline_map::main_thread
 			state.render_target->DrawLine(
 				D2D1::Point2F(x, (float)rects.client.top),
 				D2D1::Point2F(x, (float)rects.client.bottom),
-				state.current_frame_brush.Get(),
+				state.current_frame.brush.Get(),
 				property.current_frame.line_width / 100.0f);
 
 			return TRUE;
@@ -811,8 +811,8 @@ namespace apn::timeline_map::main_thread
 			visible_area_rc = round(visible_area_rc, property.visible_area.round_mode);
 
 			// 表示範囲矩形を描画します。
-			draw_rounded_rectangle(visible_area_rc, state.visible_area_brush.Get(),
-				state.visible_area_stroke_brush.Get(), property.visible_area.stroke_width / 100.0f);
+			draw_rounded_rectangle(visible_area_rc, state.visible_area.brush.Get(),
+				state.visible_area.stroke_brush.Get(), property.visible_area.stroke_width / 100.0f);
 
 			return TRUE;
 		}

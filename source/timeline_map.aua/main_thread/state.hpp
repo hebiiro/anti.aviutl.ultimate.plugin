@@ -12,8 +12,10 @@ namespace apn::timeline_map::main_thread
 		ComPtr<IDWriteFactory> dw_factory;
 		ComPtr<ID2D1HwndRenderTarget> render_target;
 
-		ComPtr<ID2D1SolidColorBrush> text_brush;
-		ComPtr<ID2D1SolidColorBrush> text_shadow_brush;
+		struct text_t {
+			ComPtr<ID2D1SolidColorBrush> brush;
+			ComPtr<ID2D1SolidColorBrush> shadow_brush;
+		} text;
 
 		struct layer_t {
 			ComPtr<ID2D1SolidColorBrush> odd_brush;
@@ -25,18 +27,28 @@ namespace apn::timeline_map::main_thread
 			ComPtr<ID2D1SolidColorBrush> clip_stroke_brush;
 		} layer;
 
-		ComPtr<ID2D1SolidColorBrush> item_stroke_brush;
+		struct item_t {
+			ComPtr<ID2D1SolidColorBrush> stroke_brush;
+		} item;
 
-		ComPtr<ID2D1SolidColorBrush> midpt_brush;
-		ComPtr<ID2D1SolidColorBrush> midpt_line_brush;
+		struct midpt_t {
+			ComPtr<ID2D1SolidColorBrush> brush;
+			ComPtr<ID2D1SolidColorBrush> line_brush;
+		} midpt;
 
-		ComPtr<ID2D1SolidColorBrush> current_frame_brush;
+		struct current_frame_t {
+			ComPtr<ID2D1SolidColorBrush> brush;
+		} current_frame;
 
-		ComPtr<ID2D1SolidColorBrush> visible_area_brush;
-		ComPtr<ID2D1SolidColorBrush> visible_area_stroke_brush;
+		struct visible_area_t {
+			ComPtr<ID2D1SolidColorBrush> brush;
+			ComPtr<ID2D1SolidColorBrush> stroke_brush;
+		} visible_area;
 
-		ComPtr<ID2D1SolidColorBrush> control_range_brush;
-		ComPtr<ID2D1SolidColorBrush> control_range_stroke_brush;
+		struct control_range_t {
+			ComPtr<ID2D1SolidColorBrush> brush;
+			ComPtr<ID2D1SolidColorBrush> stroke_brush;
+		} control_range;
 
 		//
 		// 初期化処理を実行します。
@@ -108,73 +120,87 @@ namespace apn::timeline_map::main_thread
 		{
 			if (!render_target) return FALSE;
 
-			// テキスト用のブラシを作成します。
-			text_brush = state.create_solid_brush(property.text.color);
-			if (!text_brush) return FALSE;
+			{
+				// テキスト用のブラシを作成します。
+				text.brush = state.create_solid_brush(property.text.color);
+				if (!text.brush) return FALSE;
 
-			// テキストシャドウ用のブラシを作成します。
-			text_shadow_brush = state.create_solid_brush(property.text.shadow_color);
-			if (!text_shadow_brush) return FALSE;
+				// テキストシャドウ用のブラシを作成します。
+				text.shadow_brush = state.create_solid_brush(property.text.shadow_color);
+				if (!text.shadow_brush) return FALSE;
+			}
 
-			// 奇数レイヤー用のブラシを作成します。
-			layer.odd_brush = state.create_solid_brush(property.layer.odd_color);
-			if (!layer.odd_brush) return FALSE;
+			{
+				// 奇数レイヤー用のブラシを作成します。
+				layer.odd_brush = state.create_solid_brush(property.layer.odd_color);
+				if (!layer.odd_brush) return FALSE;
 
-			// 偶数レイヤー用のブラシを作成します。
-			layer.even_brush = state.create_solid_brush(property.layer.even_color);
-			if (!layer.even_brush) return FALSE;
+				// 偶数レイヤー用のブラシを作成します。
+				layer.even_brush = state.create_solid_brush(property.layer.even_color);
+				if (!layer.even_brush) return FALSE;
 
-			// 無効レイヤー用のブラシを作成します。
-			layer.undisp_brush = state.create_solid_brush(property.layer.undisp_color);
-			if (!layer.undisp_brush) return FALSE;
+				// 無効レイヤー用のブラシを作成します。
+				layer.undisp_brush = state.create_solid_brush(property.layer.undisp_color);
+				if (!layer.undisp_brush) return FALSE;
 
-			// 無効レイヤー用のストロークブラシを作成します。
-			layer.undisp_stroke_brush = state.create_solid_brush(property.layer.undisp_stroke_color);
-			if (!layer.undisp_stroke_brush) return FALSE;
+				// 無効レイヤー用のストロークブラシを作成します。
+				layer.undisp_stroke_brush = state.create_solid_brush(property.layer.undisp_stroke_color);
+				if (!layer.undisp_stroke_brush) return FALSE;
 
-			// ロックレイヤー用のブラシを作成します。
-			layer.locked_stroke_brush = state.create_solid_brush(property.layer.locked_stroke_color);
-			if (!layer.locked_stroke_brush) return FALSE;
+				// ロックレイヤー用のブラシを作成します。
+				layer.locked_stroke_brush = state.create_solid_brush(property.layer.locked_stroke_color);
+				if (!layer.locked_stroke_brush) return FALSE;
 
-			// 座標リンクレイヤー用のブラシを作成します。
-			layer.coordlink_stroke_brush = state.create_solid_brush(property.layer.coordlink_stroke_color);
-			if (!layer.coordlink_stroke_brush) return FALSE;
+				// 座標リンクレイヤー用のブラシを作成します。
+				layer.coordlink_stroke_brush = state.create_solid_brush(property.layer.coordlink_stroke_color);
+				if (!layer.coordlink_stroke_brush) return FALSE;
 
-			// クリップレイヤー用のブラシを作成します。
-			layer.clip_stroke_brush = state.create_solid_brush(property.layer.clip_stroke_color);
-			if (!layer.clip_stroke_brush) return FALSE;
+				// クリップレイヤー用のブラシを作成します。
+				layer.clip_stroke_brush = state.create_solid_brush(property.layer.clip_stroke_color);
+				if (!layer.clip_stroke_brush) return FALSE;
+			}
 
-			// アイテム枠用のブラシを作成します。
-			item_stroke_brush = state.create_solid_brush(property.item.stroke_color);
-			if (!item_stroke_brush) return FALSE;
+			{
+				// アイテム枠用のブラシを作成します。
+				item.stroke_brush = state.create_solid_brush(property.item.stroke_color);
+				if (!item.stroke_brush) return FALSE;
+			}
 
-			// 中間点図形用のブラシを作成します。
-			midpt_brush = state.create_solid_brush(property.midpt.color);
-			if (!midpt_brush) return FALSE;
+			{
+				// 中間点図形用のブラシを作成します。
+				midpt.brush = state.create_solid_brush(property.midpt.color);
+				if (!midpt.brush) return FALSE;
 
-			// 中間点位置用のブラシを作成します。
-			midpt_line_brush = state.create_solid_brush(property.midpt.line_color);
-			if (!midpt_line_brush) return FALSE;
+				// 中間点位置用のブラシを作成します。
+				midpt.line_brush = state.create_solid_brush(property.midpt.line_color);
+				if (!midpt.line_brush) return FALSE;
+			}
 
-			// 現在フレーム用のブラシを作成します。
-			current_frame_brush = state.create_solid_brush(property.current_frame.line_color);
-			if (!current_frame_brush) return FALSE;
+			{
+				// 現在フレーム用のブラシを作成します。
+				current_frame.brush = state.create_solid_brush(property.current_frame.line_color);
+				if (!current_frame.brush) return FALSE;
+			}
 
-			// 表示範囲用のブラシを作成します。
-			visible_area_brush = state.create_solid_brush(property.visible_area.color);
-			if (!visible_area_brush) return FALSE;
+			{
+				// 表示範囲用のブラシを作成します。
+				visible_area.brush = state.create_solid_brush(property.visible_area.color);
+				if (!visible_area.brush) return FALSE;
 
-			// 表示範囲枠用のブラシを作成します。
-			visible_area_stroke_brush = state.create_solid_brush(property.visible_area.stroke_color);
-			if (!visible_area_stroke_brush) return FALSE;
+				// 表示範囲枠用のブラシを作成します。
+				visible_area.stroke_brush = state.create_solid_brush(property.visible_area.stroke_color);
+				if (!visible_area.stroke_brush) return FALSE;
+			}
 
-			// 制御範囲用のブラシを作成します。
-			control_range_brush = state.create_solid_brush(property.control_range.color);
-			if (!control_range_brush) return FALSE;
+			{
+				// 制御範囲用のブラシを作成します。
+				control_range.brush = state.create_solid_brush(property.control_range.color);
+				if (!control_range.brush) return FALSE;
 
-			// 制御範囲枠用のブラシを作成します。
-			control_range_stroke_brush = state.create_solid_brush(property.control_range.stroke_color);
-			if (!control_range_stroke_brush) return FALSE;
+				// 制御範囲枠用のブラシを作成します。
+				control_range.stroke_brush = state.create_solid_brush(property.control_range.stroke_color);
+				if (!control_range.stroke_brush) return FALSE;
+			}
 
 			return TRUE;
 		}
