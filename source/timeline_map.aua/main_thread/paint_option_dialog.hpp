@@ -58,6 +58,15 @@ namespace apn::timeline_map::main_thread
 			get_int(idc_layer_top_space, property.layer.top_space);
 			get_rgba(idc_layer_odd_color, property.layer.odd_color);
 			get_rgba(idc_layer_even_color, property.layer.even_color);
+			get_rgba(idc_layer_undisp_color, property.layer.undisp_color);
+			get_rgba(idc_layer_undisp_stroke_color, property.layer.undisp_stroke_color);
+			get_int(idc_layer_undisp_stroke_width, property.layer.undisp_stroke_width);
+			get_rgba(idc_layer_locked_stroke_color, property.layer.locked_stroke_color);
+			get_int(idc_layer_locked_stroke_width, property.layer.locked_stroke_width);
+			get_rgba(idc_layer_coordlink_stroke_color, property.layer.coordlink_stroke_color);
+			get_int(idc_layer_coordlink_stroke_width, property.layer.coordlink_stroke_width);
+			get_rgba(idc_layer_clip_stroke_color, property.layer.clip_stroke_color);
+			get_int(idc_layer_clip_stroke_width, property.layer.clip_stroke_width);
 
 			get_int(idc_item_round_size, property.item.round_size);
 			get_combobox_index(idc_item_round_mode, property.item.round_mode);
@@ -105,6 +114,15 @@ namespace apn::timeline_map::main_thread
 			set_int(idc_layer_top_space, property.layer.top_space);
 			set_rgba(idc_layer_odd_color, property.layer.odd_color);
 			set_rgba(idc_layer_even_color, property.layer.even_color);
+			set_rgba(idc_layer_undisp_color, property.layer.undisp_color);
+			set_rgba(idc_layer_undisp_stroke_color, property.layer.undisp_stroke_color);
+			set_int(idc_layer_undisp_stroke_width, property.layer.undisp_stroke_width);
+			set_rgba(idc_layer_locked_stroke_color, property.layer.locked_stroke_color);
+			set_int(idc_layer_locked_stroke_width, property.layer.locked_stroke_width);
+			set_rgba(idc_layer_coordlink_stroke_color, property.layer.coordlink_stroke_color);
+			set_int(idc_layer_coordlink_stroke_width, property.layer.coordlink_stroke_width);
+			set_rgba(idc_layer_clip_stroke_color, property.layer.clip_stroke_color);
+			set_int(idc_layer_clip_stroke_width, property.layer.clip_stroke_width);
 
 			set_int(idc_item_round_size, property.item.round_size);
 			set_combobox_index(idc_item_round_mode, property.item.round_mode);
@@ -205,6 +223,10 @@ namespace apn::timeline_map::main_thread
 			case idc_text_shadow_offset_x:
 			case idc_text_shadow_offset_y:
 			case idc_layer_top_space:
+			case idc_layer_undisp_stroke_width:
+			case idc_layer_locked_stroke_width:
+			case idc_layer_coordlink_stroke_width:
+			case idc_layer_clip_stroke_width:
 			case idc_midpt_line_width:
 			case idc_current_frame_line_width:
 			case idc_visible_area_round_size:
@@ -221,6 +243,11 @@ namespace apn::timeline_map::main_thread
 			case idc_text_shadow_color_a:
 			case idc_layer_odd_color_a:
 			case idc_layer_even_color_a:
+			case idc_layer_undisp_color_a:
+			case idc_layer_undisp_stroke_color_a:
+			case idc_layer_locked_stroke_color_a:
+			case idc_layer_coordlink_stroke_color_a:
+			case idc_layer_clip_stroke_color_a:
 			case idc_midpt_color_a:
 			case idc_midpt_line_color_a:
 			case idc_current_frame_line_color_a:
@@ -259,6 +286,11 @@ namespace apn::timeline_map::main_thread
 			case idc_text_shadow_color:
 			case idc_layer_odd_color:
 			case idc_layer_even_color:
+			case idc_layer_undisp_color:
+			case idc_layer_undisp_stroke_color:
+			case idc_layer_locked_stroke_color:
+			case idc_layer_coordlink_stroke_color:
+			case idc_layer_clip_stroke_color:
 			case idc_midpt_color:
 			case idc_midpt_line_color:
 			case idc_current_frame_line_color:
@@ -329,6 +361,11 @@ namespace apn::timeline_map::main_thread
 					case idc_text_shadow_color:
 					case idc_layer_odd_color:
 					case idc_layer_even_color:
+					case idc_layer_undisp_color:
+					case idc_layer_undisp_stroke_color:
+					case idc_layer_locked_stroke_color:
+					case idc_layer_coordlink_stroke_color:
+					case idc_layer_clip_stroke_color:
 					case idc_midpt_color:
 					case idc_midpt_line_color:
 					case idc_current_frame_line_color:
@@ -393,6 +430,11 @@ namespace apn::timeline_map::main_thread
 						case idc_text_shadow_color_a:
 						case idc_layer_odd_color_a:
 						case idc_layer_even_color_a:
+						case idc_layer_undisp_color_a:
+						case idc_layer_undisp_stroke_color_a:
+						case idc_layer_locked_stroke_color_a:
+						case idc_layer_coordlink_stroke_color_a:
+						case idc_layer_clip_stroke_color_a:
 						case idc_midpt_color_a:
 						case idc_midpt_line_color_a:
 						case idc_current_frame_line_color_a:
@@ -406,6 +448,10 @@ namespace apn::timeline_map::main_thread
 						case idc_text_padding_x:
 						case idc_text_padding_y:
 						case idc_layer_top_space:
+						case idc_layer_undisp_stroke_width:
+						case idc_layer_locked_stroke_width:
+						case idc_layer_coordlink_stroke_width:
+						case idc_layer_clip_stroke_width:
 						case idc_midpt_line_width:
 						case idc_visible_area_round_size:
 						case idc_visible_area_stroke_width:

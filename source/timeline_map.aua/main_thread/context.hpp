@@ -450,38 +450,47 @@ namespace apn::timeline_map::main_thread
 		}
 
 		//
+		// 矩形を描画します。
+		//
+		BOOL draw_rectangle(const D2D1_RECT_F& rc,
+			ID2D1Brush* fill_brush, ID2D1Brush* stroke_brush, float stroke_width)
+		{
+			// 矩形を塗りつぶします。
+			state.render_target->FillRectangle(rc, fill_brush);
+
+			// 縁の幅が有効の場合は
+			if (stroke_width > 0.0f)
+			{
+				// 矩形の縁を描画します。
+				state.render_target->DrawRectangle(
+					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
+			}
+
+			return TRUE;
+		}
+
+		//
 		// 角丸矩形を描画します。
 		//
 		BOOL draw_rounded_rectangle(const D2D1_ROUNDED_RECT& rc,
 			ID2D1Brush* fill_brush, ID2D1Brush* stroke_brush, float stroke_width)
 		{
-			// 丸め半径が有効の場合は
-			if (rc.radiusX > 0.0f || rc.radiusY > 0.0f)
-			{
-				// 角丸矩形を塗りつぶします。
-				state.render_target->FillRoundedRectangle(rc, fill_brush);
-
-				// 縁の幅が有効の場合は
-				if (stroke_width > 0.0f)
-				{
-					// 角丸矩形の縁を描画します。
-					state.render_target->DrawRoundedRectangle(
-						deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
-				}
-			}
 			// 丸め半径が無効の場合は
-			else
+			if (rc.radiusX <= 0.0f && rc.radiusY <= 0.0f)
 			{
-				// 矩形を塗りつぶします。
-				state.render_target->FillRectangle(rc.rect, fill_brush);
+				// 普通の矩形を描画します。
+				return draw_rectangle(rc.rect, fill_brush, stroke_brush, stroke_width);
+			}
 
-				// 縁の幅が有効の場合は
-				if (stroke_width > 0.0f)
-				{
-					// 矩形の縁を描画します。
-					state.render_target->DrawRectangle(
-						deflate(rc.rect, stroke_width / 2.0f), stroke_brush, stroke_width);
-				}
+			// 角丸矩形を塗りつぶします。
+			state.render_target->FillRoundedRectangle(rc, fill_brush);
+
+			// 縁の幅が有効の場合は
+			if (stroke_width > 0.0f)
+			{
+				// 角丸矩形の縁を描画します。
+				state.render_target->DrawRoundedRectangle(
+					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
 			}
 
 			return TRUE;
@@ -551,7 +560,7 @@ namespace apn::timeline_map::main_thread
 
 				// レイヤー矩形を描画します。
 				state.render_target->FillRectangle(layer_rc,
-					(i % 2) ? state.even_layer_brush.Get() : state.odd_layer_brush.Get());
+					(i % 2) ? state.layer.even_brush.Get() : state.layer.odd_brush.Get());
 			}
 
 			return TRUE;
@@ -612,16 +621,58 @@ namespace apn::timeline_map::main_thread
 				// アイテム矩形に角丸めモードを適用します。
 				item_rc = round(item_rc, property.item.round_mode);
 
-				// アイテム用のブラシを作成します。
-				auto item_fill_brush = state.create_gradient_brush(
-					item_prop.start_color, item_prop.end_color,
-					D2D1::Point2F(item_rc.rect.left, item_rc.rect.top),
-					D2D1::Point2F(item_rc.rect.right, item_rc.rect.top));
-				if (!item_fill_brush) return FALSE;
+				// 制御範囲を描画します。
+				{
+					switch (object->filter_param[0].id)
+					{
+					case 93:
+					case 94:
+					case 95:
+						{
+							// レイヤー設定を取得します。
+							auto layer_setting = magi.exin.get_layer_setting(object->layer_set);
+							if (!layer_setting) break;
+
+							// アイテムが非表示レイヤーにある場合は除外します。
+							if (has_flag(layer_setting->flag, ExEdit::LayerSetting::Flag::UnDisp)) break;
+
+							// 拡張データ内の制御範囲を取得します。
+							auto control_range = *(int32_t*)magi.exin.get_exdata(object, 0);
+
+							// 下辺のレイヤーを取得します。
+							auto bottom_layer = (control_range > 0) ?
+								std::min(object->layer_set + 1 + control_range, 100) : 100;
+
+							// 下辺を取得します。
+							auto bottom = layer_to_pixel(bottom_layer);
+
+							// 制御範囲矩形を取得します。
+							auto control_range_rc = item_rc;
+							control_range_rc.rect.bottom = bottom;
+
+							// 制御範囲矩形を描画します。
+							draw_rounded_rectangle(control_range_rc, state.control_range_brush.Get(),
+								state.control_range_stroke_brush.Get(), property.control_range.stroke_width / 100.0f);
+
+							break;
+						}
+					}
+				}
 
 				// アイテム矩形を描画します。
-				draw_rounded_rectangle(item_rc, item_fill_brush.Get(),
-					state.item_stroke_brush.Get(), property.item.stroke_width / 100.0f);
+				if (0)
+				{
+					// アイテム用のブラシを作成します。
+					auto item_fill_brush = state.create_gradient_brush(
+						item_prop.start_color, item_prop.end_color,
+						D2D1::Point2F(item_rc.rect.left, item_rc.rect.top),
+						D2D1::Point2F(item_rc.rect.right, item_rc.rect.top));
+					if (!item_fill_brush) return FALSE;
+
+					// アイテム矩形を描画します。
+					draw_rounded_rectangle(item_rc, item_fill_brush.Get(),
+						state.item_stroke_brush.Get(), property.item.stroke_width / 100.0f);
+				}
 
 				// 中間点を走査します。
 				for (auto midpt_x : midpt_x_vec)
@@ -644,6 +695,7 @@ namespace apn::timeline_map::main_thread
 				}
 
 				// アイテム名を描画します。
+//				if (0)
 				{
 					// アイテムの表示名を取得します。
 					auto text = get_display_name(object);
@@ -659,6 +711,55 @@ namespace apn::timeline_map::main_thread
 					draw_text(text, item_rc.rect, text_flags, text_format.Get(),
 						state.text_brush.Get(), state.text_shadow_brush.Get());
 				}
+			}
+
+			return TRUE;
+		}
+
+		//
+		// 各レイヤー設定を描画します。
+		//
+		BOOL draw_layer_settings()
+		{
+			// レイヤーを走査します。
+			for (decltype(nb_layers) i = 0; i < nb_layers; i++)
+			{
+				// レイヤー設定を取得します。
+				auto layer_setting = magi.exin.get_layer_setting(i);
+				if (!layer_setting) continue;
+
+				// レイヤー矩形を取得します。
+				auto layer_rc = D2D1::RectF(
+					(float)rects.body.left, layer_to_pixel(i),
+					(float)rects.body.right, layer_to_pixel(i + 1));
+
+				if (has_flag(layer_setting->flag, ExEdit::LayerSetting::Flag::UnDisp))
+				{
+					// 非表示レイヤー矩形を描画します。
+					draw_rectangle(layer_rc, state.layer.undisp_brush.Get(),
+						state.layer.undisp_stroke_brush.Get(), property.layer.undisp_stroke_width / 100.0f);
+				}
+
+				auto y = layer_rc.top;
+
+				const auto draw_setting = [&](auto flag, const auto& brush, float stroke_width)
+				{
+					// 指定されたフラグがレイヤーに設定されている場合は
+					if (has_flag(layer_setting->flag, flag))
+					{
+						// 設定を横線として描画します。
+						state.render_target->DrawLine(
+							D2D1::Point2F((float)rects.body.left, y + stroke_width / 2.0f),
+							D2D1::Point2F((float)rects.body.right, y + stroke_width / 2.0f),
+							brush, stroke_width);
+
+						y += stroke_width;
+					}
+				};
+
+				draw_setting(ExEdit::LayerSetting::Flag::Locked, state.layer.locked_stroke_brush.Get(), property.layer.locked_stroke_width / 100.0f);
+				draw_setting(ExEdit::LayerSetting::Flag::CoordLink, state.layer.coordlink_stroke_brush.Get(), property.layer.coordlink_stroke_width / 100.0f);
+				draw_setting(ExEdit::LayerSetting::Flag::Clip, state.layer.clip_stroke_brush.Get(), property.layer.clip_stroke_width / 100.0f);
 			}
 
 			return TRUE;
@@ -734,6 +835,7 @@ namespace apn::timeline_map::main_thread
 			// 各要素を描画します。
 			draw_layers();
 			draw_items();
+			draw_layer_settings();
 			draw_current_frame();
 			draw_visible_area();
 

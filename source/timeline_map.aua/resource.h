@@ -26,6 +26,25 @@
 #define idc_layer_odd_color_a           10103
 #define idc_layer_even_color            10104
 #define idc_layer_even_color_a          10105
+#define idc_layer_undisp_color          10106
+#define idc_layer_undisp_color_a        10107
+#define idc_layer_undisp_stroke_color   10108
+#define idc_layer_undisp_stroke_color_a 10109
+#define idc_layer_undisp_stroke_width   10110
+#define idc_layer_undisp_stroke_width_spin 10111
+#define idc_layer_locked_stroke_color   10112
+#define idc_layer_locked_stroke_color_a 10113
+#define idc_layer_locked_stroke_width   10114
+#define idc_layer_locked_stroke_width_spin 10115
+#define idc_layer_coordlink_stroke_color 10116
+#define idc_layer_coordlink_stroke_color_a 10117
+#define idc_layer_coordlink_stroke_width 10118
+#define idc_layer_coordlink_stroke_width_spin 10119
+#define idc_layer_locked_stroke_width_spin2 10119
+#define idc_layer_clip_stroke_color     10120
+#define idc_layer_clip_stroke_color_a   10121
+#define idc_layer_clip_stroke_width     10122
+#define idc_layer_clip_stroke_width_spin 10123
 #define idc_midpt_color                 10200
 #define idc_midpt_color_a               10201
 #define idc_midpt_line_color            10202
@@ -76,6 +95,12 @@
 #define idc_item_control_start_color_a  10531
 #define idc_item_control_end_color      10532
 #define idc_item_control_end_color_a    10533
+#define idc_control_range_color         10603
+#define idc_control_range_color_a       10604
+#define idc_control_range_stroke_color  10605
+#define idc_control_range_stroke_color_a 10606
+#define idc_control_range_stroke_width  10607
+#define idc_control_range_stroke_width_spin 10608
 
 // Next default values for new objects
 // 

@@ -51,8 +51,11 @@ namespace apn::timeline_map::main_thread
 			MY_TRACE_FUNC("");
 
 			// ウィンドウを再描画します。
-//			return ::InvalidateRect(*this, nullptr, FALSE);
+#if 0
+			return ::InvalidateRect(*this, nullptr, FALSE);
+#else
 			return ::InvalidateRect(*this, nullptr, FALSE), ::UpdateWindow(*this);
+#endif
 		}
 
 		//

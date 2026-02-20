@@ -85,6 +85,15 @@ namespace apn::timeline_map::main_thread
 			int32_t top_space;
 			rgba_t odd_color;
 			rgba_t even_color;
+			rgba_t undisp_color;
+			rgba_t undisp_stroke_color;
+			int32_t undisp_stroke_width;
+			rgba_t locked_stroke_color;
+			int32_t locked_stroke_width;
+			rgba_t coordlink_stroke_color;
+			int32_t coordlink_stroke_width;
+			rgba_t clip_stroke_color;
+			int32_t clip_stroke_width;
 		} layer;
 
 		struct item_t {
@@ -138,6 +147,12 @@ namespace apn::timeline_map::main_thread
 			int32_t stroke_width;
 		} visible_area;
 
+		struct control_range_t {
+			rgba_t color;
+			rgba_t stroke_color;
+			int32_t stroke_width;
+		} control_range;
+
 		//
 		// コンストラクタです。
 		//
@@ -156,9 +171,19 @@ namespace apn::timeline_map::main_thread
 
 			{
 				layer.top_space = 10;
-//				layer.odd_color.set(79, 86, 102, 255); // base02
-				layer.odd_color.set(84, 88, 98, 255); // base03
-				layer.even_color.set(63, 68, 81, 255); // base01
+//				layer.odd_color.set(79, 86, 102, 255); // base02 (黒灰色)
+				layer.odd_color.set(84, 88, 98, 255); // base03 (黒灰色)
+				layer.even_color.set(63, 68, 81, 255); // base01 (黒灰色)
+
+				layer.undisp_color.set(40, 44, 52, 150); // base00 (黒)
+				layer.undisp_stroke_color.set(40, 44, 52, 200); // base00 (黒)
+				layer.undisp_stroke_width = 0;
+				layer.locked_stroke_color.set(224, 108, 117, 255); // base08 (赤)
+				layer.locked_stroke_width = 200;
+				layer.coordlink_stroke_color.set(152, 195, 121, 255); // base0B (緑)
+				layer.coordlink_stroke_width = 200;
+				layer.clip_stroke_color.set(97, 175, 239, 255); // base0D (青)
+				layer.clip_stroke_width = 200;
 			}
 
 			{
@@ -204,6 +229,12 @@ namespace apn::timeline_map::main_thread
 				visible_area.color.set(255, 255, 255, 100); // base07 (純白)
 				visible_area.stroke_color.set(255, 255, 255, 150); // base07 (純白)
 				visible_area.stroke_width = 100;
+			}
+
+			{
+				control_range.color.set(198, 120, 221, 50); // base0E (紫)
+				control_range.stroke_color.set(40, 44, 52, 150); // base00 (黒)
+				control_range.stroke_width = 100;
 			}
 		}
 	} property;

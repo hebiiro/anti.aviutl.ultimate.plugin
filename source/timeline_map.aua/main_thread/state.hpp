@@ -15,8 +15,15 @@ namespace apn::timeline_map::main_thread
 		ComPtr<ID2D1SolidColorBrush> text_brush;
 		ComPtr<ID2D1SolidColorBrush> text_shadow_brush;
 
-		ComPtr<ID2D1SolidColorBrush> odd_layer_brush;
-		ComPtr<ID2D1SolidColorBrush> even_layer_brush;
+		struct layer_t {
+			ComPtr<ID2D1SolidColorBrush> odd_brush;
+			ComPtr<ID2D1SolidColorBrush> even_brush;
+			ComPtr<ID2D1SolidColorBrush> undisp_brush;
+			ComPtr<ID2D1SolidColorBrush> undisp_stroke_brush;
+			ComPtr<ID2D1SolidColorBrush> locked_stroke_brush;
+			ComPtr<ID2D1SolidColorBrush> coordlink_stroke_brush;
+			ComPtr<ID2D1SolidColorBrush> clip_stroke_brush;
+		} layer;
 
 		ComPtr<ID2D1SolidColorBrush> item_stroke_brush;
 
@@ -27,6 +34,9 @@ namespace apn::timeline_map::main_thread
 
 		ComPtr<ID2D1SolidColorBrush> visible_area_brush;
 		ComPtr<ID2D1SolidColorBrush> visible_area_stroke_brush;
+
+		ComPtr<ID2D1SolidColorBrush> control_range_brush;
+		ComPtr<ID2D1SolidColorBrush> control_range_stroke_brush;
 
 		//
 		// 初期化処理を実行します。
@@ -107,12 +117,32 @@ namespace apn::timeline_map::main_thread
 			if (!text_shadow_brush) return FALSE;
 
 			// 奇数レイヤー用のブラシを作成します。
-			odd_layer_brush = state.create_solid_brush(property.layer.odd_color);
-			if (!odd_layer_brush) return FALSE;
+			layer.odd_brush = state.create_solid_brush(property.layer.odd_color);
+			if (!layer.odd_brush) return FALSE;
 
 			// 偶数レイヤー用のブラシを作成します。
-			even_layer_brush = state.create_solid_brush(property.layer.even_color);
-			if (!even_layer_brush) return FALSE;
+			layer.even_brush = state.create_solid_brush(property.layer.even_color);
+			if (!layer.even_brush) return FALSE;
+
+			// 無効レイヤー用のブラシを作成します。
+			layer.undisp_brush = state.create_solid_brush(property.layer.undisp_color);
+			if (!layer.undisp_brush) return FALSE;
+
+			// 無効レイヤー用のストロークブラシを作成します。
+			layer.undisp_stroke_brush = state.create_solid_brush(property.layer.undisp_stroke_color);
+			if (!layer.undisp_stroke_brush) return FALSE;
+
+			// ロックレイヤー用のブラシを作成します。
+			layer.locked_stroke_brush = state.create_solid_brush(property.layer.locked_stroke_color);
+			if (!layer.locked_stroke_brush) return FALSE;
+
+			// 座標リンクレイヤー用のブラシを作成します。
+			layer.coordlink_stroke_brush = state.create_solid_brush(property.layer.coordlink_stroke_color);
+			if (!layer.coordlink_stroke_brush) return FALSE;
+
+			// クリップレイヤー用のブラシを作成します。
+			layer.clip_stroke_brush = state.create_solid_brush(property.layer.clip_stroke_color);
+			if (!layer.clip_stroke_brush) return FALSE;
 
 			// アイテム枠用のブラシを作成します。
 			item_stroke_brush = state.create_solid_brush(property.item.stroke_color);
@@ -137,6 +167,14 @@ namespace apn::timeline_map::main_thread
 			// 表示範囲枠用のブラシを作成します。
 			visible_area_stroke_brush = state.create_solid_brush(property.visible_area.stroke_color);
 			if (!visible_area_stroke_brush) return FALSE;
+
+			// 制御範囲用のブラシを作成します。
+			control_range_brush = state.create_solid_brush(property.control_range.color);
+			if (!control_range_brush) return FALSE;
+
+			// 制御範囲枠用のブラシを作成します。
+			control_range_stroke_brush = state.create_solid_brush(property.control_range.stroke_color);
+			if (!control_range_stroke_brush) return FALSE;
 
 			return TRUE;
 		}

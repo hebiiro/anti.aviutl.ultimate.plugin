@@ -127,6 +127,15 @@ namespace apn::timeline_map::main_thread
 				read_int(root, "top_space", property.layer.top_space);
 				read_rgba(root, "odd_color", property.layer.odd_color);
 				read_rgba(root, "even_color", property.layer.even_color);
+				read_rgba(root, "undisp_color", property.layer.undisp_color);
+				read_rgba(root, "undisp_stroke_color", property.layer.undisp_stroke_color);
+				read_int(root, "undisp_stroke_width", property.layer.undisp_stroke_width);
+				read_rgba(root, "locked_stroke_color", property.layer.locked_stroke_color);
+				read_int(root, "locked_stroke_width", property.layer.locked_stroke_width);
+				read_rgba(root, "coordlink_stroke_color", property.layer.coordlink_stroke_color);
+				read_int(root, "coordlink_stroke_width", property.layer.coordlink_stroke_width);
+				read_rgba(root, "clip_stroke_color", property.layer.clip_stroke_color);
+				read_int(root, "clip_stroke_width", property.layer.clip_stroke_width);
 			});
 
 			read_node(root, "item", [&](const n_json& root) {
@@ -158,6 +167,12 @@ namespace apn::timeline_map::main_thread
 				read_int(root, "stroke_width", property.visible_area.stroke_width);
 			});
 
+			read_node(root, "control_range", [&](n_json& root) {
+				read_rgba(root, "color", property.control_range.color);
+				read_rgba(root, "stroke_color", property.control_range.stroke_color);
+				read_int(root, "stroke_width", property.control_range.stroke_width);
+			});
+
 			read_window_pos(root, "view", view);
 
 			return TRUE;
@@ -185,6 +200,15 @@ namespace apn::timeline_map::main_thread
 				write_int(root, "top_space", property.layer.top_space);
 				write_rgba(root, "odd_color", property.layer.odd_color);
 				write_rgba(root, "even_color", property.layer.even_color);
+				write_rgba(root, "undisp_color", property.layer.undisp_color);
+				write_rgba(root, "undisp_stroke_color", property.layer.undisp_stroke_color);
+				write_int(root, "undisp_stroke_width", property.layer.undisp_stroke_width);
+				write_rgba(root, "locked_stroke_color", property.layer.locked_stroke_color);
+				write_int(root, "locked_stroke_width", property.layer.locked_stroke_width);
+				write_rgba(root, "coordlink_stroke_color", property.layer.coordlink_stroke_color);
+				write_int(root, "coordlink_stroke_width", property.layer.coordlink_stroke_width);
+				write_rgba(root, "clip_stroke_color", property.layer.clip_stroke_color);
+				write_int(root, "clip_stroke_width", property.layer.clip_stroke_width);
 			});
 
 			write_node(root, "item", [&](n_json& root) {
@@ -214,6 +238,12 @@ namespace apn::timeline_map::main_thread
 				write_rgba(root, "color", property.visible_area.color);
 				write_rgba(root, "stroke_color", property.visible_area.stroke_color);
 				write_int(root, "stroke_width", property.visible_area.stroke_width);
+			});
+
+			write_node(root, "control_range", [&](n_json& root) {
+				write_rgba(root, "color", property.control_range.color);
+				write_rgba(root, "stroke_color", property.control_range.stroke_color);
+				write_int(root, "stroke_width", property.control_range.stroke_width);
 			});
 
 			write_window_pos(root, "view", view);
