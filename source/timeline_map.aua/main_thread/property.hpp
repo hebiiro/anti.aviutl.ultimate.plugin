@@ -11,6 +11,11 @@ namespace apn::timeline_map::main_thread
 		uint32_t value; // 0xrrggbbaa;
 		uint8_t vec[4];
 		struct { uint8_t a, b, g, r; };
+		rgba_t() {}
+		rgba_t(const rgba_t& rhs) : value(rhs.value) {}
+		rgba_t(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+			set(r, g, b, a);
+		}
 		void set(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 			this->r = r, this->g = g, this->b = b, this->a = a;
 		}
@@ -71,36 +76,41 @@ namespace apn::timeline_map::main_thread
 				};
 			} c_vert_align;
 
-			std::wstring font_name;
-			int32_t font_size;
-			rgba_t color;
-			rgba_t shadow_color;
-			POINT padding;
-			POINT shadow_offset;
-			int32_t horz_align;
-			int32_t vert_align;
+			std::wstring font_name = L"Consolas";
+			int32_t font_size = 0;
+			rgba_t color = { 255, 255, 255, 255 }; // base07 (白)
+			rgba_t shadow_color = { 40, 44, 52, 128 }; // base00 (黒)
+			POINT padding = { 200, 0 };
+			POINT shadow_offset = { 100, 100 };
+			int32_t horz_align = c_horz_align.c_left;
+			int32_t vert_align = c_vert_align.c_center;
+			BOOL flag_draw_text = TRUE;
+			BOOL flag_draw_shadow = TRUE;
+			int32_t min_draw_width = 200;
 		} text;
 
 		struct layer_t {
-			int32_t top_space;
-			rgba_t odd_color;
-			rgba_t even_color;
-			rgba_t undisp_color;
-			rgba_t undisp_stroke_color;
-			int32_t undisp_stroke_width;
-			rgba_t locked_stroke_color;
-			int32_t locked_stroke_width;
-			rgba_t coordlink_stroke_color;
-			int32_t coordlink_stroke_width;
-			rgba_t clip_stroke_color;
-			int32_t clip_stroke_width;
+			int32_t top_space = 10;
+//			rgba_t odd_color = { 79, 86, 102, 255 }; // base02 (黒灰色)
+			rgba_t odd_color = { 84, 88, 98, 255 }; // base03 (黒灰色)
+			rgba_t even_color = { 63, 68, 81, 255 }; // base01 (黒灰色)
+			rgba_t undisp_color = { 40, 44, 52, 150 }; // base00 (黒)
+			rgba_t undisp_stroke_color = { 40, 44, 52, 200 }; // base00 (黒)
+			int32_t undisp_stroke_width = 0;
+			rgba_t locked_stroke_color = { 224, 108, 117, 255 }; // base08 (赤)
+			int32_t locked_stroke_width = 200;
+			rgba_t coordlink_stroke_color = { 152, 195, 121, 255 }; // base0B (緑)
+			int32_t coordlink_stroke_width = 200;
+			rgba_t clip_stroke_color = { 97, 175, 239, 255 }; // base0D (青)
+			int32_t clip_stroke_width = 200;
 		} layer;
 
 		struct item_t {
-			int32_t round_size;
-			int32_t round_mode;
-			rgba_t stroke_color;
-			int32_t stroke_width;
+			int32_t round_size = 20;
+			int32_t round_mode = c_round_mode.c_relative;;
+//			rgba_t stroke_color = { 230, 230, 230, 255 }; // base06 (白)
+			rgba_t stroke_color = { 40, 44, 52, 255 }; // base00 (黒)
+			int32_t stroke_width = 100;
 
 			//
 			// 各アイテムノードのインデックスです。
@@ -125,117 +135,50 @@ namespace apn::timeline_map::main_thread
 
 			struct node_t {
 				rgba_t start_color, end_color;
-			} nodes[c_item.c_max_size];
+			} nodes[c_item.c_max_size] = {
+				make_pair_color(97, 175, 239), // base0D (青)
+				make_pair_color(86, 182, 194), // base0C (青緑)
+				make_pair_color(152, 195, 121), // base0B (緑)
+				make_pair_color(224, 108, 117), // base08 (赤)
+				make_pair_color(229, 192, 123), // base0A (黄色)
+				make_pair_color(198, 120, 221), // base0E (紫)
+			};
+
+			//
+			// アイテムの配色を二色同時にセットします。
+			//
+			inline static item_t::node_t make_pair_color(uint8_t r, uint8_t g, uint8_t b)
+			{
+				return {
+					rgba_t(r / 2, g / 2, b / 2, 255),
+					rgba_t(r, g, b, 255),
+				};
+			}
 		} item;
 
 		struct midpt_t {
-			rgba_t color;
-			rgba_t line_color;
-			int32_t line_width;
+			rgba_t color = { 190, 80, 70, 255 }; // base0F (濃い赤)
+			rgba_t line_color = { 40, 44, 52, 240 }; // base00 (黒)
+			int32_t line_width = 50;
 		} midpt;
 
 		struct current_frame_t {
-			rgba_t line_color;
-			int32_t line_width;
+			rgba_t line_color = { 190, 80, 70, 200 }; // base0F (濃い赤)
+			int32_t line_width = 100;
 		} current_frame;
 
 		struct visible_area_t {
-			int32_t round_size;
-			int32_t round_mode;
-			rgba_t color;
-			rgba_t stroke_color;
-			int32_t stroke_width;
+			int32_t round_size = 500;
+			int32_t round_mode = c_round_mode.c_absolute;
+			rgba_t color = { 255, 255, 255, 100 }; // base07 (純白)
+			rgba_t stroke_color = { 255, 255, 255, 150 }; // base07 (純白)
+			int32_t stroke_width = 100;
 		} visible_area;
 
 		struct control_range_t {
-			rgba_t color;
-			rgba_t stroke_color;
-			int32_t stroke_width;
+			rgba_t color = { 198, 120, 221, 50 }; // base0E (紫)
+			rgba_t stroke_color = { 40, 44, 52, 150 }; // base00 (黒)
+			int32_t stroke_width = 100;
 		} control_range;
-
-		//
-		// コンストラクタです。
-		//
-		property_t()
-		{
-			{
-				text.font_name = L"Consolas";
-				text.font_size = 0;
-				text.color.set(255, 255, 255, 255); // base07 (白)
-				text.shadow_color.set(40, 44, 52, 128); // base00 (黒)
-				text.padding = { 200, 0 };
-				text.shadow_offset = { 100, 100 };
-				text.horz_align = text.c_horz_align.c_left;
-				text.vert_align = text.c_vert_align.c_center;
-			}
-
-			{
-				layer.top_space = 10;
-//				layer.odd_color.set(79, 86, 102, 255); // base02 (黒灰色)
-				layer.odd_color.set(84, 88, 98, 255); // base03 (黒灰色)
-				layer.even_color.set(63, 68, 81, 255); // base01 (黒灰色)
-
-				layer.undisp_color.set(40, 44, 52, 150); // base00 (黒)
-				layer.undisp_stroke_color.set(40, 44, 52, 200); // base00 (黒)
-				layer.undisp_stroke_width = 0;
-				layer.locked_stroke_color.set(224, 108, 117, 255); // base08 (赤)
-				layer.locked_stroke_width = 200;
-				layer.coordlink_stroke_color.set(152, 195, 121, 255); // base0B (緑)
-				layer.coordlink_stroke_width = 200;
-				layer.clip_stroke_color.set(97, 175, 239, 255); // base0D (青)
-				layer.clip_stroke_width = 200;
-			}
-
-			{
-				//
-				// この関数はアイテムの配色を二色同時にセットします。
-				//
-				const auto make_pair_color = [](uint8_t r, uint8_t g, uint8_t b)
-				{
-					return property_t::item_t::node_t {
-						.start_color = { .a = 255, .b = (uint8_t)(b / 2), .g = (uint8_t)(g / 2), .r = (uint8_t)(r / 2), },
-						.end_color = { .a = 255, .b = b, .g = g, .r = r, },
-					};
-				};
-
-				item.round_size = 20;
-				item.round_mode = property.c_round_mode.c_relative;
-//				item.stroke_color.set(230, 230, 230, 255); // base06 (白)
-				item.stroke_color.set(40, 44, 52, 255); // base00 (黒)
-				item.stroke_width = 100;
-
-				item.nodes[item.c_item.c_image_media] = make_pair_color(97, 175, 239); // base0D (青)
-				item.nodes[item.c_item.c_image_filter_effect] = make_pair_color(86, 182, 194); // base0C (青緑)
-				item.nodes[item.c_item.c_image_filter] = make_pair_color(152, 195, 121); // base0B (緑)
-				item.nodes[item.c_item.c_sound_media] = make_pair_color(224, 108, 117); // base08 (赤)
-				item.nodes[item.c_item.c_sound_filter] = make_pair_color(229, 192, 123); // base0A (黄色)
-				item.nodes[item.c_item.c_control] = make_pair_color(198, 120, 221); // base0E (紫)
-			}
-
-			{
-				midpt.color.set(190, 80, 70, 255); // base0F (濃い赤)
-				midpt.line_color.set(40, 44, 52, 240); // base00 (黒)
-				midpt.line_width = 50;
-			}
-
-			{
-				current_frame.line_color.set(190, 80, 70, 200); // base0F (濃い赤)
-				current_frame.line_width = 100;
-			}
-
-			{
-				visible_area.round_size = 500;
-				visible_area.round_mode = property.c_round_mode.c_absolute;
-				visible_area.color.set(255, 255, 255, 100); // base07 (純白)
-				visible_area.stroke_color.set(255, 255, 255, 150); // base07 (純白)
-				visible_area.stroke_width = 100;
-			}
-
-			{
-				control_range.color.set(198, 120, 221, 50); // base0E (紫)
-				control_range.stroke_color.set(40, 44, 52, 150); // base00 (黒)
-				control_range.stroke_width = 100;
-			}
-		}
 	} property;
 }
