@@ -94,6 +94,8 @@ namespace apn::timeline_map::main_thread
 			get_rgba(idc_visible_area_color, property.visible_area.color);
 			get_rgba(idc_visible_area_stroke_color, property.visible_area.stroke_color);
 			get_int(idc_visible_area_stroke_width, property.visible_area.stroke_width);
+
+			get_check(idc_etc_flag_immediate, property.etc.flag_immediate);
 		}
 
 		//
@@ -153,6 +155,8 @@ namespace apn::timeline_map::main_thread
 			set_rgba(idc_visible_area_color, property.visible_area.color);
 			set_rgba(idc_visible_area_stroke_color, property.visible_area.stroke_color);
 			set_int(idc_visible_area_stroke_width, property.visible_area.stroke_width);
+
+			set_check(idc_etc_flag_immediate, property.etc.flag_immediate);
 		}
 
 		//
@@ -225,6 +229,7 @@ namespace apn::timeline_map::main_thread
 			// チェックボックスの場合の処理です。
 			case idc_text_flag_draw_text:
 			case idc_text_flag_draw_shadow:
+			case idc_etc_flag_immediate:
 				{
 					// コントロールの値でコンフィグを更新します。
 					from_ui(FALSE); break;

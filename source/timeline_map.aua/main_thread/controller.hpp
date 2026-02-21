@@ -177,6 +177,10 @@ namespace apn::timeline_map::main_thread
 				read_int(root, "stroke_width", property.control_range.stroke_width);
 			});
 
+			read_node(root, "etc", [&](const n_json& root) {
+				read_bool(root, "flag_immediate", property.etc.flag_immediate);
+			});
+
 			read_window_pos(root, "view", view);
 
 			return TRUE;
@@ -251,6 +255,10 @@ namespace apn::timeline_map::main_thread
 				write_rgba(root, "color", property.control_range.color);
 				write_rgba(root, "stroke_color", property.control_range.stroke_color);
 				write_int(root, "stroke_width", property.control_range.stroke_width);
+			});
+
+			write_node(root, "etc", [&](n_json& root) {
+				write_bool(root, "flag_immediate", property.etc.flag_immediate);
 			});
 
 			write_window_pos(root, "view", view);

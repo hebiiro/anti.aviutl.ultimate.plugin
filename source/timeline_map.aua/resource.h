@@ -104,6 +104,7 @@
 #define idc_control_range_stroke_color_a 10606
 #define idc_control_range_stroke_width  10607
 #define idc_control_range_stroke_width_spin 10608
+#define idc_etc_flag_immediate          11000
 
 // Next default values for new objects
 // 

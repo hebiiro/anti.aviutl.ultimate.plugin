@@ -180,5 +180,9 @@ namespace apn::timeline_map::main_thread
 			rgba_t stroke_color = { 40, 44, 52, 150 }; // base00 (黒)
 			int32_t stroke_width = 100;
 		} control_range;
+
+		struct etc_t {
+			BOOL flag_immediate = TRUE;
+		} etc;
 	} property;
 }
