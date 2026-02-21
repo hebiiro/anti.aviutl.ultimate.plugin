@@ -226,35 +226,35 @@ namespace apn::timeline_map::main_thread
 		//
 		// 指定されたオブジェクトに対応するアイテムプロパティを返します。
 		//
-		inline auto& get_item_prop(auto object)
+		inline auto get_item_node_index(auto object)
 		{
 			// Controlが指定されている場合は制御オブジェクトです。
 			if (!!(object->flag & ExEdit::Object::Flag::Control))
-				return property.item.nodes[property.item.c_item.c_control];
+				return property.item.c_item.c_control;
 
 			// Soundが指定されている場合は音声オブジェクトです。
 			if (!!(object->flag & ExEdit::Object::Flag::Sound))
 			{
 				// Filterが指定されている場合はメディアオブジェクトです。
 				if (!!(object->flag & ExEdit::Object::Flag::Filter))
-					return property.item.nodes[property.item.c_item.c_sound_media];
+					return property.item.c_item.c_sound_media;
 
 				// それ以外の場合はフィルタオブジェクトです。
-				return property.item.nodes[property.item.c_item.c_sound_filter];
+				return property.item.c_item.c_sound_filter;
 			}
 			// それ以外の場合は画像オブジェクトです。
 			else
 			{
 				// Effectが指定されている場合はフィルタ効果オブジェクトです。
 				if (!!(object->flag & ExEdit::Object::Flag::Effect))
-					return property.item.nodes[property.item.c_item.c_image_filter_effect];
+					return property.item.c_item.c_image_filter_effect;
 
 				// Filterが指定されている場合はメディアオブジェクトです。
 				if (!!(object->flag & ExEdit::Object::Flag::Filter))
-					return property.item.nodes[property.item.c_item.c_image_media];
+					return property.item.c_item.c_image_media;
 
 				// それ以外の場合はフィルタオブジェクトです。
-				return property.item.nodes[property.item.c_item.c_image_filter];
+				return property.item.c_item.c_image_filter;
 			}
 		}
 
@@ -478,7 +478,7 @@ namespace apn::timeline_map::main_thread
 		}
 
 		//
-		// 角丸矩形を描画します。
+		// 丸角矩形を描画します。
 		//
 		BOOL draw_rounded_rectangle(const D2D1_ROUNDED_RECT& rc,
 			ID2D1Brush* fill_brush, ID2D1Brush* stroke_brush, float stroke_width)
@@ -490,13 +490,60 @@ namespace apn::timeline_map::main_thread
 				return draw_rectangle(rc.rect, fill_brush, stroke_brush, stroke_width);
 			}
 
-			// 角丸矩形を塗りつぶします。
+			// 丸角矩形を塗りつぶします。
 			state.render_target->FillRoundedRectangle(rc, fill_brush);
 
 			// 縁の幅が有効の場合は
 			if (stroke_width > 0.0f)
 			{
-				// 角丸矩形の縁を描画します。
+				// 丸角矩形の縁を描画します。
+				state.render_target->DrawRoundedRectangle(
+					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
+			}
+
+			return TRUE;
+		}
+
+		//
+		// アイテム矩形を描画します。
+		//
+		BOOL draw_item_rectangle(const D2D1_RECT_F& rc,
+			size_t item_node_index, ID2D1Brush* stroke_brush, float stroke_width)
+		{
+			// 矩形を塗りつぶします。
+			state.draw_gradient_rectangle(rc, item_node_index);
+
+			// 縁の幅が有効の場合は
+			if (stroke_width > 0.0f)
+			{
+				// 矩形の縁を描画します。
+				state.render_target->DrawRectangle(
+					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
+			}
+
+			return TRUE;
+		}
+
+		//
+		// アイテム矩形を丸角矩形で描画します。
+		//
+		BOOL draw_item_rectangle(const D2D1_ROUNDED_RECT& rc,
+			size_t item_node_index, ID2D1Brush* stroke_brush, float stroke_width)
+		{
+			// 丸め半径が無効の場合は
+			if (rc.radiusX <= 0.0f && rc.radiusY <= 0.0f)
+			{
+				// 普通の矩形を描画します。
+				return draw_item_rectangle(rc.rect, item_node_index, stroke_brush, stroke_width);
+			}
+
+			// 矩形を塗りつぶします。
+			state.draw_gradient_rectangle(rc, item_node_index);
+
+			// 縁の幅が有効の場合は
+			if (stroke_width > 0.0f)
+			{
+				// 丸角矩形の縁を描画します。
 				state.render_target->DrawRoundedRectangle(
 					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
 			}
@@ -597,7 +644,8 @@ namespace apn::timeline_map::main_thread
 				auto object_index = magi.exin.get_object_index(object);
 
 				// アイテムの追加情報を取得します。
-				auto item_prop = get_item_prop(object);
+				const auto& node_index = get_item_node_index(object);
+				const auto& node = property.item.nodes[node_index];
 
 				// アイテムの描画位置を取得します。
 				auto start_point = D2D1::Point2F(frame_to_pixel(object->frame_begin), layer_to_pixel(object->layer_set));
@@ -677,15 +725,8 @@ namespace apn::timeline_map::main_thread
 				// アイテム矩形を描画します。
 //				if (0)
 				{
-					// アイテム用のブラシを作成します。
-					auto item_fill_brush = state.create_gradient_brush(
-						item_prop.start_color, item_prop.end_color,
-						D2D1::Point2F(item_rc.rect.left, item_rc.rect.top),
-						D2D1::Point2F(item_rc.rect.right, item_rc.rect.top));
-					if (!item_fill_brush) return FALSE;
-
 					// アイテム矩形を描画します。
-					draw_rounded_rectangle(item_rc, item_fill_brush.Get(),
+					draw_item_rectangle(item_rc, node_index,
 						state.item.stroke_brush.Get(), property.item.stroke_width / 100.0f);
 				}
 

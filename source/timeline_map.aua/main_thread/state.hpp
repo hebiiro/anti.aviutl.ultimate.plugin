@@ -28,7 +28,14 @@ namespace apn::timeline_map::main_thread
 		} layer;
 
 		struct item_t {
+			inline static constexpr auto c_gradient_w = 256;
+			inline static constexpr auto c_gradient_h = 1;
+
 			ComPtr<ID2D1SolidColorBrush> stroke_brush;
+			struct node_t {
+				ComPtr<ID2D1Bitmap> gradient_bitmap;
+				ComPtr<ID2D1BitmapBrush> gradient_brush;
+			} nodes[property.item.c_item.c_max_size];
 		} item;
 
 		struct midpt_t {
@@ -164,6 +171,59 @@ namespace apn::timeline_map::main_thread
 				// アイテム枠用のブラシを作成します。
 				item.stroke_brush = state.create_solid_brush(property.item.stroke_color);
 				if (!item.stroke_brush) return FALSE;
+
+				// アイテム用のグラデーションビットマップを作成します。
+				{
+					std::vector<uint32_t> gradient(item.c_gradient_w);
+
+					//
+					// この関数はグラデーションビットマップを作成して返します。
+					//
+					const auto create_gradient_bitmap = [&](const auto& node)
+					{
+						for (auto x = 0; x < item.c_gradient_w; x++)
+						{
+							auto t = (float)x / (item.c_gradient_w - 1);
+							auto s = 1.0f - t;;
+
+							auto r = (uint8_t)(node.start_color.r * s + node.end_color.r * t);
+							auto g = (uint8_t)(node.start_color.g * s + node.end_color.g * t);
+							auto b = (uint8_t)(node.start_color.b * s + node.end_color.b * t);
+							auto a = (uint8_t)(node.start_color.a * s + node.end_color.a * t);
+
+							gradient[x] = (a << 24) | (r << 16) | (g << 8) | (b << 0);
+						}
+
+						ComPtr<ID2D1Bitmap> bitmap;
+						render_target->CreateBitmap(
+							D2D1::SizeU(item.c_gradient_w, item.c_gradient_h),
+							gradient.data(), item.c_gradient_w * 4,
+							{ { DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE }, 96.0f, 96.0f, },
+							&bitmap);
+						return bitmap;
+					};
+
+					//
+					// この関数はグラデーションビットマップブラシを作成して返します。
+					//
+					const auto create_gradient_bitmap_brush = [&](const auto& node)
+					{
+						ComPtr<ID2D1BitmapBrush> gradient_bitmap_brush;
+						render_target->CreateBitmapBrush(node.gradient_bitmap.Get(),
+							{ D2D1_EXTEND_MODE_CLAMP, D2D1_EXTEND_MODE_CLAMP, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR },
+							&gradient_bitmap_brush);
+						return gradient_bitmap_brush;
+					};
+
+					for (size_t i = 0; i < std::size(item.nodes); i++)
+					{
+						item.nodes[i].gradient_bitmap = create_gradient_bitmap(property.item.nodes[i]);
+						if (!item.nodes[i].gradient_bitmap) return FALSE;
+
+						item.nodes[i].gradient_brush = create_gradient_bitmap_brush(item.nodes[i]);
+						if (!item.nodes[i].gradient_brush) return FALSE;
+					}
+				}
 			}
 
 			{
@@ -324,6 +384,37 @@ namespace apn::timeline_map::main_thread
 			text_layout->SetMaxHeight(h);
 
 			return text_layout;
+		}
+
+		//
+		// ビットマップを使用してグラデーション矩形を描画します。
+		//
+		inline BOOL draw_gradient_rectangle(const D2D1_RECT_F& rc, size_t item_node_index)
+		{
+			static constexpr auto src_rc = D2D1_RECT_F { 0.0f, 0.0f, (float)item.c_gradient_w, 1.0f };
+
+			render_target->DrawBitmap(
+				item.nodes[item_node_index].gradient_bitmap.Get(),
+				rc, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR, src_rc);
+
+			return TRUE;
+		}
+
+		//
+		// ビットマップを使用してグラデーション矩形を描画します。
+		//
+		inline BOOL draw_gradient_rectangle(const D2D1_ROUNDED_RECT& rc, size_t item_node_index)
+		{
+			const auto& brush = item.nodes[item_node_index].gradient_brush;
+
+			brush->SetTransform(D2D1::Matrix3x2F::Identity());
+			brush->SetTransform(
+				D2D1::Matrix3x2F::Scale((rc.rect.right - rc.rect.left) / item.c_gradient_w, 1.0f) *
+				D2D1::Matrix3x2F::Translation(rc.rect.left, rc.rect.top));
+
+			render_target->FillRoundedRectangle(rc, brush.Get());
+
+			return TRUE;
 		}
 	} state;
 }
