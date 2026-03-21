@@ -18,13 +18,10 @@ namespace apn
 
 		ObjectHolder(int32_t object_index)
 		{
-			this->object_index = object_index;
-			if (this->object_index >= 0)
-			{
-				this->object = magi.exin.get_object(this->object_index);
-				if (!this->object)
-					this->object_index = -1;
-			}
+			if (object_index < 0) return;
+
+			if (this->object = magi.exin.get_object(object_index))
+				this->object_index = object_index;
 		}
 
 		int32_t get_object_index() const

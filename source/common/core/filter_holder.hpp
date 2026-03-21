@@ -20,16 +20,11 @@ namespace apn
 		FilterHolder(const ObjectHolder& object, int32_t filter_index)
 			: object(object)
 		{
-			if (this->object.is_valid())
-			{
+			if (!this->object.is_valid()) return;
+			if (filter_index < 0) return;
+
+			if (this->filter = magi.exin.get_filter(this->object.get_object(), filter_index))
 				this->filter_index = filter_index;
-				if (this->filter_index >= 0)
-				{
-					this->filter = magi.exin.get_filter(this->object.get_object(), this->filter_index);
-					if (!this->filter)
-						this->filter_index = -1;
-				}
-			}
 		}
 
 		const ObjectHolder& get_object() const
