@@ -223,10 +223,7 @@ namespace apn::item_copy
 		//
 		BOOL write_exo_header(std::ofstream& ofs)
 		{
-			auto exedit = magi.exin.get_exedit();
-			auto get_scene_size = (void (*)(int32_t scene_index, int32_t* w, int32_t* h, int32_t u4))(exedit + 0x2B980);
-			auto is_scene_alpha_enabled = (BOOL (*)(int32_t scene_index))(exedit + 0x2BA00);
-			auto fi = (AviUtl::FileInfo*)(exedit + 0x178E78);
+			auto fi = magi.exin.get_file_info();
 
 			// 現在のシーンを取得します。
 			auto current_scene_index = magi.exin.get_current_scene_index();
@@ -241,8 +238,9 @@ namespace apn::item_copy
 			if (current_scene_index)
 			{
 				// シーンのサイズを取得します。
-				int32_t scene_width = 0, scene_height = 0;
-				get_scene_size(current_scene_index, &scene_width, &scene_height, 0);
+				auto scene_width = int32_t {};
+				auto scene_height = int32_t {};
+				magi.exin.get_scene_size(current_scene_index, &scene_width, &scene_height, 0);
 
 				if (scene_width) width = scene_width;
 				if (scene_height) height = scene_height;
@@ -252,10 +250,10 @@ namespace apn::item_copy
 			ofs << my::format("height={/}\r\n", height);
 			ofs << my::format("rate={/}\r\n", fi->video_rate);
 			ofs << my::format("scale={/}\r\n", fi->video_scale);
-			ofs << my::format("length={/}\r\n", *(int32_t*)(exedit + 0x14D3A0));
+			ofs << my::format("length={/}\r\n", magi.exin.get_aviutl_frame_number());
 			ofs << my::format("audio_rate={/}\r\n", fi->audio_rate);
 			ofs << my::format("audio_ch={/}\r\n", fi->audio_ch);
-			if (is_scene_alpha_enabled(current_scene_index))
+			if (magi.exin.is_scene_alpha_enabled(current_scene_index))
 				ofs << "alpha=1\r\n";
 			if (current_scene && current_scene->name)
 				ofs << my::format("name={/}\r\n", current_scene->name);
@@ -269,16 +267,7 @@ namespace apn::item_copy
 		BOOL write_object(std::ofstream& ofs, ExEdit::Object* object, int32_t object_index,
 			int32_t write_object_index, int32_t frame_origin, int32_t layer_origin)
 		{
-			auto exedit = magi.exin.get_exedit();
-			auto get_scene_size = (void (*)(int32_t scene_index, int32_t* w, int32_t* h, int32_t u4))(exedit + 0x2B980);
-			auto is_scene_alpha_enabled = (BOOL (*)(int32_t scene_index))(exedit + 0x2BA00);
-			auto filter_to_string = (LPSTR (*)(
-				LPSTR buffer,
-				ExEdit::Object* object,
-				int32_t filter_index,
-				uint32_t is_midpt))(exedit + 0x28830);
-			auto string_buffer = *(LPSTR*)(exedit + 0x1A5328);
-			auto fi = (AviUtl::FileInfo*)(exedit + 0x178E78);
+			auto string_buffer = magi.exin.get_string_buffer();
 
 			ofs << my::format("[{/}]\r\n", write_object_index);
 			ofs << my::format("start={/}\r\n", object->frame_begin + 1 - frame_origin);
@@ -330,9 +319,12 @@ namespace apn::item_copy
 
 				ofs << my::format("[{/}.{/}]\r\n", write_object_index, write_filter_index);
 
+				//
+				// この関数はストリームにフィルタを書き込みます。
+				//
 				const auto write_filter = [&]()
 				{
-					auto next_string_buffer = (*filter_to_string)(string_buffer, object, j, is_midpt);
+					auto next_string_buffer = magi.exin.filter_to_string(string_buffer, object, j, is_midpt);
 
 					ofs << string_buffer;
 				};
@@ -373,9 +365,6 @@ namespace apn::item_copy
 		//
 		BOOL write_item_exa(const std::filesystem::path& base_file_name)
 		{
-			auto exedit = magi.exin.get_exedit();
-			auto write_exa = (BOOL (*)(int32_t object_index, int32_t filter_index, LPCSTR file_name))(exedit + 0x28CA0);
-
 			// 対象アイテムを取得します。
 			auto target_objects = get_target_objects();
 
@@ -410,7 +399,7 @@ namespace apn::item_copy
 					stem, ++index, normalize_object_name(object), extension);
 
 				// アイテムをファイルに書き込みます。
-				write_exa(object_index, -2, file_name.string().c_str());
+				magi.exin.save_exa(object_index, -2, file_name.string().c_str());
 			}
 
 			return TRUE;
@@ -428,6 +417,7 @@ namespace apn::item_copy
 			// 対象が存在しない場合は何もしません。
 			if (target_objects.empty()) return FALSE;
 
+			// パスのパーツを取得しておきます。
 			auto dir = base_file_name.parent_path();
 			auto stem = base_file_name.stem().wstring();
 			auto extension = base_file_name.extension().wstring();
@@ -473,6 +463,7 @@ namespace apn::item_copy
 					// ヘッダーをストリームに書き込みます。
 					write_exo_header(ofs);
 
+					// 書き込み用の変数です。
 					auto frame_origin = object->frame_begin;
 					auto layer_origin = object->layer_disp;
 					auto write_object_index = 0;
@@ -481,9 +472,10 @@ namespace apn::item_copy
 					for (auto midpt = object->index_midpt_leader;
 						midpt >= 0; midpt = magi.exin.get_next_object_index(midpt))
 					{
+						// 中間点を取得します。
 						auto midpt_object = magi.exin.get_object(midpt);
 
-						// 中間点オブジェクトをストリームに書き込みます。
+						// 中間点をストリームに書き込みます。
 						write_object(ofs, midpt_object, midpt,
 							write_object_index++, frame_origin, layer_origin);
 					}
@@ -505,8 +497,8 @@ namespace apn::item_copy
 			if (target_objects.empty()) return FALSE;
 
 			// 原点を取得します。
-			int32_t frame_origin = INT_MAX;
-			int32_t layer_origin = INT_MAX;
+			auto frame_origin = (int32_t)INT_MAX;
+			auto layer_origin = (int32_t)INT_MAX;
 			{
 				// ソート済みオブジェクトを走査します。
 				auto c = magi.exin.get_sorted_object_count();
@@ -618,7 +610,7 @@ namespace apn::item_copy
 		}
 
 		//
-		// ドロップテキストをファイルから読み込みます。
+		// ユーザーが選択したexoファイルをタイムラインに読み込みます。
 		//
 		virtual BOOL read_file() override
 		{
