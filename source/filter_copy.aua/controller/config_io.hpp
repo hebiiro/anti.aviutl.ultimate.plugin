@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-namespace apn::filter_copy
+namespace apn::filter_copy::controller
 {
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct config_io_t : StdConfigIO
 	{
 		//
 		// 初期化処理を実行します。

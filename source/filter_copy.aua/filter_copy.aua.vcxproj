@@ -157,11 +157,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="controller\app.hpp" />
+    <ClInclude Include="controller\command\copy_filter.hpp" />
+    <ClInclude Include="controller\command\create_filter.hpp" />
+    <ClInclude Include="controller\command\paste_filter.hpp" />
+    <ClInclude Include="controller\config_io.hpp" />
+    <ClInclude Include="controller\hook.hpp" />
     <ClInclude Include="hive.hpp" />
-    <ClInclude Include="hook.hpp" />
+    <ClInclude Include="model\context.hpp" />
+    <ClInclude Include="model\property.hpp" />
+    <ClInclude Include="model\state.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="addin.hpp" />
+    <ClInclude Include="view\listener\copy_filter.hpp" />
+    <ClInclude Include="view\listener\create_filter.hpp" />
+    <ClInclude Include="view\listener\paste_filter.hpp" />
+    <ClInclude Include="view\setting_dialog.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

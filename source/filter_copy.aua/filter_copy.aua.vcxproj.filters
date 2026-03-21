@@ -1,30 +1,86 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="framework">
+    <Filter Include="_">
       <UniqueIdentifier>{8afdf384-bf30-4e89-a92e-0b2df5197f7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource">
+    <Filter Include="_\resource">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{f92eebdc-7154-46fb-84d0-5edeba90f894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="view">
+      <UniqueIdentifier>{0f150446-80a8-4b76-9727-7b404a72810a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller">
+      <UniqueIdentifier>{d8155422-7d3a-456c-a35d-944626ca29dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller\command">
+      <UniqueIdentifier>{01767d2b-2320-4ab1-b5b0-190e4f75d34b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="view\listener">
+      <UniqueIdentifier>{267abe74-c838-4d47-9f2e-8476965470a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClInclude>
     <ClInclude Include="addin.hpp" />
-    <ClInclude Include="config_io.hpp" />
     <ClInclude Include="hive.hpp" />
-    <ClInclude Include="hook.hpp" />
+    <ClInclude Include="view\setting_dialog.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="model\state.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="model\context.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="model\property.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\app.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\config_io.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\hook.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\command\paste_filter.hpp">
+      <Filter>controller\command</Filter>
+    </ClInclude>
+    <ClInclude Include="view\listener\paste_filter.hpp">
+      <Filter>view\listener</Filter>
+    </ClInclude>
+    <ClInclude Include="view\listener\copy_filter.hpp">
+      <Filter>view\listener</Filter>
+    </ClInclude>
+    <ClInclude Include="view\listener\create_filter.hpp">
+      <Filter>view\listener</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\command\copy_filter.hpp">
+      <Filter>controller\command</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\command\create_filter.hpp">
+      <Filter>controller\command</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="main.def" />
+    <None Include="main.def">
+      <Filter>_</Filter>
+    </None>
   </ItemGroup>
 </Project>

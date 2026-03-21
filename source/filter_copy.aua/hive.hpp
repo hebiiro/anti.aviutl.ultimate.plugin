@@ -5,7 +5,7 @@ namespace apn::filter_copy
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
-	inline struct Hive
+	inline struct hive_t
 	{
 		inline static constexpr auto c_name = L"filter_copy";
 		inline static constexpr auto c_display_name = L"フィルタコピー";
