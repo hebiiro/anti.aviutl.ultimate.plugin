@@ -7,6 +7,7 @@
 #include "addin_window.hpp"
 #include "config_io.hpp"
 #include "executor.hpp"
+#include "hook.hpp"
 #include "app.hpp"
 #include "addin.hpp"
 

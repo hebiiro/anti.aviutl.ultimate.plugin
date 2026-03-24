@@ -25,6 +25,7 @@
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="ini_file.hpp" />
     <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="hook.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

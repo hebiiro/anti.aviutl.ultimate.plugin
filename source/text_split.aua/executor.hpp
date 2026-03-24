@@ -90,6 +90,7 @@ namespace apn::text_split
 		std::string each_temp_file_name;
 		IniFile each_temp_file;
 
+		int32_t orig_object_index = -1;
 		int32_t sorted_object_index = -1;
 
 		std::string object_app_name;
@@ -245,12 +246,12 @@ namespace apn::text_split
 			MY_TRACE_FUNC("");
 
 			// カレントアイテムのインデックスを取得します。
-			auto object_index = magi.exin.get_current_object_index();
-			MY_TRACE_INT(object_index);
-			if (object_index < 0) return FALSE;
+			orig_object_index = magi.exin.get_current_object_index();
+			MY_TRACE_INT(orig_object_index);
+			if (orig_object_index < 0) return FALSE;
 
 			// カレントアイテムを取得します。
-			auto object = magi.exin.get_object(object_index);
+			auto object = magi.exin.get_object(orig_object_index);
 			MY_TRACE_HEX(object);
 			if (!object) return FALSE;
 
@@ -859,13 +860,6 @@ namespace apn::text_split
 				current_line_index++;
 			}
 
-			// 元のアイテムを削除するように設定されている場合は
-			if (hive.erase_orig_item)
-			{
-				// 元のアイテムを削除します。
-				::SendMessage(magi.exin.get_exedit_window(), WM_COMMAND, 0x3E9, 0);
-			}
-
 			// exoファイルに書き込みます。
 			if (!each_temp_file.write_file(each_temp_file_name))
 			{
@@ -874,16 +868,41 @@ namespace apn::text_split
 				return FALSE;
 			}
 
-			// exoファイルを読み込みます。
-			if (!magi.exin.load_exo(each_temp_file_name.c_str(), 0, 0, fp, editp))
+			// 新しいアンドゥブロックを作成します。
+			magi.exin.push_undo();
+
+			// 元のアイテムを削除するように設定されている場合は
+			if (hive.erase_orig_item)
+			{
+				// 元のアイテムを削除します。
+				magi.exin.erase_object(orig_object_index);
+			}
+
+			// exoファイルを読み込んでアイテムを配置します。
+			hive.exclude_objects.insert(orig_object_index);
+			auto frame = magi.exin.load_exo_internal(each_temp_file_name.c_str(), 0, 0);
+			hive.exclude_objects.erase(orig_object_index);
+
+			// 最終フレームが有効の場合は
+			if (frame >= 0)
+			{
+				// フレーム数を更新します。
+				magi.exin.set_frame_number(frame, editp, fp);
+			}
+			// 最終フレームが無効の場合は
+			else
+			{
+				// ユーザーに通知します。
 				hive.message_box(L"exoファイルの読み込みに失敗しました");
+			}
 
 			// 不要になったテンポラリファイルを削除します。
 			std::filesystem::remove(temp_file_name);
 			std::filesystem::remove(each_temp_file_name);
 
-			// 拡張編集を再描画します。
-			magi.exin.invalidate();
+			// オブジェクトテーブルを更新して、タイムラインを再描画します。
+			magi.exin.update_object_table();
+			magi.exin.redraw_timeline();
 
 			// aviutlを再描画します。
 			magi.redraw();

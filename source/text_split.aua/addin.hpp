@@ -44,6 +44,7 @@ namespace apn::text_split
 			// 予め使用予定のコンフィグフォルダを作成しておきます。
 			magi.create_config_folders(hive.c_name, {});
 
+			if (!hook.init()) return FALSE;
 			if (!addin_window.init()) return FALSE;
 			if (!config_io.init()) return FALSE;
 
@@ -66,6 +67,7 @@ namespace apn::text_split
 
 			config_io.exit();
 			addin_window.exit();
+			hook.exit();
 
 			return FALSE;
 		}

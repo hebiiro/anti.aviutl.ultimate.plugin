@@ -95,6 +95,11 @@ namespace apn::text_split
 		BOOL erase_orig_item = FALSE;
 
 		//
+		// アンドゥから除外するオブジェクトです。
+		//
+		std::unordered_set<int32_t> exclude_objects;
+
+		//
 		// メッセージボックスを表示します。
 		//
 		int32_t message_box(const std::wstring& text, HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING) {
