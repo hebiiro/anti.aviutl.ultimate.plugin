@@ -212,8 +212,8 @@ namespace apn::text_split
 			MY_TRACE_FUNC("");
 
 			// テンポラリフォルダのパスを取得します。
-//			auto temp_dir = my::hs(my::get_temp_path());
-			auto temp_dir = my::hs(magi.get_config_file_name(hive.c_name));
+			auto temp_dir = my::hs(my::get_temp_path());
+//			auto temp_dir = my::hs(magi.get_config_file_name(hive.c_name));
 			MY_TRACE_STR(temp_dir);
 
 			// カレントプロセスのIDを取得します。ファイル名の重複を防ぐのに使用します。
