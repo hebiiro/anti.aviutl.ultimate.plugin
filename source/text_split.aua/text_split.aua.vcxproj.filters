@@ -26,6 +26,11 @@
     <ClInclude Include="ini_file.hpp" />
     <ClInclude Include="app_interface.hpp" />
     <ClInclude Include="hook.hpp" />
+    <ClInclude Include="exo.hpp" />
+    <ClInclude Include="path.hpp" />
+    <ClInclude Include="pos.hpp" />
+    <ClInclude Include="text_object.hpp" />
+    <ClInclude Include="dc.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
