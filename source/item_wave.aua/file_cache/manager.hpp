@@ -188,10 +188,11 @@ namespace apn::item_wave::file_cache
 				PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_WAIT, 1, 0, 0, 0, nullptr));
 
 			// リーダープロセスのファイルパスを取得します。
-			auto reader_process_file_path = magi.get_module_file_name(L"x64\\item_wave_reader.exe");
+			auto reader_process_file_path = (std::filesystem::path)
+				magi.get_module_file_name(L"x64\\item_wave_reader.exe");
 
 			// リーダープロセスのフォルダパスを取得します。
-			auto reader_process_folder_path = my::get_module_file_name(nullptr).parent_path();
+			auto reader_process_folder_path = reader_process_file_path.parent_path();
 
 			// 音量モードを文字列で取得します。
 			auto volume_mode = hive.c_volume_mode.labels[hive.volume_mode].text;

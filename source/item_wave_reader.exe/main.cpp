@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "mft/compute.hpp"
 #include "mft/session.hpp"
 #include "app.hpp"
 
@@ -7,12 +8,12 @@ namespace apn::item_wave::reader
 	//
 	// このクラスはエントリポイントです。
 	//
-	struct WinMain
+	struct win_main_t
 	{
 		//
 		// コンストラクタです。
 		//
-		WinMain()
+		win_main_t()
 		{
 			_tsetlocale(LC_CTYPE, _T(""));
 
@@ -26,7 +27,7 @@ namespace apn::item_wave::reader
 		//
 		// デストラクタです。
 		//
-		~WinMain()
+		~win_main_t()
 		{
 			MY_TRACE_FUNC("");
 
@@ -59,7 +60,7 @@ namespace apn::item_wave::reader
 
 	EXTERN_C int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
 	{
-		WinMain win_main;
+		win_main_t win_main;
 
 		return win_main.main(instance, prev_instance, cmd_line, cmd_show);
 	}

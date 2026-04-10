@@ -1,37 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="resource">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="framework">
-      <UniqueIdentifier>{f95ce0ad-ebd4-47eb-b223-5de909ac6087}</UniqueIdentifier>
-    </Filter>
     <Filter Include="mft">
       <UniqueIdentifier>{692a7340-6952-40bc-b92e-dc7890fbb679}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_">
+      <UniqueIdentifier>{f95ce0ad-ebd4-47eb-b223-5de909ac6087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_\resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClInclude>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="mft\session.hpp">
       <Filter>mft</Filter>
     </ClInclude>
+    <ClInclude Include="mft\compute.hpp">
+      <Filter>mft</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </None>
   </ItemGroup>
 </Project>

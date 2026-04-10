@@ -50,23 +50,24 @@ namespace apn::item_wave::reader
 
 				// Media Foundationを使用して音量を算出します。
 				{
-					auto start_time = ::timeGetTime();
-					{
-						mft::session_t session;
+					mft::counter_t counter(L"MFセッション");
 
-						session.init(file_name);
+					try
+					{
+						mft::session_t session(file_name);
 
 						volumes = session.extract_volumes(compute_mode);
-
-						session.reset();
 					}
-					auto end_time = ::timeGetTime();
-
-					MY_TRACE("所要時間 = {/}秒\n", (end_time - start_time) / 1000.0);
+					catch (...)
+					{
+						return FALSE;
+					}
 				}
 
 				// 結果をパイプに書き込みます。
 				{
+					mft::counter_t counter(L"パイプに書き込み");
+
 					auto length = (uint32_t)volumes.size();
 					MY_TRACE_INT(length);
 
