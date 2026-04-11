@@ -1,5 +1,11 @@
 ﻿# 🔖更新履歴
 
+## 🔖r109 2026年04月11日
+
+* ⬆️使用パッケージを更新
+	* Microsoft.Web.WebView2 1.0.3856.49に更新
+	* Microsoft.Windows.ImplementationLibrary 1.0.260126.7に更新
+
 ## 🔖r108 2026年04月11日
 
 * 『アイテム波形』
