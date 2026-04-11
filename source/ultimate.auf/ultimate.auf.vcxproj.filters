@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="framework">
+    <Filter Include="_">
       <UniqueIdentifier>{28e1c815-30ae-44a9-b97b-da6f38d3f851}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClInclude>
     <ClInclude Include="addin_loader.hpp" />
     <ClInclude Include="plugin.hpp" />
@@ -19,15 +19,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="main.def">
-      <Filter>framework</Filter>
+      <Filter>_</Filter>
     </None>
   </ItemGroup>
 </Project>
