@@ -172,6 +172,9 @@ namespace apn::filer_ui
 
 			// コンフィグを書き込みます。
 			config_io.write();
+
+			// このプロセスを終了します。
+			AfxPostQuitMessage(0);
 		}
 
 		virtual void on_init_filer_window(HWND filer_window, BOOL full) override
