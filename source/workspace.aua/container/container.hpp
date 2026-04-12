@@ -350,6 +350,8 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
+			MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", hwnd, my::message_to_string(message), wParam, lParam);
+
 			switch (message)
 			{
 			case WM_PAINT:
@@ -396,8 +398,6 @@ namespace apn::workspace
 				}
 			case WM_SHOWWINDOW:
 				{
-					MY_TRACE_FUNC("WM_SHOWWINDOW, {/hex}, {/hex}", wParam, lParam);
-
 					// ::ShowWindow()の呼び出し以外がトリガーの場合は何もしません。
 					if (lParam) break;
 

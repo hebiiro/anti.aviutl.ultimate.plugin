@@ -563,6 +563,8 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
+			MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", hwnd, my::message_to_string(message), wParam, lParam);
+
 			switch (message)
 			{
 			case WM_KEYDOWN:
@@ -578,56 +580,21 @@ namespace apn::workspace
 			case WM_CUT:
 			case WM_PASTE:
 //			case WM_APPCOMMAND:
+			case WM_MENUSELECT: // 「patch.aul」用の処理です。
+			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", message, wParam, lParam);
-
 					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
-				}
-			case WM_NCACTIVATE:
-				{
-					MY_TRACE_FUNC("WM_NCACTIVATE, {/hex}, {/hex}", wParam, lParam);
-
-					break;
 				}
 			case WM_ACTIVATE:
 				{
-					MY_TRACE_FUNC("WM_ACTIVATE, {/hex}, {/hex}", wParam, lParam);
-
 					// 「patch.aul」用の処理です。
 					if (LOWORD(wParam) == WA_INACTIVE)
 						::SendMessage(hive.aviutl_window, message, wParam, lParam);
 
 					break;
 				}
-			case WM_SETFOCUS:
-				{
-					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
-
-					break;
-				}
-			case WM_KILLFOCUS:
-				{
-					MY_TRACE_FUNC("WM_KILLFOCUS, {/hex}, {/hex}", wParam, lParam);
-
-					break;
-				}
-			case WM_MENUSELECT:
-				{
-					MY_TRACE_FUNC("WM_MENUSELECT, {/hex}, {/hex}", wParam, lParam);
-
-					// 「patch.aul」用の処理です。
-					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
-				}
-			case WM_CLOSE:
-				{
-					MY_TRACE_FUNC("WM_CLOSE, {/hex}, {/hex}", wParam, lParam);
-
-					return ::SendMessage(hive.aviutl_window, message, wParam, lParam);
-				}
 			case WM_COMMAND:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
-
 					// 「PSDToolKit」用の処理です。
 					// WM_COMMAND終了時にマウスメッセージがPSDToolKitに飛ぶとフリーズしてしまいます。
 					if (psdtoolkit && ::IsWindowVisible(*psdtoolkit))
@@ -649,8 +616,6 @@ namespace apn::workspace
 				}
 			case WM_SYSCOMMAND:
 				{
-					MY_TRACE_FUNC("WM_SYSCOMMAND, {/hex}, {/hex}", wParam, lParam);
-
 					switch (wParam)
 					{
 					case SC_RESTORE:
@@ -682,8 +647,6 @@ namespace apn::workspace
 				}
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE");
-
 					hive.main_window = hwnd;
 					MY_TRACE_HEX(hive.main_window);
 
@@ -697,8 +660,6 @@ namespace apn::workspace
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY");
-
 					hive.theme_tav.reset();
 					hive.theme.reset();
 

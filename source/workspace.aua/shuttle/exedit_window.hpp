@@ -69,14 +69,12 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", hwnd, my::message_to_string(message), wParam, lParam);
 
 			switch (message)
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
-
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
 
@@ -107,22 +105,8 @@ namespace apn::workspace
 
 					break;
 				}
-			case WM_SETFOCUS:
-				{
-					MY_TRACE_FUNC("WM_SETFOCUS, {/hex}, {/hex}", wParam, lParam);
-
-					break;
-				}
-			case WM_KILLFOCUS:
-				{
-					MY_TRACE_FUNC("WM_KILLFOCUS, {/hex}, {/hex}", wParam, lParam);
-
-					break;
-				}
 			case WM_KEYUP:
 				{
-					MY_TRACE_FUNC("WM_KEYUP, {/hex}, {/hex}", wParam, lParam);
-
 					// ここでctrlキーを無視するとアイテムの複数選択が解除されないようになります。
 					if (hive.ignore_ctrl_key_up)
 					{

@@ -26,6 +26,14 @@ namespace apn::workspace
 		}
 
 		//
+		// ターゲットウィンドウに適用する新しいスタイルを返します。
+		//
+		virtual DWORD on_get_target_new_style()
+		{
+			return __super::on_get_target_new_style() | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+		}
+
+		//
 		// ドッキングコンテナを作成して返します。
 		//
 		virtual std::shared_ptr<Container> create_dock_container() override
@@ -61,14 +69,12 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", hwnd, my::message_to_string(message), wParam, lParam);
 
 			switch (message)
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
-
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
 
@@ -96,8 +102,6 @@ namespace apn::workspace
 				}
 			case WM_SIZE:
 				{
-					MY_TRACE_FUNC("WM_SIZE, {/hex}, {/hex}", wParam, lParam);
-
 					// 「patch.aul」用の処理です。
 					// 設定ダイアログが高速描画されているときは
 					// 親ウィンドウ(コンテナ)を手動で再描画する必要があります。

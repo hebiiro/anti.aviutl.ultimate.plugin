@@ -43,14 +43,12 @@ namespace apn::workspace
 		//
 		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
 		{
-//			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}, {/hex}", hwnd, message, wParam, lParam);
+			MY_TRACE_FUNC("{/hex}, {/}, {/hex}, {/hex}", hwnd, my::message_to_string(message), wParam, lParam);
 
 			switch (message)
 			{
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
-
 					// このタイミングでサブクラス化を解除して、後始末処理を省略します。
 					unsubclass();
 
@@ -58,8 +56,6 @@ namespace apn::workspace
 				}
 			case WM_CLOSE:
 				{
-					MY_TRACE_FUNC("WM_CLOSE, {/hex}, {/hex}", wParam, lParam);
-
 					// AviUtlが終了しようとしているのでレイアウトを保存します。
 					::SendMessage(hive.main_window, hive.c_message.c_write_preference, 0, 0);
 
@@ -67,19 +63,17 @@ namespace apn::workspace
 				}
 			case WM_SETTEXT:
 				{
-					MY_TRACE_FUNC("WM_SETTEXT, {/hex}, {/hex}", wParam, lParam);
+					// デフォルト処理の後に実行します。
+					my::scope_exit scope_exit([]()
+					{
+						// メインウィンドウのウィンドウテキストを更新します。
+						::SendMessage(hive.main_window, hive.c_message.c_refresh_title, 0, 0);
+					});
 
-					auto result = __super::on_wnd_proc(hwnd, message, wParam, lParam);
-
-					// メインウィンドウのウィンドウテキストを更新します。
-					::SendMessage(hive.main_window, hive.c_message.c_refresh_title, 0, 0);
-
-					return result;
+					return __super::on_wnd_proc(hwnd, message, wParam, lParam);
 				}
 			case WM_COMMAND:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
-
 					auto id = LOWORD(wParam);
 
 					if (id >= hive.c_command_id.c_begin && id < hive.c_command_id.c_end)
