@@ -225,6 +225,12 @@ namespace apn::workspace
 
 			// このコンテナの位置を変更します。
 			set_container_position(&rc);
+
+			// ロックします。
+			Locker locker(this);
+
+			// ターゲットの親ウィンドウを切り替えます。
+			::SetParent(hwnd, *this);
 		}
 
 		//
