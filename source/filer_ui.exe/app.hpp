@@ -94,14 +94,6 @@ namespace apn::filer_ui
 			if (!dark.init(hive.host_window, client_window))
 				MY_TRACE("ダークモード化に失敗しました\n");
 
-			if (0) // テストコード
-			{
-				auto python = ::GetModuleHandle(_T("python312.dll"));
-				MY_TRACE_HEX(python);
-				auto python_module_file_name = my::get_module_file_name(python);
-				MY_TRACE_STR(python_module_file_name);
-			}
-
 			// ホストウィンドウにクライアントウィンドウのハンドルを設定します。
 			share::host_window::set_client_window(hive.host_window, client_window);
 
@@ -165,7 +157,7 @@ namespace apn::filer_ui
 
 		virtual void on_exit() override
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("begin");
 
 			// コンフィグチェッカーを終了します。
 			client_window.KillTimer(hive.c_timer_id.c_check_config);
@@ -175,6 +167,8 @@ namespace apn::filer_ui
 
 			// このプロセスを終了します。
 			AfxPostQuitMessage(0);
+
+			MY_TRACE_FUNC("end");
 		}
 
 		virtual void on_init_filer_window(HWND filer_window, BOOL full) override

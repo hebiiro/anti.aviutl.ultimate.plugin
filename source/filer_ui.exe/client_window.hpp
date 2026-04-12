@@ -40,6 +40,23 @@ namespace apn::filer_ui
 			return DestroyWindow();
 		}
 
+		int OnCreate(LPCREATESTRUCT cs)
+		{
+			MY_TRACE_FUNC("");
+
+			if (__super::OnCreate(cs) == -1)
+				return -1;
+
+			return 0;
+		}
+
+		void OnDestroy()
+		{
+			MY_TRACE_FUNC("");
+
+			__super::OnDestroy();
+		}
+
 		void OnTimer(UINT_PTR timer_id)
 		{
 			switch (timer_id)
@@ -79,6 +96,8 @@ namespace apn::filer_ui
 	} client_window;
 
 	BEGIN_MESSAGE_MAP(ClientWindow, CWnd)
+		ON_WM_CREATE()
+		ON_WM_DESTROY()
 		ON_WM_TIMER()
 		ON_MESSAGE(share::message::c_init, on_init)
 		ON_MESSAGE(share::message::c_exit, on_exit)

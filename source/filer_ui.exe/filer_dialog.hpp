@@ -330,12 +330,14 @@ namespace apn::filer_ui
 
 		void OnDestroy()
 		{
-			MY_TRACE_FUNC("");
+			MY_TRACE_FUNC("begin");
 
 			// エクスプローラを削除します。
 			exit_explorer();
 
 			__super::OnDestroy();
+
+			MY_TRACE_FUNC("end");
 		}
 
 		void OnSize(UINT nType, int cx, int cy)

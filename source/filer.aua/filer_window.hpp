@@ -173,7 +173,7 @@ namespace apn::filer
 					// ファイラダイアログまで終了してしまうことを防ぐことができます。
 					auto dialog = get_target();
 					::ShowWindow(dialog, SW_HIDE);
-					::SetParent(dialog, 0);
+					::SetParent(dialog, nullptr);
 					my::modify_style(dialog, WS_CHILD, WS_POPUP | WS_CAPTION | WS_THICKFRAME);
 
 					// ファイラウィンドウの後始末が完了したことをファイラダイアログに通知します。

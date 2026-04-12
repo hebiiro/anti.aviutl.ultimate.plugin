@@ -315,7 +315,7 @@ namespace apn::filer_ui
 
 		virtual BOOL PreTranslateMessage(MSG* msg) override
 		{
-			MY_TRACE_FUNC("/hex}, {/hex}, {/hex}", msg->message, msg->wParam, msg->lParam);
+			MY_TRACE_FUNC("{/hex}, {/hex}, {/hex}", msg->message, msg->wParam, msg->lParam);
 
 			if (shell_view && shell_view->TranslateAccelerator(msg) == S_OK)
 			{
