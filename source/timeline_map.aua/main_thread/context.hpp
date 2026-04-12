@@ -662,22 +662,32 @@ namespace apn::timeline_map::main_thread
 				// 中間点の描画位置です。
 				std::vector<float> midpt_x_vec;
 
-				// 中間点を処理します。
+				// 中間点リーダーの場合は
+				if (object->index_midpt_leader == object_index)
 				{
-					// 次のオブジェクトを取得します。
-					auto next_object = magi.exin.get_sorted_object(i + 1);
-
-					// 次のオブジェクトが中間点の場合は
-					while (next_object->index_midpt_leader == object_index)
+					// 中間点を処理します。
+					while (1)
 					{
+						// 次のソート済みオブジェクトのインデックスです。
+						auto next_i = i + 1;
+
+						// インデックスが範囲外の場合はループを終了します。
+						if (next_i >= nb_sorted_objects) break;
+
+						// 次のオブジェクトを取得します。
+						auto next_object = magi.exin.get_sorted_object(next_i);
+
+						// 中間点リーダーが異なる場合はループを終了します。
+						if (next_object->index_midpt_leader != object_index) break;
+
 						// 中間点の描画位置を取得しておきます。
 						midpt_x_vec.emplace_back(item_rc.rect.right);
 
 						// アイテムの終了位置を再設定します。
 						item_rc.rect.right = frame_to_pixel(next_object->frame_end + 1);
 
-						// 次のオブジェクトを取得します。
-						next_object = magi.exin.get_sorted_object(++i + 1);
+						// ソート済みオブジェクトのインデックスを次に進めます。
+						i = next_i;
 					}
 				}
 
