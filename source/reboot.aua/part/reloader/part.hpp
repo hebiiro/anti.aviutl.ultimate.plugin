@@ -92,17 +92,21 @@ namespace apn::reboot::reloader
 			// 再起動用プロセスのパスを取得しておきます。
 			auto path = magi.get_module_file_name(L"reboot.exe");
 
+			// 再起動用プロセスを実行するコマンドラインです。
+			wchar_t command_line[2048] = {};
+			wcscpy_s(command_line, (path + L" \"reboot\"").c_str());
+
 			// 再起動に必要な変数を取得しておきます。
 			my::SimpleFileMappingT<share::RebootSignal> shared(nullptr);
 			auto buffer = shared.get_buffer();
 			{
 				// aviutlの実行ファイル名を取得します。
-				wcscpy_s(buffer->path, std::size(buffer->path), my::get_module_file_name(nullptr).c_str());
+				wcscpy_s(buffer->path, my::get_module_file_name(nullptr).c_str());
 
 				// プロジェクトのファイル名を取得します。
 				AviUtl::SysInfo si = {};
 				magi.fp->exfunc->get_sys_info(magi.exin.get_editp(), &si);
-				wcscpy_s(buffer->args, std::size(buffer->args), my::ws(si.project_name).c_str());
+				wcscpy_s(buffer->args, my::ws(si.project_name).c_str());
 			}
 
 			// aviutlウィンドウにWM_CLOSEを送信します。
@@ -116,8 +120,8 @@ namespace apn::reboot::reloader
 			PROCESS_INFORMATION pi = {};
 			STARTUPINFO si = { sizeof(si) };
 			if (!::CreateProcess(
-				path.c_str(),	// No module name (use command line)
-				nullptr,		// Command line
+				nullptr,		// No module name (use command line)
+				command_line,	// Command line
 				nullptr,		// Process handle not inheritable
 				nullptr,		// Thread handle not inheritable
 				FALSE,			// Set handle inheritance to FALSE

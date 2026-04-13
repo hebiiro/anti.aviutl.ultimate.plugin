@@ -59,17 +59,21 @@ namespace apn::reboot
 	}
 
 	//
-	// エントリポイントです。
+	// メイン関数です。
 	//
 	int win_main(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int show_cmd)
 	{
-		_tsetlocale(LC_CTYPE, _T(""));
+		MY_TRACE_FUNC("{/}", cmd_line);
 
-		my::tracer_to_file::init(instance);
+		// コマンドライン引数が無効の場合は何もしません。
+		if (::lstrcmpW(cmd_line, L"\"reboot\""))
+		{
+			MY_TRACE("コマンドライン引数が無効です\n");
 
-		::CoInitialize(nullptr);
+			return -1;
+		}
 
-		MY_TRACE_FUNC("");
+		MY_TRACE("メッセージループを開始します\n");
 
 		auto msg = MSG {};
 		while (::GetMessage(&msg, nullptr, 0, 0) > 0)
@@ -78,11 +82,7 @@ namespace apn::reboot
 				on_thread_proc(msg.hwnd, msg.message, msg.wParam, msg.lParam);
 		}
 
-		MY_TRACE("プロセスを終了します\n");
-
-		::CoUninitialize();
-
-		my::tracer_to_file::exit();
+		MY_TRACE("メッセージループを終了します\n");
 
 		return 0;
 	}
@@ -93,5 +93,25 @@ namespace apn::reboot
 //
 int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int show_cmd)
 {
+	_tsetlocale(LC_CTYPE, _T(""));
+
+	// 初期化処理を実行します。
+	{
+		my::tracer_to_file::init(instance);
+
+		::CoInitialize(nullptr);
+	}
+
+	MY_TRACE_FUNC("");
+
+	// スコープ終了時に後始末処理を実行します。
+	my::scope_exit scope_exit([]()
+	{
+		::CoUninitialize();
+
+		my::tracer_to_file::exit();
+	});
+
+	// メイン関数を実行します。
 	return apn::reboot::win_main(instance, prev_instance, cmd_line, show_cmd);
 }
