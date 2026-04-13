@@ -21,6 +21,8 @@ namespace apn::item_wave::reader
 			// コマンドライン引数を個別に取得します。
 			auto c = int {};
 			auto args = ::CommandLineToArgvW(command_line, &c);
+			if (!args) return FALSE;
+			my::scope_exit scope_exit([args](){ ::LocalFree(args); });
 			MY_TRACE_INT(c);
 			if (c < 4) return FALSE;
 

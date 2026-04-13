@@ -22,6 +22,7 @@ namespace apn::audio_visualizer::ui
 
 			auto argc = 0;
 			auto argv = ::CommandLineToArgvW(command_line, &argc);
+			my::scope_exit scope_exit([argv](){ ::LocalFree(argv); });
 			MY_TRACE_INT(argc);
 
 			auto arg = command_line;
