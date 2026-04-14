@@ -101,9 +101,44 @@ namespace apn::volume_meter
 			return FALSE;
 		}
 
+		//
+		// この仮想関数は、映像信号を処理するするときに呼ばれます。
+		//
+		virtual BOOL on_video_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state) override
+		{
+//			MY_TRACE_FUNC("frame = {/}", fpip->frame);
+
+			switch (hive.mode)
+			{
+			case hive.c_mode.c_off:
+				{
+					return FALSE; // 無効化されている場合は何もしません。
+				}
+			case hive.c_mode.c_on_without_playing:
+				{
+					if (magi.auin.is_playing())
+						return FALSE; // 再生中の場合は何もしません。
+
+					break;
+				}
+			}
+
+			if (proc_state.is_saving)
+				return FALSE; // 保存中の場合は何もしません。
+
+			if (!::IsWindowVisible(main_thread::view))
+				return FALSE; // ビューが非表示の場合は何もしません。
+
+			// 映像信号を処理します。
+			return main_thread::controller.set_video_timing(fp, fpip);
+		}
+
+		//
+		// この仮想関数は、音声信号を処理するするときに呼ばれます。
+		//
 		virtual BOOL on_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const ProcState& proc_state) override
 		{
-			MY_TRACE_FUNC("frame = {/}, audio_n = {/}", fpip->frame, fpip->audio_n);
+//			MY_TRACE_FUNC("frame = {/}, audio_n = {/}", fpip->frame, fpip->audio_n);
 
 			switch (hive.mode)
 			{
@@ -127,7 +162,7 @@ namespace apn::volume_meter
 				return FALSE; // ビューが非表示の場合は何もしません。
 
 			// 音声信号を処理します。
-			return sub_thread::controller.set_raw_audio_data(fp, fpip);
+			return main_thread::controller.set_raw_audio_data(fp, fpip);
 		}
 	} addin;
 }

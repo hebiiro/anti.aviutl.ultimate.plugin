@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "resource.h"
 #include "paint_option.hpp"
+#include "timing.hpp"
 #include "raw_audio_data.hpp"
 #include "volume.hpp"
 #include "font_dialog.hpp"

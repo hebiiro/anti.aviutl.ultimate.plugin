@@ -18,7 +18,7 @@ namespace apn::volume_meter
 				return main_thread::paint_option_dialog.update_controls();
 
 			// コンフィグをサブスレッドにも適用します。
-			return sub_thread::controller.set_paint_option(main_thread::model.paint_option);
+			return main_thread::controller.set_paint_option(main_thread::model.paint_option);
 		}
 
 		//

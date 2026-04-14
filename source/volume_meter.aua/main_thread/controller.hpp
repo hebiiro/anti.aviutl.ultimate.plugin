@@ -5,14 +5,26 @@ namespace apn::volume_meter::main_thread
 	//
 	// このクラスはメインスレッドのコントローラーです。
 	//
-	inline struct controller_t
+	inline struct controller_t : paint_option_dialog_t::listener_t
 	{
+		//
+		// この仮想関数は描画設定が変更されたときに呼び出されます。
+		//
+		virtual void on_change_paint_option(const paint_option_t& paint_option) override
+		{
+			// 描画設定をセットします。
+			set_paint_option(paint_option);
+		}
+
 		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
 		{
 			MY_TRACE_FUNC("");
+
+			// コントローラーを描画設定ダイアログのリスナーに登録します。
+			paint_option_dialog.listener = this;
 
 			if (!view.init())
 			{
@@ -124,6 +136,53 @@ namespace apn::volume_meter::main_thread
 			write_window_pos(root, "view", view);
 
 			return TRUE;
+		}
+
+		//
+		// 描画設定をセットします。
+		//
+		BOOL set_paint_option(const paint_option_t& paint_option)
+		{
+//			MY_TRACE_FUNC("");
+
+			// サブスレッドに描画設定を送信します。
+			return ::PostThreadMessage(
+				sub_thread::controller.tid, hive.c_message.c_set_paint_option,
+				0, (LPARAM)std::make_unique<paint_option_t>(paint_option).release());
+		}
+
+		//
+		// 生の音声データをセットします。
+		//
+		BOOL set_raw_audio_data(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
+		{
+//			MY_TRACE_FUNC("");
+
+			// 対応していない音声チャンネル数の場合は何もしません。
+			if (fpip->audio_ch != 1 && fpip->audio_ch != 2)
+				return FALSE;
+
+			// 対応していない音声サンプル数の場合は何もしません。
+			if (fpip->audio_n == 0)
+				return FALSE;
+
+			// サブスレッドに生の音声データを送信します。
+			return ::PostThreadMessage(
+				sub_thread::controller.tid, hive.c_message.c_set_raw_audio_data,
+				0, (LPARAM)std::make_unique<raw_audio_data_t>(fp, fpip).release());
+		}
+
+		//
+		// 映像信号タイミングをセットします。
+		//
+		BOOL set_video_timing(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
+		{
+//			MY_TRACE_FUNC("");
+
+			// サブスレッドに映像信号タイミングを送信します。
+			return ::PostThreadMessage(
+				sub_thread::controller.tid, hive.c_message.c_set_video_timing,
+				0, (LPARAM)std::make_unique<timing_t>(fp, fpip).release());
 		}
 	} controller;
 }

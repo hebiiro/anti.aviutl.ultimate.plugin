@@ -7,6 +7,7 @@ namespace apn::volume_meter::sub_thread
 	//
 	struct painter_t
 	{
+		const volume_t& volume;
 		RECT rc;
 		int32_t w, h;
 		RECT text_rc;
@@ -35,15 +36,15 @@ namespace apn::volume_meter::sub_thread
 		} zone_contexts[nb_zones] = {};
 
 		//
-		// チャンネルの数です。
+		// チャンネルの最大数です。
 		//
-		inline static constexpr auto nb_channels = std::size(model.volume.channels);
+		inline static constexpr auto nb_channels = volume_t::c_nb_max_channels;
 
 		//
 		// 各チャンネルのコンテキストです。
 		//
 		struct channel_context_t {
-			decltype(model.volume.channels + 0) p;
+			const volume_t::channel_t* p;
 			RECT rc;
 			struct {
 				int32_t y;
@@ -54,8 +55,9 @@ namespace apn::volume_meter::sub_thread
 		//
 		// コンストラクタです。
 		//
-		painter_t(HWND hwnd)
-			: rc(my::get_client_rect(hwnd))
+		painter_t(HWND hwnd, const volume_t& volume)
+			: volume(volume)
+			, rc(my::get_client_rect(hwnd))
 			, w(my::get_width(rc))
 			, h(my::get_height(rc))
 			, pdc(hwnd)
@@ -93,7 +95,7 @@ namespace apn::volume_meter::sub_thread
 				// チャンネルコンテキストを走査します。
 				for (size_t i = 0; i < nb_channels; i++)
 				{
-					auto& channel = model.volume.channels[i];
+					const auto& channel = volume.channels[i];
 
 					// チャンネルコンテキストの共通部分を初期化します。
 					channel_contexts[i].p = &channel;
@@ -378,7 +380,7 @@ namespace apn::volume_meter::sub_thread
 			// 全体のピークを算出します。
 			auto peak = -100.0f;
 			for (size_t i = 0; i < nb_channels; i++)
-				peak = std::max(peak, model.volume.channels[i].peak);
+				peak = std::max(peak, volume.channels[i].peak);
 
 			// テキストの背景を描画します。
 			::FillRect(dc, &text_rc, (peak < -0.001f) ?

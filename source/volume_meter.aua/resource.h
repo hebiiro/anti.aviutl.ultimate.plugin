@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ で生成されたインクルード ファイル。
-// volume_meter.aua.rc で使用
+// resource.rc で使用
 //
 #define idd_paint_option                103
 #define idc_background_color_stc        10000

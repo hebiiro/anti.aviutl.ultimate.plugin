@@ -148,6 +148,7 @@
     <ClInclude Include="main_thread\model.hpp" />
     <ClInclude Include="main_thread\paint_option_dialog.hpp" />
     <ClInclude Include="sub_thread\painter.hpp" />
+    <ClInclude Include="timing.hpp" />
     <ClInclude Include="volume.hpp" />
     <ClInclude Include="main_thread\controller.hpp" />
     <ClInclude Include="main_thread\view.hpp" />
@@ -175,7 +176,7 @@
     <None Include="main.def" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="volume_meter.aua.rc" />
+    <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,6 +14,7 @@ namespace apn::volume_meter
 			inline static constexpr uint32_t c_post_init = WM_APP + 1;
 			inline static constexpr uint32_t c_set_paint_option = WM_APP + 2;
 			inline static constexpr uint32_t c_set_raw_audio_data = WM_APP + 3;
+			inline static constexpr uint32_t c_set_video_timing = WM_APP + 4;
 		} c_message;
 
 		inline static constexpr struct mode_t {
@@ -53,7 +54,7 @@ namespace apn::volume_meter
 		int32_t message_box(const std::wstring& text,
 			HWND hwnd = nullptr, int32_t type = MB_OK | MB_ICONWARNING)
 		{
-			return magi.message_box(text, c_name, hwnd, type);
+			return magi.message_box(text, c_display_name, hwnd, type);
 		}
 	} hive;
 }

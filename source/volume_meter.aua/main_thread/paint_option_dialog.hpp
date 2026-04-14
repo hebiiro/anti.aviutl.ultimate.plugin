@@ -13,6 +13,13 @@ namespace apn::volume_meter::main_thread
 		inline static constexpr auto& po = model.paint_option;
 
 		//
+		// このクラスはリスナーです。
+		//
+		struct listener_t {
+			virtual void on_change_paint_option(const paint_option_t& paint_option) = 0;
+		} *listener = {};
+
+		//
 		// コンフィグを更新します。
 		//
 		virtual void on_update_config() override
@@ -49,8 +56,8 @@ namespace apn::volume_meter::main_thread
 				get_int(idc_font_total_shadow_offset_y + i * 100, po.fonts[i].shadow_offset.y);
 			}
 
-			// コンフィグをサブスレッドにも適用します。
-			sub_thread::controller.set_paint_option(po);
+			// リスナーに描画設定の更新を通知します。
+			if (listener) listener->on_change_paint_option(po);
 		}
 
 		//
