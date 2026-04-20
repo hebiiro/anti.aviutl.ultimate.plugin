@@ -267,6 +267,7 @@ const c_default_json = {
 		{ "active": "false", "display_name": "テキストドロップ", "name": "text_drop", "args": "" },
 		{ "active": "false", "display_name": "テキスト分解", "name": "text_split", "args": "" },
 		{ "active": "false", "display_name": "アイテム整列", "name": "item_align", "args": "" },
+		{ "active": "false", "display_name": "アイテム位置変更", "name": "item_affine", "args": "" },
 		{ "active": "false", "display_name": "画像エクスポート", "name": "image_export", "args": "" },
 		{ "active": "false", "display_name": "シーン選択", "name": "scene_select", "args": "" },
 		{ "active": "false", "display_name": "イージング選択", "name": "ease_select", "args": "" },

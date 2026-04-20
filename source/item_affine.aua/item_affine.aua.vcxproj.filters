@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="_">
+      <UniqueIdentifier>{00c1f9f9-c175-41bc-8dc5-40de470f5639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_\resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>_</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="executor.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>_\resource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>_\resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>_</Filter>
+    </None>
+  </ItemGroup>
+</Project>

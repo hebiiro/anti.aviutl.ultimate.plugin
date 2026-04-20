@@ -104,6 +104,7 @@ lang: ja_JP
 | [text_drop](./contents/addin/text_drop.html) | テキストドロップ | ドラッグアンドドロップでテキストアイテムを作成します。 |
 | [text_split](./contents/addin/text_split.html) | テキスト分解 | テキストアイテムを文字毎に別々のアイテムに分解します。 |
 | [item_align](./contents/addin/item_align.html) | アイテム整列 | タイムラインのアイテムを整列します。 |
+| [item_affine](./contents/addin/item_affine.html) | アイテム位置変更 | タイムラインのアイテムの位置を変更(アフィン変換)します。 |
 | [image_export](./contents/addin/image_export.html) | 画像エクスポート | 現在のフレームまたは選択アイテムを画像としてエクスポートします。 |
 | [scene_select](./contents/addin/scene_select.html) | シーン選択 | シーンをボタンで選択できるようにします。 |
 | [ease_select](./contents/addin/ease_select.html) | イージング選択 | イージングをGUIで選択できるようにします。 |

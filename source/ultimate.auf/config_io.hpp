@@ -54,6 +54,7 @@ namespace apn
 			register_addin(L"M", L"text_drop", L"テキストドロップ", FALSE, L"", {});
 			register_addin(L"M", L"text_split", L"テキスト分解", FALSE, L"", { L"SplitText.auf" });
 			register_addin(L"M", L"item_align", L"アイテム整列", FALSE, L"", { L"BuildStairs.auf" });
+			register_addin(L"M", L"item_affine", L"アイテム位置変更", FALSE, L"", {});
 			register_addin(L"M", L"image_export", L"画像エクスポート", FALSE, L"", { L"SaveImage.auf" });
 			register_addin(L"M", L"scene_select", L"シーン選択", FALSE, L"", { L"SelectScene.auf" });
 			register_addin(L"M", L"ease_select", L"イージング選択", FALSE, L"", { L"SelectEasing.auf" });
