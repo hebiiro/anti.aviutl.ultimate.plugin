@@ -228,6 +228,9 @@ copy /Y "$(TargetPath)" "$(my_debug_base_dir)\$(TargetName)"
     <ProjectReference Include="..\color_code.aua\color_code.aua.vcxproj">
       <Project>{e80e8462-911f-4eab-b83b-d4b2dfe2010d}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\filter_relocate.aua\filter_relocate.aua.vcxproj">
+      <Project>{48aab823-3bf6-4703-b062-d3fe7809133b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\item_affine.aua\item_affine.aua.vcxproj">
       <Project>{a6b6ab85-331c-4963-a8fe-26b81c03c568}</Project>
     </ProjectReference>

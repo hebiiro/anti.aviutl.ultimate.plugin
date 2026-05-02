@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="_">
+      <UniqueIdentifier>{bfb0702a-e881-4a6f-b15b-5e89149aea73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_\resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="controller">
+      <UniqueIdentifier>{f6d980ab-9c87-4cf3-870e-d37da83ace94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{ec22df3b-b64f-47ae-83d8-4e944fe1ad43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="view">
+      <UniqueIdentifier>{5c5e338b-7339-4b5b-a713-c6d852b6c4b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller\hook">
+      <UniqueIdentifier>{8e7649fd-19e6-43de-8f6a-d81a832b4447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller\hook\entry">
+      <UniqueIdentifier>{02bc822e-f8ff-45b5-99b8-768c36516bb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller\action">
+      <UniqueIdentifier>{b5c68b6a-c371-4f50-9dbe-08772fbc2e50}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>_</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>_\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="controller\app.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\config_io.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\hook\entry.hpp">
+      <Filter>controller\hook</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\hook\manager.hpp">
+      <Filter>controller\hook</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\hook\entry\exedit.hpp">
+      <Filter>controller\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="model\property.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="view\main_dialog.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="view\main_window.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\exo.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\path.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\ini_file.hpp">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\action\base.hpp">
+      <Filter>controller\action</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\action\split_item_below.hpp">
+      <Filter>controller\action</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>_\resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>_</Filter>
+    </None>
+  </ItemGroup>
+</Project>

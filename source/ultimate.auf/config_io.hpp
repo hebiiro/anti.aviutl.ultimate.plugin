@@ -47,6 +47,7 @@ namespace apn
 
 			register_addin(L"M", L"filter_copy", L"フィルタコピー", TRUE, L"", { L"CopyFilter.auf" });
 			register_addin(L"M", L"filter_drag", L"フィルタドラッグ", TRUE, L"", { L"DragFilter.auf" });
+			register_addin(L"M", L"filter_relocate", L"フィルタ引っ越し", FALSE, L"", {});
 			register_addin(L"M", L"dirty_check", L"終了確認", FALSE, L"", { L"auls_confirmclose.auf", L"DirtyCheck.auf" });
 			register_addin(L"M", L"output_check", L"出力確認", FALSE, L"", { L"ConfigChecker.auf" });
 			register_addin(L"M", L"text_editor", L"テキスト編集", FALSE, L"", {});

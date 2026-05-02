@@ -97,6 +97,7 @@ lang: ja_JP
 |---|---|---|
 | [filter_copy](./contents/addin/filter_copy.html) | フィルタコピー | 設定ダイアログのフィルタをコピペできるようにします。 |
 | [filter_drag](./contents/addin/filter_drag.html) | フィルタドラッグ | 設定ダイアログのフィルタをドラッグで移動できるようにします。 |
+| [filter_relocate](./contents/addin/filter_relocate.html) | フィルタ引っ越し | フィルタを分離して新しいアイテムを作成します。 |
 | [dirty_check](./contents/addin/dirty_check.html) | 終了確認 | 終了する前にプロジェクトの変更を確認します。 |
 | [output_check](./contents/addin/output_check.html) | 出力確認 | 動画を出力する前に設定を確認します。 |
 | [text_editor](./contents/addin/text_editor.html) | テキスト編集 | テキストアイテムのテキストを広い別窓で編集できるようにします。 |
