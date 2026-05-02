@@ -251,11 +251,11 @@ namespace apn::item_affine
 					else
 					{
 						// 中間点オブジェクトを走査します。
-						for (auto midpt_object_index = selected_object->index_midpt_leader;
-							midpt_object_index > 0; magi.exin.get_next_object_index(midpt_object_index))
+						for (auto midpt = selected_object->index_midpt_leader;
+							midpt >= 0; midpt = magi.exin.get_next_object_index(midpt))
 						{
 							// 中間点オブジェクトを処理対象に追加します。
-							movers.emplace(midpt_object_index, mover_t());
+							movers.emplace(midpt, mover_t());
 						}
 					}
 				}
