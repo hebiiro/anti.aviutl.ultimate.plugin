@@ -20,9 +20,9 @@ namespace apn::item_affine
 				magi.exin.get_aviutl_window(),
 				hive.c_display_name,
 				WS_EX_NOPARENTNOTIFY,
-				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
+				WS_CAPTION | WS_SYSMENU |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				300, 200, 400, 300);
+				100, 100, 100, 100);
 		}
 
 		//
@@ -53,8 +53,9 @@ namespace apn::item_affine
 						return -1;
 					}
 
-					set_target(addin_dialog);
-					resize();
+					auto rc = my::get_window_rect(addin_dialog);
+					my::client_to_window(hwnd, &rc);
+					my::set_window_rect(hwnd, &rc);
 
 					// 初期化が完了したので、このウィンドウをメインウィンドウに設定します。
 					hive.main_window = addin_window;
