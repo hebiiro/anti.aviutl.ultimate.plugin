@@ -377,6 +377,11 @@ namespace apn::workspace
 		BOOL ignore_ctrl_key_up = FALSE;
 
 		//
+		// TRUEの場合はダイアログメッセージを処理します。
+		//
+		BOOL flag_process_dialog_message = FALSE;
+
+		//
 		// レイアウトリストの表示モードです。
 		//
 		int32_t layout_list_mode = c_layout_list_mode.c_none;

@@ -759,6 +759,7 @@ namespace apn::workspace
 				bind_check(IDC_SHOW_TAB_FORCE, hive.show_tab_force);
 				bind_check(IDC_BYPASS_KEYBOARD_MESSAGE, hive.bypass_keyboard_message);
 				bind_check(IDC_IGNORE_CTRL_KEY_UP, hive.ignore_ctrl_key_up);
+				bind_check(idc_flag_process_dialog_message, hive.flag_process_dialog_message);
 
 				auto result = do_modal2(parent);
 				if (result != IDOK) return result;

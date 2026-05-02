@@ -25,6 +25,7 @@
 #define IDC_SHOW_TAB_FORCE              1033
 #define IDC_BYPASS_KEYBOARD_MESSAGE     1034
 #define IDC_IGNORE_CTRL_KEY_UP          1035
+#define idc_flag_process_dialog_message 1036
 #define IDC_PANE_X_STAT                 2000
 #define IDC_PANE_X                      2001
 #define IDC_PANE_Y_STAT                 2002

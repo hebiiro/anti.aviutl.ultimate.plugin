@@ -61,6 +61,38 @@ namespace apn::workspace::hook::win_hook
 			{
 				auto msg = (MSG*)lParam;
 
+				// ダイアログメッセージを処理する場合は
+				if (hive.flag_process_dialog_message)
+				{
+					//
+					// この関数はダイアログメッセージを処理した場合はTRUEを返します。
+					//
+					constexpr auto process_dialog_message = [](MSG* msg)
+					{
+						// 親ウィンドウを取得します。
+						auto parent = ::GetParent(msg->hwnd);
+
+						// 親ウィンドウがダイアログではない場合は何もしません。
+						if (!::SendMessage(parent, DM_GETDEFID, 0, 0)) return FALSE;
+
+						MY_TRACE_HWND(msg->hwnd);
+						MY_TRACE_HWND(parent);
+						MY_TRACE_STR(my::message_to_string(msg->message));
+
+						// ダイアログメッセージの場合はTRUEを返します。
+						return ::IsDialogMessage(parent, msg);
+					};
+
+					// ダイアログメッセージを処理した場合は
+					if (process_dialog_message(msg))
+					{
+						// ウィンドウにメッセージが送られないようにします。
+						*msg = {};
+
+						return ::CallNextHookEx(nullptr, code, wParam, lParam);
+					}
+				}
+
 				if (hive.bypass_keyboard_message)
 				{
 					if (msg->message >= WM_KEYFIRST && msg->message <= WM_KEYLAST)

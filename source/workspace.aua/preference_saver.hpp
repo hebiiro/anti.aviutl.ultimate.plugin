@@ -51,6 +51,7 @@ namespace apn::workspace
 				write_bool(node, "show_tab_force", hive.show_tab_force);
 				write_bool(node, "bypass_keyboard_message", hive.bypass_keyboard_message);
 				write_bool(node, "ignore_ctrl_key_up", hive.ignore_ctrl_key_up);
+				write_bool(node, "flag_process_dialog_message", hive.flag_process_dialog_message);
 				write_label(node, "layout_list_mode", hive.layout_list_mode, hive.c_layout_list_mode.labels);
 			}
 
