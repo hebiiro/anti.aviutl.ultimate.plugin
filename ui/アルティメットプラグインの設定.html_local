@@ -260,6 +260,7 @@ const c_default_json = {
 		{ "name": "" },
 		{ "active": "true", "display_name": "フィルタコピー", "name": "filter_copy", "args": "" },
 		{ "active": "true", "display_name": "フィルタドラッグ", "name": "filter_drag", "args": "" },
+		{ "active": "false", "display_name": "フィルタ引っ越し", "name": "filter_relocate", "args": "" },
 		{ "active": "false", "display_name": "終了確認", "name": "dirty_check", "args": "" },
 		{ "active": "false", "display_name": "出力確認", "name": "output_check", "args": "" },
 		{ "active": "false", "display_name": "テキスト編集", "name": "text_editor", "args": "" },
