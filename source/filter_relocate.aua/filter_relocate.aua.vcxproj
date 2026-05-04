@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="addin.hpp" />
     <ClInclude Include="controller\action\base.hpp" />
+    <ClInclude Include="controller\action\split_item_above.hpp" />
     <ClInclude Include="controller\action\split_item_below.hpp" />
     <ClInclude Include="controller\app.hpp" />
     <ClInclude Include="controller\config_io.hpp" />

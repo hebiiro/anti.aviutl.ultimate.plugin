@@ -74,6 +74,9 @@
     <ClInclude Include="controller\action\split_item_below.hpp">
       <Filter>controller\action</Filter>
     </ClInclude>
+    <ClInclude Include="controller\action\split_item_above.hpp">
+      <Filter>controller\action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -79,29 +79,31 @@ namespace apn::filter_relocate::controller::action
 		std::vector<int32_t> sorted_object_indexs;
 
 		//
+		// 削除予定のオブジェクト(のインデックス)のコレクションです。
+		//
+		std::vector<int32_t> objects_to_erase;
+
+		//
 		// 指定されたエラーメッセージの例外を発生させます。
 		//
 		[[noreturn]] inline static void throw_wstring(const std::wstring& error) { throw error; }
 
 		//
-		// 指定されたオブジェクトからアイテム位置を作成して返します。
+		// 指定されたフィルタが分離できる場合はTRUEを返します。
 		//
-		inline static auto create_item(const auto& object)
+		inline static BOOL is_removable_filter(auto filter_id)
 		{
-			return placement_t::layer_t::item_t { object->frame_begin, object->frame_end };
+			if (filter_id == 10) return FALSE; // 標準描画
+			if (filter_id == 11) return FALSE; // 拡張描画
+			if (filter_id == 12) return FALSE; // 標準再生
+
+			return TRUE;
 		}
 
 		//
-		// 指定されたオブジェクトを削除します。
+		// この仮想関数は指定されたオブジェクトが加工対象かどうか確認するために呼び出されます。
 		//
-		inline static void erase_object(int32_t object_index)
-		{
-			// 指定されたオブジェクトを削除します。
-			magi.exin.erase_object(object_index);
-
-			// アンドゥ対象から除外します。
-			model::property.no_undos.insert(object_index);
-		}
+		virtual BOOL on_is_valid_target(ExEdit::Object* object) = 0;
 
 		//
 		// この仮想関数はタイムライン加工の準備をするときに呼び出されます。
@@ -124,7 +126,10 @@ namespace apn::filter_relocate::controller::action
 			, editp(magi.exin.get_editp())
 		{
 			if (!fp || !editp) throw_wstring(L"拡張編集を取得できませんでした");
+		}
 
+		void prepare()
+		{
 			// 選択オブジェクトのコレクションです。
 			std::unordered_set<ExEdit::Object*> selected_objects;
 
@@ -199,8 +204,8 @@ namespace apn::filter_relocate::controller::action
 						// ソート済みオブジェクトが選択オブジェクトの場合は
 						if (selected_objects.contains(object))
 						{
-							// ソート済みオブジェクトが音声オブジェクトではない場合は
-							if (!has_flag(object->flag, ExEdit::Object::Flag::Sound))
+							// ソート済みオブジェクトが加工対象の場合は
+							if (on_is_valid_target(object))
 							{
 								// コレクションに追加します。
 								sorted_object_indexs.emplace_back(i);
@@ -212,6 +217,11 @@ namespace apn::filter_relocate::controller::action
 				// 加工対象のオブジェクトが存在しない場合は
 				if (sorted_object_indexs.empty()) throw_wstring(L"加工対象のオブジェクトが存在しません");
 			}
+
+			// サブクラスにタイムラインを加工する準備をさせます。
+			// アイテム位置が重なっているなどの理由で
+			// 準備が完了しなかった場合は例外が発生します。
+			on_prepare();
 		}
 
 		//
@@ -225,9 +235,7 @@ namespace apn::filter_relocate::controller::action
 			auto current_object_index = magi.exin.get_current_object_index();
 
 			// タイムラインを加工する準備をします。
-			// アイテム位置が重なっているなどの理由で
-			// 準備が完了しなかった場合は例外が発生します。
-			on_prepare();
+			prepare();
 
 			// 新しいアンドゥブロックを作成します。
 			magi.exin.push_undo();
@@ -252,12 +260,58 @@ namespace apn::filter_relocate::controller::action
 			// ここでフィルタを分離したり結合したりします。
 			on_edit();
 
+			// 削除予定のオブジェクトを実際に削除します。
+			{
+				// 削除予定のオブジェクトを走査します。
+				for (auto object_index : objects_to_erase)
+				{
+					// オブジェクトを削除します。
+					magi.exin.erase_object(object_index);
+
+					// アンドゥ対象から除外します。
+					model::property.no_undos.insert(object_index);
+				}
+			}
+
 			// 加工後exoファイルを作成します。
 			if (!exo.after_file.write_file(path.after_file_name))
 				throw_wstring(L"exoファイルの作成に失敗しました");
 
 			// 加工後exoファイルを読み込んでアイテムを配置します。
 			auto frame = magi.exin.load_exo_internal(path.after_file_name.c_str(), 0, 0);
+		}
+
+		//
+		// 指定されたアイテム位置が無効の場合は例外を発生させます。
+		//
+		inline auto check_new_item_pos(int32_t layer, int32_t frame_begin, int32_t frame_end)
+		{
+			// 作成予定のレイヤー位置が無効の場合は
+			if (layer < 0 || layer >= 100)
+			{
+				// 例外を送信します。
+				throw_wstring(my::format(
+					L"レイヤー位置:{/}が無効です",
+					layer + 1));
+			}
+
+			// 作成予定位置に既にアイテムが存在する場合は
+			if (placement.layers[layer].intersect({ frame_begin, frame_end }))
+			{
+				// 例外を送信します。
+				throw_wstring(my::format(
+					L"レイヤー:{/} フレーム:{/}~{/}でアイテムが交差しています",
+					layer + 1, frame_begin, frame_end));
+			}
+		}
+
+		//
+		// 指定されたオブジェクトを削除します。
+		//
+		inline void erase_object(ExEdit::Object* object)
+		{
+			// 削除予定のオブジェクトとしてコレクションに追加します。
+			objects_to_erase.emplace_back(magi.exin.get_object_index(object));
 		}
 	};
 }

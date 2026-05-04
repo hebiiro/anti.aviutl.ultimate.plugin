@@ -89,6 +89,8 @@ namespace apn::filter_relocate::controller
 		{
 			MY_TRACE_FUNC("");
 
+			read_bool(root, "flag_relocate_draw_filter)", model::property.flag_relocate_draw_filter);
+			read_bool(root, "flag_up_two_layers)", model::property.flag_up_two_layers);
 			read_window_pos(root, "main_window", view::main_window);
 
 			return TRUE;
@@ -101,6 +103,8 @@ namespace apn::filter_relocate::controller
 		{
 			MY_TRACE_FUNC("");
 
+			write_bool(root, "flag_relocate_draw_filter)", model::property.flag_relocate_draw_filter);
+			write_bool(root, "flag_up_two_layers)", model::property.flag_up_two_layers);
 			write_window_pos(root, "main_window", view::main_window);
 
 			return TRUE;

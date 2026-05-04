@@ -8,15 +8,15 @@ namespace apn::filter_relocate::controller::action
 	struct split_item_below_t : base_t
 	{
 		//
-		// 指定されたフィルタが分離できる場合はTRUEを返します。
+		// この仮想関数は指定されたオブジェクトが加工対象かどうか確認するために呼び出されます。
 		//
-		inline static BOOL is_removable_filter(auto filter_id)
+		virtual BOOL on_is_valid_target(ExEdit::Object* object) override
 		{
-			if (filter_id == 10) return FALSE; // 標準描画
-			if (filter_id == 11) return FALSE; // 拡張描画
-			if (filter_id == 12) return FALSE; // 標準再生
+			// 音声オブジェクトではない場合はTRUEを返します。
+			if (!has_flag(object->flag, ExEdit::Object::Flag::Sound)) return TRUE;
 
-			return TRUE;
+			// それ以外の場合はFALSEを返します。
+			return FALSE;
 		}
 
 		//
@@ -33,19 +33,11 @@ namespace apn::filter_relocate::controller::action
 				auto target_object = magi.exin.get_sorted_object(sorted_object_index);
 
 				// アイテムを作成予定のレイヤー番号です。
+				// 一つ下のレイヤーに作成します。
 				auto new_layer = target_object->layer_set + 1;
 
-				// アイテムを作成予定の位置です。
-				auto new_item = create_item(target_object);
-
-				// 作成予定位置に既にアイテムが存在する場合は
-				if (placement.layers[new_layer].intersect(new_item))
-				{
-					// 例外を送信します。
-					throw_wstring(my::format(
-						L"レイヤー:{/} フレーム:{/}~{/}でアイテムが交差しています",
-						new_layer + 1, new_item.frame_begin, new_item.frame_end));
-				}
+				// アイテムの作成予定位置が有効かチェックします。
+				check_new_item_pos(new_layer, target_object->frame_begin, target_object->frame_end);
 			}
 		}
 
@@ -162,26 +154,14 @@ namespace apn::filter_relocate::controller::action
 
 			// 最後に元のオブジェクトを削除します。
 			{
-				// erase_object()内でupdate_object_table()が呼ばれるので
-				// ソート済みオブジェクトは走査できません。
-				// なので、予め全ての削除予定のオブジェクトのインデックスを取得します。
-				std::vector<int32_t> object_indexs;
-
-				// 加工対象のオブジェクトを走査します。
+				// 元のオブジェクトを走査します。
 				for (auto sorted_object_index : sorted_object_indexs)
 				{
-					// 加工対象のオブジェクトを取得します。
+					// 元のオブジェクトを取得します。
 					auto object = magi.exin.get_sorted_object(sorted_object_index);
 
 					// 元のオブジェクトを削除します。
-					object_indexs.emplace_back(magi.exin.get_object_index(object));
-				}
-
-				// オブジェクトを走査します。
-				for (auto object_index : object_indexs)
-				{
-					// 元のオブジェクトを削除します。
-					erase_object(object_index);
+					erase_object(object);
 				}
 			}
 		}

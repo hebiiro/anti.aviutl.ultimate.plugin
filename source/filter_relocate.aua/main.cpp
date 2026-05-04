@@ -12,6 +12,7 @@
 #include "controller/exo.hpp"
 #include "controller/action/base.hpp"
 #include "controller/action/split_item_below.hpp"
+#include "controller/action/split_item_above.hpp"
 #include "controller/app.hpp"
 #include "addin.hpp"
 

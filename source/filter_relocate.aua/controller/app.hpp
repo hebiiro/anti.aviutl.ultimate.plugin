@@ -37,8 +37,8 @@ namespace apn::filter_relocate::controller
 
 			// aviutlにメニュー項目を追加します。
 			add_menu_item(fp, L"フィルタを分離", idc_split_item_below);
-/*
 			add_menu_item(fp, L"グループ制御にフィルタを分離", idc_split_item_above);
+/*
 			add_menu_item(fp, L"フィルタを結合", idc_merge_item_below);
 			add_menu_item(fp, L"グループ制御のフィルタを結合", idc_merge_item_above);
 */
@@ -90,6 +90,14 @@ namespace apn::filter_relocate::controller
 		virtual BOOL on_split_item_below() override
 		{
 			return do_action([](){ action::split_item_below_t().execute(); });
+		}
+
+		//
+		// 選択アイテムのフィルタを上のアイテムに分離します。
+		//
+		virtual BOOL on_split_item_above() override
+		{
+			return do_action([](){ action::split_item_above_t().execute(); });
 		}
 
 		//

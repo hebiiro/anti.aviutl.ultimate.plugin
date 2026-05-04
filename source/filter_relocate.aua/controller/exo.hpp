@@ -57,6 +57,14 @@ namespace apn::filter_relocate::controller
 		}
 
 		//
+		// 加工後exoファイルにセクションを作成します。
+		//
+		auto create_section(const std::string& section_name)
+		{
+			return after_file.create_section(section_name);
+		}
+
+		//
 		// 加工後exoファイルに文字列を書き込みます。
 		//
 		auto write_string(

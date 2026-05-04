@@ -12,6 +12,7 @@ namespace apn::filter_relocate::view
 		//
 		struct listener_t {
 			virtual BOOL on_split_item_below() = 0;
+			virtual BOOL on_split_item_above() = 0;
 		} *listener = {};
 
 		//
@@ -20,6 +21,9 @@ namespace apn::filter_relocate::view
 		virtual void on_update_controls() override
 		{
 			MY_TRACE_FUNC("");
+
+			set_check(idc_flag_relocate_draw_filter, model::property.flag_relocate_draw_filter);
+			set_check(idc_flag_up_two_layers, model::property.flag_up_two_layers);
 		}
 
 		//
@@ -28,6 +32,9 @@ namespace apn::filter_relocate::view
 		virtual void on_update_config() override
 		{
 			MY_TRACE_FUNC("");
+
+			get_check(idc_flag_relocate_draw_filter, model::property.flag_relocate_draw_filter);
+			get_check(idc_flag_up_two_layers, model::property.flag_up_two_layers);
 		}
 
 		//
@@ -49,6 +56,12 @@ namespace apn::filter_relocate::view
 			{
 			// ボタン
 			case idc_split_item_below: listener->on_split_item_below(); break;
+			case idc_split_item_above: listener->on_split_item_above(); break;
+
+			// チェックボックス
+			case idc_flag_relocate_draw_filter:
+			case idc_flag_up_two_layers:
+				update_config(); break;
 			}
 		}
 	} main_dialog;

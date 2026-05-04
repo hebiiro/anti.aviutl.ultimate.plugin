@@ -25,5 +25,15 @@ namespace apn::filter_relocate::model
 		// アンドゥから除外するオブジェクトです。
 		//
 		std::unordered_set<int32_t> no_undos;
+
+		//
+		// TRUEの場合は描画フィルタ(標準描画または拡張描画)もグループ制御に移します。
+		//
+		BOOL flag_relocate_draw_filter = FALSE;
+
+		//
+		// TRUEの場合は2つ上のレイヤーに移動することを許可します。
+		//
+		BOOL flag_up_two_layers = FALSE;
 	} property;
 }
