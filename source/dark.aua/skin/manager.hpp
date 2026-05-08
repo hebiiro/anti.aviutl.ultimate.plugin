@@ -42,15 +42,22 @@ namespace apn::dark::skin
 
 			auto exedit = (my::addr_t)::GetModuleHandle(_T("exedit.auf"));
 
-			if (hive.draw_button_edge)
+			for (auto button : hive.static_edge_buttons)
 			{
-				for (auto button : hive.static_edge_buttons)
+				if (hive.draw_button_edge)
+				{
+					// スタティックエッジを付与します。
 					my::modify_ex_style(button, 0, WS_EX_STATICEDGE);
-			}
-			else
-			{
-				for (auto button : hive.static_edge_buttons)
+				}
+				else
+				{
+					// スタティックエッジを取り除きます。
 					my::modify_ex_style(button, WS_EX_STATICEDGE, 0);
+				}
+
+				// ウィンドウレイアウトを更新します。
+				::SetWindowPos(button, nullptr, 0, 0, 0, 0,
+					SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 			}
 
 			{
