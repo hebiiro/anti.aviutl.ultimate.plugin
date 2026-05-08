@@ -1,12 +1,12 @@
 ﻿#pragma once
 
-namespace apn::timeline_map::main_thread
+namespace apn::timeline_map::view
 {
 	//
-	// このクラスはメインスレッドのビューです。
+	// このクラスはビュー層の全体図です。
 	// プラグインウィンドウのように振る舞います。
 	//
-	inline struct view_t : StdAddinWindow, paint_option_dialog_t::listner_t
+	inline struct overview_t : StdAddinWindow, paint_option_dialog_t::listner_t
 	{
 		//
 		// 初期化処理を実行します。
@@ -20,9 +20,9 @@ namespace apn::timeline_map::main_thread
 
 			// ウィンドウを作成します。
 			return create_as_plugin(
-				hive.instance,
+				model::property.instance,
 				magi.exin.get_aviutl_window(),
-				hive.c_display_name,
+				model::property.c_display_name,
 				WS_EX_NOPARENTNOTIFY,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
@@ -44,6 +44,14 @@ namespace apn::timeline_map::main_thread
 		}
 
 		//
+		// メッセージボックスを表示します。
+		//
+		int32_t message_box(const std::wstring& text, int32_t type = MB_OK | MB_ICONWARNING)
+		{
+			return magi.message_box(text, model::property.c_display_name, *this, type);
+		}
+
+		//
 		// タイムラインマップを再描画します。
 		//
 		BOOL redraw()
@@ -54,7 +62,7 @@ namespace apn::timeline_map::main_thread
 			::InvalidateRect(*this, nullptr, FALSE);
 
 			// フラグが立っている場合は即時描画します。
-			if (property.etc.flag_immediate) ::UpdateWindow(*this);
+			if (model::property.etc.flag_immediate) ::UpdateWindow(*this);
 
 			return TRUE;
 		}
@@ -66,7 +74,7 @@ namespace apn::timeline_map::main_thread
 		{
 			// リソースを再作成します。
 			if (recreate_resources)
-				state.recreate_resources();
+				model::state.recreate_resources();
 
 			// タイムラインマップを再描画します。
 			redraw();
@@ -83,9 +91,6 @@ namespace apn::timeline_map::main_thread
 				{
 					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					// このウィンドウをメインウィンドウに設定します。
-					hive.main_window = hwnd;
-
 					break;
 				}
 			case WM_DESTROY:
@@ -98,7 +103,7 @@ namespace apn::timeline_map::main_thread
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					context_t(hwnd).on_paint();
+					model::context_t(hwnd).on_paint();
 
 					return 0;
 				}
@@ -106,7 +111,7 @@ namespace apn::timeline_map::main_thread
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					context_t(hwnd).on_size();
+					model::context_t(hwnd).on_size();
 
 					break;
 				}
@@ -116,7 +121,7 @@ namespace apn::timeline_map::main_thread
 
 					::SetCapture(hwnd);
 
-					context_t(hwnd).on_click(my::lp_to_pt(l_param));
+					model::context_t(hwnd).on_click(my::lp_to_pt(l_param));
 
 					break;
 				}
@@ -134,7 +139,7 @@ namespace apn::timeline_map::main_thread
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
 					if (::GetCapture() == hwnd)
-						context_t(hwnd).on_click(my::lp_to_pt(l_param));
+						model::context_t(hwnd).on_click(my::lp_to_pt(l_param));
 
 					break;
 				}
@@ -175,7 +180,7 @@ namespace apn::timeline_map::main_thread
 							if (!::IsWindow(paint_option_dialog))
 							{
 								// 描画設定ダイアログを作成します。
-								paint_option_dialog.init(hive.instance, hwnd);
+								paint_option_dialog.init(model::property.instance, hwnd);
 
 								// 描画設定ダイアログのコントロールを初期化します。
 								paint_option_dialog.update_controls();
@@ -194,5 +199,5 @@ namespace apn::timeline_map::main_thread
 
 			return __super::on_wnd_proc(hwnd, message, w_param, l_param);
 		}
-	} view;
+	} overview;
 }

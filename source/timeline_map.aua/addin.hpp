@@ -12,7 +12,7 @@ namespace apn::timeline_map
 		//
 		virtual LPCWSTR get_addin_name() override
 		{
-			return hive.c_name;
+			return model::property.c_name;
 		}
 
 		//
@@ -20,7 +20,7 @@ namespace apn::timeline_map
 		//
 		virtual LPCWSTR get_addin_display_name() override
 		{
-			return hive.c_display_name;
+			return model::property.c_display_name;
 		}
 
 		//
@@ -30,32 +30,8 @@ namespace apn::timeline_map
 		{
 			MY_TRACE_FUNC("");
 
-			// コンフィグ入出力を初期化します。
-			if (!config_io.init())
-			{
-				MY_TRACE("コンフィグ入出力の初期化に失敗しました\n");
-			}
-
-			// フックを初期化します。
-			if (!hook::exedit_window.init())
-			{
-				hive.message_box(L"フックの初期化に失敗しました\n");
-
-				return FALSE;
-			}
-
-			// メインスレッドのコントローラーを初期化します。
-			if (!main_thread::controller.init())
-			{
-				hive.message_box(L"メインスレッドのコントローラーの初期化に失敗しました\n");
-
-				return FALSE;
-			}
-
-			// コンフィグを読み込みます。
-			config_io.read();
-
-			return FALSE;
+			// アプリケーションの初期化を実行します。
+			return controller::app.init();
 		}
 
 		//
@@ -65,19 +41,8 @@ namespace apn::timeline_map
 		{
 			MY_TRACE_FUNC("");
 
-			// コンフィグを書き込みます。
-			config_io.write();
-
-			// メインスレッドのコントローラーを終了します。
-			main_thread::controller.exit();
-
-			// フックを終了します。
-			hook::exedit_window.exit();
-
-			// コンフィグ入出力を終了します。
-			config_io.exit();
-
-			return FALSE;
+			// アプリケーションの後始末を実行します。
+			return controller::app.exit();
 		}
 
 		//
@@ -91,8 +56,8 @@ namespace apn::timeline_map
 				{
 					MY_TRACE_FUNC("magi.c_command_id.c_addin.c_command");
 
-					// ビューを表示します。
-					main_thread::view.show();
+					// 全体図を表示します。
+					view::overview.show();
 
 					break;
 				}
@@ -111,7 +76,7 @@ namespace apn::timeline_map
 			if (proc_state.is_saving)
 				return FALSE; // 保存中の場合は何もしません。
 
-			return main_thread::view.redraw();
+			return view::overview.redraw();
 		}
 	} addin;
 }

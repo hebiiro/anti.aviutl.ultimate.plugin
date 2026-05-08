@@ -144,20 +144,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="addin.hpp" />
-    <ClInclude Include="config_io.hpp" />
-    <ClInclude Include="font_dialog.hpp" />
-    <ClInclude Include="hive.hpp" />
-    <ClInclude Include="hook\exedit_window.hpp" />
-    <ClInclude Include="main_thread\context.hpp" />
-    <ClInclude Include="main_thread\controller.hpp" />
-    <ClInclude Include="main_thread\model.hpp" />
-    <ClInclude Include="main_thread\paint_option_dialog.hpp" />
-    <ClInclude Include="main_thread\property.hpp" />
-    <ClInclude Include="main_thread\state.hpp" />
-    <ClInclude Include="main_thread\view.hpp" />
+    <ClInclude Include="controller\config_io.hpp" />
+    <ClInclude Include="controller\app.hpp" />
+    <ClInclude Include="controller\hook\exedit_window.hpp" />
+    <ClInclude Include="model\context.hpp" />
+    <ClInclude Include="model\property.hpp" />
+    <ClInclude Include="model\state.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils.hpp" />
+    <ClInclude Include="view\font_dialog.hpp" />
+    <ClInclude Include="view\paint_option_dialog.hpp" />
+    <ClInclude Include="view\overview.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

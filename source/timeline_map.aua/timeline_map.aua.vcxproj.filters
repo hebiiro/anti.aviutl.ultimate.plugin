@@ -8,10 +8,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="main_thread">
-      <UniqueIdentifier>{80cdc7d3-af3c-472f-a4aa-d8abfa98e892}</UniqueIdentifier>
+    <Filter Include="controller">
+      <UniqueIdentifier>{4a2221ce-6aed-424c-8fff-0684b4bc6f78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hook">
+    <Filter Include="model">
+      <UniqueIdentifier>{1b2914c1-9830-48cb-9030-f0c79fae2771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="view">
+      <UniqueIdentifier>{8294a8c5-30e5-44c1-ae57-a1cfab882862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller\hook">
       <UniqueIdentifier>{7bf1ef5b-9fc6-498d-b832-f9cf92b65a88}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -20,36 +26,36 @@
       <Filter>_</Filter>
     </ClInclude>
     <ClInclude Include="addin.hpp" />
-    <ClInclude Include="config_io.hpp" />
-    <ClInclude Include="font_dialog.hpp" />
-    <ClInclude Include="hive.hpp" />
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="resource.h">
       <Filter>_\resource</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\controller.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="view\font_dialog.hpp">
+      <Filter>view</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\model.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="controller\config_io.hpp">
+      <Filter>controller</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\paint_option_dialog.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="controller\app.hpp">
+      <Filter>controller</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\view.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="controller\hook\exedit_window.hpp">
+      <Filter>controller\hook</Filter>
     </ClInclude>
-    <ClInclude Include="hook\exedit_window.hpp">
-      <Filter>hook</Filter>
+    <ClInclude Include="model\context.hpp">
+      <Filter>model</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\context.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="model\property.hpp">
+      <Filter>model</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\property.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="model\state.hpp">
+      <Filter>model</Filter>
     </ClInclude>
-    <ClInclude Include="main_thread\state.hpp">
-      <Filter>main_thread</Filter>
+    <ClInclude Include="view\paint_option_dialog.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="view\overview.hpp">
+      <Filter>view</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

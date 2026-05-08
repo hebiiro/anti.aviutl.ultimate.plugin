@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-namespace apn::timeline_map::main_thread
+namespace apn::timeline_map::model
 {
 	//
-	// このクラスはメインスレッドのステートです。
+	// このクラスはモデル層のステートです。
 	// 主にDirectXのリソース管理を担当します。
 	//
 	inline struct state_t

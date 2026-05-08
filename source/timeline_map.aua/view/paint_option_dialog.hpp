@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::timeline_map::main_thread
+namespace apn::timeline_map::view
 {
 	//
 	// このクラスは描画設定ダイアログです。
@@ -44,58 +44,58 @@ namespace apn::timeline_map::main_thread
 		{
 			MY_TRACE_FUNC("");
 
-			get_text(idc_text_font_name, property.text.font_name);
-			get_int(idc_text_font_size, property.text.font_size);
-			get_rgba(idc_text_color, property.text.color);
-			get_rgba(idc_text_shadow_color, property.text.shadow_color);
-			get_int(idc_text_padding_x, property.text.padding.x);
-			get_int(idc_text_padding_y, property.text.padding.y);
-			get_int(idc_text_shadow_offset_x, property.text.shadow_offset.x);
-			get_int(idc_text_shadow_offset_y, property.text.shadow_offset.y);
-			get_combobox_index(idc_text_horz_align, property.text.horz_align);
-			get_combobox_index(idc_text_vert_align, property.text.vert_align);
-			get_check(idc_text_flag_draw_text, property.text.flag_draw_text);
-			get_check(idc_text_flag_draw_shadow, property.text.flag_draw_shadow);
-			get_int(idc_text_min_draw_width, property.text.min_draw_width);
+			get_text(idc_text_font_name, model::property.text.font_name);
+			get_int(idc_text_font_size, model::property.text.font_size);
+			get_rgba(idc_text_color, model::property.text.color);
+			get_rgba(idc_text_shadow_color, model::property.text.shadow_color);
+			get_int(idc_text_padding_x, model::property.text.padding.x);
+			get_int(idc_text_padding_y, model::property.text.padding.y);
+			get_int(idc_text_shadow_offset_x, model::property.text.shadow_offset.x);
+			get_int(idc_text_shadow_offset_y, model::property.text.shadow_offset.y);
+			get_combobox_index(idc_text_horz_align, model::property.text.horz_align);
+			get_combobox_index(idc_text_vert_align, model::property.text.vert_align);
+			get_check(idc_text_flag_draw_text, model::property.text.flag_draw_text);
+			get_check(idc_text_flag_draw_shadow, model::property.text.flag_draw_shadow);
+			get_int(idc_text_min_draw_width, model::property.text.min_draw_width);
 
-			get_int(idc_layer_top_space, property.layer.top_space);
-			get_rgba(idc_layer_odd_color, property.layer.odd_color);
-			get_rgba(idc_layer_even_color, property.layer.even_color);
-			get_rgba(idc_layer_undisp_color, property.layer.undisp_color);
-			get_rgba(idc_layer_undisp_stroke_color, property.layer.undisp_stroke_color);
-			get_int(idc_layer_undisp_stroke_width, property.layer.undisp_stroke_width);
-			get_rgba(idc_layer_locked_stroke_color, property.layer.locked_stroke_color);
-			get_int(idc_layer_locked_stroke_width, property.layer.locked_stroke_width);
-			get_rgba(idc_layer_coordlink_stroke_color, property.layer.coordlink_stroke_color);
-			get_int(idc_layer_coordlink_stroke_width, property.layer.coordlink_stroke_width);
-			get_rgba(idc_layer_clip_stroke_color, property.layer.clip_stroke_color);
-			get_int(idc_layer_clip_stroke_width, property.layer.clip_stroke_width);
+			get_int(idc_layer_top_space, model::property.layer.top_space);
+			get_rgba(idc_layer_odd_color, model::property.layer.odd_color);
+			get_rgba(idc_layer_even_color, model::property.layer.even_color);
+			get_rgba(idc_layer_undisp_color, model::property.layer.undisp_color);
+			get_rgba(idc_layer_undisp_stroke_color, model::property.layer.undisp_stroke_color);
+			get_int(idc_layer_undisp_stroke_width, model::property.layer.undisp_stroke_width);
+			get_rgba(idc_layer_locked_stroke_color, model::property.layer.locked_stroke_color);
+			get_int(idc_layer_locked_stroke_width, model::property.layer.locked_stroke_width);
+			get_rgba(idc_layer_coordlink_stroke_color, model::property.layer.coordlink_stroke_color);
+			get_int(idc_layer_coordlink_stroke_width, model::property.layer.coordlink_stroke_width);
+			get_rgba(idc_layer_clip_stroke_color, model::property.layer.clip_stroke_color);
+			get_int(idc_layer_clip_stroke_width, model::property.layer.clip_stroke_width);
 
-			get_int(idc_item_round_size, property.item.round_size);
-			get_combobox_index(idc_item_round_mode, property.item.round_mode);
-			get_rgba(idc_item_stroke_color, property.item.stroke_color);
-			get_int(idc_item_stroke_width, property.item.stroke_width);
+			get_int(idc_item_round_size, model::property.item.round_size);
+			get_combobox_index(idc_item_round_mode, model::property.item.round_mode);
+			get_rgba(idc_item_stroke_color, model::property.item.stroke_color);
+			get_int(idc_item_stroke_width, model::property.item.stroke_width);
 
-			for (size_t i = 0; i < property.item.c_item.c_max_size; i++)
+			for (size_t i = 0; i < model::property.item.c_item.c_max_size; i++)
 			{
-				get_rgba(idc_item_image_media_start_color + i * 4, property.item.nodes[i].start_color);
-				get_rgba(idc_item_image_media_end_color + i * 4, property.item.nodes[i].end_color);
+				get_rgba(idc_item_image_media_start_color + i * 4, model::property.item.nodes[i].start_color);
+				get_rgba(idc_item_image_media_end_color + i * 4, model::property.item.nodes[i].end_color);
 			}
 
-			get_rgba(idc_midpt_color, property.midpt.color);
-			get_rgba(idc_midpt_line_color, property.midpt.line_color);
-			get_int(idc_midpt_line_width, property.midpt.line_width);
+			get_rgba(idc_midpt_color, model::property.midpt.color);
+			get_rgba(idc_midpt_line_color, model::property.midpt.line_color);
+			get_int(idc_midpt_line_width, model::property.midpt.line_width);
 
-			get_rgba(idc_current_frame_line_color, property.current_frame.line_color);
-			get_int(idc_current_frame_line_width, property.current_frame.line_width);
+			get_rgba(idc_current_frame_line_color, model::property.current_frame.line_color);
+			get_int(idc_current_frame_line_width, model::property.current_frame.line_width);
 
-			get_int(idc_visible_area_round_size, property.visible_area.round_size);
-			get_combobox_index(idc_visible_area_round_mode, property.visible_area.round_mode);
-			get_rgba(idc_visible_area_color, property.visible_area.color);
-			get_rgba(idc_visible_area_stroke_color, property.visible_area.stroke_color);
-			get_int(idc_visible_area_stroke_width, property.visible_area.stroke_width);
+			get_int(idc_visible_area_round_size, model::property.visible_area.round_size);
+			get_combobox_index(idc_visible_area_round_mode, model::property.visible_area.round_mode);
+			get_rgba(idc_visible_area_color, model::property.visible_area.color);
+			get_rgba(idc_visible_area_stroke_color, model::property.visible_area.stroke_color);
+			get_int(idc_visible_area_stroke_width, model::property.visible_area.stroke_width);
 
-			get_check(idc_etc_flag_immediate, property.etc.flag_immediate);
+			get_check(idc_etc_flag_immediate, model::property.etc.flag_immediate);
 		}
 
 		//
@@ -105,58 +105,58 @@ namespace apn::timeline_map::main_thread
 		{
 			MY_TRACE_FUNC("");
 
-			set_text(idc_text_font_name, property.text.font_name);
-			set_int(idc_text_font_size, property.text.font_size);
-			set_rgba(idc_text_color, property.text.color);
-			set_rgba(idc_text_shadow_color, property.text.shadow_color);
-			set_int(idc_text_padding_x, property.text.padding.x);
-			set_int(idc_text_padding_y, property.text.padding.y);
-			set_int(idc_text_shadow_offset_x, property.text.shadow_offset.x);
-			set_int(idc_text_shadow_offset_y, property.text.shadow_offset.y);
-			set_combobox_index(idc_text_horz_align, property.text.horz_align);
-			set_combobox_index(idc_text_vert_align, property.text.vert_align);
-			set_check(idc_text_flag_draw_text, property.text.flag_draw_text);
-			set_check(idc_text_flag_draw_shadow, property.text.flag_draw_shadow);
-			set_int(idc_text_min_draw_width, property.text.min_draw_width);
+			set_text(idc_text_font_name, model::property.text.font_name);
+			set_int(idc_text_font_size, model::property.text.font_size);
+			set_rgba(idc_text_color, model::property.text.color);
+			set_rgba(idc_text_shadow_color, model::property.text.shadow_color);
+			set_int(idc_text_padding_x, model::property.text.padding.x);
+			set_int(idc_text_padding_y, model::property.text.padding.y);
+			set_int(idc_text_shadow_offset_x, model::property.text.shadow_offset.x);
+			set_int(idc_text_shadow_offset_y, model::property.text.shadow_offset.y);
+			set_combobox_index(idc_text_horz_align, model::property.text.horz_align);
+			set_combobox_index(idc_text_vert_align, model::property.text.vert_align);
+			set_check(idc_text_flag_draw_text, model::property.text.flag_draw_text);
+			set_check(idc_text_flag_draw_shadow, model::property.text.flag_draw_shadow);
+			set_int(idc_text_min_draw_width, model::property.text.min_draw_width);
 
-			set_int(idc_layer_top_space, property.layer.top_space);
-			set_rgba(idc_layer_odd_color, property.layer.odd_color);
-			set_rgba(idc_layer_even_color, property.layer.even_color);
-			set_rgba(idc_layer_undisp_color, property.layer.undisp_color);
-			set_rgba(idc_layer_undisp_stroke_color, property.layer.undisp_stroke_color);
-			set_int(idc_layer_undisp_stroke_width, property.layer.undisp_stroke_width);
-			set_rgba(idc_layer_locked_stroke_color, property.layer.locked_stroke_color);
-			set_int(idc_layer_locked_stroke_width, property.layer.locked_stroke_width);
-			set_rgba(idc_layer_coordlink_stroke_color, property.layer.coordlink_stroke_color);
-			set_int(idc_layer_coordlink_stroke_width, property.layer.coordlink_stroke_width);
-			set_rgba(idc_layer_clip_stroke_color, property.layer.clip_stroke_color);
-			set_int(idc_layer_clip_stroke_width, property.layer.clip_stroke_width);
+			set_int(idc_layer_top_space, model::property.layer.top_space);
+			set_rgba(idc_layer_odd_color, model::property.layer.odd_color);
+			set_rgba(idc_layer_even_color, model::property.layer.even_color);
+			set_rgba(idc_layer_undisp_color, model::property.layer.undisp_color);
+			set_rgba(idc_layer_undisp_stroke_color, model::property.layer.undisp_stroke_color);
+			set_int(idc_layer_undisp_stroke_width, model::property.layer.undisp_stroke_width);
+			set_rgba(idc_layer_locked_stroke_color, model::property.layer.locked_stroke_color);
+			set_int(idc_layer_locked_stroke_width, model::property.layer.locked_stroke_width);
+			set_rgba(idc_layer_coordlink_stroke_color, model::property.layer.coordlink_stroke_color);
+			set_int(idc_layer_coordlink_stroke_width, model::property.layer.coordlink_stroke_width);
+			set_rgba(idc_layer_clip_stroke_color, model::property.layer.clip_stroke_color);
+			set_int(idc_layer_clip_stroke_width, model::property.layer.clip_stroke_width);
 
-			set_int(idc_item_round_size, property.item.round_size);
-			set_combobox_index(idc_item_round_mode, property.item.round_mode);
-			set_rgba(idc_item_stroke_color, property.item.stroke_color);
-			set_int(idc_item_stroke_width, property.item.stroke_width);
+			set_int(idc_item_round_size, model::property.item.round_size);
+			set_combobox_index(idc_item_round_mode, model::property.item.round_mode);
+			set_rgba(idc_item_stroke_color, model::property.item.stroke_color);
+			set_int(idc_item_stroke_width, model::property.item.stroke_width);
 
-			for (size_t i = 0; i < property.item.c_item.c_max_size; i++)
+			for (size_t i = 0; i < model::property.item.c_item.c_max_size; i++)
 			{
-				set_rgba(idc_item_image_media_start_color + i * 4, property.item.nodes[i].start_color);
-				set_rgba(idc_item_image_media_end_color + i * 4, property.item.nodes[i].end_color);
+				set_rgba(idc_item_image_media_start_color + i * 4, model::property.item.nodes[i].start_color);
+				set_rgba(idc_item_image_media_end_color + i * 4, model::property.item.nodes[i].end_color);
 			}
 
-			set_rgba(idc_midpt_color, property.midpt.color);
-			set_rgba(idc_midpt_line_color, property.midpt.line_color);
-			set_int(idc_midpt_line_width, property.midpt.line_width);
+			set_rgba(idc_midpt_color, model::property.midpt.color);
+			set_rgba(idc_midpt_line_color, model::property.midpt.line_color);
+			set_int(idc_midpt_line_width, model::property.midpt.line_width);
 
-			set_rgba(idc_current_frame_line_color, property.current_frame.line_color);
-			set_int(idc_current_frame_line_width, property.current_frame.line_width);
+			set_rgba(idc_current_frame_line_color, model::property.current_frame.line_color);
+			set_int(idc_current_frame_line_width, model::property.current_frame.line_width);
 
-			set_int(idc_visible_area_round_size, property.visible_area.round_size);
-			set_combobox_index(idc_visible_area_round_mode, property.visible_area.round_mode);
-			set_rgba(idc_visible_area_color, property.visible_area.color);
-			set_rgba(idc_visible_area_stroke_color, property.visible_area.stroke_color);
-			set_int(idc_visible_area_stroke_width, property.visible_area.stroke_width);
+			set_int(idc_visible_area_round_size, model::property.visible_area.round_size);
+			set_combobox_index(idc_visible_area_round_mode, model::property.visible_area.round_mode);
+			set_rgba(idc_visible_area_color, model::property.visible_area.color);
+			set_rgba(idc_visible_area_stroke_color, model::property.visible_area.stroke_color);
+			set_int(idc_visible_area_stroke_width, model::property.visible_area.stroke_width);
 
-			set_check(idc_etc_flag_immediate, property.etc.flag_immediate);
+			set_check(idc_etc_flag_immediate, model::property.etc.flag_immediate);
 		}
 
 		//

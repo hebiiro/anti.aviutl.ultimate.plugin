@@ -1,17 +1,15 @@
 ﻿#include "pch.h"
 #include "resource.h"
-#include "font_dialog.hpp"
-#include "hive.hpp"
 #include "utils.hpp"
-#include "main_thread/property.hpp"
-#include "main_thread/state.hpp"
-#include "main_thread/context.hpp"
-#include "main_thread/model.hpp"
-#include "main_thread/paint_option_dialog.hpp"
-#include "main_thread/view.hpp"
-#include "main_thread/controller.hpp"
-#include "hook/exedit_window.hpp"
-#include "config_io.hpp"
+#include "model/property.hpp"
+#include "model/state.hpp"
+#include "model/context.hpp"
+#include "view/font_dialog.hpp"
+#include "view/paint_option_dialog.hpp"
+#include "view/overview.hpp"
+#include "controller/hook/exedit_window.hpp"
+#include "controller/config_io.hpp"
+#include "controller/app.hpp"
 #include "addin.hpp"
 
 namespace apn::timeline_map
@@ -38,7 +36,7 @@ namespace apn::timeline_map
 			{
 				MY_TRACE_FUNC("DLL_PROCESS_ATTACH");
 
-				::DisableThreadLibraryCalls(hive.instance = instance);
+				::DisableThreadLibraryCalls(model::property.instance = instance);
 
 				break;
 			}

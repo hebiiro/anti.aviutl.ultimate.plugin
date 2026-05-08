@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::timeline_map::hook
+namespace apn::timeline_map::controller::hook
 {
 	//
 	// このクラスは拡張編集ウィンドウをフックします。
@@ -54,7 +54,7 @@ namespace apn::timeline_map::hook
 		inline static struct {
 			inline static void CDECL hook_proc(int32_t flags[])
 			{
-				main_thread::view.redraw();
+				view::overview.redraw();
 
 				return orig_proc(flags);
 			}
@@ -67,7 +67,7 @@ namespace apn::timeline_map::hook
 		inline static struct {
 			inline static void CDECL hook_proc(HWND exedit_window)
 			{
-				main_thread::view.redraw();
+				view::overview.redraw();
 
 				return orig_proc(exedit_window);
 			}

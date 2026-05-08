@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-namespace apn::timeline_map::main_thread
+namespace apn::timeline_map::model
 {
 	//
-	// このクラスはメインスレッドのコンテキストです。
+	// このクラスはモデル層のコンテキストです。
 	// 描画やクリック処理の瞬間にだけ作成され、使用されます。
 	//
 	struct context_t

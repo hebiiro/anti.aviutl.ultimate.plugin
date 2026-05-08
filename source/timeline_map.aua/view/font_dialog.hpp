@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace apn::timeline_map
+namespace apn::timeline_map::view
 {
 	//
 	// このクラスはフォント選択ダイアログです。
