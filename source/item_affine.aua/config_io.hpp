@@ -61,31 +61,11 @@ namespace apn::item_affine
 		}
 
 		//
-		// ラムダ式を使用してノードを読み込みます。
-		//
-		inline static void read_node(const n_json& root, const std::string& node_name, auto func)
-		{
-			n_json node;
-			read_child_node(root, node_name, node);
-			return func(node);
-		}
-
-		//
-		// ラムダ式を使用してノードを書き込みます。
-		//
-		inline static void write_node(n_json& root, const std::string& node_name, auto func)
-		{
-			n_json node;
-			my::scope_exit scope_exit([&]() { write_child_node(root, node_name, node); });
-			return func(node);
-		}
-
-		//
 		// 分数を読み込みます。
 		//
 		inline static void read_fraction(const n_json& root, const std::string& node_name, fraction_t& fraction)
 		{
-			read_node(root, node_name, [&](const n_json& root) {
+			read_child_node(root, node_name, [&](const n_json& root) {
 				read_int(root, "num", fraction.num);
 				read_int(root, "den", fraction.den);
 			});
@@ -96,7 +76,7 @@ namespace apn::item_affine
 		//
 		inline static void write_fraction(n_json& root, const std::string& node_name, const fraction_t& fraction)
 		{
-			write_node(root, node_name, [&](n_json& root) {
+			write_child_node(root, node_name, [&](n_json& root) {
 				write_int(root, "num", fraction.num);
 				write_int(root, "den", fraction.den);
 			});
@@ -107,7 +87,7 @@ namespace apn::item_affine
 		//
 		inline static void read_affine(const n_json& root, const std::string& node_name, affine_t& affine)
 		{
-			read_node(root, node_name, [&](const n_json& root) {
+			read_child_node(root, node_name, [&](const n_json& root) {
 				read_fraction(root, "mul", affine.mul);
 				read_fraction(root, "add", affine.add);
 				read_fraction(root, "base", affine.base);
@@ -121,7 +101,7 @@ namespace apn::item_affine
 		//
 		inline static void write_affine(n_json& root, const std::string& node_name, const affine_t& affine)
 		{
-			write_node(root, node_name, [&](n_json& root) {
+			write_child_node(root, node_name, [&](n_json& root) {
 				write_fraction(root, "mul", affine.mul);
 				write_fraction(root, "add", affine.add);
 				write_fraction(root, "base", affine.base);

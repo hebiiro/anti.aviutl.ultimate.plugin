@@ -63,26 +63,6 @@ namespace apn::filter_relocate::controller
 		}
 
 		//
-		// ラムダ式を使用してノードを読み込みます。
-		//
-		inline static void read_node(const n_json& root, const std::string& node_name, auto func)
-		{
-			n_json node;
-			read_child_node(root, node_name, node);
-			return func(node);
-		}
-
-		//
-		// ラムダ式を使用してノードを書き込みます。
-		//
-		inline static void write_node(n_json& root, const std::string& node_name, auto func)
-		{
-			n_json node;
-			my::scope_exit scope_exit([&]() { write_child_node(root, node_name, node); });
-			return func(node);
-		}
-
-		//
 		// ノードからコンフィグを読み込みます。
 		//
 		virtual BOOL read_node(n_json& root) override

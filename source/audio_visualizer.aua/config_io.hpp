@@ -63,9 +63,9 @@ namespace apn::audio_visualizer
 
 			// グローバル設定を書き込みます。
 			write_label(root, "mode", hive.mode, hive.c_mode.labels);
-			write_child_node(root, "range", hive.option.range);
-			write_child_node(root, "marker", hive.option.marker);
-			write_child_node(root, "spectre_option", hive.option.spectre_option);
+			write_child(root, "range", hive.option.range);
+			write_child(root, "marker", hive.option.marker);
+			write_child(root, "spectre_option", hive.option.spectre_option);
 
 			// アドインウィンドウのウィンドウ位置を書き込みます。
 			write_window_pos(root, "addin_window", addin_window);
