@@ -9,6 +9,11 @@ namespace apn::timeline_map::view
 	inline struct overview_t : StdAddinWindow, paint_option_dialog_t::listner_t
 	{
 		//
+		// レンダーターゲットです。
+		//
+		model::render_target_t render_target;
+
+		//
 		// 初期化処理を実行します。
 		//
 		BOOL init()
@@ -103,7 +108,7 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					model::context_t(hwnd).on_paint();
+					model::context_t(hwnd, render_target).on_paint();
 
 					return 0;
 				}
@@ -111,7 +116,7 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					model::context_t(hwnd).on_size();
+					model::context_t(hwnd, render_target).on_size();
 
 					break;
 				}
@@ -121,7 +126,7 @@ namespace apn::timeline_map::view
 
 					::SetCapture(hwnd);
 
-					model::context_t(hwnd).on_click(my::lp_to_pt(l_param));
+					model::context_t(hwnd, render_target).on_click(my::lp_to_pt(l_param));
 
 					break;
 				}
@@ -139,7 +144,7 @@ namespace apn::timeline_map::view
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
 					if (::GetCapture() == hwnd)
-						model::context_t(hwnd).on_click(my::lp_to_pt(l_param));
+						model::context_t(hwnd, render_target).on_click(my::lp_to_pt(l_param));
 
 					break;
 				}

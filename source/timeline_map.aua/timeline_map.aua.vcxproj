@@ -150,6 +150,8 @@
     <ClInclude Include="model\context.hpp" />
     <ClInclude Include="model\property.hpp" />
     <ClInclude Include="model\state.hpp" />
+    <ClInclude Include="model\state\dx_resource.hpp" />
+    <ClInclude Include="model\state\render_target.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils.hpp" />

@@ -40,6 +40,12 @@ namespace apn::timeline_map::model
 		//
 		HWND hwnd = {};
 
+		//
+		// 描画対象です。
+		//
+		render_target_t& render_target;
+
+
 		// 以下の変数はレイアウトが決定した後にしか算出できません。
 
 		//
@@ -71,11 +77,15 @@ namespace apn::timeline_map::model
 		//
 		// コンストラクタです。
 		//
-		context_t(HWND hwnd)
+		context_t(HWND hwnd, render_target_t& render_target)
 			: hwnd(hwnd)
+			, render_target(render_target)
 		{
-			// ステートを初期化します。
-			if (!state.init(hwnd)) return;
+			// ステートに描画処理の準備をさせます。
+			if (!state.prepare()) return;
+
+			// ステートにレンダーターゲットを作成させます。
+			if (!state.create_render_target(hwnd, render_target)) return;
 
 			// レイアウト矩形を初期化します。
 			{
@@ -138,7 +148,7 @@ namespace apn::timeline_map::model
 
 			// 中間点図形用のパスを作成します。
 			{
-				state.d2d_factory->CreatePathGeometry(midpt_path.ReleaseAndGetAddressOf());
+				state.resource.d2d_factory->CreatePathGeometry(midpt_path.ReleaseAndGetAddressOf());
 				if (!midpt_path) return;
 
 				ComPtr<ID2D1GeometrySink> sink;
@@ -464,13 +474,13 @@ namespace apn::timeline_map::model
 			ID2D1Brush* fill_brush, ID2D1Brush* stroke_brush, float stroke_width)
 		{
 			// 矩形を塗りつぶします。
-			state.render_target->FillRectangle(rc, fill_brush);
+			state.resource.d2d_device_context->FillRectangle(rc, fill_brush);
 
 			// 縁の幅が有効の場合は
 			if (stroke_width > 0.0f)
 			{
 				// 矩形の縁を描画します。
-				state.render_target->DrawRectangle(
+				state.resource.d2d_device_context->DrawRectangle(
 					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
 			}
 
@@ -491,13 +501,13 @@ namespace apn::timeline_map::model
 			}
 
 			// 丸角矩形を塗りつぶします。
-			state.render_target->FillRoundedRectangle(rc, fill_brush);
+			state.resource.d2d_device_context->FillRoundedRectangle(rc, fill_brush);
 
 			// 縁の幅が有効の場合は
 			if (stroke_width > 0.0f)
 			{
 				// 丸角矩形の縁を描画します。
-				state.render_target->DrawRoundedRectangle(
+				state.resource.d2d_device_context->DrawRoundedRectangle(
 					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
 			}
 
@@ -517,7 +527,7 @@ namespace apn::timeline_map::model
 			if (stroke_width > 0.0f)
 			{
 				// 矩形の縁を描画します。
-				state.render_target->DrawRectangle(
+				state.resource.d2d_device_context->DrawRectangle(
 					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
 			}
 
@@ -544,7 +554,7 @@ namespace apn::timeline_map::model
 			if (stroke_width > 0.0f)
 			{
 				// 丸角矩形の縁を描画します。
-				state.render_target->DrawRoundedRectangle(
+				state.resource.d2d_device_context->DrawRoundedRectangle(
 					deflate(rc, stroke_width / 2.0f), stroke_brush, stroke_width);
 			}
 
@@ -588,7 +598,7 @@ namespace apn::timeline_map::model
 						property.text.shadow_offset.y / 100.f);
 
 					// 影を描画します。
-					state.render_target->DrawTextLayout(
+					state.resource.d2d_device_context->DrawTextLayout(
 						D2D1::Point2F(x + shadow_offset.x, y + shadow_offset.y),
 						text_layout.Get(),
 						text_shadow_brush,
@@ -597,7 +607,7 @@ namespace apn::timeline_map::model
 			}
 
 			// テキストを描画します。
-			state.render_target->DrawTextLayout(
+			state.resource.d2d_device_context->DrawTextLayout(
 				D2D1::Point2F(x, y),
 				text_layout.Get(),
 				text_brush,
@@ -621,8 +631,8 @@ namespace apn::timeline_map::model
 					(float)rects.body.right, layer_to_pixel(i + 1));
 
 				// レイヤー矩形を描画します。
-				state.render_target->FillRectangle(layer_rc,
-					(i % 2) ? state.layer.even_brush.Get() : state.layer.odd_brush.Get());
+				state.resource.d2d_device_context->FillRectangle(layer_rc, (i % 2) ?
+					state.resource.layer.even_brush.Get() : state.resource.layer.odd_brush.Get());
 			}
 
 			return TRUE;
@@ -724,8 +734,8 @@ namespace apn::timeline_map::model
 							control_range_rc.rect.bottom = bottom;
 
 							// 制御範囲矩形を描画します。
-							draw_rounded_rectangle(control_range_rc, state.control_range.brush.Get(),
-								state.control_range.stroke_brush.Get(), property.control_range.stroke_width / 100.0f);
+							draw_rounded_rectangle(control_range_rc, state.resource.control_range.brush.Get(),
+								state.resource.control_range.stroke_brush.Get(), property.control_range.stroke_width / 100.0f);
 
 							break;
 						}
@@ -737,25 +747,25 @@ namespace apn::timeline_map::model
 				{
 					// アイテム矩形を描画します。
 					draw_item_rectangle(item_rc, node_index,
-						state.item.stroke_brush.Get(), property.item.stroke_width / 100.0f);
+						state.resource.item.stroke_brush.Get(), property.item.stroke_width / 100.0f);
 				}
 
 				// 中間点を走査します。
 				for (auto midpt_x : midpt_x_vec)
 				{
 					// (midpt_x, start_point.y) の位置に中間点図形を描画します。
-					state.render_target->SetTransform(D2D1::Matrix3x2F::Translation(midpt_x, start_point.y));
-					state.render_target->FillGeometry(midpt_path.Get(), state.midpt.brush.Get());
-					state.render_target->SetTransform(D2D1::Matrix3x2F::Identity());
+					state.resource.d2d_device_context->SetTransform(D2D1::Matrix3x2F::Translation(midpt_x, start_point.y));
+					state.resource.d2d_device_context->FillGeometry(midpt_path.Get(), state.resource.midpt.brush.Get());
+					state.resource.d2d_device_context->SetTransform(D2D1::Matrix3x2F::Identity());
 
 					// 中間点の線幅が有効の場合は
 					if (property.midpt.line_width > 0)
 					{
 						// 中間点の位置に縦線を描画します。
-						state.render_target->DrawLine(
+						state.resource.d2d_device_context->DrawLine(
 							D2D1::Point2F(midpt_x, item_rc.rect.top),
 							D2D1::Point2F(midpt_x, item_rc.rect.bottom),
-							state.midpt.line_brush.Get(),
+							state.resource.midpt.line_brush.Get(),
 							property.midpt.line_width / 100.0f);
 					}
 				}
@@ -778,7 +788,7 @@ namespace apn::timeline_map::model
 
 						// アイテム名を描画します。
 						draw_text(text, item_rc.rect, text_flags, text_format.Get(),
-							state.text.brush.Get(), state.text.shadow_brush.Get());
+							state.resource.text.brush.Get(), state.resource.text.shadow_brush.Get());
 					}
 				}
 			}
@@ -806,8 +816,8 @@ namespace apn::timeline_map::model
 				if (has_flag(layer_setting->flag, ExEdit::LayerSetting::Flag::UnDisp))
 				{
 					// 非表示レイヤー矩形を描画します。
-					draw_rectangle(layer_rc, state.layer.undisp_brush.Get(),
-						state.layer.undisp_stroke_brush.Get(), property.layer.undisp_stroke_width / 100.0f);
+					draw_rectangle(layer_rc, state.resource.layer.undisp_brush.Get(),
+						state.resource.layer.undisp_stroke_brush.Get(), property.layer.undisp_stroke_width / 100.0f);
 				}
 
 				auto y = layer_rc.top;
@@ -818,7 +828,7 @@ namespace apn::timeline_map::model
 					if (has_flag(layer_setting->flag, flag))
 					{
 						// 設定を横線として描画します。
-						state.render_target->DrawLine(
+						state.resource.d2d_device_context->DrawLine(
 							D2D1::Point2F((float)rects.body.left, y + stroke_width / 2.0f),
 							D2D1::Point2F((float)rects.body.right, y + stroke_width / 2.0f),
 							brush, stroke_width);
@@ -827,9 +837,9 @@ namespace apn::timeline_map::model
 					}
 				};
 
-				draw_setting(ExEdit::LayerSetting::Flag::Locked, state.layer.locked_stroke_brush.Get(), property.layer.locked_stroke_width / 100.0f);
-				draw_setting(ExEdit::LayerSetting::Flag::CoordLink, state.layer.coordlink_stroke_brush.Get(), property.layer.coordlink_stroke_width / 100.0f);
-				draw_setting(ExEdit::LayerSetting::Flag::Clip, state.layer.clip_stroke_brush.Get(), property.layer.clip_stroke_width / 100.0f);
+				draw_setting(ExEdit::LayerSetting::Flag::Locked, state.resource.layer.locked_stroke_brush.Get(), property.layer.locked_stroke_width / 100.0f);
+				draw_setting(ExEdit::LayerSetting::Flag::CoordLink, state.resource.layer.coordlink_stroke_brush.Get(), property.layer.coordlink_stroke_width / 100.0f);
+				draw_setting(ExEdit::LayerSetting::Flag::Clip, state.resource.layer.clip_stroke_brush.Get(), property.layer.clip_stroke_width / 100.0f);
 			}
 
 			return TRUE;
@@ -847,10 +857,10 @@ namespace apn::timeline_map::model
 			auto x = frame_to_pixel(current_frame);
 
 			// 現在フレームを縦線として描画します。
-			state.render_target->DrawLine(
+			state.resource.d2d_device_context->DrawLine(
 				D2D1::Point2F(x, (float)rects.client.top),
 				D2D1::Point2F(x, (float)rects.client.bottom),
-				state.current_frame.brush.Get(),
+				state.resource.current_frame.brush.Get(),
 				property.current_frame.line_width / 100.0f);
 
 			return TRUE;
@@ -881,8 +891,8 @@ namespace apn::timeline_map::model
 			visible_area_rc = round(visible_area_rc, property.visible_area.round_mode);
 
 			// 表示範囲矩形を描画します。
-			draw_rounded_rectangle(visible_area_rc, state.visible_area.brush.Get(),
-				state.visible_area.stroke_brush.Get(), property.visible_area.stroke_width / 100.0f);
+			draw_rounded_rectangle(visible_area_rc, state.resource.visible_area.brush.Get(),
+				state.resource.visible_area.stroke_brush.Get(), property.visible_area.stroke_width / 100.0f);
 
 			return TRUE;
 		}
@@ -899,8 +909,7 @@ namespace apn::timeline_map::model
 			if (!is_initialized()) return FALSE;
 
 			// 描画処理を開始します。
-			state.render_target->BeginDraw();
-			state.render_target->Clear();
+			state.begin_draw(hwnd, render_target);
 
 			// 各要素を描画します。
 			draw_layers();
@@ -910,8 +919,7 @@ namespace apn::timeline_map::model
 			draw_visible_area();
 
 			// 描画処理を終了します。
-			if (state.render_target->EndDraw() == D2DERR_RECREATE_TARGET)
-				state.render_target = nullptr;
+			state.end_draw(render_target);
 
 			return TRUE;
 		}
@@ -925,8 +933,7 @@ namespace apn::timeline_map::model
 			if (!is_initialized()) return FALSE;
 
 			// レンダーターゲットをリサイズします。
-			state.render_target->Resize(
-				D2D1::SizeU(rects.client.w, rects.client.h));
+			state.resize_render_target(hwnd, render_target);
 
 			return TRUE;
 		}

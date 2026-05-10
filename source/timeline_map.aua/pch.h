@@ -1,6 +1,11 @@
 ﻿#define _USE_MATH_DEFINES
 #include "common/core/include.hpp"
 
+#include <comdef.h>
+#include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
+#include <dxgi1_2.h>
+#pragma comment(lib, "dxgi.lib")
 #include <d2d1_1.h>
 #include <d2d1_1helper.h>
 #pragma comment(lib, "d2d1.lib")

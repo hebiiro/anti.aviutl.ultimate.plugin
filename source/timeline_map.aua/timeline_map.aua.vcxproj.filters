@@ -20,6 +20,9 @@
     <Filter Include="controller\hook">
       <UniqueIdentifier>{7bf1ef5b-9fc6-498d-b832-f9cf92b65a88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="model\state">
+      <UniqueIdentifier>{d35e641d-307b-46a3-a55b-efecd248abdf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -56,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="view\overview.hpp">
       <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="model\state\dx_resource.hpp">
+      <Filter>model\state</Filter>
+    </ClInclude>
+    <ClInclude Include="model\state\render_target.hpp">
+      <Filter>model\state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
