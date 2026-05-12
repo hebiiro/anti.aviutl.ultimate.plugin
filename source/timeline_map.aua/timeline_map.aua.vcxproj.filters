@@ -66,6 +66,9 @@
     <ClInclude Include="model\state\render_target.hpp">
       <Filter>model\state</Filter>
     </ClInclude>
+    <ClInclude Include="view\overview_behavior.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

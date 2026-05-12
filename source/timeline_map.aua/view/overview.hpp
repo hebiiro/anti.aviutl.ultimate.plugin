@@ -6,7 +6,7 @@ namespace apn::timeline_map::view
 	// このクラスはビュー層の全体図です。
 	// プラグインウィンドウのように振る舞います。
 	//
-	inline struct overview_t : StdAddinWindow, paint_option_dialog_t::listner_t, model::render_target_t
+	inline struct overview_t : StdAddinWindow, paint_option_dialog_t::listner_t, overview_behavior_t
 	{
 		//
 		// D2Dコマンドリストです。
@@ -20,8 +20,8 @@ namespace apn::timeline_map::view
 		{
 			MY_TRACE_FUNC("");
 
-			// ビューを描画対象にします。
-			model::state.register_render_target(this);
+			// 振る舞いの初期化処理を実行します。
+			overview_behavior_t::init();
 
 			// ビューを描画設定ダイアログのリスナーに設定します。
 			paint_option_dialog.listener = this;
@@ -44,8 +44,8 @@ namespace apn::timeline_map::view
 		{
 			MY_TRACE_FUNC("");
 
-			// ビューを描画対象から除外します。
-			model::state.unregister_render_target(this);
+			// 振る舞いの後始末処理を実行します。
+			overview_behavior_t::exit();
 
 			// 描画設定ダイアログを終了します。
 			paint_option_dialog.exit();
@@ -63,7 +63,7 @@ namespace apn::timeline_map::view
 		}
 
 		//
-		// タイムラインマップを再描画します。
+		// 全体図を再描画します。
 		//
 		BOOL redraw()
 		{
@@ -86,8 +86,9 @@ namespace apn::timeline_map::view
 			MY_TRACE_FUNC("");
 
 			// D2Dコマンドリストをリセットします。
-			d2d_command_list = nullptr;
+			reset_command_list();
 
+			// 全体図を再描画します。
 			return redraw();
 		}
 
@@ -102,7 +103,7 @@ namespace apn::timeline_map::view
 			if (recreate_resources)
 				model::state.recreate_resources(TRUE);
 
-			// タイムラインマップを再描画します。
+			// 全体図を再描画します。
 			redraw();
 		}
 
@@ -112,120 +113,6 @@ namespace apn::timeline_map::view
 		virtual HWND get_hwnd() const override
 		{
 			return hwnd;
-		}
-
-		//
-		// この仮想関数はリソースを作成する必要があるときに呼び出されます。
-		//
-		virtual BOOL create_resources() override
-		{
-			if (!__super::create_resources()) return FALSE;
-
-			return TRUE;
-		}
-
-		//
-		// この仮想関数はリソースをリセットする必要があるときに呼び出されます。
-		//
-		virtual BOOL reset_resources() override
-		{
-			// D2Dコマンドリストをリセットします。
-			d2d_command_list = nullptr;
-
-			return __super::reset_resources();
-		}
-
-		//
-		// タイムラインマップを描画します。
-		//
-		BOOL on_paint()
-		{
-			// コンテキストを作成します。
-			model::context_t context(this);
-
-			// コンテキストを初期化できなかった場合は何もしません。
-			if (!context.is_initialized()) return FALSE;
-
-			// コマンドリストが無効の場合は
-			if (!d2d_command_list)
-			{
-				// コマンドリストを作成します。
-				model::dx.d2d_device_context->CreateCommandList(&d2d_command_list);
-
-				// 描画処理を開始します。
-				model::state.begin_draw(d2d_command_list.Get());
-
-				// 各要素を描画します。
-				context.draw_layers();
-				context.draw_items();
-				context.draw_layer_settings();
-
-				// コマンドリストを閉じます。
-				d2d_command_list->Close();
-
-				// 描画処理を終了します。
-				model::state.end_draw(nullptr);
-			}
-
-			// 描画処理を開始します。
-			model::state.begin_draw(d2d_target_bitmap.Get());
-
-			// コマンドリストを描画します。
-			model::dx.d2d_device_context->DrawImage(d2d_command_list.Get());
-
-			// 各要素を描画します。
-			context.draw_current_frame();
-			context.draw_visible_area();
-
-			// 描画処理を終了します。
-			model::state.end_draw(dxgi_swap_chain.Get());
-
-			return TRUE;
-		}
-
-		//
-		// タイムラインマップをリサイズします。
-		//
-		BOOL on_size()
-		{
-			// レンダーターゲットをリサイズします。
-			model::render_target_t::resize();
-
-			// コマンドリストをリセットします。
-			on_update();
-
-			return TRUE;
-		}
-
-		//
-		// ユーザーがウィンドウをクリック(またはドラッグ)したときの処理です。
-		//
-		BOOL on_click(POINT point)
-		{
-			// コンテキストを作成します。
-			model::context_t context(this);
-
-			// コンテキストを初期化できなかった場合は何もしません。
-			if (!context.is_initialized()) return FALSE;
-
-			// タイムラインを水平方向にスクロールします。
-			{
-				auto left_frame = magi.exin.get_top_visible_frame();
-				auto right_frame = (int32_t)magi.exin.x_to_frame(magi.exin.get_layer_width());
-
-				auto frame = context.pixel_to_frame(point.x);
-				frame -= (right_frame - left_frame) / 2;
-				magi.exin.set_top_visible_frame(frame);
-			}
-
-			// タイムラインを垂直方向にスクロールします。
-			{
-				auto layer = context.pixel_to_layer(point.y);
-				layer -= (magi.exin.get_layer_visible_count() / 2);
-				magi.exin.set_top_visible_layer(layer);
-			}
-
-			return TRUE;
 		}
 
 		//

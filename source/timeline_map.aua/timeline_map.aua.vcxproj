@@ -156,6 +156,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="view\font_dialog.hpp" />
+    <ClInclude Include="view\overview_behavior.hpp" />
     <ClInclude Include="view\paint_option_dialog.hpp" />
     <ClInclude Include="view\overview.hpp" />
   </ItemGroup>

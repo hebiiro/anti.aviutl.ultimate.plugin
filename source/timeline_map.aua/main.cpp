@@ -8,6 +8,7 @@
 #include "model/context.hpp"
 #include "view/font_dialog.hpp"
 #include "view/paint_option_dialog.hpp"
+#include "view/overview_behavior.hpp"
 #include "view/overview.hpp"
 #include "controller/hook/exedit_window.hpp"
 #include "controller/config_io.hpp"
