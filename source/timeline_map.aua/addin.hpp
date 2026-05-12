@@ -24,6 +24,29 @@ namespace apn::timeline_map
 		}
 
 		//
+		// ウィンドウ関数のタイミングで呼び出されます。
+		//
+		virtual BOOL on_window_proc(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp)
+		{
+			switch (message)
+			{
+			case AviUtl::FilterPlugin::WindowMessage::Update:
+				{
+					MY_TRACE_FUNC("AviUtl::FilterPlugin::WindowMessage::Update");
+
+					if (!fp->exfunc->is_editing(editp)) break;
+
+					// プロジェクトが変更されたかもしれないので更新処理を実行します。
+					controller::app.update();
+
+					break;
+				}
+			}
+
+			return FALSE;
+		}
+
+		//
 		// この仮想関数は、ウィンドウの初期化を実行するときに呼ばれます。
 		//
 		virtual BOOL on_window_init(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param, AviUtl::EditHandle* editp, AviUtl::FilterPlugin* fp) override

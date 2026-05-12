@@ -9,64 +9,82 @@ namespace apn::timeline_map::model
 	inline struct state_t
 	{
 		//
-		// リセット回数です。
+		// 描画対象のコレクションです。
 		//
-		UINT nb_resets = 0;
+		std::unordered_set<render_target_t*> render_targets;
 
 		//
-		// 描画リソースです。
+		// 描画対象を追加します。
 		//
-		dx_resource_t resource;
+		void register_render_target(render_target_t* render_target)
+		{
+			render_targets.emplace(render_target);
+		}
+
+		//
+		// 描画対象を除外します。
+		//
+		void unregister_render_target(render_target_t* render_target)
+		{
+			render_targets.erase(render_target);
+		}
 
 		//
 		// リソースをリセットします。
 		//
-		void reset()
+		void reset_resources()
 		{
 			// リソースをリセットします。
-			resource = {};
+			dx = {};
 
-			// リセット回数を増やします。
-			nb_resets++;
+			// 描画対象のリソースをリセットします。
+			for (const auto& render_target : render_targets)
+				render_target->reset_resources();
 		}
 
 		//
 		// 描画処理を開始します。
 		//
-		void begin_draw(HWND hwnd, render_target_t& render_target)
+		void begin_draw(ID2D1Image* image)
 		{
-			resource.d2d_device_context->SetTarget(nullptr);
-			resource.d2d_device_context->SetTarget(render_target.d2d_target_bitmap.Get());
-			resource.d2d_device_context->SetTransform(D2D1::Matrix3x2F::Identity());
-			resource.d2d_device_context->BeginDraw();
-			resource.d2d_device_context->Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
+			dx.d2d_device_context->SetTarget(nullptr);
+			dx.d2d_device_context->SetTarget(image);
+			dx.d2d_device_context->SetTransform(D2D1::Matrix3x2F::Identity());
+			dx.d2d_device_context->BeginDraw();
+			dx.d2d_device_context->Clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 		}
 
 		//
 		// 描画処理を終了します。
 		//
-		void end_draw(render_target_t& render_target)
+		void end_draw(IDXGISwapChain1* dxgi_swap_chain)
 		{
-			resource.d2d_device_context->EndDraw();
-			resource.d2d_device_context->SetTarget(nullptr);
-			auto hr = render_target.dxgi_swap_chain->Present(0, 0);
+			dx.d2d_device_context->EndDraw();
+			dx.d2d_device_context->SetTarget(nullptr);
 
-			// デバイスがリセットされている場合は
-			if (hr == DXGI_ERROR_DEVICE_REMOVED ||
-				hr == DXGI_ERROR_DEVICE_RESET)
+			// DXGIスワップチェーンが指定されている場合は
+			if (dxgi_swap_chain)
 			{
-				// リセットします。
-				reset();
+				// DXGIスワップチェーンを描画します。
+				auto hr = dxgi_swap_chain->Present(0, 0);
+
+				// デバイスが無効になっている場合は
+				if (hr == DXGI_ERROR_DEVICE_REMOVED ||
+					hr == DXGI_ERROR_DEVICE_RESET)
+				{
+					// リソースをリセットします。
+					reset_resources();
+				}
 			}
 		}
 
 		//
 		// 描画処理の準備をします。
 		//
-		BOOL prepare()
+		BOOL prepare_draw()
 		{
 			// D3Dデバイスが無効の場合は
-			if (!resource.d3d_device)
+			if (!dx.d3d_device)
 			{
 				auto flags = (UINT)D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #ifdef _DEBUG
@@ -87,252 +105,135 @@ namespace apn::timeline_map::model
 					levels,
 					std::size(levels),
 					D3D11_SDK_VERSION,
-					&resource.d3d_device,
+					&dx.d3d_device,
 					&result_level,
-					&resource.d3d_device_context);
-				if (!resource.d3d_device) return FALSE;
+					&dx.d3d_device_context);
+				if (!dx.d3d_device) return FALSE;
 			}
 
 			// DXGIデバイスが無効の場合は
-			if (!resource.dxgi_device)
+			if (!dx.dxgi_device)
 			{
 				// DXGIデバイスを取得します。
-				auto hr = resource.d3d_device.As(&resource.dxgi_device);
-				if (!resource.dxgi_device) return FALSE;
+				auto hr = dx.d3d_device.As(&dx.dxgi_device);
+				if (!dx.dxgi_device) return FALSE;
 			}
 
 			// D2Dファクトリが無効の場合は
-			if (!resource.d2d_factory)
+			if (!dx.d2d_factory)
 			{
 				// D2Dファクトリを作成します。
 				auto hr = ::D2D1CreateFactory(
 					D2D1_FACTORY_TYPE_SINGLE_THREADED,
 //					D2D1_FACTORY_TYPE_MULTI_THREADED,
-					IID_PPV_ARGS(&resource.d2d_factory));
-				if (!resource.d2d_factory) return FALSE;
+					IID_PPV_ARGS(&dx.d2d_factory));
+				if (!dx.d2d_factory) return FALSE;
 			}
 
 			// D2Dデバイスが無効の場合は
-			if (!resource.d2d_device)
+			if (!dx.d2d_device)
 			{
 				// D2Dデバイスを作成します。
-				auto hr = resource.d2d_factory->CreateDevice(
-					resource.dxgi_device.Get(), &resource.d2d_device);
-				if (!resource.d2d_device) return FALSE;
+				auto hr = dx.d2d_factory->CreateDevice(
+					dx.dxgi_device.Get(), &dx.d2d_device);
+				if (!dx.d2d_device) return FALSE;
 			}
 
 			// D2Dデバイスコンテキストが無効の場合は
-			if (!resource.d2d_device_context)
+			if (!dx.d2d_device_context)
 			{
 				// D2Dデバイスコンテキストを作成します。
-				auto hr = resource.d2d_device->CreateDeviceContext(
+				auto hr = dx.d2d_device->CreateDeviceContext(
 					D2D1_DEVICE_CONTEXT_OPTIONS_NONE,
-					&resource.d2d_device_context);
-				if (!resource.d2d_device_context) return FALSE;
+					&dx.d2d_device_context);
+				if (!dx.d2d_device_context) return FALSE;
 			}
 
 			// DWriteファクトリが無効の場合は
-			if (!resource.dw_factory)
+			if (!dx.dw_factory)
 			{
 				// DWriteファクトリを作成します。
 				auto hr = ::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,
-					__uuidof(IDWriteFactory), (IUnknown**)&resource.dw_factory);
-				if (!resource.dw_factory) return FALSE;
+					__uuidof(IDWriteFactory), (IUnknown**)&dx.dw_factory);
+				if (!dx.dw_factory) return FALSE;
 			}
 
 			// リソースを再作成します。
-			return recreate_resources();
-		}
-
-		//
-		// レンダーターゲットのバックバッファを作成します。
-		// 内部的に使用されます。
-		//
-		BOOL create_render_target_back_buffer(render_target_t& render_target)
-		{
-			// バックバッファを取得します。
-			ComPtr<IDXGISurface> dxgi_surface;
-			{
-				render_target.dxgi_swap_chain->GetBuffer(
-					0,
-					IID_PPV_ARGS(&dxgi_surface));
-				if (!dxgi_surface) return FALSE;
-			}
-
-			// D2Dビットマップを作成します。
-			{
-				auto bitmap_props =
-					D2D1::BitmapProperties1(
-						D2D1_BITMAP_OPTIONS_TARGET |
-						D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-						D2D1::PixelFormat(
-							DXGI_FORMAT_B8G8R8A8_UNORM,
-							D2D1_ALPHA_MODE_PREMULTIPLIED));
-
-				resource.d2d_device_context->CreateBitmapFromDxgiSurface(
-					dxgi_surface.Get(),
-					&bitmap_props,
-					&render_target.d2d_target_bitmap);
-				if (!render_target.d2d_target_bitmap) return FALSE;
-			}
-
-			// リセット回数を更新します。
-			render_target.nb_resets = nb_resets;
-
-			return TRUE;
-		}
-
-		//
-		// レンダーターゲットを作成します。
-		//
-		BOOL create_render_target(HWND hwnd, render_target_t& render_target)
-		{
-			// DXGIデバイスが無効の場合は何もしません。
-			if (!resource.dxgi_device) return FALSE;
-
-			// D2Dデバイスコンテキストが無効の場合は何もしません。
-			if (!resource.d2d_device_context) return FALSE;
-
-			// リセット回数が同じで、D2Dビットマップが作成済みの場合は
-			if (nb_resets == render_target.nb_resets && render_target.d2d_target_bitmap)
-			{
-				// レンダーターゲットが既に作成済みなので
-				// 何もせずにTRUEを返します。
-				return TRUE;
-			}
-
-			// レンダーターゲットのリソースをリセットします。
-			render_target.dxgi_swap_chain = nullptr;
-			render_target.d2d_target_bitmap = nullptr;
-
-			// DXGIファクトリを取得します。
-			ComPtr<IDXGIFactory2> dxgi_factory;
-			{
-				ComPtr<IDXGIAdapter> dxgi_adapter;
-				resource.dxgi_device->GetAdapter(&dxgi_adapter);
-				if (!dxgi_adapter) return FALSE;
-
-				dxgi_adapter->GetParent(IID_PPV_ARGS(&dxgi_factory));
-				if (!dxgi_factory) return FALSE;
-			}
-
-			// DXGIスワップチェーンを作成します。
-			{
-				DXGI_SWAP_CHAIN_DESC1 desc = {};
-				desc.Width = 0;
-				desc.Height = 0;
-				desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-				desc.SampleDesc.Count = 1;
-				desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-				desc.BufferCount = 1;
-				desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-				desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-
-				dxgi_factory->CreateSwapChainForHwnd(
-					resource.d3d_device.Get(),
-					hwnd,
-					&desc,
-					nullptr,
-					nullptr,
-					&render_target.dxgi_swap_chain);
-				if (!render_target.dxgi_swap_chain) return FALSE;
-			}
-
-			// バックバッファを作成します。
-			return create_render_target_back_buffer(render_target);
-		}
-
-		//
-		// レンダーターゲットをリサイズします。
-		//
-		BOOL resize_render_target(HWND hwnd, render_target_t& render_target)
-		{
-			// DXGIスワップチェーンが無効の場合は何もしません。
-			if (!render_target.dxgi_swap_chain) return FALSE;
-
-			// D2Dデバイスコンテキストが無効の場合は何もしません。
-			if (!resource.d2d_device_context) return FALSE;
-
-			// D2Dデバイスコンテキストのターゲットをリセットします。
-			resource.d2d_device_context->SetTarget(nullptr);
-
-			// 既存のバックバッファを開放します。
-			render_target.d2d_target_bitmap = nullptr;
-
-			// DXGIスワップチェーンをリサイズします。
-			auto hr = render_target.dxgi_swap_chain->ResizeBuffers(
-				0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
-			if (FAILED(hr)) return FALSE;
-
-			// バックバッファを作成します。
-			return create_render_target_back_buffer(render_target);
+			return recreate_resources(FALSE);
 		}
 
 		//
 		// リソースを再作成します。
 		//
-		BOOL recreate_resources()
+		BOOL recreate_resources(BOOL force)
 		{
+			// 強制再作成ではない場合は
+			if (!force)
+			{
+				// 最後のリソースまで作成済みの場合は何もせず、TRUEを返します。
+				if (dx.control_range.stroke_brush) return TRUE;
+			}
+
 			// D2Dデバイスコンテキストが無効の場合は何もしません。
-			if (!resource.d2d_device_context) return FALSE;
+			if (!dx.d2d_device_context) return FALSE;
 
 			{
 				// テキスト用のブラシを作成します。
-				resource.text.brush = state.create_solid_brush(property.text.color);
-				if (!resource.text.brush) return FALSE;
+				dx.text.brush = state.create_solid_brush(property.text.color);
+				if (!dx.text.brush) return FALSE;
 
 				// テキストシャドウ用のブラシを作成します。
-				resource.text.shadow_brush = state.create_solid_brush(property.text.shadow_color);
-				if (!resource.text.shadow_brush) return FALSE;
+				dx.text.shadow_brush = state.create_solid_brush(property.text.shadow_color);
+				if (!dx.text.shadow_brush) return FALSE;
 			}
 
 			{
 				// 奇数レイヤー用のブラシを作成します。
-				resource.layer.odd_brush = state.create_solid_brush(property.layer.odd_color);
-				if (!resource.layer.odd_brush) return FALSE;
+				dx.layer.odd_brush = state.create_solid_brush(property.layer.odd_color);
+				if (!dx.layer.odd_brush) return FALSE;
 
 				// 偶数レイヤー用のブラシを作成します。
-				resource.layer.even_brush = state.create_solid_brush(property.layer.even_color);
-				if (!resource.layer.even_brush) return FALSE;
+				dx.layer.even_brush = state.create_solid_brush(property.layer.even_color);
+				if (!dx.layer.even_brush) return FALSE;
 
 				// 無効レイヤー用のブラシを作成します。
-				resource.layer.undisp_brush = state.create_solid_brush(property.layer.undisp_color);
-				if (!resource.layer.undisp_brush) return FALSE;
+				dx.layer.undisp_brush = state.create_solid_brush(property.layer.undisp_color);
+				if (!dx.layer.undisp_brush) return FALSE;
 
 				// 無効レイヤー用のストロークブラシを作成します。
-				resource.layer.undisp_stroke_brush = state.create_solid_brush(property.layer.undisp_stroke_color);
-				if (!resource.layer.undisp_stroke_brush) return FALSE;
+				dx.layer.undisp_stroke_brush = state.create_solid_brush(property.layer.undisp_stroke_color);
+				if (!dx.layer.undisp_stroke_brush) return FALSE;
 
 				// ロックレイヤー用のブラシを作成します。
-				resource.layer.locked_stroke_brush = state.create_solid_brush(property.layer.locked_stroke_color);
-				if (!resource.layer.locked_stroke_brush) return FALSE;
+				dx.layer.locked_stroke_brush = state.create_solid_brush(property.layer.locked_stroke_color);
+				if (!dx.layer.locked_stroke_brush) return FALSE;
 
 				// 座標リンクレイヤー用のブラシを作成します。
-				resource.layer.coordlink_stroke_brush = state.create_solid_brush(property.layer.coordlink_stroke_color);
-				if (!resource.layer.coordlink_stroke_brush) return FALSE;
+				dx.layer.coordlink_stroke_brush = state.create_solid_brush(property.layer.coordlink_stroke_color);
+				if (!dx.layer.coordlink_stroke_brush) return FALSE;
 
 				// クリップレイヤー用のブラシを作成します。
-				resource.layer.clip_stroke_brush = state.create_solid_brush(property.layer.clip_stroke_color);
-				if (!resource.layer.clip_stroke_brush) return FALSE;
+				dx.layer.clip_stroke_brush = state.create_solid_brush(property.layer.clip_stroke_color);
+				if (!dx.layer.clip_stroke_brush) return FALSE;
 			}
 
 			{
 				// アイテム枠用のブラシを作成します。
-				resource.item.stroke_brush = state.create_solid_brush(property.item.stroke_color);
-				if (!resource.item.stroke_brush) return FALSE;
+				dx.item.stroke_brush = state.create_solid_brush(property.item.stroke_color);
+				if (!dx.item.stroke_brush) return FALSE;
 
 				// アイテム用のグラデーションビットマップを作成します。
 				{
-					std::vector<uint32_t> gradient(resource.item.c_gradient_w);
+					std::vector<uint32_t> gradient(dx.item.c_gradient_w);
 
 					//
 					// この関数はグラデーションビットマップを作成して返します。
 					//
 					const auto create_gradient_bitmap = [&](const auto& node)
 					{
-						for (auto x = 0; x < resource.item.c_gradient_w; x++)
+						for (auto x = 0; x < dx.item.c_gradient_w; x++)
 						{
-							auto t = (float)x / (resource.item.c_gradient_w - 1);
+							auto t = (float)x / (dx.item.c_gradient_w - 1);
 							auto s = 1.0f - t;;
 
 							auto r = (uint8_t)(node.start_color.r * s + node.end_color.r * t);
@@ -344,9 +245,9 @@ namespace apn::timeline_map::model
 						}
 
 						ComPtr<ID2D1Bitmap> bitmap;
-						resource.d2d_device_context->CreateBitmap(
-							D2D1::SizeU(resource.item.c_gradient_w, resource.item.c_gradient_h),
-							gradient.data(), resource.item.c_gradient_w * 4,
+						dx.d2d_device_context->CreateBitmap(
+							D2D1::SizeU(dx.item.c_gradient_w, dx.item.c_gradient_h),
+							gradient.data(), dx.item.c_gradient_w * 4,
 							{ { DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE }, 96.0f, 96.0f, },
 							&bitmap);
 						return bitmap;
@@ -358,57 +259,57 @@ namespace apn::timeline_map::model
 					const auto create_gradient_bitmap_brush = [&](const auto& node)
 					{
 						ComPtr<ID2D1BitmapBrush> gradient_bitmap_brush;
-						resource.d2d_device_context->CreateBitmapBrush(node.gradient_bitmap.Get(),
+						dx.d2d_device_context->CreateBitmapBrush(node.gradient_bitmap.Get(),
 							{ D2D1_EXTEND_MODE_CLAMP, D2D1_EXTEND_MODE_CLAMP, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR },
 							&gradient_bitmap_brush);
 						return gradient_bitmap_brush;
 					};
 
-					for (size_t i = 0; i < std::size(resource.item.nodes); i++)
+					for (size_t i = 0; i < std::size(dx.item.nodes); i++)
 					{
-						resource.item.nodes[i].gradient_bitmap = create_gradient_bitmap(property.item.nodes[i]);
-						if (!resource.item.nodes[i].gradient_bitmap) return FALSE;
+						dx.item.nodes[i].gradient_bitmap = create_gradient_bitmap(property.item.nodes[i]);
+						if (!dx.item.nodes[i].gradient_bitmap) return FALSE;
 
-						resource.item.nodes[i].gradient_brush = create_gradient_bitmap_brush(resource.item.nodes[i]);
-						if (!resource.item.nodes[i].gradient_brush) return FALSE;
+						dx.item.nodes[i].gradient_brush = create_gradient_bitmap_brush(dx.item.nodes[i]);
+						if (!dx.item.nodes[i].gradient_brush) return FALSE;
 					}
 				}
 			}
 
 			{
 				// 中間点図形用のブラシを作成します。
-				resource.midpt.brush = state.create_solid_brush(property.midpt.color);
-				if (!resource.midpt.brush) return FALSE;
+				dx.midpt.brush = state.create_solid_brush(property.midpt.color);
+				if (!dx.midpt.brush) return FALSE;
 
 				// 中間点位置用のブラシを作成します。
-				resource.midpt.line_brush = state.create_solid_brush(property.midpt.line_color);
-				if (!resource.midpt.line_brush) return FALSE;
+				dx.midpt.line_brush = state.create_solid_brush(property.midpt.line_color);
+				if (!dx.midpt.line_brush) return FALSE;
 			}
 
 			{
 				// 現在フレーム用のブラシを作成します。
-				resource.current_frame.brush = state.create_solid_brush(property.current_frame.line_color);
-				if (!resource.current_frame.brush) return FALSE;
+				dx.current_frame.brush = state.create_solid_brush(property.current_frame.line_color);
+				if (!dx.current_frame.brush) return FALSE;
 			}
 
 			{
 				// 表示範囲用のブラシを作成します。
-				resource.visible_area.brush = state.create_solid_brush(property.visible_area.color);
-				if (!resource.visible_area.brush) return FALSE;
+				dx.visible_area.brush = state.create_solid_brush(property.visible_area.color);
+				if (!dx.visible_area.brush) return FALSE;
 
 				// 表示範囲枠用のブラシを作成します。
-				resource.visible_area.stroke_brush = state.create_solid_brush(property.visible_area.stroke_color);
-				if (!resource.visible_area.stroke_brush) return FALSE;
+				dx.visible_area.stroke_brush = state.create_solid_brush(property.visible_area.stroke_color);
+				if (!dx.visible_area.stroke_brush) return FALSE;
 			}
 
 			{
 				// 制御範囲用のブラシを作成します。
-				resource.control_range.brush = state.create_solid_brush(property.control_range.color);
-				if (!resource.control_range.brush) return FALSE;
+				dx.control_range.brush = state.create_solid_brush(property.control_range.color);
+				if (!dx.control_range.brush) return FALSE;
 
 				// 制御範囲枠用のブラシを作成します。
-				resource.control_range.stroke_brush = state.create_solid_brush(property.control_range.stroke_color);
-				if (!resource.control_range.stroke_brush) return FALSE;
+				dx.control_range.stroke_brush = state.create_solid_brush(property.control_range.stroke_color);
+				if (!dx.control_range.stroke_brush) return FALSE;
 			}
 
 			return TRUE;
@@ -421,7 +322,7 @@ namespace apn::timeline_map::model
 		{
 			// ソリッドブラシを作成します。
 			ComPtr<ID2D1SolidColorBrush> solid_brush;
-			resource.d2d_device_context->CreateSolidColorBrush(d2d_color, &solid_brush);
+			dx.d2d_device_context->CreateSolidColorBrush(d2d_color, &solid_brush);
 			return solid_brush;
 		}
 
@@ -435,7 +336,7 @@ namespace apn::timeline_map::model
 			D2D1_GRADIENT_STOP stops[2] = { { 0.0f, start_color }, { 1.0f, end_color } };
 
 			ComPtr<ID2D1GradientStopCollection> gradient_stop_collection;
-			resource.d2d_device_context->CreateGradientStopCollection(stops, std::size(stops),
+			dx.d2d_device_context->CreateGradientStopCollection(stops, std::size(stops),
 				D2D1_GAMMA_1_0, D2D1_EXTEND_MODE_CLAMP, &gradient_stop_collection);
 			return gradient_stop_collection;
 		}
@@ -451,7 +352,7 @@ namespace apn::timeline_map::model
 			D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES props = { start_point, end_point };
 
 			ComPtr<ID2D1LinearGradientBrush> gradient_brush;
-			resource.d2d_device_context->CreateLinearGradientBrush(
+			dx.d2d_device_context->CreateLinearGradientBrush(
 				props, gradient_stop_collection, &gradient_brush);
 			return gradient_brush;
 		}
@@ -478,7 +379,7 @@ namespace apn::timeline_map::model
 		{
 			// テキストフォーマットを作成します。
 			ComPtr<IDWriteTextFormat> text_format;
-			auto hr = resource.dw_factory->CreateTextFormat(
+			auto hr = dx.dw_factory->CreateTextFormat(
 				font_name.c_str(),
 				nullptr,
 				DWRITE_FONT_WEIGHT_NORMAL,
@@ -521,7 +422,7 @@ namespace apn::timeline_map::model
 		{
 			// テキストレイアウトを作成します。
 			ComPtr<IDWriteTextLayout> text_layout;
-			resource.dw_factory->CreateTextLayout(
+			dx.dw_factory->CreateTextLayout(
 				text.c_str(), (UINT32)text.length(), text_format, w, h, &text_layout);
 			if (!text_layout) return {};
 
@@ -540,10 +441,10 @@ namespace apn::timeline_map::model
 		//
 		inline BOOL draw_gradient_rectangle(const D2D1_RECT_F& rc, size_t item_node_index)
 		{
-			static constexpr auto src_rc = D2D1_RECT_F { 0.0f, 0.0f, (float)resource.item.c_gradient_w, 1.0f };
+			static constexpr auto src_rc = D2D1_RECT_F { 0.0f, 0.0f, (float)dx.item.c_gradient_w, 1.0f };
 
-			resource.d2d_device_context->DrawBitmap(
-				resource.item.nodes[item_node_index].gradient_bitmap.Get(),
+			dx.d2d_device_context->DrawBitmap(
+				dx.item.nodes[item_node_index].gradient_bitmap.Get(),
 				rc, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_LINEAR, src_rc);
 
 			return TRUE;
@@ -554,14 +455,14 @@ namespace apn::timeline_map::model
 		//
 		inline BOOL draw_gradient_rectangle(const D2D1_ROUNDED_RECT& rc, size_t item_node_index)
 		{
-			const auto& brush = resource.item.nodes[item_node_index].gradient_brush;
+			const auto& brush = dx.item.nodes[item_node_index].gradient_brush;
 
 			brush->SetTransform(D2D1::Matrix3x2F::Identity());
 			brush->SetTransform(
-				D2D1::Matrix3x2F::Scale((rc.rect.right - rc.rect.left) / resource.item.c_gradient_w, 1.0f) *
+				D2D1::Matrix3x2F::Scale((rc.rect.right - rc.rect.left) / dx.item.c_gradient_w, 1.0f) *
 				D2D1::Matrix3x2F::Translation(rc.rect.left, rc.rect.top));
 
-			resource.d2d_device_context->FillRoundedRectangle(rc, brush.Get());
+			dx.d2d_device_context->FillRoundedRectangle(rc, brush.Get());
 
 			return TRUE;
 		}

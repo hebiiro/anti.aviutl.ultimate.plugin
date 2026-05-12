@@ -5,7 +5,7 @@ namespace apn::timeline_map::model
 	//
 	// このクラスはDirectXのリソースです。
 	//
-	struct dx_resource_t
+	inline struct dx_t
 	{
 		ComPtr<ID3D11Device> d3d_device;
 		ComPtr<ID3D11DeviceContext> d3d_device_context;
@@ -83,5 +83,5 @@ namespace apn::timeline_map::model
 			ComPtr<ID2D1SolidColorBrush> brush;
 			ComPtr<ID2D1SolidColorBrush> stroke_brush;
 		} control_range;
-	};
+	} dx;
 }

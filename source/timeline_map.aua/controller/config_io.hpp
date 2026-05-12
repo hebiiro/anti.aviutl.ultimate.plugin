@@ -63,7 +63,7 @@ namespace apn::timeline_map::controller
 				view::paint_option_dialog.update_controls();
 
 			// リソースを再作成します。
-			return model::state.recreate_resources();
+			return model::state.recreate_resources(TRUE);
 		}
 
 		//

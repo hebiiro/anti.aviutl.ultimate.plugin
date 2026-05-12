@@ -6,12 +6,12 @@ namespace apn::timeline_map::view
 	// このクラスはビュー層の全体図です。
 	// プラグインウィンドウのように振る舞います。
 	//
-	inline struct overview_t : StdAddinWindow, paint_option_dialog_t::listner_t
+	inline struct overview_t : StdAddinWindow, paint_option_dialog_t::listner_t, model::render_target_t
 	{
 		//
-		// レンダーターゲットです。
+		// D2Dコマンドリストです。
 		//
-		model::render_target_t render_target;
+		ComPtr<ID2D1CommandList> d2d_command_list;
 
 		//
 		// 初期化処理を実行します。
@@ -19,6 +19,9 @@ namespace apn::timeline_map::view
 		BOOL init()
 		{
 			MY_TRACE_FUNC("");
+
+			// ビューを描画対象にします。
+			model::state.register_render_target(this);
 
 			// ビューを描画設定ダイアログのリスナーに設定します。
 			paint_option_dialog.listener = this;
@@ -40,6 +43,9 @@ namespace apn::timeline_map::view
 		BOOL exit()
 		{
 			MY_TRACE_FUNC("");
+
+			// ビューを描画対象から除外します。
+			model::state.unregister_render_target(this);
 
 			// 描画設定ダイアログを終了します。
 			paint_option_dialog.exit();
@@ -73,16 +79,153 @@ namespace apn::timeline_map::view
 		}
 
 		//
+		// この仮想関数はタイムラインが更新されたときに呼び出されます。
+		//
+		virtual BOOL on_update()
+		{
+			MY_TRACE_FUNC("");
+
+			// D2Dコマンドリストをリセットします。
+			d2d_command_list = nullptr;
+
+			return redraw();
+		}
+
+		//
 		// この仮想関数は描画設定ダイアログで変更があったときに呼び出されます。
 		//
-		virtual void on_from_ui(BOOL recreate_resources)
+		virtual void on_from_ui(BOOL recreate_resources) override
 		{
+			MY_TRACE_FUNC("{/}", recreate_resources);
+
 			// リソースを再作成します。
 			if (recreate_resources)
-				model::state.recreate_resources();
+				model::state.recreate_resources(TRUE);
 
 			// タイムラインマップを再描画します。
 			redraw();
+		}
+
+		//
+		// この仮想関数はウィンドウハンドルが必要なときに呼び出されます。
+		//
+		virtual HWND get_hwnd() const override
+		{
+			return hwnd;
+		}
+
+		//
+		// この仮想関数はリソースを作成する必要があるときに呼び出されます。
+		//
+		virtual BOOL create_resources() override
+		{
+			if (!__super::create_resources()) return FALSE;
+
+			return TRUE;
+		}
+
+		//
+		// この仮想関数はリソースをリセットする必要があるときに呼び出されます。
+		//
+		virtual BOOL reset_resources() override
+		{
+			// D2Dコマンドリストをリセットします。
+			d2d_command_list = nullptr;
+
+			return __super::reset_resources();
+		}
+
+		//
+		// タイムラインマップを描画します。
+		//
+		BOOL on_paint()
+		{
+			// コンテキストを作成します。
+			model::context_t context(this);
+
+			// コンテキストを初期化できなかった場合は何もしません。
+			if (!context.is_initialized()) return FALSE;
+
+			// コマンドリストが無効の場合は
+			if (!d2d_command_list)
+			{
+				// コマンドリストを作成します。
+				model::dx.d2d_device_context->CreateCommandList(&d2d_command_list);
+
+				// 描画処理を開始します。
+				model::state.begin_draw(d2d_command_list.Get());
+
+				// 各要素を描画します。
+				context.draw_layers();
+				context.draw_items();
+				context.draw_layer_settings();
+
+				// コマンドリストを閉じます。
+				d2d_command_list->Close();
+
+				// 描画処理を終了します。
+				model::state.end_draw(nullptr);
+			}
+
+			// 描画処理を開始します。
+			model::state.begin_draw(d2d_target_bitmap.Get());
+
+			// コマンドリストを描画します。
+			model::dx.d2d_device_context->DrawImage(d2d_command_list.Get());
+
+			// 各要素を描画します。
+			context.draw_current_frame();
+			context.draw_visible_area();
+
+			// 描画処理を終了します。
+			model::state.end_draw(dxgi_swap_chain.Get());
+
+			return TRUE;
+		}
+
+		//
+		// タイムラインマップをリサイズします。
+		//
+		BOOL on_size()
+		{
+			// レンダーターゲットをリサイズします。
+			model::render_target_t::resize();
+
+			// コマンドリストをリセットします。
+			on_update();
+
+			return TRUE;
+		}
+
+		//
+		// ユーザーがウィンドウをクリック(またはドラッグ)したときの処理です。
+		//
+		BOOL on_click(POINT point)
+		{
+			// コンテキストを作成します。
+			model::context_t context(this);
+
+			// コンテキストを初期化できなかった場合は何もしません。
+			if (!context.is_initialized()) return FALSE;
+
+			// タイムラインを水平方向にスクロールします。
+			{
+				auto left_frame = magi.exin.get_top_visible_frame();
+				auto right_frame = (int32_t)magi.exin.x_to_frame(magi.exin.get_layer_width());
+
+				auto frame = context.pixel_to_frame(point.x);
+				frame -= (right_frame - left_frame) / 2;
+				magi.exin.set_top_visible_frame(frame);
+			}
+
+			// タイムラインを垂直方向にスクロールします。
+			{
+				auto layer = context.pixel_to_layer(point.y);
+				layer -= (magi.exin.get_layer_visible_count() / 2);
+				magi.exin.set_top_visible_layer(layer);
+			}
+
+			return TRUE;
 		}
 
 		//
@@ -108,7 +251,10 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					model::context_t(hwnd, render_target).on_paint();
+					// WM_PAINTを処理します。
+					my::PaintDC dc(hwnd);
+
+					on_paint();
 
 					return 0;
 				}
@@ -116,7 +262,7 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					model::context_t(hwnd, render_target).on_size();
+					on_size();
 
 					break;
 				}
@@ -126,7 +272,7 @@ namespace apn::timeline_map::view
 
 					::SetCapture(hwnd);
 
-					model::context_t(hwnd, render_target).on_click(my::lp_to_pt(l_param));
+					on_click(my::lp_to_pt(l_param));
 
 					break;
 				}
@@ -144,7 +290,7 @@ namespace apn::timeline_map::view
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
 					if (::GetCapture() == hwnd)
-						model::context_t(hwnd, render_target).on_click(my::lp_to_pt(l_param));
+						on_click(my::lp_to_pt(l_param));
 
 					break;
 				}

@@ -2,7 +2,7 @@
 #include "resource.h"
 #include "utils.hpp"
 #include "model/property.hpp"
-#include "model/state/dx_resource.hpp"
+#include "model/state/dx.hpp"
 #include "model/state/render_target.hpp"
 #include "model/state.hpp"
 #include "model/context.hpp"

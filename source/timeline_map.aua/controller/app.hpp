@@ -52,6 +52,9 @@ namespace apn::timeline_map::controller
 			// コンフィグを書き込みます。
 			config_io.write();
 
+			// モデル及びビューモデルのリソースを開放します。
+			model::state.reset_resources();
+
 			// 全体図を終了します。
 			view::overview.exit();
 
@@ -60,6 +63,19 @@ namespace apn::timeline_map::controller
 
 			// コンフィグ入出力を終了します。
 			config_io.exit();
+
+			return FALSE;
+		}
+
+		//
+		// 更新処理を実行します。
+		//
+		BOOL update()
+		{
+			MY_TRACE_FUNC("");
+
+			// 全体図を更新します。
+			view::overview.on_update();
 
 			return FALSE;
 		}

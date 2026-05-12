@@ -60,7 +60,7 @@
     <ClInclude Include="view\overview.hpp">
       <Filter>view</Filter>
     </ClInclude>
-    <ClInclude Include="model\state\dx_resource.hpp">
+    <ClInclude Include="model\state\dx.hpp">
       <Filter>model\state</Filter>
     </ClInclude>
     <ClInclude Include="model\state\render_target.hpp">
