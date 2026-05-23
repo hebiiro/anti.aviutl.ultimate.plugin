@@ -43,28 +43,6 @@ namespace apn::filter_copy::controller::command
 		{
 			MY_TRACE_FUNC("");
 
-			// カレントオブジェクトのインデックスを取得します。
-			auto object_index = magi.exin.get_current_object_index();
-			MY_TRACE_INT(object_index);
-			if (object_index < 0) return FALSE;
-
-			// オブジェクトを取得します。
-			auto object = magi.exin.get_object(object_index);
-			MY_TRACE_HEX(object);
-			if (!object) return FALSE;
-
-			if (object->filter_param[0].id == 93) // 93 == 時間制御
-				return FALSE; // 「時間制御」には貼り付けられるフィルタがないので何もしません。
-
-			// オブジェクトのタイプを取得します。
-			auto src_type = get_type((uint32_t)model::state.flag);
-			auto dst_type = get_type((uint32_t)object->flag);
-			MY_TRACE_INT(src_type);
-			MY_TRACE_INT(dst_type);
-
-			// オブジェクトのタイプが異なる場合は何もしません。
-			if (src_type != dst_type) return FALSE;
-
 			// フラグを立ててmagi.exin.add_alias()をフックするようにします。
 			flag_hook_add_alias = TRUE;
 
@@ -86,10 +64,34 @@ namespace apn::filter_copy::controller::command
 			if (!flag_hook_add_alias) // フラグが立っていない場合はデフォルト処理を実行します。
 				return orig_proc(file_name, flag1, flag2, object_index);
 
+			// コンテキストを作成します。
+			model::context_t context(object_index);
+
+			// コンテキストが無効の場合はFALSEを返します。
+			if (!context.is_valid()) return FALSE;
+
 			// オブジェクトを取得します。
-			auto object = magi.exin.get_object(object_index);
+			auto object = context.object.get_object();
 			MY_TRACE_HEX(object);
 			if (!object) return FALSE;
+
+			if (object->filter_param[0].id == 93) // 93 == 時間制御
+				return FALSE; // 「時間制御」には貼り付けられるフィルタがないので何もしません。
+
+			// コピーデータをファイルから読み込みます。
+			auto copy_data = context.read_copy_data();
+
+			// コピーデータが無効の場合はFALSEを返します。
+			if (!copy_data.nb_copied_filters) return FALSE;
+
+			// オブジェクトのタイプを取得します。
+			auto src_type = get_type((uint32_t)copy_data.src_object_flag);
+			auto dst_type = get_type((uint32_t)object->flag);
+			MY_TRACE_INT(src_type);
+			MY_TRACE_INT(dst_type);
+
+			// オブジェクトのタイプが異なる場合は何もしません。
+			if (src_type != dst_type) return FALSE;
 
 			// カレントフィルタを取得します。
 			auto filter_index = magi.exin.get_current_filter_index();
@@ -103,18 +105,19 @@ namespace apn::filter_copy::controller::command
 			auto insert_pos = filter_index;
 
 			// オーダーを走査します。
-			for (const auto& order : model::state.orders)
+			for (auto i = 0; i < copy_data.nb_copied_filters; i++)
 			{
-				MY_TRACE_STR(order.file_name.c_str());
+				auto path = context.get_alias_path(i);
+				MY_TRACE_STR(path);
 
 				// フィルタを末尾に追加します。
-				auto result = orig_proc(order.file_name.c_str(), flag1, flag2, object_index);
+				auto result = orig_proc(path.string().c_str(), flag1, flag2, object_index);
 
 				// 末尾に追加されたフィルタのインデックスを取得します。
 				auto c = magi.exin.get_moveable_filter_count(object);
 
 				// 末尾に追加されたフィルタを挿入位置まで移動します。
-				for (int32_t i = c - 1; i > insert_pos + 1; i--)
+				for (auto i = c - 1; i > insert_pos + 1; i--)
 					magi.exin.swap_filter(object_index, i, -1);
 
 				// 次の挿入位置に移動します。

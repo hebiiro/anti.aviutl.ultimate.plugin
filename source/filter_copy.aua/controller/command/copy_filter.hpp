@@ -10,53 +10,67 @@ namespace apn::filter_copy::controller::command
 		//
 		// 指定されたフィルタのコピーを発注します。
 		//
-		virtual LRESULT on_copy_filter(int32_t flag, BOOL cut) override
+		virtual LRESULT on_copy_filter(int32_t flag, BOOL flag_cut) override
 		{
+			// 名前付きミューテックスをロックします。
+			my::Synchronizer synchronizer(model::property.mutex);
+
 			// カレントフィルタのインデックスを取得します。
 			auto filter_index = magi.exin.get_current_filter_index();
 			if (filter_index < 0) return FALSE;
 
 			// コンテキストを作成します。
-			model::context_t context;
+			model::context_t context(magi.exin.get_current_object_index());
 
 			// コンテキストが無効の場合はFALSEを返します。
 			if (!context.is_valid()) return FALSE;
 
-			// オーダーの初期化に失敗した場合はFALSEを返します。
-			if (!context.init_order()) return FALSE;
+			// コピー済みフィルタを格納する配列です。
+			std::vector<int32_t> copied_filters;
 
-			// 戻り値です。
-			auto ret_value = FALSE;
-
+			// フラグで分岐します。
 			switch (flag)
 			{
 			case 0:
 				{
-					// 指定されたフィルタのコピーを発注します。
-					ret_value |= context.order(filter_index);
+					// 指定されたフィルタをコピーします。
+					if (context.write_alias(filter_index))
+						copied_filters.emplace_back(filter_index);
 
 					break;
 				}
 			case -1:
 				{
-					// 指定されたフィルタより上にあるフィルタのコピーを発注します。
-					for (int32_t i = 0; i <= filter_index; i++)
-						ret_value |= context.order(i);
+					// 指定されたフィルタより上にあるフィルタをコピーします。
+					for (auto i = 0; i <= filter_index; i++)
+					{
+						if (context.write_alias(i))
+							copied_filters.emplace_back(filter_index);
+					}
 
 					break;
 				}
 			case 1:
 				{
-					// 指定されたフィルタより下にあるフィルタのコピーを発注します。
-					for (int32_t i = filter_index; i < ExEdit::Object::MAX_FILTER; i++)
-						ret_value |= context.order(i);
+					// 指定されたフィルタより下にあるフィルタをコピーします。
+					for (auto i = filter_index; i < ExEdit::Object::MAX_FILTER; i++)
+					{
+						if (context.write_alias(i))
+							copied_filters.emplace_back(filter_index);
+					}
 
 					break;
 				}
 			}
 
-			if (cut) // カットする場合は、ここでフィルタを削除します。
+			// コピー済みフィルタが存在しない場合はFALSEを返します。
+			if (copied_filters.empty()) return FALSE;
+
+			// カットする場合は
+			if (flag_cut)
 			{
+				// コピー済みフィルタを削除します。
+
 				// 対象オブジェクトのインデックスを取得します。
 				auto object_index = context.object.get_object_index();
 
@@ -67,8 +81,9 @@ namespace apn::filter_copy::controller::command
 				// 拡張編集のフィルタ削除処理と同じように実行します。
 				magi.exin.push_undo();
 				magi.exin.create_undo(object_index, 1);
-				for (auto i = (int32_t)model::state.orders.size() - 1; i >= 0; i--)
-					magi.exin.erase_filter(object_index, model::state.orders[i].filter_index);
+				// フィルタのインデックスがずれないように、後ろのフィルタから削除します。
+				for (auto it = copied_filters.crbegin(); it != copied_filters.crend(); it++)
+					magi.exin.erase_filter(object_index, *it);
 				magi.exin.redraw_setting_dialog(object_index);
 				magi.exin.hide_controls();
 				magi.exin.show_controls(magi.exin.get_current_object_index());
@@ -77,8 +92,10 @@ namespace apn::filter_copy::controller::command
 				magi.redraw();
 			}
 
-			// 戻り値を返します。
-			return ret_value;
+			// コピーデータをファイルに書き込みます。
+			context.write_copy_data({ context.object.get_object()->flag, (int32_t)copied_filters.size() });
+
+			return TRUE;
 		}
 	} copy_filter;
 }
