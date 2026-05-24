@@ -62,6 +62,9 @@ namespace apn::timeline_map::controller
 			if (view::paint_option_dialog)
 				view::paint_option_dialog.update_controls();
 
+			if (view::loupe_option_dialog)
+				view::loupe_option_dialog.update_controls();
+
 			// リソースを再作成します。
 			return model::state.recreate_resources(TRUE);
 		}
@@ -142,7 +145,17 @@ namespace apn::timeline_map::controller
 				read_bool(root, "flag_immediate", model::property.etc.flag_immediate);
 			});
 
+			read_child_node(root, "loupe", [&](const n_json& root) {
+				read_bool(root, "flag_timeline", model::property.loupe.flag_timeline);
+				read_bool(root, "flag_overview", model::property.loupe.flag_overview);
+				read_child_node(root, "viewport", [&](const n_json& root) {
+					read_int(root, "nb_frames", model::property.loupe.viewport.nb_frames);
+					read_int(root, "nb_layers", model::property.loupe.viewport.nb_layers);
+				});
+			});
+
 			read_window_pos(root, "overview", view::overview);
+			read_window_pos(root, "loupe", view::loupe);
 
 			return TRUE;
 		}
@@ -222,7 +235,17 @@ namespace apn::timeline_map::controller
 				write_bool(root, "flag_immediate", model::property.etc.flag_immediate);
 			});
 
+			write_child_node(root, "loupe", [&](n_json& root) {
+				write_bool(root, "flag_timeline", model::property.loupe.flag_timeline);
+				write_bool(root, "flag_overview", model::property.loupe.flag_overview);
+				write_child_node(root, "viewport", [&](n_json& root) {
+					write_int(root, "nb_frames", model::property.loupe.viewport.nb_frames);
+					write_int(root, "nb_layers", model::property.loupe.viewport.nb_layers);
+				});
+			});
+
 			write_window_pos(root, "overview", view::overview);
+			write_window_pos(root, "loupe", view::loupe);
 
 			return TRUE;
 		}

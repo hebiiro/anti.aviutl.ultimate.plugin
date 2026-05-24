@@ -3,10 +3,10 @@
 namespace apn::timeline_map::view
 {
 	//
-	// このクラスはビュー層の全体図です。
+	// このクラスはビュー層の拡大鏡です。
 	// プラグインウィンドウのように振る舞います。
 	//
-	inline struct overview_t : StdAddinWindow, overview_behavior_t
+	inline struct loupe_t : StdAddinWindow, loupe_behavior_t
 	{
 		//
 		// 初期化処理を実行します。
@@ -16,17 +16,17 @@ namespace apn::timeline_map::view
 			MY_TRACE_FUNC("");
 
 			// 振る舞いの初期化処理を実行します。
-			overview_behavior_t::init();
+			loupe_behavior_t::init();
 
 			// ウィンドウを作成します。
 			return create_as_plugin(
 				model::property.instance,
 				magi.exin.get_aviutl_window(),
-				model::property.c_display_name,
+				L"タイムラインルーペ",
 				WS_EX_NOPARENTNOTIFY,
 				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				200, 200, 600, 600);
+				300, 200, 600, 600);
 		}
 
 		//
@@ -37,10 +37,10 @@ namespace apn::timeline_map::view
 			MY_TRACE_FUNC("");
 
 			// 振る舞いの後始末処理を実行します。
-			overview_behavior_t::exit();
+			loupe_behavior_t::exit();
 
-			// 描画設定ダイアログを終了します。
-			paint_option_dialog.exit();
+			// 拡大鏡設定ダイアログを終了します。
+			loupe_option_dialog.exit();
 
 			// ウィンドウを破壊します。
 			return destroy();
@@ -55,7 +55,7 @@ namespace apn::timeline_map::view
 		}
 
 		//
-		// 全体図を再描画します。
+		// 拡大鏡を再描画します。
 		//
 		BOOL redraw()
 		{
@@ -71,16 +71,49 @@ namespace apn::timeline_map::view
 		}
 
 		//
+		// 拡大鏡のビューポートを変更します。
+		//
+		BOOL set_viewport(int32_t frame, int32_t layer)
+		{
+			// ビューポートへの参照を取得します。
+			auto& viewport = model::property.loupe.viewport;
+
+			// ビューポートに変化がない場合は何もしません。
+			if (viewport.frame == frame && viewport.layer == layer) return FALSE;
+
+			// ビューポートを変更します。
+			viewport.frame = frame;
+			viewport.layer = layer;
+
+			// 拡大鏡を再描画します。
+			return on_update();
+		}
+
+		//
 		// この仮想関数はタイムラインが更新されたときに呼び出されます。
 		//
 		virtual BOOL on_update()
 		{
 			MY_TRACE_FUNC("");
 
+			{
+				// ビューポートへの参照を取得します。
+				auto& viewport = model::property.loupe.viewport;
+
+				// ウィンドウ名を更新します。
+				auto window_name = my::format(
+					L"タイムラインルーペ - 表示フレーム数={/}, 表示レイヤー数={/}",
+					viewport.nb_frames, viewport.nb_layers);
+				::SetWindowTextW(*this, window_name.c_str());
+
+				if (view::loupe_option_dialog)
+					view::loupe_option_dialog.update_controls();
+			}
+
 			// D2Dコマンドリストをリセットします。
 			reset_command_list();
 
-			// 全体図を再描画します。
+			// 拡大鏡を再描画します。
 			return redraw();
 		}
 
@@ -134,11 +167,10 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					// マウスのキャプチャを開始します。
 					::SetCapture(hwnd);
 
-					// マウスメッセージを処理します。
-					on_mouse(my::lp_to_pt(l_param));
+					// ドラッグ処理を開始します。
+					on_begin_drag(my::lp_to_pt(l_param));
 
 					break;
 				}
@@ -146,10 +178,11 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					// マウスをキャプチャしている場合は
 					if (::GetCapture() == hwnd)
 					{
-						// マウスのキャプチャを終了します。
+						// ドラッグ処理を終了します。
+						on_end_drag(my::lp_to_pt(l_param));
+
 						::ReleaseCapture();
 					}
 
@@ -159,17 +192,11 @@ namespace apn::timeline_map::view
 				{
 //					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
-					// マウスをキャプチャしている場合は
 					if (::GetCapture() == hwnd)
 					{
-						// タイムラインを操作対象にしてマウス処理を実行します。
-						on_mouse(my::lp_to_pt(l_param));
-					}
-					// 全体図が操作対象の場合は
-					else if (model::property.loupe.flag_overview)
-					{
-						// 拡大鏡を操作対象にしてマウス処理を実行します。
-						on_mouse(my::lp_to_pt(l_param), TRUE);
+						// ドラッグ処理を実行します。
+						if (on_drag(my::lp_to_pt(l_param)))
+							on_update();
 					}
 
 					break;
@@ -179,8 +206,7 @@ namespace apn::timeline_map::view
 					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
 
 					constexpr struct command_id_t {
-						uint32_t c_paint_option = 1000;
-						uint32_t c_loupe = 1001;
+						uint32_t c_loupe_option = 1000;
 					} c_command_id;
 
 					// ポップアップメニューを作成します。
@@ -188,17 +214,13 @@ namespace apn::timeline_map::view
 
 					// メニュー項目を追加します。
 					{
-						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_paint_option, L"描画設定");
-						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_loupe, L"タイムラインルーペを表示");
+						::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_loupe_option, L"タイムラインルーペの設定");
 					}
 
 					// メニュー項目にチェックを追加します。
 					{
-						if (::IsWindowVisible(paint_option_dialog))
-							::CheckMenuItem(menu.get(), c_command_id.c_paint_option, MF_BYCOMMAND | MF_CHECKED);
-
-						if (::IsWindowVisible(loupe))
-							::CheckMenuItem(menu.get(), c_command_id.c_loupe, MF_BYCOMMAND | MF_CHECKED);
+						if (::IsWindowVisible(loupe_option_dialog))
+							::CheckMenuItem(menu.get(), c_command_id.c_loupe_option, MF_BYCOMMAND | MF_CHECKED);
 					}
 
 					// ポップアップメニューの表示位置を取得します。
@@ -210,27 +232,20 @@ namespace apn::timeline_map::view
 
 					switch (command_id)
 					{
-					case c_command_id.c_paint_option:
+					case c_command_id.c_loupe_option:
 						{
 							// 描画設定ダイアログがまだ作成されていない場合は
-							if (!::IsWindow(paint_option_dialog))
+							if (!::IsWindow(loupe_option_dialog))
 							{
 								// 描画設定ダイアログを作成します。
-								paint_option_dialog.init(model::property.instance, hwnd);
+								loupe_option_dialog.init(model::property.instance, hwnd);
 
 								// 描画設定ダイアログのコントロールを初期化します。
-								paint_option_dialog.update_controls();
+								loupe_option_dialog.update_controls();
 							}
 
 							// 描画設定ダイアログを表示します。
-							::ShowWindow(paint_option_dialog, SW_SHOW);
-
-							break;
-						}
-					case c_command_id.c_loupe:
-						{
-							// 拡大鏡の表示状態を切り替えます。
-							::ShowWindow(loupe, ::IsWindowVisible(loupe) ? SW_HIDE : SW_SHOW);
+							::ShowWindow(loupe_option_dialog, SW_SHOW);
 
 							break;
 						}
@@ -242,5 +257,5 @@ namespace apn::timeline_map::view
 
 			return __super::on_wnd_proc(hwnd, message, w_param, l_param);
 		}
-	} overview;
+	} loupe;
 }

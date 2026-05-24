@@ -34,7 +34,11 @@ namespace apn::timeline_map
 				{
 					MY_TRACE_FUNC("AviUtl::FilterPlugin::WindowMessage::Update");
 
+					// プロジェクトが開かれていない場合は何もしません。
 					if (!fp->exfunc->is_editing(editp)) break;
+
+					// エンコード中の場合は何もしません。
+					if (fp->exfunc->is_saving(editp)) break;
 
 					// プロジェクトが変更されたかもしれないので更新処理を実行します。
 					controller::app.update();

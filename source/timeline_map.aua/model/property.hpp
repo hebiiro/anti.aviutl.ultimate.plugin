@@ -174,5 +174,35 @@ namespace apn::timeline_map::model
 		struct etc_t {
 			BOOL flag_immediate = TRUE;
 		} etc;
+
+		//
+		// このクラスは拡大鏡の設定値です。
+		//
+		struct loupe_t {
+			//
+			// TRUEの場合はタイムラインでマウス移動したときに拡大鏡のビューポートを変更します。
+			//
+			BOOL flag_timeline = TRUE;
+
+			//
+			// TRUEの場合は全体図でマウス移動したときに拡大鏡のビューポートを変更します。
+			//
+			BOOL flag_overview = TRUE;
+
+			//
+			// このクラスはビューポート(描画領域)の設定値です。
+			//
+			struct viewport_t {
+				//
+				// 描画するフレーム位置と数です。
+				//
+				int32_t frame = 0, nb_frames = 180;
+
+				//
+				// 描画するレイヤー位置と数です。
+				//
+				int32_t layer = 0, nb_layers = 5;
+			} viewport;
+		} loupe;
 	} property;
 }

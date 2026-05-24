@@ -3,6 +3,7 @@
 // resource.rc で使用
 //
 #define idd_paint_option                100
+#define idd_loupe_option                101
 #define idc_text_font_name              10000
 #define idc_text_font_size              10001
 #define idc_text_font_size_spin         10002
@@ -105,6 +106,10 @@
 #define idc_control_range_stroke_width  10607
 #define idc_control_range_stroke_width_spin 10608
 #define idc_etc_flag_immediate          11000
+#define idc_loupe_flag_timeline         20000
+#define idc_loupe_flag_overview         20001
+#define idc_loupe_viewport_nb_frames    20010
+#define idc_loupe_viewport_nb_layers    20011
 
 // Next default values for new objects
 // 
@@ -112,7 +117,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

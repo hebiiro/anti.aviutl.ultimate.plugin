@@ -31,14 +31,24 @@ namespace apn::timeline_map::model
 		} rects = {};
 
 		//
-		// 描画するフレーム、レイヤー、オブジェクトの数です。
+		// 描画するフレーム範囲です。
 		//
-		int32_t nb_frames {}, nb_layers {}, nb_sorted_objects {};
+		int32_t frame_begin = {}, frame_end = {};
+
+		//
+		// 描画するレイヤー範囲です。
+		//
+		int32_t layer_begin = {}, layer_end = {};
+
+		//
+		// 描画するフレーム・レイヤー・オブジェクトの数です。
+		//
+		int32_t nb_sorted_objects = {};
 
 		//
 		// 描画対象です。
 		//
-		render_target_t* render_target;
+		render_target_t* render_target = {};
 
 
 		// 以下の変数はレイアウトが決定した後にしか算出できません。
@@ -72,14 +82,16 @@ namespace apn::timeline_map::model
 		//
 		// コンストラクタです。
 		//
-		context_t(render_target_t* render_target)
-			: render_target(render_target)
+		context_t(const RECT& rc,
+			int32_t frame_begin, int32_t frame_end,
+			int32_t layer_begin, int32_t layer_end)
+			: frame_begin(frame_begin), frame_end(frame_end)
+			, layer_begin(layer_begin), layer_end(layer_end)
+			, nb_sorted_objects(magi.exin.get_sorted_object_count())
+
 		{
 			// ステートに描画処理の準備をさせます。
 			if (!state.prepare_draw()) return;
-
-			// レンダーターゲットを作成します。
-			if (!render_target->create_resources()) return;
 
 			// レイアウト矩形を初期化します。
 			{
@@ -90,7 +102,7 @@ namespace apn::timeline_map::model
 				auto time_height = 0;
 
 				// クライアント矩形をセットします。
-				rects.client = my::get_client_rect(render_target->get_hwnd());
+				rects.client = rc;
 
 				// タイムライン左側のレイヤーボタン領域の矩形をセットします。
 				rects.layer = RECT {
@@ -115,20 +127,6 @@ namespace apn::timeline_map::model
 					rects.client.right,
 					rects.client.bottom,
 				};
-			}
-
-			// 描画するフレーム、レイヤー、オブジェクトの数をセットします。
-			{
-				nb_frames = 1;
-				nb_layers = 100;
-				nb_sorted_objects = magi.exin.get_sorted_object_count();
-
-				if (nb_sorted_objects > 0)
-				{
-					// 実際のフレーム数とレイヤー数を取得します。
-					nb_frames = magi.exin.get_aviutl_frame_number();
-					nb_layers = magi.exin.get_sorted_object(nb_sorted_objects - 1)->layer_set + 1;
-				}
 			}
 
 			// レイヤーの高さを算出します。
@@ -196,7 +194,7 @@ namespace apn::timeline_map::model
 		//
 		inline float frame_to_pixel(int32_t frame)
 		{
-			return (float)rects.body.w * frame / nb_frames + rects.body.left;
+			return (float)rects.body.w * (frame - frame_begin) / (frame_end - frame_begin) + rects.body.left;
 		}
 
 		//
@@ -204,7 +202,7 @@ namespace apn::timeline_map::model
 		//
 		inline float layer_to_pixel(int32_t layer)
 		{
-			return (float)rects.body.h * layer / nb_layers + rects.body.top;
+			return (float)rects.body.h * (layer - layer_begin) / (layer_end - layer_begin) + rects.body.top;
 		}
 
 		//
@@ -213,8 +211,8 @@ namespace apn::timeline_map::model
 		inline int32_t pixel_to_frame(int32_t x)
 		{
 			if (rects.body.w <= 0) return 0;
-			if (x <= rects.body.left) return 0;
-			return (x - rects.body.left) * nb_frames / rects.body.w;
+//			if (x <= rects.body.left) return 0;
+			return (x - rects.body.left) * (frame_end - frame_begin) / rects.body.w + frame_begin;
 		}
 
 		//
@@ -223,8 +221,8 @@ namespace apn::timeline_map::model
 		inline int32_t pixel_to_layer(int32_t y)
 		{
 			if (rects.body.h <= 0) return 0;
-			if (y <= rects.body.top) return 0;
-			return (y - rects.body.top) * nb_layers / rects.body.h;
+//			if (y <= rects.body.top) return 0;
+			return (y - rects.body.top) * (layer_end - layer_begin) / rects.body.h + layer_begin;
 		}
 
 		//
@@ -617,7 +615,7 @@ namespace apn::timeline_map::model
 		BOOL draw_layers()
 		{
 			// レイヤーを走査します。
-			for (decltype(nb_layers) i = 0; i < nb_layers; i++)
+			for (auto i = layer_begin; i < layer_end; i++)
 			{
 				// レイヤー矩形を作成します。
 				auto layer_rc = D2D1::RectF(
@@ -796,7 +794,7 @@ namespace apn::timeline_map::model
 		BOOL draw_layer_settings()
 		{
 			// レイヤーを走査します。
-			for (decltype(nb_layers) i = 0; i < nb_layers; i++)
+			for (auto i = layer_begin; i < layer_end; i++)
 			{
 				// レイヤー設定を取得します。
 				auto layer_setting = magi.exin.get_layer_setting(i);

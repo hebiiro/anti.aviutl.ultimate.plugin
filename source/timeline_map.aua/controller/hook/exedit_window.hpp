@@ -18,24 +18,13 @@ namespace apn::timeline_map::controller::hook
 			auto exedit = magi.exin.get_exedit();
 			if (!exedit) return FALSE;
 
-			DetourTransactionBegin();
-			DetourUpdateThread(::GetCurrentThread());
-
+			// 拡張編集の内部関数をフックします。
+			my::hook::detours detours;
 			my::hook::attach(redraw_layers, magi.exin.address.function.redraw_layers);
 			my::hook::attach(redraw_exedit_window, magi.exin.address.function.redraw_exedit_window);
 
-			if (DetourTransactionCommit() == NO_ERROR)
-			{
-				MY_TRACE("拡張編集のフックに成功しました\n");
-
-				return TRUE;
-			}
-			else
-			{
-				MY_TRACE("拡張編集のフックに失敗しました\n");
-
-				return FALSE;
-			}
+			// 拡張編集ウィンドウをサブクラス化します。
+			return subclass(magi.exin.get_exedit_window());
 		}
 
 		//
@@ -45,7 +34,7 @@ namespace apn::timeline_map::controller::hook
 		{
 			MY_TRACE_FUNC("");
 
-			return TRUE;
+			return unsubclass();
 		}
 
 		//
@@ -73,5 +62,34 @@ namespace apn::timeline_map::controller::hook
 			}
 			inline static decltype(&hook_proc) orig_proc = nullptr;
 		} redraw_exedit_window;
+
+		//
+		// ウィンドウプロシージャです。
+		//
+		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param) override
+		{
+			switch (message)
+			{
+			case WM_MOUSEMOVE:
+				{
+//					MY_TRACE_FUNC("{/}, {/hex}, {/hex}", my::message_to_string(message), w_param, l_param);
+
+					// タイムラインが操作対象の場合は
+					if (model::property.loupe.flag_timeline)
+					{
+						// マウス座標を取得します。
+						auto point = my::lp_to_pt(l_param);
+
+						view::loupe.set_viewport(
+							(int32_t)magi.exin.x_to_frame(point.x),
+							(int32_t)magi.exin.y_to_layer(point.y));
+					}
+
+					break;
+				}
+			}
+
+			return __super::on_wnd_proc(hwnd, message, w_param, l_param);
+		}
 	} exedit_window;
 }

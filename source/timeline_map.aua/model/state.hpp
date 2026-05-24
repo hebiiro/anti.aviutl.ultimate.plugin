@@ -83,6 +83,24 @@ namespace apn::timeline_map::model
 		//
 		BOOL prepare_draw()
 		{
+			// デバイスを作成します。
+			if (!recreate_devices()) return FALSE;
+
+			// リソースを再作成します。
+			if (!recreate_resources(FALSE)) return FALSE;
+
+			// 描画対象のリソースを作成します。
+			for (const auto& render_target : render_targets)
+				if (!render_target->create_resources()) return FALSE;
+
+			return TRUE;
+		}
+
+		//
+		// デバイスを作成します。
+		//
+		BOOL recreate_devices()
+		{
 			// D3Dデバイスが無効の場合は
 			if (!dx.d3d_device)
 			{
@@ -158,8 +176,7 @@ namespace apn::timeline_map::model
 				if (!dx.dw_factory) return FALSE;
 			}
 
-			// リソースを再作成します。
-			return recreate_resources(FALSE);
+			return TRUE;
 		}
 
 		//

@@ -3,10 +3,30 @@
 namespace apn::timeline_map::view
 {
 	//
-	// このクラスはビュー層の全体図の振る舞いです。
+	// このクラスはビュー層の拡大鏡の振る舞いです。
 	//
-	struct overview_behavior_t : model::render_target_t
+	struct loupe_behavior_t : model::render_target_t
 	{
+		//
+		// このクラスはドラッグ開始時のデータです。
+		//
+		struct drag_start_t {
+			//
+			// マウス座標です。
+			//
+			POINT point = {};
+
+			//
+			// フレーム数です。
+			//
+			int32_t nb_frames = {};
+
+			//
+			// レイヤー数です。
+			//
+			int32_t nb_layers = {};
+		} drag_start;
+
 		//
 		// D2Dコマンドリストです。
 		//
@@ -80,24 +100,21 @@ namespace apn::timeline_map::view
 			// クライアント矩形を取得します。
 			auto rc = my::get_client_rect(get_hwnd());
 
-			// 描画するフレーム数とレイヤー数を取得します。
-			auto nb_frames = 1;
-			auto nb_layers = 1;
-			auto nb_sorted_objects = magi.exin.get_sorted_object_count();
+			// ビューポートへの参照を取得します。
+			auto& viewport = model::property.loupe.viewport;
 
-			if (nb_sorted_objects > 0)
-			{
-				// 実際のフレーム数とレイヤー数を取得します。
-				nb_frames = magi.exin.get_aviutl_frame_number();
-				nb_layers = magi.exin.get_sorted_object(nb_sorted_objects - 1)->layer_set + 1;
-			}
+			// 描画領域の開始位置を算出します。
+			auto frame_begin = std::max(viewport.frame - viewport.nb_frames / 2, 0);
+			auto layer_begin = std::max(viewport.layer - viewport.nb_layers / 2, 0);
 
 			// コンテキストを作成して返します。
-			return model::context_t(rc, 0, nb_frames, 0, nb_layers);
+			return model::context_t(rc,
+				frame_begin, frame_begin + viewport.nb_frames,
+				layer_begin, layer_begin + viewport.nb_layers);
 		}
 
 		//
-		// 全体図を描画します。
+		// 拡大鏡を描画します。
 		//
 		BOOL on_paint()
 		{
@@ -136,7 +153,7 @@ namespace apn::timeline_map::view
 
 			// 各要素を描画します。
 			context.draw_current_frame();
-			context.draw_visible_area();
+//			context.draw_visible_area();
 
 			// 描画処理を終了します。
 			model::state.end_draw(dxgi_swap_chain.Get());
@@ -145,7 +162,7 @@ namespace apn::timeline_map::view
 		}
 
 		//
-		// 全体図をリサイズします。
+		// 拡大鏡をリサイズします。
 		//
 		BOOL on_size()
 		{
@@ -159,48 +176,52 @@ namespace apn::timeline_map::view
 		}
 
 		//
-		// ユーザーがウィンドウをクリック(またはドラッグ)したときの処理です。
+		// ユーザーがウィンドウでドラッグを開始したときの処理です。
 		//
-		BOOL on_mouse(POINT point, BOOL flag_loupe = FALSE)
+		BOOL on_begin_drag(POINT point)
 		{
-			// コンテキストを作成します。
-			auto context = create_context();
+			MY_TRACE_FUNC("");
 
-			// コンテキストを初期化できなかった場合は何もしません。
-			if (!context.is_initialized()) return FALSE;
+			// ビューポートへの参照を取得します。
+			auto& viewport = model::property.loupe.viewport;
 
-			// 拡大鏡が操作対象の場合は
-			if (flag_loupe)
-			{
-				// 拡大鏡が表示されている場合は
-				if (::IsWindowVisible(loupe))
-				{
-					// 拡大鏡のビューポートを変更します。
-					loupe.set_viewport(
-						context.pixel_to_frame(point.x),
-						context.pixel_to_layer(point.y));
-				}
-			}
-			// タイムラインが操作対象の場合は
-			else
-			{
-				// タイムラインを水平方向にスクロールします。
-				{
-					auto left_frame = magi.exin.get_top_visible_frame();
-					auto right_frame = (int32_t)magi.exin.x_to_frame(magi.exin.get_layer_width());
+			// ドラッグ開始データをセットします。
+			drag_start.point = point;
+			drag_start.nb_frames = viewport.nb_frames;
+			drag_start.nb_layers = viewport.nb_layers;
 
-					auto frame = context.pixel_to_frame(point.x);
-					frame -= (right_frame - left_frame) / 2;
-					magi.exin.set_top_visible_frame(frame);
-				}
+			return TRUE;
+		}
 
-				// タイムラインを垂直方向にスクロールします。
-				{
-					auto layer = context.pixel_to_layer(point.y);
-					layer -= (magi.exin.get_layer_visible_count() / 2);
-					magi.exin.set_top_visible_layer(layer);
-				}
-			}
+		//
+		// ユーザーがウィンドウでドラッグを終了したときの処理です。
+		//
+		BOOL on_end_drag(POINT point)
+		{
+			MY_TRACE_FUNC("");
+
+			return TRUE;
+		}
+
+		//
+		// ユーザーがウィンドウでドラッグしたときの処理です。
+		//
+		BOOL on_drag(POINT point)
+		{
+			MY_TRACE_FUNC("{/}, {/}", point.x, point.y);
+
+			// ドラッグオフセットを算出します。
+			auto offset = point - drag_start.point;
+			MY_TRACE_POINT(offset);
+
+			// ビューポートへの参照を取得します。
+			auto& viewport = model::property.loupe.viewport;
+
+			// ビューポートにオフセットを適用します。
+			viewport.nb_frames = std::max(drag_start.nb_frames + (int32_t)offset.x * 10, 1);
+			viewport.nb_layers = std::clamp(drag_start.nb_layers + (int32_t)offset.y / 20, 1, 100);
+			MY_TRACE_INT(viewport.nb_frames);
+			MY_TRACE_INT(viewport.nb_layers);
 
 			return TRUE;
 		}

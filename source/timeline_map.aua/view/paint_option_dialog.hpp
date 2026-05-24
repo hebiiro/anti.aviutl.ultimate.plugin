@@ -8,13 +8,6 @@ namespace apn::timeline_map::view
 	inline struct paint_option_dialog_t : StdAddinDialog<idd_paint_option>
 	{
 		//
-		// このクラスはリスナーです。
-		//
-		struct listner_t {
-			virtual void on_from_ui(BOOL recreate_resources) = 0;
-		} *listener = {};
-
-		//
 		// コントロールからRGBAを取得します。
 		//
 		void get_rgba(uint32_t control_id, rgba_t& rgba)
@@ -492,6 +485,5 @@ namespace apn::timeline_map::view
 
 			return __super::on_dlg_proc(hwnd, message, w_param, l_param);
 		}
-
 	} paint_option_dialog;
 }

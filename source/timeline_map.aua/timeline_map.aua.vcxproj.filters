@@ -69,6 +69,18 @@
     <ClInclude Include="view\overview_behavior.hpp">
       <Filter>view</Filter>
     </ClInclude>
+    <ClInclude Include="view\loupe.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="view\loupe_behavior.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="view\loupe_option_dialog.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="view\listener.hpp">
+      <Filter>view</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
