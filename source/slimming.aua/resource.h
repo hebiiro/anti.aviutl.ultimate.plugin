@@ -11,7 +11,9 @@
 #define IDC_SLIMBAR_BUTTON_WIDTH_STAT   1105
 #define IDC_SLIMBAR_BUTTON_WIDTH        1106
 #define IDC_SLIMBAR_BUTTON_WIDTH_SPIN   1107
-#define IDC_SLIMBAR_BUTTON_WIDTH2       1108
+#define IDC_SLIMBAR_ICON_SIZE_STAT      1108
+#define IDC_SLIMBAR_ICON_SIZE           1109
+#define IDC_SLIMBAR_ICON_SIZE_SPIN      1110
 
 // Next default values for new objects
 // 

@@ -30,6 +30,7 @@ namespace apn::slimming
 			read_bool(root, "slimbar.flag_whole_title", hive.slimbar.config.flag_whole_title);
 			read_string(root, "slimbar.title_format", hive.slimbar.config.title_format);
 			read_int(root, "slimbar.button_width", hive.slimbar.config.button_width);
+			read_int(root, "slimbar.icon_size", hive.slimbar.config.icon_size);
 
 			return TRUE;
 		}
@@ -45,6 +46,7 @@ namespace apn::slimming
 			write_bool(root, "slimbar.flag_whole_title", hive.slimbar.config.flag_whole_title);
 			write_string(root, "slimbar.title_format", hive.slimbar.config.title_format);
 			write_int(root, "slimbar.button_width", hive.slimbar.config.button_width);
+			write_int(root, "slimbar.icon_size", hive.slimbar.config.icon_size);
 
 			return TRUE;
 		}

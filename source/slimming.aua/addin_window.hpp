@@ -20,9 +20,9 @@ namespace apn::slimming
 				hive.aviutl_window,
 				hive.c_display_name,
 				WS_EX_NOPARENTNOTIFY,
-				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
+				WS_CAPTION | WS_SYSMENU |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				100, 100, 480, 120);
+				100, 100, 100, 100);
 		}
 
 		//
@@ -54,11 +54,11 @@ namespace apn::slimming
 						return -1;
 					}
 
-					// このウィンドウで表示するターゲットを設定します。
-					set_target(addin_dialog);
-
-					// ターゲットをリサイズします。
-					resize();
+					// クライアント領域がダイアログのサイズと
+					// 一致するようにウィンドウサイズを調整します。
+					auto rc = my::get_window_rect(addin_dialog);
+					my::client_to_window(hwnd, &rc);
+					my::set_window_rect(hwnd, &rc);
 
 					// 初期化が完了したので、このウィンドウをメインウィンドウに設定します。
 					hive.main_window = addin_window;
