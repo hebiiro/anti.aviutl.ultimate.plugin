@@ -246,7 +246,8 @@ const c_default_json = {
 		"#ffffff", "#ffffff", "#ffffff", "#ffffff"
 	],
 	"addin": [
-		{ "active": "true", "display_name": "ダークモード化", "name": "dark", "args": "" },
+		{ "active": "true", "display_name": "簡易ダークモード化", "name": "simple_dark", "args": "" },
+		{ "active": "false", "display_name": "ダークモード化", "name": "dark", "args": "" },
 		{ "active": "true", "display_name": "ワークスペース化", "name": "workspace", "args": "" },
 		{ "active": "true", "display_name": "ファイラ", "name": "filer", "args": "" },
 		{ "active": "false", "display_name": "セレクタ", "name": "selector", "args": "" },

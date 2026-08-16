@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="_">
+      <UniqueIdentifier>{b01947ec-be7f-4f1d-8b45-9019db2608db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_\resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="kuro">
+      <UniqueIdentifier>{3e3269ac-3e4e-4961-9823-45f5bef5d544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\gdi">
+      <UniqueIdentifier>{b33f7a0b-8a54-40b8-b1e7-9a0636dedd0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\hook">
+      <UniqueIdentifier>{048c11b8-b187-4e68-9c8e-2963a40ecacf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\paint">
+      <UniqueIdentifier>{225e8866-ee02-4377-b7fa-c6471e2cb5e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\theme">
+      <UniqueIdentifier>{ab5adf9f-9303-413a-bfb6-c9947c6c8907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\gdi\renderer">
+      <UniqueIdentifier>{384699b3-bd2b-42d2-99e2-04bba6c53fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\gdi\renderer\rigaya">
+      <UniqueIdentifier>{42638b4a-e013-46d6-a9a0-d5420ed081d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\gdi\renderer\comdlg32">
+      <UniqueIdentifier>{b7f53c79-f762-495a-8fac-7b79f3cd5f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\hook\entry">
+      <UniqueIdentifier>{a8a2d85c-d5bc-4cbe-9a42-24304235779d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\theme\renderer">
+      <UniqueIdentifier>{81cf90db-720a-47bd-b0c3-45528a7575ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\theme\renderer\base">
+      <UniqueIdentifier>{f0351442-37aa-4b16-ae77-7382579ce6b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\theme\renderer\immersive_start">
+      <UniqueIdentifier>{b9d10111-78c7-43ed-9a5b-d2f02bb4d895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\theme\renderer\search_band">
+      <UniqueIdentifier>{354596e1-a711-41ac-ac55-71b13c6b1955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\paint\d2d">
+      <UniqueIdentifier>{1e6b9485-8476-4010-bd13-5a5d055616cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\paint\material">
+      <UniqueIdentifier>{a9dbaf73-0b97-4f1f-afc3-cf64b2f0d691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kuro\hook\entry\module">
+      <UniqueIdentifier>{e9e511d2-2c7e-4ff3-8c58-b7b39bb68fa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_\resource\icon">
+      <UniqueIdentifier>{e7fef645-9a86-4d7d-a5b8-7c9a496151a3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>_</Filter>
+    </ClInclude>
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="kuro\color.hpp">
+      <Filter>kuro</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\custom_style.hpp">
+      <Filter>kuro</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\style.hpp">
+      <Filter>kuro</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\manager.hpp">
+      <Filter>kuro\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer.hpp">
+      <Filter>kuro\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer_nc.hpp">
+      <Filter>kuro\gdi</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\button.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\combobox.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\comboboxex.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\dialog.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\editbox.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\header.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\listbox.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\listview.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\menu.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\richedit.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\spin.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\static.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\tab.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\toolbar.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\tooltip.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\trackbar.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\treeview.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\rigaya\dialog.hpp">
+      <Filter>kuro\gdi\renderer\rigaya</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\comdlg32\dialog.hpp">
+      <Filter>kuro\gdi\renderer\comdlg32</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\comdlg32\direct_ui_hwnd.hpp">
+      <Filter>kuro\gdi\renderer\comdlg32</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\comdlg32\dui_view.hpp">
+      <Filter>kuro\gdi\renderer\comdlg32</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\call_wnd_proc_ret.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\darken_window.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\gdi.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\theme.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\from_handle.hpp">
+      <Filter>kuro\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\from_vsclass.hpp">
+      <Filter>kuro\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\manager.hpp">
+      <Filter>kuro\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\name.hpp">
+      <Filter>kuro\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer.hpp">
+      <Filter>kuro\theme</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\address_band.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\button.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\combobox.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\command_module.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\common_items_dialog.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\editbox.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\explorer_nav_pane.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\header.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\itemsview.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\listbox.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\listview.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\menu.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\preview_pane.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\rebar.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\scrollbar.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\spin.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\static.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\tab.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\toolbar.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\tooltip.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\trackbar.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\treeview.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\base\menu.hpp">
+      <Filter>kuro\theme\renderer\base</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\immersive_start\menu.hpp">
+      <Filter>kuro\theme\renderer\immersive_start</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\search_band\search_box.hpp">
+      <Filter>kuro\theme\renderer\search_band</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\search_band\search_editbox.hpp">
+      <Filter>kuro\theme\renderer\search_band</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\manager.hpp">
+      <Filter>kuro\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material.hpp">
+      <Filter>kuro\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\palette.hpp">
+      <Filter>kuro\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\pigment.hpp">
+      <Filter>kuro\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\stylus.hpp">
+      <Filter>kuro\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\utils.hpp">
+      <Filter>kuro\paint</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\d2d\core.hpp">
+      <Filter>kuro\paint\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\d2d\recter.hpp">
+      <Filter>kuro\paint\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\d2d\texter.hpp">
+      <Filter>kuro\paint\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\d2d\utils.hpp">
+      <Filter>kuro\paint\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\address_band.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\button.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\combobox.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\command_module.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\dialog.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\editbox.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\header.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\listbox.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\listview.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\menu.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\scrollbar.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\spin.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\sys_color.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\tab.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\toolbar.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\tooltip.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\trackbar.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\treeview.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\window.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="act_ctx.hpp" />
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>_\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\double_buffer.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\icon.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\window.hpp">
+      <Filter>kuro\hook\entry</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\module\exedit.hpp">
+      <Filter>kuro\hook\entry\module</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\hook\entry\module\loudness.hpp">
+      <Filter>kuro\hook\entry\module</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\aviutl.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\aviutl_button.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\gdi\renderer\setting_dialog.hpp">
+      <Filter>kuro\gdi\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\paint\material\exedit.hpp">
+      <Filter>kuro\paint\material</Filter>
+    </ClInclude>
+    <ClInclude Include="kuro\theme\renderer\window.hpp">
+      <Filter>kuro\theme\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="entry.hpp" />
+    <ClInclude Include="exedit_state.hpp" />
+    <ClInclude Include="config_observer.hpp" />
+    <ClInclude Include="style_observer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>_\resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>_</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\AVIUTL_ICON.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_BACK.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_BACK2.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_DEL.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_DEL2.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_DRAG.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_FORWARD.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_FORWARD2.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_AUTO.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_EVEN.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_MIX.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_NORM.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_ODD.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_I_REV.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_IN.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_LEFT.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_MARK.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_OUT.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_PAUSE.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_PLAY.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_RIGHT.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_STOP.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_VOL.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_1.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_2.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_3.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\AVIUTL_ICON_Z_4.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_AL.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_AR.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CA0.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CA1.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CH.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CL.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CL0.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_CL1.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_LL.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_MA.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_MN.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_OP.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_PL.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_RR.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+    <Image Include="res\EXEDIT_ICON_SP.ico">
+      <Filter>_\resource\icon</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

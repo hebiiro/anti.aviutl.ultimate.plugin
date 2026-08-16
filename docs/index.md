@@ -83,6 +83,7 @@ lang: ja_JP
 
 | 内部名 | 一般名 | 機能 |
 |:---|:---|:---|
+| [simple_dark](./contents/addin/simple_dark.html) | 簡易ダークモード化 | aviutlを簡易ダークモード化します。 |
 | [dark](./contents/addin/dark.html) | ダークモード化 | aviutlをダークモード化します。 |
 | [workspace](./contents/addin/workspace.html) | ワークスペース化 | aviutlをワークスペース化します。 |
 | [filer](./contents/addin/filer.html) | ファイラ | aviutl内でエクスプローラを表示します。 |

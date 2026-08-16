@@ -124,7 +124,7 @@ namespace Dark
 		BOOL init()
 		{
 			// アドインを取得します。
-			HMODULE dark = ::GetModuleHandleA("dark.aua");
+			auto dark = ::GetModuleHandleA("dark.aua");
 
 			// アドインが取得できなかった場合はプラグインを取得します。
 			if (!dark) dark = ::GetModuleHandleA("DarkenWindow.aul");
@@ -190,40 +190,101 @@ namespace Dark
 		//
 		BOOL init(HWND host_window, HWND client_window)
 		{
-			DWORD pid = 0;
-			DWORD tid = ::GetWindowThreadProcessId(host_window, &pid);
-			HANDLE host = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+			// ホストプロセスを取得します。
+			auto pid = DWORD {};
+			auto tid = ::GetWindowThreadProcessId(host_window, &pid);
+			auto host = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+			MY_TRACE_HEX(host);
 			if (!host) return FALSE;
 
+			// ホストプロセス内のモジュールを列挙します。
 			HMODULE modules[1024] = {};
-			DWORD c = 0;
-			if (::EnumProcessModules(host, modules, sizeof(modules), &c)) {
+			auto c = DWORD {};
+			if (::EnumProcessModules(host, modules, sizeof(modules), &c))
+			{
+				// ホストプロセス内のモジュールを走査します。
 				c /= sizeof(HMODULE);
-				for (DWORD i = 0; i < c; i++) {
+				MY_TRACE_INT(c);
+				for (decltype(c) i = 0; i < c; i++)
+				{
+					// モジュールのファイル名を取得します。
 					char file_name[MAX_PATH] = {};
 					::GetModuleFileNameExA(host, modules[i], file_name, std::size(file_name));
-					if (::StrStrIA(file_name, "python312.dll")) {
+
+					// pythonモジュールの場合は
+					if (::StrStrIA(file_name, "python312.dll"))
+					{
+						// ホストプロセスと同じpythonモジュールをこのプロセスにもロードします。
 						python = ::LoadLibraryA(file_name);
-					} else if (::StrStrIA(file_name, "dark.aua")) {
+					}
+#if 0
+					// 簡易ダークモード化モジュールの場合は
+					else if (::StrStrIA(file_name, "simple_dark.aua"))
+					{
+						// 既にロード済みの場合は何もしません。
+						if (dark) continue;
+
+						// ホストプロセスと同じ簡易ダークモード化モジュールをこのプロセスにもロードします。
 						dark = ::LoadLibraryExA(file_name, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+
+						// 初期化用apiを取得します。
 						BOOL (WINAPI* dark_init)(HWND hwnd) =
 							(decltype(dark_init))::GetProcAddress(dark, "dark_init");
 						if (!dark_init) continue;
+
+						// 初期化用apiを実行します。
 						dark_init(client_window);
-					} else if (::StrStrIA(file_name, "DarkenWindow.aul")) {
+					}
+#endif
+					// ダークモード化モジュールの場合は
+					else if (::StrStrIA(file_name, "dark.aua"))
+					{
+						MY_TRACE_STR(file_name);
+
+						// 既にロード済みの場合は何もしません。
+						if (dark) continue;
+
+						// ホストプロセスと同じダークモード化モジュールをこのプロセスにもロードします。
+						dark = ::LoadLibraryExA(file_name, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+						MY_TRACE_HEX(dark);
+
+						// 初期化用apiを取得します。
+						BOOL (WINAPI* dark_init)(HWND hwnd) =
+							(decltype(dark_init))::GetProcAddress(dark, "dark_init");
+						MY_TRACE_HEX(dark_init);
+						if (!dark_init) continue;
+
+						// 初期化用apiを実行します。
+						auto result = dark_init(client_window);
+						MY_TRACE_INT(result);
+					}
+					// 旧型のダークモード化モジュールの場合は
+					else if (::StrStrIA(file_name, "DarkenWindow.aul"))
+					{
+						// 既にロード済みの場合は何もしません。
+						if (darken_window) continue;
+
+						// ホストプロセスと同じダークモード化モジュールをこのプロセスにもロードします。
 						darken_window = ::LoadLibraryExA(file_name, nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+
+						// 初期化用apiを取得します。
 						void (WINAPI* DarkenWindow_init)(HWND hwnd) =
 							(decltype(DarkenWindow_init))::GetProcAddress(darken_window, "DarkenWindow_init");
 						if (!DarkenWindow_init) continue;
+
+						// 初期化用apiを実行します。
 						DarkenWindow_init(client_window);
 					}
 				}
 			}
 
+			// ホストプロセスを解放します。
 			::CloseHandle(host);
 
+			// ダークモード化モジュールを取得できていない場合はFALSEを返します。
 			if (!dark && !darken_window) return FALSE;
 
+			// ダークモード化モジュールを初期化します。
 			return __super::init();
 		}
 
@@ -233,12 +294,15 @@ namespace Dark
 		//
 		BOOL exit()
 		{
+			// ダークモード化モジュールを取得できていない場合はFALSEを返します。
 			if (!dark && !darken_window) return FALSE;
 
+			// 後始末用apiを取得します。
 			BOOL (WINAPI* dark_exit)() =
 				(decltype(dark_exit))::GetProcAddress(dark, "dark_exit");
 			if (!dark_exit) return FALSE;
 
+			// 後始末用apiを実行します。
 			return dark_exit();
 		}
 	};

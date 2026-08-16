@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{0BBEBC9E
 		common\share\font_preview.hpp = common\share\font_preview.hpp
 		common\share\item_wave.hpp = common\share\item_wave.hpp
 		common\share\reboot.hpp = common\share\reboot.hpp
+		common\share\simple_dark_api.hpp = common\share\simple_dark_api.hpp
 		common\share\workspace.hpp = common\share\workspace.hpp
 	EndProjectSection
 EndProject
@@ -197,6 +198,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_affine.aua", "item_affine.aua\item_affine.aua.vcxproj", "{A6B6AB85-331C-4963-A8FE-26B81C03C568}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filter_relocate.aua", "filter_relocate.aua\filter_relocate.aua.vcxproj", "{48AAB823-3BF6-4703-B062-D3FE7809133B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_dark.aua", "simple_dark.aua\simple_dark.aua.vcxproj", "{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -614,6 +617,14 @@ Global
 		{48AAB823-3BF6-4703-B062-D3FE7809133B}.Release|x64.Build.0 = Release|x64
 		{48AAB823-3BF6-4703-B062-D3FE7809133B}.Release|x86.ActiveCfg = Release|Win32
 		{48AAB823-3BF6-4703-B062-D3FE7809133B}.Release|x86.Build.0 = Release|Win32
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Debug|x64.ActiveCfg = Debug|x64
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Debug|x64.Build.0 = Debug|x64
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Debug|x86.ActiveCfg = Debug|Win32
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Debug|x86.Build.0 = Debug|Win32
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x64.ActiveCfg = Release|x64
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x64.Build.0 = Release|x64
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x86.ActiveCfg = Release|Win32
+		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

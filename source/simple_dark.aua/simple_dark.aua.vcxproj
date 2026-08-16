@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{be5ecadf-728b-4a36-a6a6-dc1725d63ee2}</ProjectGuid>
+    <RootNamespace>simple_dark_aua</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\ultimate.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\ultimate.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\ultimate.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\ultimate.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="act_ctx.hpp" />
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="config_observer.hpp" />
+    <ClInclude Include="entry.hpp" />
+    <ClInclude Include="exedit_state.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="kuro\color.hpp" />
+    <ClInclude Include="kuro\custom_style.hpp" />
+    <ClInclude Include="kuro\gdi\manager.hpp" />
+    <ClInclude Include="kuro\gdi\renderer.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\aviutl.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\aviutl_button.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\button.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\combobox.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\comboboxex.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\comdlg32\dialog.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\comdlg32\direct_ui_hwnd.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\comdlg32\dui_view.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\dialog.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\editbox.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\header.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\listbox.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\listview.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\menu.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\richedit.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\rigaya\dialog.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\setting_dialog.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\spin.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\static.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\tab.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\toolbar.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\tooltip.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\trackbar.hpp" />
+    <ClInclude Include="kuro\gdi\renderer\treeview.hpp" />
+    <ClInclude Include="kuro\gdi\renderer_nc.hpp" />
+    <ClInclude Include="kuro\hook\entry\call_wnd_proc_ret.hpp" />
+    <ClInclude Include="kuro\hook\entry\darken_window.hpp" />
+    <ClInclude Include="kuro\hook\entry\double_buffer.hpp" />
+    <ClInclude Include="kuro\hook\entry\gdi.hpp" />
+    <ClInclude Include="kuro\hook\entry\icon.hpp" />
+    <ClInclude Include="kuro\hook\entry\module\exedit.hpp" />
+    <ClInclude Include="kuro\hook\entry\module\loudness.hpp" />
+    <ClInclude Include="kuro\hook\entry\theme.hpp" />
+    <ClInclude Include="kuro\hook\entry\window.hpp" />
+    <ClInclude Include="kuro\paint\d2d\core.hpp" />
+    <ClInclude Include="kuro\paint\d2d\recter.hpp" />
+    <ClInclude Include="kuro\paint\d2d\texter.hpp" />
+    <ClInclude Include="kuro\paint\d2d\utils.hpp" />
+    <ClInclude Include="kuro\paint\manager.hpp" />
+    <ClInclude Include="kuro\paint\material.hpp" />
+    <ClInclude Include="kuro\paint\material\address_band.hpp" />
+    <ClInclude Include="kuro\paint\material\button.hpp" />
+    <ClInclude Include="kuro\paint\material\combobox.hpp" />
+    <ClInclude Include="kuro\paint\material\command_module.hpp" />
+    <ClInclude Include="kuro\paint\material\dialog.hpp" />
+    <ClInclude Include="kuro\paint\material\editbox.hpp" />
+    <ClInclude Include="kuro\paint\material\exedit.hpp" />
+    <ClInclude Include="kuro\paint\material\header.hpp" />
+    <ClInclude Include="kuro\paint\material\listbox.hpp" />
+    <ClInclude Include="kuro\paint\material\listview.hpp" />
+    <ClInclude Include="kuro\paint\material\menu.hpp" />
+    <ClInclude Include="kuro\paint\material\scrollbar.hpp" />
+    <ClInclude Include="kuro\paint\material\spin.hpp" />
+    <ClInclude Include="kuro\paint\material\sys_color.hpp" />
+    <ClInclude Include="kuro\paint\material\tab.hpp" />
+    <ClInclude Include="kuro\paint\material\toolbar.hpp" />
+    <ClInclude Include="kuro\paint\material\tooltip.hpp" />
+    <ClInclude Include="kuro\paint\material\trackbar.hpp" />
+    <ClInclude Include="kuro\paint\material\treeview.hpp" />
+    <ClInclude Include="kuro\paint\material\window.hpp" />
+    <ClInclude Include="kuro\paint\palette.hpp" />
+    <ClInclude Include="kuro\paint\pigment.hpp" />
+    <ClInclude Include="kuro\paint\stylus.hpp" />
+    <ClInclude Include="kuro\paint\utils.hpp" />
+    <ClInclude Include="kuro\style.hpp" />
+    <ClInclude Include="kuro\theme\from_handle.hpp" />
+    <ClInclude Include="kuro\theme\from_vsclass.hpp" />
+    <ClInclude Include="kuro\theme\manager.hpp" />
+    <ClInclude Include="kuro\theme\name.hpp" />
+    <ClInclude Include="kuro\theme\renderer.hpp" />
+    <ClInclude Include="kuro\theme\renderer\address_band.hpp" />
+    <ClInclude Include="kuro\theme\renderer\base\menu.hpp" />
+    <ClInclude Include="kuro\theme\renderer\button.hpp" />
+    <ClInclude Include="kuro\theme\renderer\combobox.hpp" />
+    <ClInclude Include="kuro\theme\renderer\command_module.hpp" />
+    <ClInclude Include="kuro\theme\renderer\common_items_dialog.hpp" />
+    <ClInclude Include="kuro\theme\renderer\editbox.hpp" />
+    <ClInclude Include="kuro\theme\renderer\explorer_nav_pane.hpp" />
+    <ClInclude Include="kuro\theme\renderer\header.hpp" />
+    <ClInclude Include="kuro\theme\renderer\immersive_start\menu.hpp" />
+    <ClInclude Include="kuro\theme\renderer\itemsview.hpp" />
+    <ClInclude Include="kuro\theme\renderer\listbox.hpp" />
+    <ClInclude Include="kuro\theme\renderer\listview.hpp" />
+    <ClInclude Include="kuro\theme\renderer\menu.hpp" />
+    <ClInclude Include="kuro\theme\renderer\preview_pane.hpp" />
+    <ClInclude Include="kuro\theme\renderer\rebar.hpp" />
+    <ClInclude Include="kuro\theme\renderer\scrollbar.hpp" />
+    <ClInclude Include="kuro\theme\renderer\search_band\search_box.hpp" />
+    <ClInclude Include="kuro\theme\renderer\search_band\search_editbox.hpp" />
+    <ClInclude Include="kuro\theme\renderer\spin.hpp" />
+    <ClInclude Include="kuro\theme\renderer\static.hpp" />
+    <ClInclude Include="kuro\theme\renderer\tab.hpp" />
+    <ClInclude Include="kuro\theme\renderer\toolbar.hpp" />
+    <ClInclude Include="kuro\theme\renderer\tooltip.hpp" />
+    <ClInclude Include="kuro\theme\renderer\trackbar.hpp" />
+    <ClInclude Include="kuro\theme\renderer\treeview.hpp" />
+    <ClInclude Include="kuro\theme\renderer\window.hpp" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="style_observer.hpp" />
+    <ClInclude Include="utils.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DarkenWindow.aul\DarkenWindow.aul.vcxproj">
+      <Project>{d30db443-e8be-4f53-80a0-6d9851c31db5}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\AVIUTL_ICON.ico" />
+    <Image Include="res\AVIUTL_ICON_BACK.ico" />
+    <Image Include="res\AVIUTL_ICON_BACK2.ico" />
+    <Image Include="res\AVIUTL_ICON_DEL.ico" />
+    <Image Include="res\AVIUTL_ICON_DEL2.ico" />
+    <Image Include="res\AVIUTL_ICON_DRAG.ico" />
+    <Image Include="res\AVIUTL_ICON_FORWARD.ico" />
+    <Image Include="res\AVIUTL_ICON_FORWARD2.ico" />
+    <Image Include="res\AVIUTL_ICON_IN.ico" />
+    <Image Include="res\AVIUTL_ICON_I_AUTO.ico" />
+    <Image Include="res\AVIUTL_ICON_I_EVEN.ico" />
+    <Image Include="res\AVIUTL_ICON_I_MIX.ico" />
+    <Image Include="res\AVIUTL_ICON_I_NORM.ico" />
+    <Image Include="res\AVIUTL_ICON_I_ODD.ico" />
+    <Image Include="res\AVIUTL_ICON_I_REV.ico" />
+    <Image Include="res\AVIUTL_ICON_LEFT.ico" />
+    <Image Include="res\AVIUTL_ICON_MARK.ico" />
+    <Image Include="res\AVIUTL_ICON_OUT.ico" />
+    <Image Include="res\AVIUTL_ICON_PAUSE.ico" />
+    <Image Include="res\AVIUTL_ICON_PLAY.ico" />
+    <Image Include="res\AVIUTL_ICON_RIGHT.ico" />
+    <Image Include="res\AVIUTL_ICON_STOP.ico" />
+    <Image Include="res\AVIUTL_ICON_VOL.ico" />
+    <Image Include="res\AVIUTL_ICON_Z_1.ico" />
+    <Image Include="res\AVIUTL_ICON_Z_2.ico" />
+    <Image Include="res\AVIUTL_ICON_Z_3.ico" />
+    <Image Include="res\AVIUTL_ICON_Z_4.ico" />
+    <Image Include="res\EXEDIT_ICON_AL.ico" />
+    <Image Include="res\EXEDIT_ICON_AR.ico" />
+    <Image Include="res\EXEDIT_ICON_CA0.ico" />
+    <Image Include="res\EXEDIT_ICON_CA1.ico" />
+    <Image Include="res\EXEDIT_ICON_CH.ico" />
+    <Image Include="res\EXEDIT_ICON_CL.ico" />
+    <Image Include="res\EXEDIT_ICON_CL0.ico" />
+    <Image Include="res\EXEDIT_ICON_CL1.ico" />
+    <Image Include="res\EXEDIT_ICON_LL.ico" />
+    <Image Include="res\EXEDIT_ICON_MA.ico" />
+    <Image Include="res\EXEDIT_ICON_MN.ico" />
+    <Image Include="res\EXEDIT_ICON_OP.ico" />
+    <Image Include="res\EXEDIT_ICON_PL.ico" />
+    <Image Include="res\EXEDIT_ICON_RR.ico" />
+    <Image Include="res\EXEDIT_ICON_SP.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
