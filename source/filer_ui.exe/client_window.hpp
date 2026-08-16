@@ -13,7 +13,7 @@ namespace apn::filer_ui
 		//
 		BOOL init(HWND host_window)
 		{
-			MY_TRACE_FUNC("{/hex}", host_window);
+			MY_TRACE_FUNC("{/}", my::hwnd_to_string(host_window));
 
 			WNDCLASS wc = {};
 			wc.lpszClassName = c_class_name;
