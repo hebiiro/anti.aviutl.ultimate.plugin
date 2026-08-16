@@ -17,6 +17,7 @@ namespace apn
 		virtual void on_update_config() {}
 		virtual void on_init_dialog() {}
 		virtual void on_command(UINT code, UINT id, HWND control) {}
+		virtual void on_notify(NMHDR* nmhdr) {}
 
 		//
 		// ロックされている場合はTRUEを返します。
@@ -100,14 +101,15 @@ namespace apn
 		//
 		// ダイアログプロシージャです。
 		//
-		virtual INT_PTR on_dlg_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		virtual INT_PTR on_dlg_proc(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param) override
 		{
 			switch (message)
 			{
 			case WM_INITDIALOG:
 				{
-					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", wParam, lParam);
+					MY_TRACE_FUNC("WM_INITDIALOG, {/hex}, {/hex}", w_param, l_param);
 
+					// 派生クラスにWM_INITDIALOGを処理させます。
 					on_init_dialog();
 
 					break;
@@ -115,21 +117,31 @@ namespace apn
 			case WM_COMMAND:
 			case AviUtl::FilterPlugin::WindowMessage::Command:
 				{
-					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", wParam, lParam);
+					MY_TRACE_FUNC("WM_COMMAND, {/hex}, {/hex}", w_param, l_param);
 
 					if (is_locked()) break;
 
-					auto code = HIWORD(wParam);
-					auto id = LOWORD(wParam);
-					auto control = (HWND)lParam;
+					auto code = HIWORD(w_param);
+					auto id = LOWORD(w_param);
+					auto control = (HWND)l_param;
 
+					// 派生クラスにWM_COMMANDを処理させます。
 					on_command(code, id, control);
+
+					break;
+				}
+			case WM_NOTIFY:
+				{
+					auto nmhdr = (NMHDR*)l_param;
+
+					// 派生クラスにWM_NOTIFYを処理させます。
+					on_notify(nmhdr);
 
 					break;
 				}
 			}
 
-			return __super::on_dlg_proc(hwnd, message, wParam, lParam);
+			return __super::on_dlg_proc(hwnd, message, w_param, l_param);
 		}
 	};
 }
