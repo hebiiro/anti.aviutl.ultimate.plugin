@@ -49,6 +49,7 @@ namespace mft
 			if (FAILED(hr)) throw L"::MFStartup()が失敗しました";
 #if 0
 			// 読み込み属性を作成します。
+			// (逆に処理速度が遅くなりました)
 			ComPtr<IMFAttributes> attr;
 			::MFCreateAttributes(&attr, 1);
 			attr->SetUINT32(MF_LOW_LATENCY, TRUE);
@@ -66,6 +67,14 @@ namespace mft
 				file_path.c_str(), nullptr, source_reader.GetAddressOf());
 			if (FAILED(hr)) throw L"::MFCreateSourceReaderFromURL()が失敗しました";
 #endif
+			// 最初の音声ストリームだけを選択します。
+			// (処理速度に変化はありませんでした)
+			if (0)
+			{
+				source_reader->SetStreamSelection(MF_SOURCE_READER_ALL_STREAMS, FALSE);
+				source_reader->SetStreamSelection(MF_SOURCE_READER_FIRST_AUDIO_STREAM, TRUE);
+			}
+
 			// 出力フォーマットを設定します。
 			{
 				ComPtr<IMFMediaType> desired_type;
@@ -78,7 +87,7 @@ namespace mft
 				hr = desired_type->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_Float);
 				if (FAILED(hr)) throw L"desired_type->SetGUID(MF_MT_SUBTYPE)が失敗しました";
 
-				hr = MFSetAttributeSize(desired_type.Get(), MF_MT_FRAME_SIZE, 0, 0);
+				hr = ::MFSetAttributeSize(desired_type.Get(), MF_MT_FRAME_SIZE, 0, 0);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 1);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 48000);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 32);
