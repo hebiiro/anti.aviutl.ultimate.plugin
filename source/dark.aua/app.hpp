@@ -322,55 +322,57 @@ namespace apn::dark
 		{
 			MY_TRACE_FUNC("");
 
-			return ::EnumWindows(
-				[](HWND hwnd, LPARAM lParam)
-				{
-					DWORD pid = 0;
-					DWORD tid = ::GetWindowThreadProcessId(hwnd, &pid);
+			return ::EnumWindows([](HWND hwnd, LPARAM lParam)
+			{
+				DWORD pid = 0;
+				DWORD tid = ::GetWindowThreadProcessId(hwnd, &pid);
 
-					if (pid == ::GetCurrentProcessId())
-						redraw_window(hwnd);
+				if (pid == ::GetCurrentProcessId())
+					redraw_window(hwnd);
 
-					return TRUE;
-				}, 0);
+				return TRUE;
+			}, 0);
 		}
 
 		//
-		// 指定されたウィンドウとその子ウィンドウを再描画します。
+		// 指定されたウィンドウとその子孫ウィンドウを再描画します。
 		//
 		inline static BOOL redraw_window(HWND hwnd)
 		{
 //			MY_TRACE_FUNC("{/hex}", hwnd);
 
+			// ウィンドウキャプションを再描画します。
 			if (::GetWindowLong(hwnd, GWL_STYLE) & WS_CAPTION)
 				skin::dwm.set_window_attribute(hwnd, hwnd == ::GetActiveWindow());
 
+			// ウィンドウを再描画します。
 			::RedrawWindow(hwnd, 0, 0,
 				RDW_ERASE | RDW_FRAME | RDW_INTERNALPAINT |
 				RDW_INVALIDATE | RDW_ALLCHILDREN);
-			return ::EnumChildWindows(hwnd,
-				[](HWND hwnd, LPARAM lParam)
+
+			// 子孫ウィンドウを列挙します。
+			return ::EnumChildWindows(hwnd, [](HWND hwnd, LPARAM l_param)
+			{
+				// 子孫ウィンドウのクラス名を取得します。
+				auto class_name = my::get_class_name(hwnd);
+
+				// トラックバーの場合は
+				if (class_name == TRACKBAR_CLASS)
 				{
-					auto class_name = my::get_class_name(hwnd);
-
-					if (class_name == TRACKBAR_CLASS)
-					{
-						// トラックバー用の処理です。
-						::SendMessage(hwnd, WM_SETFOCUS, 0, 0);
-					}
-					else if (class_name == WC_BUTTON)
-					{
-						// ボタン用の処理です。
-						auto icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0);
+					// トラックバー専用の再描画処理を実行します。
+					::SendMessage(hwnd, WM_SETFOCUS, 0, 0);
+				}
+				// ボタンの場合は
+				else if (class_name == WC_BUTTON)
+				{
+					// ボタン専用の再描画処理を実行します。
+					if (auto icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0))
 						::SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);
-					}
-					else
-					{
-						redraw_window(hwnd);
-					}
+				}
 
-					return TRUE;
-				}, 0);
+				// 列挙を続けます。
+				return TRUE;
+			}, 0);
 		}
 
 		inline static auto& write(std::ofstream& ofs, const std::wstring& s)

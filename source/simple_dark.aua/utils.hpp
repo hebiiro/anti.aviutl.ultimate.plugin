@@ -58,7 +58,7 @@ namespace apn::dark
 	}
 
 	//
-	// 指定されたウィンドウとその子ウィンドウを再描画します。
+	// 指定されたウィンドウとその子孫ウィンドウを再描画します。
 	//
 	BOOL redraw_window(HWND hwnd)
 	{
@@ -74,8 +74,7 @@ namespace apn::dark
 			RDW_INVALIDATE | RDW_ALLCHILDREN);
 
 		// 子孫ウィンドウを列挙します。
-		return ::EnumChildWindows(hwnd,
-			[](HWND hwnd, LPARAM l_param)
+		return ::EnumChildWindows(hwnd, [](HWND hwnd, LPARAM l_param)
 		{
 			// 子孫ウィンドウのクラス名を取得します。
 			auto class_name = my::get_class_name(hwnd);
@@ -93,12 +92,8 @@ namespace apn::dark
 				if (auto icon = (HICON)::SendMessage(hwnd, BM_GETIMAGE, IMAGE_ICON, 0))
 					::SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);
 			}
-#if 0
-			else
-			{
-				redraw_window(hwnd);
-			}
-#endif
+
+			// 列挙を続けます。
 			return TRUE;
 		}, 0);
 	}
@@ -110,8 +105,7 @@ namespace apn::dark
 	{
 		MY_TRACE_FUNC("");
 
-		return ::EnumWindows(
-			[](HWND hwnd, LPARAM l_param)
+		return ::EnumWindows([](HWND hwnd, LPARAM l_param)
 		{
 			auto pid = DWORD {};
 			auto tid = ::GetWindowThreadProcessId(hwnd, &pid);
