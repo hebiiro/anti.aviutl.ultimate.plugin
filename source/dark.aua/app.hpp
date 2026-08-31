@@ -316,19 +316,17 @@ namespace apn::dark
 		}
 
 		//
-		// プロセス内のすべてのウィンドウを再描画します。
+		// カレントスレッド内のすべてのウィンドウを再描画します。
 		//
 		virtual BOOL redraw() override
 		{
 			MY_TRACE_FUNC("");
 
-			return ::EnumWindows([](HWND hwnd, LPARAM lParam)
+			// カレントスレッド内のすべてのウィンドウを列挙します。
+			return ::EnumThreadWindows(::GetCurrentThreadId(), [](HWND hwnd, LPARAM l_param)
 			{
-				DWORD pid = 0;
-				DWORD tid = ::GetWindowThreadProcessId(hwnd, &pid);
-
-				if (pid == ::GetCurrentProcessId())
-					redraw_window(hwnd);
+				// ウィンドウを完全に再描画します。
+				redraw_window(hwnd);
 
 				return TRUE;
 			}, 0);

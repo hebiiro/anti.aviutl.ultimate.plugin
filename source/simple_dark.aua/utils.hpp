@@ -66,7 +66,7 @@ namespace apn::dark
 
 		// ウィンドウキャプションを再描画します。
 		if (::GetWindowLong(hwnd, GWL_STYLE) & WS_CAPTION)
-			::SendMessage(hwnd, WM_ACTIVATE, hwnd == ::GetActiveWindow(), 0);
+			::PostMessage(hwnd, WM_ACTIVATE, hwnd == ::GetActiveWindow(), 0);
 
 		// ウィンドウを再描画します。
 		::RedrawWindow(hwnd, 0, 0,
@@ -99,19 +99,17 @@ namespace apn::dark
 	}
 
 	//
-	// プロセス内のすべてのウィンドウを再描画します。
+	// カレントスレッド内のすべてのウィンドウを再描画します。
 	//
 	BOOL redraw_windows()
 	{
 		MY_TRACE_FUNC("");
 
-		return ::EnumWindows([](HWND hwnd, LPARAM l_param)
+		// カレントスレッド内のすべてのウィンドウを列挙します。
+		return ::EnumThreadWindows(::GetCurrentThreadId(), [](HWND hwnd, LPARAM l_param)
 		{
-			auto pid = DWORD {};
-			auto tid = ::GetWindowThreadProcessId(hwnd, &pid);
-
-			if (pid == ::GetCurrentProcessId())
-				redraw_window(hwnd);
+			// ウィンドウを完全に再描画します。
+			redraw_window(hwnd);
 
 			return TRUE;
 		}, 0);
