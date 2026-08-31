@@ -325,44 +325,53 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			::EnumWindows(
-				[](HWND hwnd, LPARAM lParam) -> BOOL
+			//
+			// hwndが目的のウィンドウかどうかチェックします。
+			// hwndが目的のウィンドウではない場合はTRUEを返します。
+			//
+			const auto func = [p = this](HWND hwnd) -> BOOL
+			{
+				MY_TRACE_HWND(hwnd);
+
+				if (p->pid)
 				{
-					MY_TRACE_HWND(hwnd);
+					// プロセスIDをチェックします。
+					auto pid = DWORD {};
+					auto tid = ::GetWindowThreadProcessId(hwnd, &pid);
+					if (p->pid != pid) return TRUE;
+				}
 
-					auto p = (SubProcess*)lParam;
+				if (!p->window_name.empty())
+				{
+					// ウィンドウ名をチェックします。
+					auto window_name = my::get_window_text(hwnd);
+					if (window_name.find(p->window_name) == window_name.npos) return TRUE;
+				}
 
-					// hwndが目的のウィンドウかどうかチェックします。
-					// hwndが目的のウィンドウではない場合はTRUEを返して次のウィンドウに進めます。
+				if (!p->class_name.empty())
+				{
+					// クラス名をチェックします。
+					auto class_name = my::get_class_name(hwnd);
+					if (class_name.find(p->class_name) == class_name.npos) return TRUE;
+				}
 
-					if (p->pid)
-					{
-						// プロセスIDをチェックします。
-						auto pid = DWORD {};
-						auto tid = ::GetWindowThreadProcessId(hwnd, &pid);
-						if (p->pid != pid) return TRUE;
-					}
+				p->window = hwnd;
 
-					if (!p->window_name.empty())
-					{
-						// ウィンドウ名をチェックします。
-						auto window_name = my::get_window_text(hwnd);
-						if (window_name.find(p->window_name) == window_name.npos) return TRUE;
-					}
+				// 目的のウィンドウが見つかったので、FALSEを返して列挙を終了します。
+				return FALSE;
+			};
 
-					if (!p->class_name.empty())
-					{
-						// クラス名をチェックします。
-						auto class_name = my::get_class_name(hwnd);
-						if (class_name.find(p->class_name) == class_name.npos) return TRUE;
-					}
+			// 全てのトップレベルウィンドウを列挙します。
+			::EnumWindows([](HWND hwnd, LPARAM l_param) -> BOOL
+			{
+				MY_TRACE_HWND(hwnd);
 
-					p->window = hwnd;
+				// 関数を取得します。
+				auto f = (decltype(&func))l_param;
 
-					// 目的のウィンドウが見つかったので、FALSEを返して列挙を終了します。
-					return FALSE;
-				},
-				(LPARAM)this);
+				// 関数を実行します。
+				return (*f)(hwnd);
+			}, (LPARAM)&func);
 
 			return window != nullptr;
 		}
