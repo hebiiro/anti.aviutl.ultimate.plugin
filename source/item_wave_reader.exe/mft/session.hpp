@@ -71,6 +71,18 @@ namespace mft
 				if (FAILED(hr)) throw L"SetStreamSelection(AUDIO, TRUE)が失敗しました";
 			}
 
+			// ネイティブの音声タイプを確認します。(デバッグ用)
+#ifdef _DEBUG
+			{
+				ComPtr<IMFMediaType> native_type;
+				source_reader->GetNativeMediaType(
+					MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, native_type.GetAddressOf());
+
+				auto native_sample_rate = UINT32 {};
+				native_type->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, &native_sample_rate);
+				MY_TRACE_INT(native_sample_rate);
+			}
+#endif
 			// 出力フォーマットを設定します。
 			{
 				ComPtr<IMFMediaType> desired_type;
@@ -83,7 +95,6 @@ namespace mft
 				hr = desired_type->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_Float);
 				if (FAILED(hr)) throw L"desired_type->SetGUID(MF_MT_SUBTYPE)が失敗しました";
 
-				hr = ::MFSetAttributeSize(desired_type.Get(), MF_MT_FRAME_SIZE, 0, 0);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 1);
 //				hr = desired_type->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 48000);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 32);
@@ -200,29 +211,35 @@ namespace mft
 
 			while (1)
 			{
-				// サンプルを読み込みます。
+				// サンプル読み込み用の変数です。
 				ComPtr<IMFSample> sample;
 				auto current_flags = DWORD {};
 				auto current_timestamp = LONGLONG {};
-				auto hr = source_reader->ReadSample(
-					MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr,
-					&current_flags, &current_timestamp, sample.GetAddressOf());
-//				MY_TRACE_HEX(hr);
-//				MY_TRACE_HEX(sample.Get());
-//				MY_TRACE_HEX(current_flags);
-//				MY_TRACE_INT(current_timestamp);
-
-				// 読み込みに失敗した場合はループを終了します。
-				if (FAILED(hr)) break;
-
-				// サンプルが無効の場合はループを終了します。
-				if (!sample) break;
-
-				// ストリームの末尾の場合はループを終了します。
-				if (current_flags & MF_SOURCE_READERF_ENDOFSTREAM) break;
 
 				{
 					counter_t counter(L"サンプル取得");
+
+					// サンプルを読み込みます。
+					auto hr = source_reader->ReadSample(
+						MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr,
+						&current_flags, &current_timestamp, sample.GetAddressOf());
+//					MY_TRACE_HEX(hr);
+//					MY_TRACE_HEX(sample.Get());
+//					MY_TRACE_HEX(current_flags);
+//					MY_TRACE_INT(current_timestamp);
+
+					// 読み込みに失敗した場合はループを終了します。
+					if (FAILED(hr)) break;
+
+					// サンプルが無効の場合はループを終了します。
+					if (!sample) break;
+
+					// ストリームの末尾の場合はループを終了します。
+					if (current_flags & MF_SOURCE_READERF_ENDOFSTREAM) break;
+				}
+
+				{
+					counter_t counter(L"サンプル変換");
 
 					// メディアバッファを取得します。
 					ComPtr<IMFMediaBuffer> media_buffer;
