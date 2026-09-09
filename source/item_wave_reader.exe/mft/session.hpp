@@ -67,12 +67,15 @@ namespace mft
 				file_path.c_str(), nullptr, source_reader.GetAddressOf());
 			if (FAILED(hr)) throw L"::MFCreateSourceReaderFromURL()が失敗しました";
 #endif
-			// 最初の音声ストリームだけを選択します。
-			// (処理速度に変化はありませんでした)
-			if (0)
+			// 音声ストリーム以外を選択解除します。
+			// こうしないと、未読の映像サンプルが際限なくキューに溜まり
+			// メモリを消費し続け、さらに裏で映像の処理が走り続けて遅くなります。
 			{
-				source_reader->SetStreamSelection(MF_SOURCE_READER_ALL_STREAMS, FALSE);
-				source_reader->SetStreamSelection(MF_SOURCE_READER_FIRST_AUDIO_STREAM, TRUE);
+				hr = source_reader->SetStreamSelection(MF_SOURCE_READER_ALL_STREAMS, FALSE);
+				if (FAILED(hr)) throw L"SetStreamSelection(ALL, FALSE)が失敗しました";
+
+				hr = source_reader->SetStreamSelection(MF_SOURCE_READER_FIRST_AUDIO_STREAM, TRUE);
+				if (FAILED(hr)) throw L"SetStreamSelection(AUDIO, TRUE)が失敗しました";
 			}
 
 			// 出力フォーマットを設定します。
@@ -281,46 +284,9 @@ namespace mft
 					samples.erase(samples.begin(), sample);
 				}
 
-				MY_TRACE_INT(nb_reads);
-
 				// サンプルを読み込んだ回数を増やします。
-				// 同時に、メモリを大量に消費しないように、
-				// 定期的に読み込み済みのサンプルを破棄します。
-				if (++nb_reads % 4000 == 0)
-				{
-					counter_t counter(L"読み込み済みのサンプルの破棄");
-
-					// エラーコードです。
-					auto hr = HRESULT {};
-
-					// 定期的に読み込み済みのサンプルを破棄します。
-					hr = source_reader->Flush(MF_SOURCE_READER_FIRST_AUDIO_STREAM);
-					MY_TRACE_HEX(hr);
-					if (FAILED(hr)) break;
-
-					// 現在の読み込み位置(に最も近いキーフレーム)にシークします。
-					hr = seek(current_timestamp);
-					MY_TRACE_HEX(hr);
-					if (FAILED(hr)) break;
-
-					// シーク後の読み込み位置です。
-					auto timestamp = LONGLONG {};
-
-					// 現在の読み込み位置まで進めます。
-					do
-					{
-						ComPtr<IMFSample> sample;
-						auto flags = DWORD {};
-						hr = source_reader->ReadSample(
-							MF_SOURCE_READER_FIRST_AUDIO_STREAM,
-							0, nullptr, &flags, &timestamp, &sample);
-						MY_TRACE_HEX(hr);
-						MY_TRACE_HEX(flags);
-						MY_TRACE_INT(timestamp);
-						if (FAILED(hr)) break;
-					}
-					while (timestamp < current_timestamp);
-				}
+				nb_reads++;
+//				MY_TRACE_INT(nb_reads);
 			}
 
 			// 残りのサンプルから音量を算出します。
