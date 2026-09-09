@@ -85,7 +85,7 @@ namespace mft
 
 				hr = ::MFSetAttributeSize(desired_type.Get(), MF_MT_FRAME_SIZE, 0, 0);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 1);
-				hr = desired_type->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 48000);
+//				hr = desired_type->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 48000);
 				hr = desired_type->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 32);
 
 				hr = source_reader->SetCurrentMediaType(
