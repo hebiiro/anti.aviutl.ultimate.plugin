@@ -13,6 +13,11 @@ namespace mft
 		inline static constexpr auto c_fps = 60;
 
 		//
+		// 算出された音量データが格納されます。
+		//
+		std::vector<uint8_t> volumes;
+
+		//
 		// MFTのバイトストリームです。
 		//
 		ComPtr<IMFByteStream> byte_stream;
@@ -129,6 +134,27 @@ namespace mft
 #endif
 			}
 
+			// 動画の総再生時間(100ナノ秒単位)を取得し、
+			// 総フレーム数を事前に算出します。
+			{
+				auto var = PROPVARIANT {};
+				::PropVariantInit(&var);
+				auto hr = source_reader->GetPresentationAttribute(
+					MF_SOURCE_READER_MEDIASOURCE, MF_PD_DURATION, &var);
+				if (SUCCEEDED(hr) && var.vt == VT_UI8)
+				{
+					auto duration_100ns = (UINT64)var.uhVal.QuadPart;
+
+					// 100ナノ秒単位 → フレーム数への変換です。
+					// 端数を切り上げて、実際のフレーム数以上を確保しておきます。
+					auto nb_frames = (duration_100ns * c_fps + 10'000'000ULL - 1) / 10'000'000ULL;
+					MY_TRACE_INT(nb_frames);
+
+					volumes.resize(nb_frames);
+				}
+				::PropVariantClear(&var);
+			}
+
 			MY_TRACE("初期化が完了しました\n");
 		}
 
@@ -186,18 +212,20 @@ namespace mft
 		};
 
 		//
-		// 指定された音声ファイルからフレーム(60FPS)毎の音量を算出して返します。
+		// 音声ファイルからフレーム(60FPS)毎の音量を算出し、その総数を返します。
 		//
-		std::vector<uint8_t> extract_volumes(const std::wstring& compute_mode)
+		uint32_t extract_volumes(const std::wstring& compute_mode)
 		{
 			MY_TRACE_FUNC("");
+
+			mft::counter_base_t counter(L"音量算出");
+
+			// 音量の総数(フレーム数)です。
+			auto nb_volumes = uint32_t {};
 
 			// 音量の算出方式を取得します。
 			auto compute_func = compute_peak;
 			if (compute_mode == L"rms") compute_func = compute_rms;
-
-			// 算出した音量を格納するバッファです。
-			auto volumes = std::vector<uint8_t> {};
 
 			// 取得したサンプルを格納するアライン済みバッファです。
 			auto samples = std::vector<float, aligned_allocator<float, 32>> {};
@@ -205,9 +233,6 @@ namespace mft
 			// 最初のフレームのブロック数を取得します。
 			auto nb_blocks_per_frame = get_nb_blocks_at(0);
 			MY_TRACE_INT(nb_blocks_per_frame);
-
-			// サンプルを読み込んだ回数です。
-			auto nb_reads = size_t {};
 
 			while (1)
 			{
@@ -277,36 +302,38 @@ namespace mft
 					// 音量を算出可能な数のサンプルが蓄積されている場合は
 					while (nb_samples >= nb_blocks_per_frame)
 					{
+						// 音量の総数が想定より多い場合はここで算出を終了します。
+						if (nb_volumes >= volumes.size()) return (uint32_t)volumes.size();
+
 						// サンプルから音量を算出します。
-						volumes.emplace_back(compute_func(&sample[0], nb_blocks_per_frame));
-//						MY_TRACE_INT(volumes.size());
+						volumes[nb_volumes++] = compute_func(&sample[0], nb_blocks_per_frame);
 
 						// サンプルの位置を次に進めます。
 						sample += nb_blocks_per_frame;
 						nb_samples -= nb_blocks_per_frame;
 
 						// フレームあたりのブロック数を更新します。
-						nb_blocks_per_frame = get_nb_blocks_at(volumes.size());
+						nb_blocks_per_frame = get_nb_blocks_at(nb_volumes);
 //						MY_TRACE_INT(nb_blocks_per_frame);
 					}
 
 					// 計算が終わったサンプルを取り除きます。
 					samples.erase(samples.begin(), sample);
 				}
-
-				// サンプルを読み込んだ回数を増やします。
-				nb_reads++;
-//				MY_TRACE_INT(nb_reads);
 			}
 
-			// 残りのサンプルから音量を算出します。
+			// サンプルが残っている場合は
 			if (samples.size())
-				volumes.emplace_back(compute_func(samples.data(), samples.size()));
+			{
+				// 音量の総数が想定より多い場合はここで算出を終了します。
+				if (nb_volumes >= volumes.size()) return (uint32_t)volumes.size();
 
-			MY_TRACE_INT(volumes.size());
+				// 残りのサンプルから音量を算出します。
+				volumes[nb_volumes++] = compute_func(samples.data(), samples.size());
+			}
 
-			// 算出した音量を返します。
-			return volumes;
+			// 算出した音量の総数を返します。
+			return nb_volumes;
 		}
 	};
 }

@@ -48,30 +48,15 @@ namespace apn::item_wave::reader
 
 			// フレーム毎の音量を算出します。
 			{
-				std::vector<uint8_t> volumes;
-
 				// Media Foundationを使用して音量を算出します。
-				{
-					mft::counter_base_t counter(L"MFセッション");
+				mft::session_t session(file_name);
 
-					try
-					{
-						mft::session_t session(file_name);
-
-						volumes = session.extract_volumes(compute_mode);
-					}
-					catch (...)
-					{
-						return FALSE;
-					}
-				}
+				auto length = session.extract_volumes(compute_mode);
+				MY_TRACE_INT(length);
 
 				// 結果をパイプに書き込みます。
 				{
 					mft::counter_base_t counter(L"パイプに書き込み");
-
-					auto length = (uint32_t)volumes.size();
-					MY_TRACE_INT(length);
 
 					auto nb_written_bytes1 = DWORD {};
 					auto r1 = ::WriteFile(pipe.get(), &length, sizeof(length), &nb_written_bytes1, nullptr);
@@ -79,7 +64,7 @@ namespace apn::item_wave::reader
 					MY_TRACE_INT(nb_written_bytes1);
 
 					auto nb_written_bytes2 = DWORD {};
-					auto r2 = ::WriteFile(pipe.get(), volumes.data(), sizeof(volumes[0]) * length, &nb_written_bytes2, nullptr);
+					auto r2 = ::WriteFile(pipe.get(), session.volumes.data(), sizeof(session.volumes[0]) * length, &nb_written_bytes2, nullptr);
 					MY_TRACE_INT(r2);
 					MY_TRACE_INT(nb_written_bytes2);
 				}
