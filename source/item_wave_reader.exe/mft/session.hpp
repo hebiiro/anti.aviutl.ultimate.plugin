@@ -13,6 +13,11 @@ namespace mft
 		inline static constexpr auto c_fps = 60;
 
 		//
+		// MFTのバイトストリームです。
+		//
+		ComPtr<IMFByteStream> byte_stream;
+
+		//
 		// MFTのソースリーダーです。
 		//
 		ComPtr<IMFSourceReader> source_reader;
@@ -47,26 +52,14 @@ namespace mft
 			// MFTを開始します。
 			auto hr = ::MFStartup(MF_VERSION);
 			if (FAILED(hr)) throw L"::MFStartup()が失敗しました";
-#if 0
-			// 読み込み属性を作成します。
-			// (逆に処理速度が遅くなりました)
-			ComPtr<IMFAttributes> attr;
-			::MFCreateAttributes(&attr, 1);
-			attr->SetUINT32(MF_LOW_LATENCY, TRUE);
-//			attr->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, TRUE);
-//			attr->SetUINT32(MF_READWRITE_DISABLE_CONVERTERS, FALSE);
-//			attr->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, FALSE);
 
 			// 動画ファイルを読み込むソースリーダーを作成します。
-			hr = ::MFCreateSourceReaderFromURL(
-				file_path.c_str(), attr.Get(), source_reader.GetAddressOf());
-			if (FAILED(hr)) throw L"::MFCreateSourceReaderFromURL()が失敗しました";
-#else
-			// 動画ファイルを読み込むソースリーダーを作成します。
-			hr = ::MFCreateSourceReaderFromURL(
-				file_path.c_str(), nullptr, source_reader.GetAddressOf());
-			if (FAILED(hr)) throw L"::MFCreateSourceReaderFromURL()が失敗しました";
-#endif
+			byte_stream.Attach(new prefetch_byte_stream_t(file_path)); // 既定100MB
+
+			hr = ::MFCreateSourceReaderFromByteStream(
+				byte_stream.Get(), nullptr, source_reader.GetAddressOf());
+			if (FAILED(hr)) throw L"::MFCreateSourceReaderFromByteStream()が失敗しました";
+
 			// 音声ストリーム以外を選択解除します。
 			// こうしないと、未読の映像サンプルが際限なくキューに溜まり
 			// メモリを消費し続け、さらに裏で映像の処理が走り続けて遅くなります。

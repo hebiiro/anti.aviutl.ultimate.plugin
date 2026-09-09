@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="app.hpp" />
     <ClInclude Include="mft\compute.hpp" />
+    <ClInclude Include="mft\prefetch_byte_stream.hpp" />
     <ClInclude Include="mft\session.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

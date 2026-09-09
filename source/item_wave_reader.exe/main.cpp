@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "mft/compute.hpp"
+#include "mft/prefetch_byte_stream.hpp"
 #include "mft/session.hpp"
 #include "app.hpp"
 

@@ -23,6 +23,9 @@
     <ClInclude Include="mft\compute.hpp">
       <Filter>mft</Filter>
     </ClInclude>
+    <ClInclude Include="mft\prefetch_byte_stream.hpp">
+      <Filter>mft</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
