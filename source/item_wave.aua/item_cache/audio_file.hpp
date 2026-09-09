@@ -189,6 +189,8 @@ namespace apn::item_wave::item_cache
 		//
 		virtual BOOL refresh(context_t& ctx, int32_t self_object_index) override
 		{
+			MY_TRACE_FUNC("{/}", self_object_index);
+
 			{
 				// アイテムのプロパティを取得します。
 				auto prop = get_prop(ctx, self_object_index);
@@ -292,6 +294,8 @@ namespace apn::item_wave::item_cache
 		//
 		virtual BOOL prepare(context_t& ctx, int32_t self_object_index) override
 		{
+			MY_TRACE_FUNC("{/}", self_object_index);
+
 			// アイテムのプロパティが無効の場合は何もしません。
 			if (!prop) return FALSE;
 

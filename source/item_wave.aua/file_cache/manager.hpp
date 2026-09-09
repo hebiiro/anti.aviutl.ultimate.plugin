@@ -219,6 +219,7 @@ namespace apn::item_wave::file_cache
 				// 音量の数を取得します。
 				auto length = uint32_t {};
 				::ReadFile(pipe.get(), &length, sizeof(length), nullptr, nullptr);
+				MY_TRACE_INT(length);
 
 				// 音量を格納できるようにバッファをリサイズします。
 				cache->volumes.resize(length);
@@ -232,16 +233,16 @@ namespace apn::item_wave::file_cache
 					// 一度に読み込むバイト数です。
 					constexpr auto c_read_bytes = DWORD { 4096 };
 
-					// 読み込み用の変数です。
-					auto read = DWORD {};
-					auto nb_buffer = std::min<DWORD>(c_read_bytes, length - index);
-
 					// 音量をパイプから読み込みます。
-					if (!::ReadFile(pipe.get(), &cache->volumes[index], nb_buffer, &read, nullptr))
+					auto nb_read_bytes = DWORD {};
+					auto nb_buffer = std::min<DWORD>(c_read_bytes, length - index);
+					if (!::ReadFile(pipe.get(), &cache->volumes[index], nb_buffer, &nb_read_bytes, nullptr))
 						break; // 読み込みに失敗した場合はループを終了します。
+					MY_TRACE_INT(nb_read_bytes);
 
 					// インデックスを進めます。
-					index += read;
+					index += nb_read_bytes;
+					MY_TRACE_INT(index);
 				}
 			}
 

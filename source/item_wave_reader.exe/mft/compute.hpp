@@ -2,28 +2,33 @@
 
 namespace mft
 {
-#if 1
 	//
 	// このクラスは実行時間を計測してデバッグ出力します。
 	//
-	struct counter_t
+	struct counter_base_t
 	{
 		const std::wstring label;
 		LARGE_INTEGER freq = {}, start = {}, end = {};
 
-		counter_t(const std::wstring& label) : label(label)
+		counter_base_t(const std::wstring& label) : label(label)
 		{
 			::QueryPerformanceFrequency(&freq);
 			::QueryPerformanceCounter(&start);
 		}
 
-		~counter_t()
+		~counter_base_t()
 		{
 			::QueryPerformanceCounter(&end);
 
 			MY_TRACE("{/} = {/}秒\n", label, (end.QuadPart - start.QuadPart) / (double)freq.QuadPart);
 		}
 	};
+#if 0
+//#ifdef _DEBUG
+	//
+	// このクラスは実行時間を計測してデバッグ出力します。
+	//
+	struct counter_t : counter_baes_t { counter_t(const std::wstring& label) : counter_base_t(label) {} };
 #else
 	//
 	// このクラスは何もしません。
