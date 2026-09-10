@@ -28,7 +28,7 @@ namespace mft
 	//
 	// このクラスは実行時間を計測してデバッグ出力します。
 	//
-	struct counter_t : counter_baes_t { counter_t(const std::wstring& label) : counter_base_t(label) {} };
+	struct counter_t : counter_base_t { counter_t(const std::wstring& label) : counter_base_t(label) {} };
 #else
 	//
 	// このクラスは何もしません。
@@ -70,7 +70,7 @@ namespace mft
 		using propagate_on_container_move_assignment = std::true_type;
 		using is_always_equal = std::true_type;
 	};
-#if 1
+
 	//
 	// 指定された実数を音量範囲にマップします。(最適化版)
 	//
@@ -81,20 +81,6 @@ namespace mft
 		mapped = (mapped | ((255 - mapped) >> 31));   // min(mapped, 255)
 		return (uint8_t)mapped;
 	}
-#else
-	//
-	// 指定された実数を音量範囲にマップします。
-	//
-	inline uint8_t map(float value)
-	{
-		auto mapped = (int)(value * 255.0f);
-		mapped = std::max(mapped, 0);
-		mapped = std::min(mapped, 255);
-
-		return (uint8_t)mapped;
-	}
-#endif
-
 #if 1
 	//
 	// 指定されたサンプルからRMSを算出して返します。(AVX2版)
@@ -103,15 +89,12 @@ namespace mft
 	{
 		counter_t counter(L"AVX2でrms算出");
 
-		// samplesが32byteアラインであることを前提にしています。
-		assert(((uintptr_t)samples % 32) == 0);
-
 		auto i = size_t {};
 		auto sum = _mm256_setzero_ps();
 
 		// 8要素ずつ処理します。
 		for (; i + 8 <= size; i += 8) {
-			auto s = _mm256_load_ps(samples + i);
+			auto s = _mm256_loadu_ps(samples + i);
 			sum = _mm256_fmadd_ps(s, s, sum); // sum += s * s
 		}
 
@@ -140,14 +123,11 @@ namespace mft
 	//
 	inline uint8_t compute_rms(const float* samples, size_t size)
 	{
-		// samplesが32byteアラインであることを前提にしています。
-		assert(((uintptr_t)samples % 32) == 0);
-
 		auto i = size_t {};
 		auto sum = _mm256_setzero_ps();
 
 		for (; i + 8 <= size; i += 8) {
-			auto s = _mm256_load_ps(samples + i);
+			auto s = _mm256_loadu_ps(samples + i);
 			sum = _mm256_add_ps(sum, _mm256_mul_ps(s, s));
 		}
 
@@ -169,15 +149,12 @@ namespace mft
 	//
 	inline uint8_t compute_rms(const float* samples, size_t size)
 	{
-		// samplesが32byteアラインであることを前提にしています。
-		assert(((uintptr_t)samples % 32) == 0);
-
 		auto i = size_t {};
 		auto sum = _mm_setzero_ps();
 
 		// 4要素ずつ処理
 		for (; i + 4 <= size; i += 4) {
-			auto s = _mm_load_ps(samples + i);
+			auto s = _mm_loadu_ps(samples + i);
 			sum = _mm_add_ps(sum, _mm_mul_ps(s, s));
 		}
 
@@ -204,9 +181,6 @@ namespace mft
 	{
 		counter_t counter(L"AVX2でピーク算出");
 
-		// samplesが32byteアラインであることを前提にしています。
-		assert(((uintptr_t)samples % 32) == 0);
-
 		auto i = size_t {};
 		auto peak = _mm256_setzero_ps();
 
@@ -215,7 +189,7 @@ namespace mft
 
 		// 8要素ずつ処理します。
 		for (; i + 8 <= size; i += 8) {
-			auto s = _mm256_load_ps(samples + i);
+			auto s = _mm256_loadu_ps(samples + i);
 
 			// fabs: 符号ビットを消す
 			auto abs_s = _mm256_andnot_ps(sign_mask, s);
