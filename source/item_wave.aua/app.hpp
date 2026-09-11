@@ -57,9 +57,9 @@ namespace apn::item_wave
 		}
 
 		//
-		// この仮想関数は、音声処理を実行するときに呼ばれます。
+		// この仮想関数は、映像または音声処理を実行するときに呼ばれます。
 		//
-		virtual BOOL on_audio_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const Addin::ProcState& proc_state) override
+		virtual BOOL on_func_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip, const Addin::ProcState& proc_state) override
 		{
 			MY_TRACE_FUNC("");
 
