@@ -5,8 +5,8 @@ google_analytics:
 theme: jekyll-theme-leap-day
 github:
   ultimate:
-    url: https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r120/ultimate_r120.zip
-    name: ULT-R120
+    url: https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r121/ultimate_r121.zip
+    name: ULT-R121
   pyenv:
     url: https://github.com/hebiiro/anti.aviutl.ultimate.plugin/releases/download/r36/python32_r36.zip
     name: PY-R36
