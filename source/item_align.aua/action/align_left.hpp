@@ -6,7 +6,7 @@ namespace apn::item_align
 	// このクラスは指定された時間まで
 	// タイムラインアイテムを左に寄せます。
 	//
-	struct AlignLeft : Action
+	struct align_left_t : action_t
 	{
 		//
 		// アクションを実行します。
@@ -16,7 +16,7 @@ namespace apn::item_align
 			MY_TRACE_FUNC("");
 
 			// 移動値(時間)を取得します。
-			auto align_time = str_to_time(hive.align_time);
+			auto align_time = str_to_time(hive.time.elements[hive.time.c_index.c_align].sec);
 			MY_TRACE_REAL(align_time);
 
 			// 基準位置(時間)を取得します。

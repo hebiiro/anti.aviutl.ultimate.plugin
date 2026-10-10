@@ -6,7 +6,7 @@ namespace apn::item_align
 	// このクラスは指定された時間まで
 	// タイムラインアイテムを左に伸ばします。
 	//
-	struct StretchLeft : Action
+	struct stretch_left_t : action_t
 	{
 		//
 		// アクションを実行します。
@@ -16,7 +16,7 @@ namespace apn::item_align
 			MY_TRACE_FUNC("");
 
 			// 伸縮量(相対値)を取得します。
-			auto stretch_time = str_to_time(hive.stretch_time);
+			auto stretch_time = str_to_time(hive.time.elements[hive.time.c_index.c_stretch].sec);
 			MY_TRACE_REAL(stretch_time);
 
 			// 基準位置(時間)を取得します。

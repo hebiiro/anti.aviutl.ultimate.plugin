@@ -6,7 +6,7 @@ namespace apn::item_align
 	// このクラスは指定された間隔(絶対値)が空くように
 	// タイムラインアイテムを左に向かって配置します。
 	//
-	struct AbsoluteSpaceLeft : Action
+	struct absolute_space_left_t : action_t
 	{
 		//
 		// アクションを実行します。
@@ -16,7 +16,7 @@ namespace apn::item_align
 			MY_TRACE_FUNC("");
 
 			// ずらす量(時間)を取得します。
-			auto shift_time = str_to_time(hive.absolute_space_time);
+			auto shift_time = str_to_time(hive.time.elements[hive.time.c_index.c_absolute_space].sec);
 			MY_TRACE_REAL(shift_time);
 
 			// 基準位置(時間)を取得します。

@@ -3,15 +3,15 @@
 namespace apn::item_align
 {
 	template <typename T>
-	struct reverse_iteration_helper
+	struct reverse_iteration_helper_t
 	{
-		using Collection = T;
-		using iterator = Collection::reverse_iterator;
-		using const_iterator = Collection::const_reverse_iterator;
+		using collection_t = T;
+		using iterator = collection_t::reverse_iterator;
+		using const_iterator = collection_t::const_reverse_iterator;
 
-		Collection& collection;
+		collection_t& collection;
 
-		reverse_iteration_helper(Collection& collection) : collection(collection) {}
+		reverse_iteration_helper_t(collection_t& collection) : collection(collection) {}
 		iterator begin(){ return collection.rbegin(); }
 		const_iterator begin() const { return collection.rbegin(); }
 		iterator end(){ return collection.rend(); }
@@ -19,17 +19,17 @@ namespace apn::item_align
 	};
 
 	template <typename T>
-	inline auto reverse_iteration(T& collection) { return reverse_iteration_helper<T>(collection); }
+	inline auto reverse_iteration(T& collection) { return reverse_iteration_helper_t<T>(collection); }
 
 	//
 	// このクラスはタイムラインアイテムの位置を変化させる処理を実行します。
 	//
-	struct Action : Utils
+	struct action_t : utils_t
 	{
 		//
 		// このクラスはノードです。
 		//
-		struct Node
+		struct node_t
 		{
 			//
 			// このクラスは編集前後の値です。
@@ -47,12 +47,13 @@ namespace apn::item_align
 			//
 			// コンストラクタです。
 			//
-			Node(const Action& action, int32_t object_index)
+			node_t(const action_t& action, int32_t object_index)
 				: object_index(object_index)
 			{
 				// オブジェクトを取得します。
 				auto object = magi.exin.get_object(object_index);
 
+				// オブジェクトの編集前の位置を取得しておきます。
 				before.layer_set = object->layer_set;
 				before.time_start = action.frame_to_time(object->frame_begin);
 				before.time_end = action.frame_to_time(object->frame_end);
@@ -63,7 +64,7 @@ namespace apn::item_align
 		//
 		// このクラスはレイヤーです。
 		//
-		struct Layer
+		struct layer_t
 		{
 			//
 			// レイヤー番号です。
@@ -73,18 +74,18 @@ namespace apn::item_align
 			//
 			// ノードのコレクションです。
 			//
-			std::vector<std::shared_ptr<Node>> nodes;
+			std::vector<std::shared_ptr<node_t>> nodes;
 
 			//
 			// コンストラクタです。
 			//
-			explicit Layer(int32_t layer_set) : layer_set(layer_set) {}
+			explicit layer_t(int32_t layer_set) : layer_set(layer_set) {}
 		};
 
 		//
 		// このクラスは範囲です。
 		//
-		struct Bound
+		struct bound_t
 		{
 			int32_t top_layer = INT_MAX;
 			int32_t bottom_layer = INT_MIN;
@@ -94,7 +95,7 @@ namespace apn::item_align
 			//
 			// 指定されたノードが含まれるように範囲を拡張します。
 			//
-			void inflate(const std::shared_ptr<Node>& node)
+			void inflate(const std::shared_ptr<node_t>& node)
 			{
 				// 一番上のレイヤーを取得します。
 				top_layer = std::min(top_layer, node->before.layer_set);
@@ -114,40 +115,45 @@ namespace apn::item_align
 		// ノードのコレクションです。
 		// キーはオブジェクトのインデックスです。
 		//
-		std::unordered_map<int32_t, std::shared_ptr<Node>> nodes;
+		std::unordered_map<int32_t, std::shared_ptr<node_t>> nodes;
 
 		//
 		// レイヤーのコレクションです。
 		// キーはレイヤーのインデックスです。
 		//
-		std::unordered_map<int32_t, std::shared_ptr<Layer>> layers;
+		std::unordered_map<int32_t, std::shared_ptr<layer_t>> layers;
 
 		//
 		// 選択ノードのコレクションです。
 		//
-		std::unordered_set<std::shared_ptr<Node>> selection;
+		std::unordered_set<std::shared_ptr<node_t>> selection;
 
 		//
 		// 選択ノードの範囲です。
 		//
-		Bound bound;
+		bound_t bound;
 
 		//
 		// コンストラクタです。
 		//
-		Action()
+		action_t()
 		{
 			MY_TRACE_FUNC("");
 
+			// ノードのコレクションを初期化します。
 			init_nodes();
+
+			// レイヤーのコレクションを初期化します。
 			init_layers();
+
+			// 編集対象を初期化します。
 			init_selection();
 		}
 
 		//
 		// 指定されたノードが選択ノードの場合はtrueを返します。
 		//
-		bool is_selected(const std::shared_ptr<Node>& node) const
+		bool is_selected(const std::shared_ptr<node_t>& node) const
 		{
 			return selection.contains(node);
 		}
@@ -156,7 +162,7 @@ namespace apn::item_align
 		// オブジェクトからノードを取得して返します。
 		// 内部的に使用されます。
 		//
-		std::shared_ptr<Node> get_node(int32_t object_index)
+		std::shared_ptr<node_t> get_node(int32_t object_index)
 		{
 			auto it = nodes.find(object_index);
 			if (it == nodes.end()) return nullptr;
@@ -167,7 +173,7 @@ namespace apn::item_align
 		// 選択ノードを追加します。
 		// 内部的に使用されます。
 		//
-		void select_node(const std::shared_ptr<Node>& node)
+		void select_node(const std::shared_ptr<node_t>& node)
 		{
 			MY_TRACE_FUNC("");
 
@@ -228,6 +234,7 @@ namespace apn::item_align
 
 		//
 		// ノードのコレクションを初期化します。
+		// 現在シーン内の全オブジェクトに相当します。
 		// 内部的に使用されます。
 		//
 		void init_nodes()
@@ -245,7 +252,7 @@ namespace apn::item_align
 				auto object_index = magi.exin.get_object_index(object);
 
 				// ノードのインスタンスを作成します。
-				auto node = std::make_shared<Node>(*this, object_index);
+				auto node = std::make_shared<node_t>(*this, object_index);
 
 				// ノードをコレクションに追加します。
 				nodes[object_index] = node;
@@ -254,7 +261,7 @@ namespace apn::item_align
 				auto& layer = layers[object->layer_set];
 
 				// レイヤーが取得できなかった場合は新規作成します。
-				if (!layer) layer = std::make_shared<Layer>(object->layer_set);
+				if (!layer) layer = std::make_shared<layer_t>(object->layer_set);
 
 				// ノードをレイヤーに追加します。
 				layer->nodes.emplace_back(node);
@@ -263,6 +270,7 @@ namespace apn::item_align
 
 		//
 		// レイヤーのコレクションを初期化します。
+		// 現在シーン内のオブジェクトが配置されている全レイヤーに相当します。
 		// 内部的に使用されます。
 		//
 		void init_layers()
@@ -289,6 +297,7 @@ namespace apn::item_align
 
 		//
 		// 編集対象を初期化します。
+		// 選択オブジェクトまたはフォーカスオブジェクトに相当します。
 		// 内部的に使用されます。
 		//
 		void init_selection()
@@ -312,7 +321,7 @@ namespace apn::item_align
 			// 選択オブジェクトが存在しない場合は
 			else
 			{
-				// カレントオブジェクトを選択します。
+				// フォーカスオブジェクトを選択します。
 				select_object(magi.exin.get_current_object_index());
 			}
 		}
@@ -326,11 +335,15 @@ namespace apn::item_align
 
 			try
 			{
+				// アクションを適用可能かどうかチェックします。
 				check();
+
+				// 選択ノードのオブジェクトを実際に移動させます。
 				apply();
 			}
 			catch (const std::wstring& error)
 			{
+				// 例外が発生した場合は、エラーメッセージを表示します。
 				hive.message_box(error);
 			}
 		}
@@ -361,6 +374,7 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
+			// エラーメッセージです。
 			std::wstring error;
 
 			// 選択ノードを走査します。
@@ -424,6 +438,7 @@ namespace apn::item_align
 				}
 			}
 
+			// エラーメッセージが有効の場合は、例外としてスローします。
 			if (!error.empty()) throw error;
 		}
 

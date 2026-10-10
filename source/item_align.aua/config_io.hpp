@@ -5,7 +5,7 @@ namespace apn::item_align
 	//
 	// このクラスはコンフィグの入出力を担当します。
 	//
-	inline struct ConfigIO : StdConfigIO
+	inline struct config_io : StdConfigIO
 	{
 		//
 		// 初期化処理を実行します。
@@ -67,19 +67,19 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			read_bool(root, "use_current_frame", hive.use_current_frame);
-			read_string(root, "align_time", hive.align_time);
-			read_string(root, "stretch_time", hive.stretch_time);
-			read_string(root, "shift_time", hive.shift_time);
-			read_string(root, "relative_space_time", hive.relative_space_time);
-			read_string(root, "absolute_space_time", hive.absolute_space_time);
+			read_bool(root, "flag_use_current_frame", hive.flag_use_current_frame);
+			read_int(root, "sub_time_mode", hive.time.mode);
+			read_string(root, "align_time", hive.time.elements[hive.time.c_index.c_align].sec);
+			read_string(root, "stretch_time", hive.time.elements[hive.time.c_index.c_stretch].sec);
+			read_string(root, "relative_space_time", hive.time.elements[hive.time.c_index.c_relative_space].sec);
+			read_string(root, "absolute_space_time", hive.time.elements[hive.time.c_index.c_absolute_space].sec);
+			read_string(root, "shift_time", hive.time.elements[hive.time.c_index.c_shift].sec);
+			read_int(root, "align_time", hive.time.elements[hive.time.c_index.c_align].frame);
+			read_int(root, "stretch_time", hive.time.elements[hive.time.c_index.c_stretch].frame);
+			read_int(root, "relative_space_time", hive.time.elements[hive.time.c_index.c_relative_space].frame);
+			read_int(root, "absolute_space_time", hive.time.elements[hive.time.c_index.c_absolute_space].frame);
+			read_int(root, "shift_time", hive.time.elements[hive.time.c_index.c_shift].frame);
 			read_int(root, "move_vert_layer", hive.move_vert_layer);
-			read_int(root, "sub_time_mode", hive.sub_time_mode);
-			read_int(root, "align_sub_time", hive.align_sub_time);
-			read_int(root, "stretch_sub_time", hive.stretch_sub_time);
-			read_int(root, "shift_sub_time", hive.shift_sub_time);
-			read_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
-			read_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
 			read_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;
@@ -92,19 +92,19 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			write_bool(root, "use_current_frame", hive.use_current_frame);
-			write_string(root, "align_time", hive.align_time);
-			write_string(root, "stretch_time", hive.stretch_time);
-			write_string(root, "shift_time", hive.shift_time);
-			write_string(root, "relative_space_time", hive.relative_space_time);
-			write_string(root, "absolute_space_time", hive.absolute_space_time);
+			write_bool(root, "flag_use_current_frame", hive.flag_use_current_frame);
+			write_int(root, "sub_time_mode", hive.time.mode);
+			write_string(root, "align_time", hive.time.elements[hive.time.c_index.c_align].sec);
+			write_string(root, "stretch_time", hive.time.elements[hive.time.c_index.c_stretch].sec);
+			write_string(root, "relative_space_time", hive.time.elements[hive.time.c_index.c_relative_space].sec);
+			write_string(root, "absolute_space_time", hive.time.elements[hive.time.c_index.c_absolute_space].sec);
+			write_string(root, "shift_time", hive.time.elements[hive.time.c_index.c_shift].sec);
+			write_int(root, "align_time", hive.time.elements[hive.time.c_index.c_align].frame);
+			write_int(root, "stretch_time", hive.time.elements[hive.time.c_index.c_stretch].frame);
+			write_int(root, "relative_space_time", hive.time.elements[hive.time.c_index.c_relative_space].frame);
+			write_int(root, "absolute_space_time", hive.time.elements[hive.time.c_index.c_absolute_space].frame);
+			write_int(root, "shift_time", hive.time.elements[hive.time.c_index.c_shift].frame);
 			write_int(root, "move_vert_layer", hive.move_vert_layer);
-			write_int(root, "sub_time_mode", hive.sub_time_mode);
-			write_int(root, "align_sub_time", hive.align_sub_time);
-			write_int(root, "stretch_sub_time", hive.stretch_sub_time);
-			write_int(root, "shift_sub_time", hive.shift_sub_time);
-			write_int(root, "relative_space_sub_time", hive.relative_space_sub_time);
-			write_int(root, "absolute_space_sub_time", hive.absolute_space_sub_time);
 			write_window_pos(root, "addin_window", addin_window);
 
 			return TRUE;

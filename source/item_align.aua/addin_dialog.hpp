@@ -5,7 +5,7 @@ namespace apn::item_align
 	//
 	// このクラスはアドインダイアログです。
 	//
-	inline struct AddinDialog : StdAddinDialog<IDD_MAIN_DIALOG>
+	inline struct addin_dialog_t : StdAddinDialog<idd_main>
 	{
 		void apply_sub_time(uint32_t id, double time)
 		{
@@ -15,11 +15,11 @@ namespace apn::item_align
 
 		void apply_sub_time(uint32_t id)
 		{
-			switch (hive.sub_time_mode)
+			switch (hive.time.mode)
 			{
-			case hive.c_sub_time_mode.c_frame:
+			case hive.time.c_mode.c_frame:
 				{
-					Utils utils;
+					utils_t utils;
 
 					auto frame = get_int(id);
 					auto time = utils.frame_to_time(frame);
@@ -27,9 +27,9 @@ namespace apn::item_align
 
 					break;
 				}
-			case hive.c_sub_time_mode.c_bpm:
+			case hive.time.c_mode.c_bpm:
 				{
-					Utils utils;
+					utils_t utils;
 					if (utils.bpm == 0) break;
 
 					auto bpm = get_int(id);
@@ -48,19 +48,19 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			set_check(IDC_USE_CURRENT_FRAME, hive.use_current_frame);
-			set_text(IDC_SHIFT_TIME, hive.shift_time);
-			set_text(IDC_REL_SPACE_TIME, hive.relative_space_time);
-			set_text(IDC_ABS_SPACE_TIME, hive.absolute_space_time);
-			set_text(IDC_STRETCH_TIME, hive.stretch_time);
-			set_text(IDC_ALIGN_TIME, hive.align_time);
-			set_int(IDC_MOVE_VERT_LAYER, hive.move_vert_layer);
-			set_combobox_index(IDC_SUB_TIME_MODE, hive.sub_time_mode);
-			set_int(IDC_SHIFT_TIME2, hive.shift_sub_time);
-			set_int(IDC_REL_SPACE_TIME2, hive.relative_space_sub_time);
-			set_int(IDC_ABS_SPACE_TIME2, hive.absolute_space_sub_time);
-			set_int(IDC_STRETCH_TIME2, hive.stretch_sub_time);
-			set_int(IDC_ALIGN_TIME2, hive.align_sub_time);
+			set_check(idc_flag_use_current_frame, hive.flag_use_current_frame);
+			set_combobox_index(idc_time_mode, hive.time.mode);
+			set_text(idc_time_align_sec, hive.time.elements[hive.time.c_index.c_align].sec);
+			set_text(idc_time_stretch_sec, hive.time.elements[hive.time.c_index.c_stretch].sec);
+			set_text(idc_time_relative_space_sec, hive.time.elements[hive.time.c_index.c_relative_space].sec);
+			set_text(idc_time_absolute_space_sec, hive.time.elements[hive.time.c_index.c_absolute_space].sec);
+			set_text(idc_time_shift_sec, hive.time.elements[hive.time.c_index.c_shift].sec);
+			set_int(idc_time_align_frame, hive.time.elements[hive.time.c_index.c_align].frame);
+			set_int(idc_time_stretch_frame, hive.time.elements[hive.time.c_index.c_stretch].frame);
+			set_int(idc_time_relative_space_frame, hive.time.elements[hive.time.c_index.c_relative_space].frame);
+			set_int(idc_time_absolute_space_frame, hive.time.elements[hive.time.c_index.c_absolute_space].frame);
+			set_int(idc_time_shift_frame, hive.time.elements[hive.time.c_index.c_shift].frame);
+			set_int(idc_move_vert_layer, hive.move_vert_layer);
 		}
 
 		//
@@ -70,19 +70,19 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			get_check(IDC_USE_CURRENT_FRAME, hive.use_current_frame);
-			get_text(IDC_SHIFT_TIME, hive.shift_time);
-			get_text(IDC_REL_SPACE_TIME, hive.relative_space_time);
-			get_text(IDC_ABS_SPACE_TIME, hive.absolute_space_time);
-			get_text(IDC_STRETCH_TIME, hive.stretch_time);
-			get_text(IDC_ALIGN_TIME, hive.align_time);
-			get_int(IDC_MOVE_VERT_LAYER, hive.move_vert_layer);
-			get_combobox_index(IDC_SUB_TIME_MODE, hive.sub_time_mode);
-			get_int(IDC_SHIFT_TIME2, hive.shift_sub_time);
-			get_int(IDC_REL_SPACE_TIME2, hive.relative_space_sub_time);
-			get_int(IDC_ABS_SPACE_TIME2, hive.absolute_space_sub_time);
-			get_int(IDC_STRETCH_TIME2, hive.stretch_sub_time);
-			get_int(IDC_ALIGN_TIME2, hive.align_sub_time);
+			get_check(idc_flag_use_current_frame, hive.flag_use_current_frame);
+			get_combobox_index(idc_time_mode, hive.time.mode);
+			get_text(idc_time_align_sec, hive.time.elements[hive.time.c_index.c_align].sec);
+			get_text(idc_time_stretch_sec, hive.time.elements[hive.time.c_index.c_stretch].sec);
+			get_text(idc_time_relative_space_sec, hive.time.elements[hive.time.c_index.c_relative_space].sec);
+			get_text(idc_time_absolute_space_sec, hive.time.elements[hive.time.c_index.c_absolute_space].sec);
+			get_text(idc_time_shift_sec, hive.time.elements[hive.time.c_index.c_shift].sec);
+			get_int(idc_time_align_frame, hive.time.elements[hive.time.c_index.c_align].frame);
+			get_int(idc_time_stretch_frame, hive.time.elements[hive.time.c_index.c_stretch].frame);
+			get_int(idc_time_relative_space_frame, hive.time.elements[hive.time.c_index.c_relative_space].frame);
+			get_int(idc_time_absolute_space_frame, hive.time.elements[hive.time.c_index.c_absolute_space].frame);
+			get_int(idc_time_shift_frame, hive.time.elements[hive.time.c_index.c_shift].frame);
+			get_int(idc_move_vert_layer, hive.move_vert_layer);
 		}
 
 		//
@@ -92,7 +92,7 @@ namespace apn::item_align
 		{
 			MY_TRACE_FUNC("");
 
-			init_combobox(IDC_SUB_TIME_MODE, _T("なし"), _T("フレーム"), _T("BPM"));
+			init_combobox(idc_time_mode, _T("なし"), _T("フレーム"), _T("BPM"));
 
 			using namespace my::layout;
 
@@ -100,9 +100,9 @@ namespace apn::item_align
 			auto margin = RECT { margin_value, margin_value, margin_value, margin_value };
 			auto base_size = get_base_size();
 			auto row = std::make_shared<RelativePos>(base_size + margin_value * 2);
-			auto stat = std::make_shared<RelativePos>(base_size * 4);
+			auto stc = std::make_shared<RelativePos>(base_size * 4);
 			auto arrow = std::make_shared<RelativePos>(base_size + margin_value * 2);
-			auto stat2 = std::make_shared<RelativePos>(base_size * 2);
+			auto stc2 = std::make_shared<RelativePos>(base_size * 2);
 			auto time = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
 			auto time2 = std::make_shared<RelativePos>(base_size * 3 + margin_value * 2);
 			auto checkbox = std::make_shared<RelativePos>(base_size * 6);
@@ -111,77 +111,77 @@ namespace apn::item_align
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(IDC_USE_CURRENT_FRAME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(IDC_SUB_TIME_MODE));
+				node->add_pane(c_axis.c_horz, c_align.c_left, checkbox, margin, ctrl(idc_flag_use_current_frame));
+				node->add_pane(c_axis.c_horz, c_align.c_left, combobox, margin, ctrl(idc_time_mode));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ALIGN_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_ALIGN_LEFT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_ALIGN_RIGHT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_ALIGN_STAT2));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(IDC_ALIGN_TIME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(IDC_ALIGN_TIME2));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc, margin, ctrl(idc_align_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_align_left));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_align_right));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc2, margin, ctrl(idc_time_align_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(idc_time_align_sec));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(idc_time_align_frame));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_STRETCH_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_STRETCH_LEFT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_STRETCH_RIGHT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_STRETCH_STAT2));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(IDC_STRETCH_TIME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(IDC_STRETCH_TIME2));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc, margin, ctrl(idc_stretch_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_stretch_left));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_stretch_right));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc2, margin, ctrl(idc_time_stretch_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(idc_time_stretch_sec));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(idc_time_stretch_frame));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_REL_SPACE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_REL_SPACE_LEFT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_REL_SPACE_RIGHT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_REL_SPACE_STAT2));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(IDC_REL_SPACE_TIME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(IDC_REL_SPACE_TIME2));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc, margin, ctrl(idc_relative_space_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_relative_space_left));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_relative_space_right));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc2, margin, ctrl(idc_time_relative_space_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(idc_time_relative_space_sec));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(idc_time_relative_space_frame));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_ABS_SPACE_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_ABS_SPACE_LEFT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_ABS_SPACE_RIGHT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_ABS_SPACE_STAT2));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(IDC_ABS_SPACE_TIME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(IDC_ABS_SPACE_TIME2));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc, margin, ctrl(idc_absolute_space_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_absolute_space_left));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_absolute_space_right));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc2, margin, ctrl(idc_time_absolute_space_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(idc_time_absolute_space_sec));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(idc_time_absolute_space_frame));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_SHIFT_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_SHIFT_DOWN));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_SHIFT_UP));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_SHIFT_STAT2));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(IDC_SHIFT_TIME));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(IDC_SHIFT_TIME2));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc, margin, ctrl(idc_shift_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_shift_down));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_shift_up));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc2, margin, ctrl(idc_time_shift_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(idc_time_shift_sec));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time2, margin, ctrl(idc_time_shift_frame));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat, margin, ctrl(IDC_MOVE_VERT_STAT));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_MOVE_VERT_DOWN));
-				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(IDC_MOVE_VERT_UP));
-				node->add_pane(c_axis.c_horz, c_align.c_left, stat2, margin, ctrl(IDC_MOVE_VERT_STAT2));
-				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(IDC_MOVE_VERT_LAYER));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc, margin, ctrl(idc_move_vert_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_move_vert_down));
+				node->add_pane(c_axis.c_horz, c_align.c_left, arrow, margin, ctrl(idc_move_vert_up));
+				node->add_pane(c_axis.c_horz, c_align.c_left, stc2, margin, ctrl(idc_move_vert_layer_stc));
+				node->add_pane(c_axis.c_horz, c_align.c_left, time, margin, ctrl(idc_move_vert_layer));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_FIX_BPM));
+				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(idc_fix_bpm));
 			}
 
 			{
 				auto node = root->add_pane(c_axis.c_vert, c_align.c_top, row);
-				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(IDC_ERASE_MIDPT));
+				node->add_pane(c_axis.c_horz, c_align.c_left, rest, margin, ctrl(idc_erase_midpt));
 			}
 		}
 
@@ -195,41 +195,41 @@ namespace apn::item_align
 			switch (id)
 			{
 			// ボタン
-			case IDC_ALIGN_LEFT: hive.app->align_left(); break;
-			case IDC_ALIGN_RIGHT: hive.app->align_right(); break;
-			case IDC_STRETCH_LEFT: hive.app->stretch_left(); break;
-			case IDC_STRETCH_RIGHT: hive.app->stretch_right(); break;
-			case IDC_REL_SPACE_LEFT: hive.app->relative_space_left(); break;
-			case IDC_REL_SPACE_RIGHT: hive.app->relative_space_right(); break;
-			case IDC_ABS_SPACE_LEFT: hive.app->absolute_space_left(); break;
-			case IDC_ABS_SPACE_RIGHT: hive.app->absolute_space_right(); break;
-			case IDC_SHIFT_UP: hive.app->shift_up(); break;
-			case IDC_SHIFT_DOWN: hive.app->shift_down(); break;
-			case IDC_MOVE_VERT_DOWN: hive.app->move_vert_down(); break;
-			case IDC_MOVE_VERT_UP: hive.app->move_vert_up(); break;
-			case IDC_FIX_BPM: hive.app->fix_bpm(); break;
-			case IDC_ERASE_MIDPT: hive.app->erase_midpt(); break;
+			case idc_align_left: app->align_left(); break;
+			case idc_align_right: app->align_right(); break;
+			case idc_stretch_left: app->stretch_left(); break;
+			case idc_stretch_right: app->stretch_right(); break;
+			case idc_relative_space_left: app->relative_space_left(); break;
+			case idc_relative_space_right: app->relative_space_right(); break;
+			case idc_absolute_space_left: app->absolute_space_left(); break;
+			case idc_absolute_space_right: app->absolute_space_right(); break;
+			case idc_shift_up: app->shift_up(); break;
+			case idc_shift_down: app->shift_down(); break;
+			case idc_move_vert_down: app->move_vert_down(); break;
+			case idc_move_vert_up: app->move_vert_up(); break;
+			case idc_fix_bpm: app->fix_bpm(); break;
+			case idc_erase_midpt: app->erase_midpt(); break;
 
 			// エディットボックス
-			case IDC_ALIGN_TIME:
-			case IDC_STRETCH_TIME:
-			case IDC_REL_SPACE_TIME:
-			case IDC_ABS_SPACE_TIME:
-			case IDC_SHIFT_TIME:
-			case IDC_MOVE_VERT_LAYER: if (code == EN_CHANGE) update_config(); break;
+			case idc_time_align_sec:
+			case idc_time_stretch_sec:
+			case idc_time_relative_space_sec:
+			case idc_time_absolute_space_sec:
+			case idc_time_shift_sec:
+			case idc_move_vert_layer: if (code == EN_CHANGE) update_config(); break;
 
 			// サブエディットボックス
-			case IDC_ALIGN_TIME2:
-			case IDC_STRETCH_TIME2:
-			case IDC_REL_SPACE_TIME2:
-			case IDC_ABS_SPACE_TIME2:
-			case IDC_SHIFT_TIME2: if (code == EN_CHANGE) apply_sub_time(id); break;
+			case idc_time_align_frame:
+			case idc_time_stretch_frame:
+			case idc_time_relative_space_frame:
+			case idc_time_absolute_space_frame:
+			case idc_time_shift_frame: if (code == EN_CHANGE) apply_sub_time(id); break;
 
 			// コンボボックス
-			case IDC_SUB_TIME_MODE: if (code == CBN_SELCHANGE) update_config(); break;
+			case idc_time_mode: if (code == CBN_SELCHANGE) update_config(); break;
 
 			// その他
-			case IDC_USE_CURRENT_FRAME: update_config(); break;
+			case idc_flag_use_current_frame: update_config(); break;
 			}
 		}
 	} addin_dialog;

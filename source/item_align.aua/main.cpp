@@ -2,6 +2,7 @@
 #include "resource.h"
 #include "hive.hpp"
 #include "utils.hpp"
+#include "app_interface.hpp"
 #include "addin_dialog.hpp"
 #include "addin_window.hpp"
 #include "config_io.hpp"
@@ -31,7 +32,7 @@ namespace apn::item_align
 	//
 	Addin* WINAPI core_get_addin(LPCWSTR args)
 	{
-		if (!my::contains(args, L"debug")) my::Tracer::logger = nullptr;
+		set_logger(args);
 
 		return &addin;
 	}

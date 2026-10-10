@@ -5,7 +5,7 @@ namespace apn::item_align
 	//
 	// このクラスは現在位置の近くにある中間点を削除します。
 	//
-	struct EraseMidpt : Action
+	struct erase_midpt_t : action_t
 	{
 		//
 		// アクションを実行します。
