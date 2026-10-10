@@ -5,7 +5,7 @@ namespace apn::item_align
 	//
 	// このクラスは各種計算を実行します。
 	//
-	struct Utils
+	struct utils_t
 	{
 		//
 		// イプシロンです。
@@ -25,7 +25,7 @@ namespace apn::item_align
 		//
 		// コンストラクタです。
 		//
-		Utils()
+		utils_t()
 		{
 			MY_TRACE_FUNC("");
 
@@ -154,7 +154,7 @@ namespace apn::item_align
 		//
 		double get_base_time_start(double time)
 		{
-			if (hive.use_current_frame)
+			if (hive.flag_use_current_frame)
 				return frame_to_time(magi.exin.get_exedit_current_frame());
 			else
 				return time;
@@ -165,7 +165,7 @@ namespace apn::item_align
 		//
 		double get_base_time_end(double time)
 		{
-			if (hive.use_current_frame)
+			if (hive.flag_use_current_frame)
 				return frame_to_time(magi.exin.get_exedit_current_frame() - 1);
 			else
 				return time;

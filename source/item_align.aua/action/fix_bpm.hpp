@@ -5,7 +5,7 @@ namespace apn::item_align
 	//
 	// このクラスはBPMずれを修正します。
 	//
-	struct FixBpm : Action
+	struct fix_bpm_t : action_t
 	{
 		//
 		// 指定されたフレーム番号を修正して返します。
@@ -38,7 +38,7 @@ namespace apn::item_align
 				auto frame_begin = object->frame_begin;
 				auto frame_end = object->frame_end;
 
-				if (hive.use_current_frame)
+				if (hive.flag_use_current_frame)
 				{
 					frame_begin += diff_current_frame;
 					frame_end += diff_current_frame;

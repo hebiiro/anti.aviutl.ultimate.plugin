@@ -6,7 +6,7 @@ namespace apn::item_align
 	// このクラスはアドインウィンドウです。
 	// このウィンドウはプラグインウィンドウのように振る舞います。
 	//
-	inline struct AddinWindow : StdAddinWindow
+	inline struct addin_window_t : StdAddinWindow
 	{
 		//
 		// 初期化処理を実行します。
@@ -20,9 +20,9 @@ namespace apn::item_align
 				magi.exin.get_aviutl_window(),
 				hive.c_display_name,
 				WS_EX_NOPARENTNOTIFY,
-				WS_CAPTION | WS_SYSMENU | WS_THICKFRAME |
+				WS_CAPTION | WS_SYSMENU |
 				WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-				100, 100, 400, 300);
+				100, 100, 100, 100);
 		}
 
 		//
@@ -38,13 +38,13 @@ namespace apn::item_align
 		//
 		// ウィンドウプロシージャです。
 		//
-		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) override
+		virtual LRESULT on_wnd_proc(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param) override
 		{
 			switch (message)
 			{
 			case WM_CREATE:
 				{
-					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", wParam, lParam);
+					MY_TRACE_FUNC("WM_CREATE, {/hex}, {/hex}", w_param, l_param);
 
 					if (!addin_dialog.init(hive.instance, hwnd))
 					{
@@ -53,8 +53,10 @@ namespace apn::item_align
 						return -1;
 					}
 
-					set_target(addin_dialog);
-					resize();
+					// アドインダイアログとクライアント矩形のサイズを一致させます。
+					auto rc = my::get_window_rect(addin_dialog);
+					my::client_to_window(hwnd, &rc);
+					my::set_window_rect(hwnd, &rc);
 
 					// 初期化が完了したので、このウィンドウをメインウィンドウに設定します。
 					hive.main_window = addin_window;
@@ -63,7 +65,7 @@ namespace apn::item_align
 				}
 			case WM_DESTROY:
 				{
-					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", wParam, lParam);
+					MY_TRACE_FUNC("WM_DESTROY, {/hex}, {/hex}", w_param, l_param);
 
 					addin_dialog.exit();
 
@@ -71,7 +73,7 @@ namespace apn::item_align
 				}
 			}
 
-			return __super::on_wnd_proc(hwnd, message, wParam, lParam);
+			return __super::on_wnd_proc(hwnd, message, w_param, l_param);
 		}
 	} addin_window;
 }

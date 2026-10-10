@@ -6,7 +6,7 @@ namespace apn::item_align
 	// このクラスは指定されたレイヤーまで
 	// タイムラインアイテムを下に詰めます。
 	//
-	struct MoveVertDown : Action
+	struct move_vert_down_t : action_t
 	{
 		//
 		// アクションを実行します。
@@ -30,7 +30,7 @@ namespace apn::item_align
 			MY_TRACE_REAL(base_time_start);
 
 			struct Cell {
-				std::vector<std::shared_ptr<Node>> nodes;
+				std::vector<std::shared_ptr<node_t>> nodes;
 			};
 
 			struct Col {

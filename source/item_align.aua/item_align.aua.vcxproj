@@ -174,6 +174,7 @@
     <ClInclude Include="action\stretch_left.hpp" />
     <ClInclude Include="action\stretch_right.hpp" />
     <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
     <ClInclude Include="config_io.hpp" />
     <ClInclude Include="hive.hpp" />
     <ClInclude Include="addin_dialog.hpp" />
