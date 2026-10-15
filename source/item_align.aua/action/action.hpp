@@ -346,6 +346,9 @@ namespace apn::item_align
 				// 例外が発生した場合は、エラーメッセージを表示します。
 				hive.message_box(error);
 			}
+
+			// 拡張編集ウィンドウにフォーカスを移します。
+			::SetFocus(magi.exin.get_exedit_window());
 		}
 
 		//
