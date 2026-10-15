@@ -235,6 +235,7 @@ namespace mft
 			// ローカルファイル専用の簡易実装のため、
 			// 読み込み自体はここで同期的に完了させ、
 			// IMFAsyncResultだけを作って即座に完了通知します。
+			// (完了通知はInvoke()を直接呼ばず、MFInvokeCallback()経由で行います)
 			auto ar = new (std::nothrow) async_result_t {};
 			if (!ar) return E_OUTOFMEMORY;
 
@@ -246,7 +247,12 @@ namespace mft
 			ar->Release();
 			if (FAILED(hr)) return hr;
 
-			return pCallback->Invoke(result.Get());
+			// コールバックを直接呼ぶと、BeginRead()から戻る前にInvoke()が実行されます。
+			// 呼び出し元は「BeginRead()が戻った後に、別スレッドからInvoke()が来る」
+			// ことを前提にしているため、状態が未設定のまま完了通知が届いて
+			// クラッシュすることがあります。(mp3のバイトストリームハンドラで発生)
+			// そのため、MFInvokeCallback()でMFのワークキュー上から非同期に通知します。
+			return ::MFInvokeCallback(result.Get());
 		}
 
 		HRESULT __stdcall EndRead(IMFAsyncResult* pResult, ULONG* pcbRead) override
