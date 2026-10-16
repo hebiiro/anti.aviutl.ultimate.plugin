@@ -5,7 +5,7 @@ namespace apn::local_web_app
 	//
 	// このクラスは他クラスから共通して使用される変数を保持します。
 	//
-	inline struct Hive
+	inline struct hive_t
 	{
 		inline static constexpr auto c_name = L"local_web_app";
 		inline static constexpr auto c_display_name = L"ローカルウェブアプリ";

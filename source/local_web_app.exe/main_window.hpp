@@ -5,7 +5,7 @@ namespace apn::local_web_app
 	//
 	// このクラスはメインウィンドウです。
 	//
-	inline struct MainWindow : Browser
+	inline struct main_window_t : browser_t
 	{
 		//
 		// 初期化処理を実行します。

@@ -5,12 +5,12 @@ namespace apn::local_web_app
 	//
 	// このクラスはアプリケーションです。
 	//
-	inline struct App : AppInterface
+	inline struct app_t : app_interface_t
 	{
 		//
 		// コンストラクタです。
 		//
-		App() { app = this; }
+		app_t() { app = this; }
 
 		//
 		// 初期化処理を実行します。

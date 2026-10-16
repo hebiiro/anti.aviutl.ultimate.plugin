@@ -5,7 +5,7 @@ namespace apn::local_web_app
 	//
 	// このクラスはhtmlを表示するブラウザウィンドウです。
 	//
-	inline struct Browser : apn::Browser
+	inline struct browser_t : apn::Browser
 	{
 		//
 		// 指定されたhtmlファイルをブラウズします。
