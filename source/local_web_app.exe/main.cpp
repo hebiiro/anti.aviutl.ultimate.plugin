@@ -10,17 +10,17 @@
 
 namespace apn::local_web_app
 {
-	int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
+	EXTERN_C int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
 	{
 		// デバッグトレースとCOMを初期化します。
-		struct Initializer
+		struct initializer_t
 		{
 			GdiplusStartupInput gdi_si;
 			GdiplusStartupOutput gdi_so;
 			ULONG_PTR gdi_token = 0;
 			ULONG_PTR gdi_hook_token = 0;
 
-			Initializer()
+			initializer_t()
 			{
 				_tsetlocale(LC_ALL, _T(""));
 				::OleInitialize(nullptr);
@@ -28,10 +28,18 @@ namespace apn::local_web_app
 				gdi_si.SuppressBackgroundThread = TRUE;
 				GdiplusStartup(&gdi_token, &gdi_si, &gdi_so);
 				gdi_so.NotificationHook(&gdi_hook_token);
+
+				my::tracer_to_file::init(nullptr);
+
+				MY_TRACE_FUNC("");
 			}
 
-			~Initializer()
+			~initializer_t()
 			{
+				MY_TRACE_FUNC("");
+
+				my::tracer_to_file::exit();
+
 				gdi_so.NotificationUnhook(gdi_hook_token);
 				GdiplusShutdown(gdi_token);
 
@@ -43,9 +51,11 @@ namespace apn::local_web_app
 
 		// インスタンスハンドルをハイブに格納します。
 		hive.instance = instance;
+		MY_TRACE_HEX(hive.instance);
 
 		// ローカルコンテンツの起点となるフォルダを取得します。
 		hive.origin_folder_path = my::get_module_file_name(instance).parent_path().parent_path();
+		MY_TRACE_STR(hive.origin_folder_path);
 
 		std::wstring orig_path, dummy_path;
 
@@ -105,6 +115,7 @@ namespace apn::local_web_app
 				}
 
 				hive.current_file_path = dummy_path;
+				MY_TRACE_STR(hive.current_file_path);
 			}
 			catch (const std::exception& error)
 			{
@@ -163,9 +174,4 @@ namespace apn::local_web_app
 		// プロセスを終了します。
 		return 0;
 	}
-}
-
-int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
-{
-	return apn::local_web_app::WinMain(instance, prev_instance, cmd_line, cmd_show);
 }

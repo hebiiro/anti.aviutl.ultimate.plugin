@@ -182,7 +182,7 @@
     <Image Include="64x64.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="local_web_app.exe.rc" />
+    <ResourceCompile Include="resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
