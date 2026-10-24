@@ -10,6 +10,9 @@
 
 namespace apn::local_web_app
 {
+	//
+	// エントリポイントです。
+	//
 	EXTERN_C int APIENTRY _tWinMain(HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int cmd_show)
 	{
 		// デバッグトレースとCOMを初期化します。
@@ -57,18 +60,47 @@ namespace apn::local_web_app
 		hive.origin_folder_path = my::get_module_file_name(instance).parent_path().parent_path();
 		MY_TRACE_STR(hive.origin_folder_path);
 
-		std::wstring orig_path, dummy_path;
+		// コマンドライン文字列を取得します。
+		auto command_line = ::GetCommandLineW();
+
+		// コマンドライン引数を取得します。
+		auto argc = int {};
+		auto args = ::CommandLineToArgvW(command_line, &argc);
+		MY_TRACE_INT(argc);
+#ifdef _DEBUG
+		// デバッグ用の処理です。
+		for (int i = 0; i < argc; i++) MY_TRACE_STR(args[i]);
+#endif
+		// 引数の数が無効の場合は
+		if (argc < 2)
+		{
+			// メッセージボックスを表示します。
+			hive.message_box(L"引数の数が無効です");
+
+			// プロセスを異常終了します。
+			return -1;
+		}
 
 		// コマンドライン引数からhtmlファイルのファイルパスを取得します。
-		orig_path = cmd_line;
-		orig_path = trim(orig_path, L"\"");
-		MY_TRACE_STR(orig_path);
+		std::wstring orig_path = args[1], dummy_path;
 
+		// カレントファイルのパスをセットします。
 		hive.current_file_path = orig_path;
-		if (!hive.current_file_path.empty() &&
-			hive.current_file_path.extension() != L".html")
+
+		// カレントファイルのパスが無効の場合は
+		if (hive.current_file_path.empty())
 		{
-			// 元のファイルは拡張子がhtmlではないのでhtmlファイルとして開けません。
+			// メッセージボックスを表示します。
+			hive.message_box(L"カレントファイルのパスが無効です");
+
+			// プロセスを異常終了します。
+			return -1;
+		}
+
+		// カレントファイルがhtmlではない場合は
+		if (hive.current_file_path.extension() != L".html")
+		{
+			// 拡張子がhtmlではないので、htmlファイルとして開けません。
 			// なので、拡張子をhtmlに変更したダミーファイルの方をブラウザで開きます。
 
 			try
@@ -114,19 +146,24 @@ namespace apn::local_web_app
 						std::make_error_code(std::errc::no_such_file_or_directory));
 				}
 
+				// カレントファイルのパスを再セットします。
 				hive.current_file_path = dummy_path;
 				MY_TRACE_STR(hive.current_file_path);
 			}
 			catch (const std::exception& error)
 			{
+				// メッセージボックスを表示します。
 				hive.message_box(my::ws(error.what()));
 
+				// プロセスを異常終了します。
 				return -1;
 			}
 			catch (...)
 			{
+				// メッセージボックスを表示します。
 				hive.message_box(L"例外が発生しました");
 
+				// プロセスを異常終了します。
 				return -1;
 			}
 		}
@@ -134,8 +171,10 @@ namespace apn::local_web_app
 		// アプリケーションを初期化します。
 		if (!app->init())
 		{
+			// メッセージボックスを表示します。
 			hive.message_box(L"アプリケーションの初期化に失敗しました");
 
+			// プロセスを異常終了します。
 			return -1;
 		}
 
@@ -149,6 +188,7 @@ namespace apn::local_web_app
 		MSG msg = {};
 		while (::GetMessage(&msg, 0, 0, 0))
 		{
+			// メッセージをディスパッチします。
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 		}
@@ -158,7 +198,8 @@ namespace apn::local_web_app
 
 		try
 		{
-			if (!dummy_path.empty())
+			// ダミーファイルが有効の場合は
+			if (dummy_path.length())
 			{
 				// ダミーファイルを削除します。
 				std::filesystem::remove(dummy_path);
@@ -166,6 +207,7 @@ namespace apn::local_web_app
 		}
 		catch (...)
 		{
+			// プロセスを異常終了します。
 			return -1;
 		}
 
