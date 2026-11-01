@@ -25,7 +25,7 @@ namespace mft
 		//
 		// ファイルハンドルです。
 		//
-		my::handle::unique_ptr<> file_;
+		my::handle::unique_ptr file_;
 
 		//
 		// ファイルサイズです。

@@ -2,21 +2,6 @@
 
 namespace my
 {
-	template <typename T, auto deleter>
-	struct ptr_utils {
-		using remove_pointer_type = std::remove_pointer<T>::type;
-		using unique_ptr = std::unique_ptr<remove_pointer_type, decltype(deleter)>;
-		struct shared_ptr : std::shared_ptr<remove_pointer_type> {
-			shared_ptr() {}
-			shared_ptr(T x) : std::shared_ptr<remove_pointer_type>(x, deleter) {}
-			auto reset(T x) { return __super::reset(x, deleter); }
-		};
-		using weak_ptr = std::weak_ptr<remove_pointer_type>;
-	};
-
-	using image_list = ptr_utils<HIMAGELIST, [](HIMAGELIST x) { ::ImageList_Destroy(x); }>;
-	using registry_key = ptr_utils<HKEY, [](HKEY x) { ::RegCloseKey(x); }>;
-
 	//
 	// レジストリキーを開いて返します。
 	//
@@ -320,7 +305,7 @@ namespace apn::selector
 	//
 	inline std::wstring get_file_time_string(const std::wstring& path)
 	{
-		my::handle::unique_ptr<> file(::CreateFileW(path.c_str(), GENERIC_READ,
+		my::handle::unique_ptr file(::CreateFileW(path.c_str(), GENERIC_READ,
 			FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr));
 		if (file.get() == INVALID_HANDLE_VALUE) return {};
 

@@ -15,7 +15,7 @@ namespace apn::dark::skin::theme
 		//
 		// 塗りつぶし用のブラシです。
 		//
-		my::gdi::unique_ptr<HBRUSH> fill_brush;
+		my::gdi<HBRUSH>::unique_ptr fill_brush;
 
 		//
 		// 塗りつぶし用のブラシを返します。

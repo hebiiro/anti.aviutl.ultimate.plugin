@@ -76,10 +76,10 @@ namespace apn::dark::skin
 				auto w = bm.bmWidth;
 				auto h = bm.bmHeight;
 
-				my::dc::unique_ptr<> color_dc(::CreateCompatibleDC(nullptr));
-				my::gdi::selector color_bitmap_selector(color_dc.get(), ii.hbmColor);
-				my::dc::unique_ptr<> mask_dc(::CreateCompatibleDC(nullptr));
-				my::gdi::selector mask_bitmap_selector(mask_dc.get(), ii.hbmMask);
+				my::dc::unique_ptr color_dc(::CreateCompatibleDC(nullptr));
+				my::gdi<HBITMAP>::selector color_bitmap_selector(color_dc.get(), ii.hbmColor);
+				my::dc::unique_ptr mask_dc(::CreateCompatibleDC(nullptr));
+				my::gdi<HBITMAP>::selector mask_bitmap_selector(mask_dc.get(), ii.hbmMask);
 
 				for (decltype(h) y = 0; y < h; y++)
 				{
@@ -131,7 +131,7 @@ namespace apn::dark::skin
 		struct Node
 		{
 			std::wstring name;
-			my::icon::unique_ptr<> icon;
+			my::icon::unique_ptr icon;
 
 			Node(LPCWSTR name) : name(name) {}
 		};

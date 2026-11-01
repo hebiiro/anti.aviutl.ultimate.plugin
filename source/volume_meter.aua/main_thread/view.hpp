@@ -87,7 +87,7 @@ namespace apn::volume_meter::main_thread
 					} c_command_id;
 
 					// ポップアップメニューを作成します。
-					my::menu::unique_ptr<> menu(::CreatePopupMenu());
+					my::menu::unique_ptr menu(::CreatePopupMenu());
 
 					// メニュー項目を追加します。
 					{

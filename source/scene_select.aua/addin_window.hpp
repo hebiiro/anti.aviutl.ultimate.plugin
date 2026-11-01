@@ -8,8 +8,8 @@ namespace apn::scene_select
 	//
 	inline struct AddinWindow : StdAddinWindow
 	{
-		my::theme::unique_ptr<> window_theme;
-		my::theme::unique_ptr<> button_theme;
+		my::theme::unique_ptr window_theme;
+		my::theme::unique_ptr button_theme;
 
 		std::vector<RECT> buttons;
 		int32_t hot_button = -1;
@@ -224,7 +224,7 @@ namespace apn::scene_select
 			magi.fp->exfunc->get_sys_info(nullptr, &si);
 
 			// フォントをセットします。
-			my::gdi::selector font_selector(dc, si.hfont);
+			my::gdi<HFONT>::selector font_selector(dc, si.hfont);
 
 			{
 				// ブラシを取得します。
@@ -297,7 +297,7 @@ namespace apn::scene_select
 		{
 			MY_TRACE_FUNC("");
 
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			::AppendMenu(menu.get(), MF_STRING, hive.c_command_id.c_scene_config, _T("シーンの設定"));
 			::AppendMenu(menu.get(), MF_SEPARATOR, 0, nullptr);

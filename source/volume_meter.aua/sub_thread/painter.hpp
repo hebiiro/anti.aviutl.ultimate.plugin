@@ -126,7 +126,7 @@ namespace apn::volume_meter::sub_thread
 			// フォント名が空の場合は描画しません。
 			if (font.name.empty()) return FALSE;
 
-			my::gdi::selector font_selector(dc, cache.fonts[font_index].get());
+			my::gdi<HFONT>::selector font_selector(dc, cache.fonts[font_index].get());
 
 			x += font.text_offset.x;
 			y += font.text_offset.y;
@@ -153,7 +153,7 @@ namespace apn::volume_meter::sub_thread
 			// フォント名が空の場合は描画しません。
 			if (font.name.empty()) return FALSE;
 
-			my::gdi::selector font_selector(dc, cache.fonts[font_index].get());
+			my::gdi<HFONT>::selector font_selector(dc, cache.fonts[font_index].get());
 
 			auto text_rc = *rc;
 			::OffsetRect(&text_rc, font.text_offset.x, font.text_offset.y);
@@ -245,7 +245,7 @@ namespace apn::volume_meter::sub_thread
 		void draw_separator()
 		{
 			// デバイスコンテキストにペンをセットします。
-			my::gdi::selector pen_selector(dc, cache.separator_pen.get());
+			my::gdi<HPEN>::selector pen_selector(dc, cache.separator_pen.get());
 
 			// チャンネル間のセパレータを描画します。
 			{

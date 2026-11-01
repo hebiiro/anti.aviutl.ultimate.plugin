@@ -111,7 +111,7 @@ namespace apn::reboot::manipulator
 			constexpr uint32_t c_reset_workingset_size = 3001;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// optimize_heapを追加します。
 			::AppendMenu(menu.get(), MF_STRING, c_optimize_heap, _T("ヒープを最適化する"));

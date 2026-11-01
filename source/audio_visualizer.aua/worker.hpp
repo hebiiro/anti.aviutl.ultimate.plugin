@@ -32,7 +32,7 @@ namespace apn::audio_visualizer
 		//
 		// サブスレッドのハンドルです。
 		//
-		my::handle::unique_ptr<> thread;
+		my::handle::unique_ptr thread;
 
 		//
 		// 再生が開始されたフレームです。
@@ -307,7 +307,7 @@ namespace apn::audio_visualizer
 				if (!hive.ui_window) return FALSE;
 
 				// オプションを作成します。
-				my::handle::unique_ptr<> file_mapping(create_option(option));
+				my::handle::unique_ptr file_mapping(create_option(option));
 				if (!file_mapping) return FALSE;
 
 				// オプションを複製します。
@@ -385,7 +385,7 @@ namespace apn::audio_visualizer
 				if (is_late(audio_sample)) return FALSE;
 
 				// 音声アーティファクトを作成します。
-				my::handle::unique_ptr<> file_mapping(create_audio_artifact(audio_sample));
+				my::handle::unique_ptr file_mapping(create_audio_artifact(audio_sample));
 				if (!file_mapping) return FALSE;
 
 				// 音声アーティファクトを複製します。

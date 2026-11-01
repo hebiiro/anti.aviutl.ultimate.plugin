@@ -7,7 +7,7 @@ namespace apn::workspace::hook::win_event
 	//
 	inline struct MoveCursor : Entity
 	{
-		my::win_event_hook::unique_ptr<> hook;
+		my::win_event_hook::unique_ptr hook;
 
 		//
 		// 初期化処理を実行します。

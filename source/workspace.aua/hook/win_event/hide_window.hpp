@@ -7,7 +7,7 @@ namespace apn::workspace::hook::win_event
 	//
 	inline struct HideWindow : Entity
 	{
-		my::win_event_hook::unique_ptr<> win_event_handle;
+		my::win_event_hook::unique_ptr win_event_handle;
 
 		//
 		// 初期化処理を実行します。

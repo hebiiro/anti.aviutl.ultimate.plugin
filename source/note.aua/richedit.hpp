@@ -117,7 +117,7 @@ namespace apn::note
 						{
 							// リッチエディットコントロール用のコンテキストメニューを表示します。
 
-							my::menu::unique_ptr<> menu(::CreatePopupMenu());
+							my::menu::unique_ptr menu(::CreatePopupMenu());
 
 							::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_undo, L"元に戻す(&U)");
 							::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_redo, L"やり直し(&R)");

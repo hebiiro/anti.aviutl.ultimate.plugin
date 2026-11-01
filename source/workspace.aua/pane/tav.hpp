@@ -705,7 +705,7 @@ namespace apn::workspace
 
 			// 描画の準備をします。
 			my::ClientDC dc(*this);
-			my::gdi::selector font_selector(dc, font);
+			my::gdi<HFONT>::selector font_selector(dc, font);
 
 			// 最初の描画位置です。
 			int32_t line = 0, pos = hive.tab_height;
@@ -1208,10 +1208,10 @@ namespace apn::workspace
 			if (!base_font) return 0;
 
 			// フォントを作成します。
-			my::gdi::unique_ptr<HFONT> font(create_font(base_font));
+			my::gdi<HFONT>::unique_ptr font(create_font(base_font));
 
 			// アイコンフォントを作成します。
-			my::gdi::unique_ptr<HFONT> icon_font(create_font(base_font, FW_BLACK));
+			my::gdi<HFONT>::unique_ptr icon_font(create_font(base_font, FW_BLACK));
 
 			// 描画の準備をします。
 			auto client_rc = my::get_client_rect(hwnd);
@@ -1221,13 +1221,13 @@ namespace apn::workspace
 			auto enabled = ::IsWindowEnabled(hwnd);
 			my::PaintDC pdc(hwnd);
 			my::MemDC dc(pdc, &rc);
-			my::gdi::selector font_selector(dc, font.get());
+			my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 			painter.fill_background(dc, &rc, hive.fill_color, hive.theme_tav.get(), 0, 0);
 
 			// アイコンを描画します。
 			{
-				my::gdi::selector icon_font_selector(dc, icon_font.get());
+				my::gdi<HFONT>::selector icon_font_selector(dc, icon_font.get());
 
 				// アイコン代わりの文字です。
 				const std::wstring icon_text = expanded ? L"-" : L"+";
@@ -1363,7 +1363,7 @@ namespace apn::workspace
 				}
 
 				{
-					my::gdi::unique_ptr<HBRUSH> brush(
+					my::gdi<HBRUSH>::unique_ptr brush(
 						::CreateSolidBrush(caption_color));
 
 					::FillRect(dc, &rc, brush.get());

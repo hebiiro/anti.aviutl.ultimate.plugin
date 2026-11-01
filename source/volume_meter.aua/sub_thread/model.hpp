@@ -22,35 +22,35 @@ namespace apn::volume_meter::sub_thread
 				//
 				// 背景色のブラシです。
 				//
-				my::gdi::unique_ptr<HBRUSH> background_brush;
+				my::gdi<HBRUSH>::unique_ptr background_brush;
 
 				//
 				// 警告色のブラシです。
 				//
-				my::gdi::unique_ptr<HBRUSH> warning_brush;
+				my::gdi<HBRUSH>::unique_ptr warning_brush;
 
 				//
 				// セパレータ用のペンです。
 				//
-				my::gdi::unique_ptr<HPEN> separator_pen;
+				my::gdi<HPEN>::unique_ptr separator_pen;
 
 				//
 				// レベル用のブラシです。
 				//
-				my::gdi::unique_ptr<HBRUSH> level_brush;
+				my::gdi<HBRUSH>::unique_ptr level_brush;
 
 				//
 				// 各ゾーンのキャッシュ(ブラシ)です。
 				//
 				struct zone_t {
-					my::gdi::unique_ptr<HBRUSH> background_brush;
-					my::gdi::unique_ptr<HBRUSH> foreground_brush;
+					my::gdi<HBRUSH>::unique_ptr background_brush;
+					my::gdi<HBRUSH>::unique_ptr foreground_brush;
 				} zones[c_zone.c_max_size];
 
 				//
 				// 各フォントのキャッシュです。
 				//
-				my::gdi::unique_ptr<HFONT> fonts[c_font.c_max_size];
+				my::gdi<HFONT>::unique_ptr fonts[c_font.c_max_size];
 			} cache;
 
 			//

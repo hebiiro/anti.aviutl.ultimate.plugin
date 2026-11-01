@@ -205,7 +205,7 @@ namespace apn::font_tree
 
 			// 背景を描画します。
 			{
-				my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(hive.preview.fill_color));
+				my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(hive.preview.fill_color));
 
 				::FillRect(dc, &rc, brush.get());
 			}
@@ -227,8 +227,8 @@ namespace apn::font_tree
 
 					// フォントをセットします。
 					_tcscpy_s(lf.lfFaceName, text.c_str());
-					my::gdi::unique_ptr<HFONT> font(::CreateFontIndirect(&lf));
-					my::gdi::selector font_selector(dc, font.get());
+					my::gdi<HFONT>::unique_ptr font(::CreateFontIndirect(&lf));
+					my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 					// 表示用テキストを描画します。
 					::TextOut(dc, x, y, display_text.c_str(), (int)display_text.length());

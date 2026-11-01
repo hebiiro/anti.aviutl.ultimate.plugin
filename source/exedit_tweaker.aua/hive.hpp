@@ -22,8 +22,8 @@ namespace apn
 				if (pen) ::SelectObject(dc, pen);
 				if (color == CLR_NONE) return;
 
-				my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(color));
-				my::gdi::selector brush_selector(dc, brush.get());
+				my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(color));
+				my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 				::PatBlt(dc, x, y, w, h, PATCOPY);
 			}
@@ -45,8 +45,8 @@ namespace apn
 				auto w = rc->right - rc->left;
 				auto h = rc->bottom - rc->top;
 
-				my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(color));
-				my::gdi::selector brush_selector(dc, brush.get());
+				my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(color));
+				my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 				if (size.cy > 0) {
 					::PatBlt(dc, x, y, w, size.cy, PATCOPY);

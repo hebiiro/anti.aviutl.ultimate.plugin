@@ -33,11 +33,11 @@ namespace apn::selector
 
 				my::ClientDC dc(nullptr);
 				my::MemDC mdc(dc, &rc);
-				my::gdi::selector font_selector(mdc, si.hfont);
+				my::gdi<HFONT>::selector font_selector(mdc, si.hfont);
 
 				// 背景を塗りつぶします。
 				{
-					my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(fill_color));
+					my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(fill_color));
 
 					::FillRect(mdc, &rc, brush.get());
 				}

@@ -80,11 +80,11 @@ namespace apn::font_select
 
 					auto text = font_name + hive.sample;
 
-					my::gdi::unique_ptr<HFONT> font(::CreateFont(
+					my::gdi<HFONT>::unique_ptr font(::CreateFont(
 						my::get_height(rc), 0, 0, 0, 0, FALSE, FALSE, FALSE,
 						DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 						DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font_name.c_str()));
-					my::gdi::selector font_selector(dc, font.get());
+					my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 					paint.draw_sample(dc, text.c_str(), -1, &rc, DT_LEFT | DT_TOP | DT_NOPREFIX, style);
 				}
@@ -95,11 +95,11 @@ namespace apn::font_select
 
 						auto text = hive.sample;
 
-						my::gdi::unique_ptr<HFONT> font(::CreateFont(
+						my::gdi<HFONT>::unique_ptr font(::CreateFont(
 							my::get_height(rc), 0, 0, 0, 0, FALSE, FALSE, FALSE,
 							DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 							DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font_name.c_str()));
-						my::gdi::selector font_selector(dc, font.get());
+						my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 						paint.draw_sample(dc, text.c_str(), -1, &rc, DT_RIGHT | DT_BOTTOM | DT_NOPREFIX, style);
 					}

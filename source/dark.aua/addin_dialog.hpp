@@ -460,7 +460,7 @@ namespace apn::dark
 							auto color = get_uint(id);
 
 							// 背景を描画します。
-							::FillRect(dc, &rc, my::gdi::unique_ptr<HBRUSH>(::CreateSolidBrush(color)).get());
+							::FillRect(dc, &rc, my::gdi<HBRUSH>::unique_ptr(::CreateSolidBrush(color)).get());
 
 							// 縁を描画します。
 							::DrawEdge(dc, &rc, EDGE_RAISED, BF_RECT);

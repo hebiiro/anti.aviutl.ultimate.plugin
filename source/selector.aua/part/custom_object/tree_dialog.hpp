@@ -484,7 +484,7 @@ namespace apn::selector::custom_object
 			constexpr uint32_t c_edit_tree_node = 10;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// ポップアップメニューに項目を追加します。
 			::AppendMenu(menu.get(), MF_STRING, c_add_tree_node_as_top_level, _T("トップレベル項目を追加(&R)"));

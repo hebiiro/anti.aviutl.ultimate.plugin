@@ -184,7 +184,7 @@ namespace apn::item_wave::file_cache
 			auto pipe_name = my::format(L"\\\\.\\pipe\\item_wave\\{/}", ::GetCurrentThreadId());
 
 			// パイプを作成します。
-			my::handle::unique_ptr<> pipe(::CreateNamedPipeW(pipe_name.c_str(),
+			my::handle::unique_ptr pipe(::CreateNamedPipeW(pipe_name.c_str(),
 				PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_WAIT, 1, 0, 0, 0, nullptr));
 
 			// リーダープロセスのファイルパスを取得します。

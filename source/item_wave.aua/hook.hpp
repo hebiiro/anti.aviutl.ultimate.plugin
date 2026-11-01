@@ -260,15 +260,15 @@ namespace apn::item_wave
 			}
 
 			// ペンとブラシを作成します。
-			my::gdi::unique_ptr<HPEN> pen(hive.pen_color != CLR_NONE ?
+			my::gdi<HPEN>::unique_ptr pen(hive.pen_color != CLR_NONE ?
 				::CreatePen(PS_SOLID, 1, hive.pen_color) : (HPEN)::GetStockObject(NULL_PEN));
-			my::gdi::unique_ptr<HBRUSH> brush(hive.brush_color != CLR_NONE ?
+			my::gdi<HBRUSH>::unique_ptr brush(hive.brush_color != CLR_NONE ?
 				::CreateSolidBrush(hive.brush_color) : (HBRUSH)::GetStockObject(NULL_BRUSH));
 
 			{
 				// 頂点群をポリゴンとして描画します。
-				my::gdi::selector pen_selector(dc, pen.get());
-				my::gdi::selector brush_selector(dc, brush.get());
+				my::gdi<HPEN>::selector pen_selector(dc, pen.get());
+				my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 				auto rop2 = ::GetROP2(dc);
 				switch (hive.xor_mode) {
 				case hive.c_xor_mode.c_xor: ::SetROP2(dc, R2_XORPEN); break;
@@ -345,7 +345,7 @@ namespace apn::item_wave
 				if (hive.show_wave)
 				{
 					// 描画がはみ出てもいいようにクリッピング領域を設定しておきます。
-					my::gdi::unique_ptr<HRGN> rgn(::CreateRectRgnIndirect(rc));
+					my::gdi<HRGN>::unique_ptr rgn(::CreateRectRgnIndirect(rc));
 					::SelectClipRgn(dc, rgn.get());
 
 					// 音声波形を描画します。

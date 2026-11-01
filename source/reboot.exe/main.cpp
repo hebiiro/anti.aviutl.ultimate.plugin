@@ -14,10 +14,10 @@ namespace apn::reboot
 				MY_TRACE_FUNC("share::c_message.c_reboot, {/hex}, {/hex}", wParam, lParam);
 
 				// 引数から既存のaviutlプロセスのハンドルを取得します。
-				my::handle::unique_ptr<> process_handle((HANDLE)wParam);
+				my::handle::unique_ptr process_handle((HANDLE)wParam);
 
 				// 引数から共有メモリを取得します。
-				my::handle::unique_ptr<> shared_handle((HANDLE)lParam);
+				my::handle::unique_ptr shared_handle((HANDLE)lParam);
 				my::SharedMemory<share::RebootSignal> shared(shared_handle.get());
 
 				// 共有メモリが取得できた場合は

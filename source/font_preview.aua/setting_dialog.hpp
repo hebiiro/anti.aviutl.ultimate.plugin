@@ -81,11 +81,11 @@ namespace apn::font_preview
 
 					auto text = font_name + hive.sample;
 
-					my::gdi::unique_ptr<HFONT> font(::CreateFont(
+					my::gdi<HFONT>::unique_ptr font(::CreateFont(
 						hive.font_height, 0, 0, 0, 0, FALSE, FALSE, FALSE,
 						DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 						DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font_name.c_str()));
-					my::gdi::selector font_selector(dc, font.get());
+					my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 					paint.draw_sample(dc, text.c_str(), -1, &rc, DT_LEFT | DT_TOP, style);
 				}
@@ -96,11 +96,11 @@ namespace apn::font_preview
 
 						auto text = hive.sample;
 
-						my::gdi::unique_ptr<HFONT> font(::CreateFont(
+						my::gdi<HFONT>::unique_ptr font(::CreateFont(
 							hive.font_height, 0, 0, 0, 0, FALSE, FALSE, FALSE,
 							DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 							DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, font_name.c_str()));
-						my::gdi::selector font_selector(dc, font.get());
+						my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 						auto size = RECT {};
 						paint.draw_sample(dc, text.c_str(), -1, &size, DT_CALCRECT, style);
@@ -151,7 +151,7 @@ namespace apn::font_preview
 			constexpr uint32_t c_copy_font_name = 1;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// ポップアップメニューに項目を追加します。
 			::AppendMenu(menu.get(), MF_STRING, c_copy_font_name, _T("フォント名をコピー"));

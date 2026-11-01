@@ -82,7 +82,7 @@ namespace apn::font_tree
 						{
 							auto dis = (DRAWITEMSTRUCT*)lParam;
 
-							my::gdi::unique_ptr<HBRUSH> brush(
+							my::gdi<HBRUSH>::unique_ptr brush(
 								::CreateSolidBrush(get_uint(control_id)));
 							::FillRect(dis->hDC, &dis->rcItem, brush.get());
 

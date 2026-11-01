@@ -106,7 +106,7 @@ namespace apn::filter_drag
 						{
 							// 背景をcolorで塗りつぶします。
 
-							my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(color));
+							my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(color));
 
 							::FillRect(dc, &rc, brush.get());
 						}

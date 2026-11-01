@@ -1464,7 +1464,7 @@ namespace apn::workspace
 
 			// メモリDCを作成します。
 			my::MemDC dc(paint_dc, &rc);
-			my::gdi::selector font_selector(dc, ::GetCurrentObject(paint_dc, OBJ_FONT));
+			my::gdi<HFONT>::selector font_selector(dc, ::GetCurrentObject(paint_dc, OBJ_FONT));
 
 			// 背景を塗りつぶします。
 			painter.fill_background(dc, &rc);
@@ -1537,7 +1537,7 @@ namespace apn::workspace
 				}
 
 				{
-					my::gdi::unique_ptr<HBRUSH> brush(
+					my::gdi<HBRUSH>::unique_ptr brush(
 						::CreateSolidBrush(caption_color));
 
 					// キャプションの背景を描画します。

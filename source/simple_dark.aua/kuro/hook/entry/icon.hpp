@@ -63,8 +63,8 @@ namespace apn::dark::kuro::hook
 				// オリジナルのアイコン情報を取得します。
 				ICONINFO ii = {};
 				::GetIconInfo(orig_icon, &ii);
-				my::gdi::unique_ptr<HBITMAP> color_bitmap(ii.hbmColor);
-				my::gdi::unique_ptr<HBITMAP> mask_bitmap(ii.hbmMask);
+				my::gdi<HBITMAP>::unique_ptr color_bitmap(ii.hbmColor);
+				my::gdi<HBITMAP>::unique_ptr mask_bitmap(ii.hbmMask);
 
 				// ノードを作成します。
 				std::shared_ptr<node_t> node;
@@ -86,10 +86,10 @@ namespace apn::dark::kuro::hook
 					auto w = bm.bmWidth;
 					auto h = bm.bmHeight;
 
-					my::dc::unique_ptr<> color_dc(::CreateCompatibleDC(nullptr));
-					my::gdi::selector color_bitmap_selector(color_dc.get(), ii.hbmColor);
-					my::dc::unique_ptr<> mask_dc(::CreateCompatibleDC(nullptr));
-					my::gdi::selector mask_bitmap_selector(mask_dc.get(), ii.hbmMask);
+					my::dc::unique_ptr color_dc(::CreateCompatibleDC(nullptr));
+					my::gdi<HBITMAP>::selector color_bitmap_selector(color_dc.get(), ii.hbmColor);
+					my::dc::unique_ptr mask_dc(::CreateCompatibleDC(nullptr));
+					my::gdi<HBITMAP>::selector mask_bitmap_selector(mask_dc.get(), ii.hbmMask);
 
 					for (decltype(h) y = 0; y < h; y++)
 					{
@@ -145,7 +145,7 @@ namespace apn::dark::kuro::hook
 				//
 				// アイコンのハンドルです。
 				//
-				my::icon::unique_ptr<> icon;
+				my::icon::unique_ptr icon;
 			};
 
 			//

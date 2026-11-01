@@ -38,7 +38,7 @@ namespace apn::font_preview
 		//
 		// テーマのハンドルです。
 		//
-		my::theme::unique_ptr<> theme;
+		my::theme::unique_ptr theme;
 
 		//
 		// 描画モードです。
@@ -123,7 +123,7 @@ namespace apn::font_preview
 				auto color = (mode == c_mode.c_custom) ? palette[style].color.background :
 					::GetSysColor((style == c_style.c_normal) ? COLOR_WINDOW : COLOR_HIGHLIGHT);
 
-				::FillRect(dc, rc, my::gdi::unique_ptr<HBRUSH>(::CreateSolidBrush(color)).get());
+				::FillRect(dc, rc, my::gdi<HBRUSH>::unique_ptr(::CreateSolidBrush(color)).get());
 			}
 		}
 

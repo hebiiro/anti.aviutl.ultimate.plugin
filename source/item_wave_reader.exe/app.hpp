@@ -50,7 +50,7 @@ namespace apn::item_wave::reader
 		{
 			MY_TRACE_FUNC("");
 
-			my::handle::unique_ptr<> pipe(
+			my::handle::unique_ptr pipe(
 				::CreateFileW(pipe_name.c_str(),
 				GENERIC_WRITE, 0, nullptr,
 				OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr));
@@ -78,7 +78,7 @@ namespace apn::item_wave::reader
 			::MFShutdown();
 
 			// 元のパイプを開きます。
-			my::handle::unique_ptr<> pipe(
+			my::handle::unique_ptr pipe(
 				::CreateFileW(pipe_name.c_str(),
 				GENERIC_READ | GENERIC_WRITE, 0, nullptr,
 				OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr));
@@ -112,7 +112,7 @@ namespace apn::item_wave::reader
 
 			struct worker_t
 			{
-				my::handle::unique_ptr<> pipe;      // 司令塔側(サーバー)のパイプハンドルです。
+				my::handle::unique_ptr pipe;      // 司令塔側(サーバー)のパイプハンドルです。
 				PROCESS_INFORMATION pi = {};
 				uint32_t range_start = {}, range_end = {};
 			};

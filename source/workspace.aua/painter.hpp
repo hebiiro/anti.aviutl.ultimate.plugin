@@ -38,7 +38,7 @@ namespace apn::workspace
 			else
 			{
 				// ブラシで塗りつぶします。
-				my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(color));
+				my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(color));
 
 				::FillRect(dc, rc, brush.get());
 			}

@@ -39,7 +39,7 @@ namespace apn::workspace
 					auto folder_name = layout_list.folder_name;
 					std::vector<BYTE> buffer(1024);
 					DWORD returned = 0;
-					my::handle::unique_ptr<> file(::CreateFile(
+					my::handle::unique_ptr file(::CreateFile(
 						folder_name.c_str(),
 						FILE_LIST_DIRECTORY,
 						FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,

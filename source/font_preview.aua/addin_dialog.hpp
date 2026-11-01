@@ -255,7 +255,7 @@ namespace apn::font_preview
 							auto color = get_uint(id);
 
 							::FillRect(dis->hDC, &dis->rcItem,
-								my::gdi::unique_ptr<HBRUSH>(::CreateSolidBrush(color)).get());
+								my::gdi<HBRUSH>::unique_ptr(::CreateSolidBrush(color)).get());
 
 							return TRUE;
 						}

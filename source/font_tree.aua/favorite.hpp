@@ -226,7 +226,7 @@ namespace apn::font_tree
 			constexpr uint32_t c_erase_name = 4;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			::AppendMenu(menu.get(), MF_STRING, c_insert,
 				my::format(_T("選択中の\"{/}\"の子要素として\"{/}\"を追加"), node->display_name, font_name).c_str());

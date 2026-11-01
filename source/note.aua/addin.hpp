@@ -81,7 +81,7 @@ namespace apn::note
 				{
 					MY_TRACE_FUNC("magi.c_command_id.c_addin.c_command");
 
-					my::menu::unique_ptr<> menu(::CreatePopupMenu());
+					my::menu::unique_ptr menu(::CreatePopupMenu());
 
 					::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_sharing_note, L"共通ノートを表示");
 					::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_project_note, L"プロジェクトノートを表示");

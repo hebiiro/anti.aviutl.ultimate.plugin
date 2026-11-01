@@ -21,7 +21,7 @@ namespace apn::clipboard_viewer
 		//
 		// クリップボードから取得した画像のコレクションです。
 		//
-		std::vector<my::gdi::shared_ptr<HBITMAP>> bitmaps;
+		std::vector<my::gdi<HBITMAP>::shared_ptr> bitmaps;
 
 		//
 		// コンテンツウィンドウで現在表示している画像のインデックスです。
@@ -36,7 +36,7 @@ namespace apn::clipboard_viewer
 		//
 		// 描画に使用するテーマハンドルです。
 		//
-		my::theme::unique_ptr<> theme;
+		my::theme::unique_ptr theme;
 
 		//
 		// 初期化処理を実行します。
@@ -188,8 +188,8 @@ namespace apn::clipboard_viewer
 
 			// 画像を描画します。
 			{
-				my::dc::unique_ptr<> mdc(::CreateCompatibleDC(dc));
-				my::gdi::selector bitmap_selector(mdc.get(), bitmap.get());
+				my::dc::unique_ptr mdc(::CreateCompatibleDC(dc));
+				my::gdi<HBITMAP>::selector bitmap_selector(mdc.get(), bitmap.get());
 
 				::SetStretchBltMode(dc, HALFTONE);
 				::StretchBlt(dc, -horz_pos, -vert_pos, bm_w, bm_h,
@@ -204,7 +204,7 @@ namespace apn::clipboard_viewer
 		//
 		BOOL on_context_menu()
 		{
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_backward, L"戻る");
 			::AppendMenuW(menu.get(), MF_STRING, c_command_id.c_forward, L"進む");

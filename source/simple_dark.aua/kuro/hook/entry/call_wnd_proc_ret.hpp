@@ -7,7 +7,7 @@ namespace apn::dark::kuro::hook
 	//
 	inline struct cwpr_t : entry_t::node_t
 	{
-		my::win_hook::unique_ptr<> win_hook;
+		my::win_hook::unique_ptr win_hook;
 
 		//
 		// 初期化処理を実行します。

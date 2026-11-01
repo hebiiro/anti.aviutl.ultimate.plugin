@@ -292,7 +292,7 @@ namespace apn::selector::custom_object
 			constexpr uint32_t c_refresh = 1040;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// c_installを追加します。
 			::AppendMenu(menu.get(), MF_STRING, c_install, _T("導入する"));

@@ -261,7 +261,7 @@ namespace apn::volume_meter::main_thread
 							auto dis = (DRAWITEMSTRUCT*)l_param;
 
 							// 選択されている色で塗りつぶします。
-							my::gdi::unique_ptr<HBRUSH> brush(
+							my::gdi<HBRUSH>::unique_ptr brush(
 								::CreateSolidBrush(get_uint(control_id)));
 							::FillRect(dis->hDC, &dis->rcItem, brush.get());
 

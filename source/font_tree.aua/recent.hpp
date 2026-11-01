@@ -102,7 +102,7 @@ namespace apn::font_tree
 			constexpr uint32_t c_read_xml = 1001;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// フォントコンボボックスのフォント名が有効の場合は
 			if (font_name.length())

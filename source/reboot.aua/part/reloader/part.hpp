@@ -178,7 +178,7 @@ namespace apn::reboot::reloader
 			constexpr uint32_t c_with_write = 1;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			::AppendMenu(menu.get(), MF_STRING, c_with_write, _T("再起動前に上書き保存する"));
 			if (agit.with_write)

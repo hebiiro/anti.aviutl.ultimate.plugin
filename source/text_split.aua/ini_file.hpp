@@ -254,7 +254,7 @@ namespace apn::text_split
 			try
 			{
 #if 1
-				my::handle::unique_ptr<> file(
+				my::handle::unique_ptr file(
 					my::create_file_for_write(my::ts(ini_file_name).c_str()));
 
 				const auto write = [&](const std::string& s)

@@ -67,7 +67,7 @@ namespace apn::font_select
 			}
 
 			// フォント選択用のカスタムメニューを作成します。
-			my::menu::unique_ptr<> menu(create_menu(hive.menu_root));
+			my::menu::unique_ptr menu(create_menu(hive.menu_root));
 
 			// メニューを表示します。
 			auto point = my::get_cursor_pos();

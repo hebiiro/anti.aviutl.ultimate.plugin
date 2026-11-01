@@ -190,7 +190,7 @@ namespace apn::workspace
 				if (auto orig_menu = ::GetMenu(*shuttle))
 				{
 					// メニューのコピーを作成します。(ポップアップメニュー化します)
-					my::menu::unique_ptr<> menu(copy_menu(orig_menu));
+					my::menu::unique_ptr menu(copy_menu(orig_menu));
 
 					// ポップアップメニューを表示します。
 					::TrackPopupMenuEx(menu.get(), 0,
@@ -314,7 +314,7 @@ namespace apn::workspace
 			auto is_sub_window = shuttle && get_root_pane(*shuttle);
 
 			// メニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// メニューにシャトルの一覧を追加します。
 			add_shuttle_list(menu.get(), c_command_id.c_shuttle.c_begin,
@@ -389,7 +389,7 @@ namespace apn::workspace
 			append_check_menu(root->is_solid, c_command_id.c_is_solid, _T("レイアウトを固定化"));
 			append_menu(c_command_id.c_pane_config, _T("ペインとタブの設定"));
 			// ドロワーの設定メニューを作成します。
-			my::menu::unique_ptr<> drawer_config_menu(::CreatePopupMenu());
+			my::menu::unique_ptr drawer_config_menu(::CreatePopupMenu());
 			::AppendMenu(menu.get(), MF_POPUP, (UINT_PTR)drawer_config_menu.get(), _T("ドロワーの設定"));
 			::AppendMenu(drawer_config_menu.get(), MF_STRING, c_command_id.c_drawer_config.c_top, _T("上側"));
 			::AppendMenu(drawer_config_menu.get(), MF_STRING, c_command_id.c_drawer_config.c_bottom, _T("下側"));
@@ -510,7 +510,7 @@ namespace apn::workspace
 			auto ht = drawer->hittest(point);
 
 			// メニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// メニューにシャトルの一覧を追加します。
 			add_shuttle_list(menu.get(), c_command_id.c_shuttle.c_begin,
@@ -889,8 +889,8 @@ namespace apn::workspace
 					{
 						LOGFONTW lf = {};
 						::GetThemeSysFont(hive.theme.get(), TMT_CAPTIONFONT, &lf);
-						my::gdi::unique_ptr<HFONT> font(::CreateFontIndirectW(&lf));
-						my::gdi::selector font_selector(dc, font.get());
+						my::gdi<HFONT>::unique_ptr font(::CreateFontIndirectW(&lf));
+						my::gdi<HFONT>::selector font_selector(dc, font.get());
 
 						// 各ペインのキャプションを再帰的に描画します。
 						root->draw_caption(dc);

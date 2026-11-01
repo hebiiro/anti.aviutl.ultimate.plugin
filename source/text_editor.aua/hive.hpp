@@ -62,7 +62,7 @@ namespace apn::text_editor
 			//
 			// フォントのハンドルです。
 			//
-			my::gdi::unique_ptr<HFONT> handle;
+			my::gdi<HFONT>::unique_ptr handle;
 		} font;
 
 		//

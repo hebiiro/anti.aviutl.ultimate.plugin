@@ -158,7 +158,7 @@ namespace apn::audio_visualizer::ui
 					auto visual = (HWND)wParam;
 
 					// ファイルマッピングを取得します。
-					my::handle::unique_ptr<> file_mapping((HANDLE)lParam);
+					my::handle::unique_ptr file_mapping((HANDLE)lParam);
 					MY_TRACE_HEX(file_mapping.get());
 					if (!file_mapping) break;
 
@@ -177,7 +177,7 @@ namespace apn::audio_visualizer::ui
 					MY_TRACE_FUNC("c_update_audio, {/hex}, {/hex}", wParam, lParam);
 
 					// ファイルマッピングを取得します。
-					my::handle::unique_ptr<> file_mapping((HANDLE)lParam);
+					my::handle::unique_ptr file_mapping((HANDLE)lParam);
 					MY_TRACE_HEX(file_mapping.get());
 					if (!file_mapping) break;
 

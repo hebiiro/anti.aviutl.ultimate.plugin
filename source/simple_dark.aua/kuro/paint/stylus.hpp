@@ -177,8 +177,8 @@ namespace apn::dark::kuro::paint
 	//
 	struct icon_attribute_t
 	{
-		my::gdi::unique_ptr<HFONT> font;
-		my::gdi::selector font_selector;
+		my::gdi<HFONT>::unique_ptr font;
+		my::gdi<HFONT>::selector font_selector;
 
 		icon_attribute_t(HDC dc, LPCRECT rc, LPCWSTR font_name, const icon_metrics_t& icon_metrics)
 			: font(::CreateFontW(
@@ -212,7 +212,7 @@ namespace apn::dark::kuro::paint
 			}
 			else
 			{
-				my::gdi::unique_ptr<HBRUSH> brush(
+				my::gdi<HBRUSH>::unique_ptr brush(
 					::CreateSolidBrush(pigment->background.get_win32_color()));
 
 				return hive.orig.FillRect(dc, rc, brush.get());

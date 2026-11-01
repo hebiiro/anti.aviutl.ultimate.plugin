@@ -184,7 +184,7 @@ namespace apn::timeline_map::view
 					} c_command_id;
 
 					// ポップアップメニューを作成します。
-					my::menu::unique_ptr<> menu(::CreatePopupMenu());
+					my::menu::unique_ptr menu(::CreatePopupMenu());
 
 					// メニュー項目を追加します。
 					{

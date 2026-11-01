@@ -459,7 +459,7 @@ namespace apn::workspace
 					::OffsetRect(&rc, -rc.left, -rc.top);
 
 					// クライアント領域を除外してから塗り潰します。
-					my::gdi::unique_ptr<HRGN> rgn(::CreateRectRgnIndirect(&rc_clip));
+					my::gdi<HRGN>::unique_ptr rgn(::CreateRectRgnIndirect(&rc_clip));
 					::ExtSelectClipRgn(dc, rgn.get(), RGN_DIFF);
 					painter.fill_background(dc, &rc);
 					::ExtSelectClipRgn(dc, nullptr, RGN_COPY);

@@ -263,12 +263,12 @@ namespace apn::workspace
 		//
 		// ウィンドウ用のテーマハンドルです。
 		//
-		my::theme::unique_ptr<> theme;
+		my::theme::unique_ptr theme;
 
 		//
 		// タブコントロール用のテーマハンドルです。
 		//
-		my::theme::unique_ptr<> theme_tav;
+		my::theme::unique_ptr theme_tav;
 
 		//
 		// aviutlウィンドウのウィンドウハンドルです。

@@ -51,7 +51,7 @@ namespace apn::audio_visualizer::ui
 		//
 		// ホストプロセスのハンドルです。
 		//
-		my::handle::unique_ptr<> host_process;
+		my::handle::unique_ptr host_process;
 
 		//
 		// メッセージボックスを表示します。

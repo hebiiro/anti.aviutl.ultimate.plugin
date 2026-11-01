@@ -196,7 +196,7 @@ namespace apn::dark::kuro::paint
 	//
 	inline void clip_rect(HDC dc, LPCRECT rc, int mode = RGN_COPY)
 	{
-		my::gdi::unique_ptr<HRGN> rgn(::CreateRectRgnIndirect(rc));
+		my::gdi<HRGN>::unique_ptr rgn(::CreateRectRgnIndirect(rc));
 
 		::ExtSelectClipRgn(dc, rgn.get(), mode);
 	}
@@ -209,8 +209,8 @@ namespace apn::dark::kuro::paint
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(fill_color));
-		my::gdi::selector brush_selector(dc, brush.get());
+		my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(fill_color));
+		my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 		hive.orig.PatBlt(dc, rc->left, rc->top, w, h, PATCOPY);
 	}
@@ -223,8 +223,8 @@ namespace apn::dark::kuro::paint
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(edge_color));
-		my::gdi::selector brush_selector(dc, brush.get());
+		my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(edge_color));
+		my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 		hive.orig.PatBlt(dc, rc->left, rc->top, w, edge_width, PATCOPY);
 		hive.orig.PatBlt(dc, rc->left, rc->top, edge_width, h, PATCOPY);
@@ -242,16 +242,16 @@ namespace apn::dark::kuro::paint
 
 		if (fill_color != CLR_NONE)
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(fill_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(fill_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->top, w, h, PATCOPY);
 		}
 
 		if (edge_color != CLR_NONE && edge_width > 0)
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(edge_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(edge_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->top, w, edge_width, PATCOPY);
 			hive.orig.PatBlt(dc, rc->left, rc->bottom - edge_width, w, edge_width, PATCOPY);
@@ -271,16 +271,16 @@ namespace apn::dark::kuro::paint
 		auto h = my::get_height(*rc);
 
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(near_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(near_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->top, w, edge_width, PATCOPY);
 			hive.orig.PatBlt(dc, rc->left, rc->top, edge_width, h, PATCOPY);
 		}
 
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(far_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(far_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->bottom - edge_width, w, edge_width, PATCOPY);
 			hive.orig.PatBlt(dc, rc->right - edge_width, rc->top, edge_width, h, PATCOPY);

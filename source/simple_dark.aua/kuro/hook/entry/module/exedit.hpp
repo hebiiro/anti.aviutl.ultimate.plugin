@@ -114,7 +114,7 @@ namespace apn::dark::kuro::hook
 			const auto& color_entry = style.get_color_entry(color_index);
 
 			// カラーエントリからブラシを作成します。
-			my::gdi::unique_ptr<HBRUSH> brush(
+			my::gdi<HBRUSH>::unique_ptr brush(
 				::CreateSolidBrush(color_entry.parts[0].win32));
 
 			// ブラシで矩形を塗りつぶします。

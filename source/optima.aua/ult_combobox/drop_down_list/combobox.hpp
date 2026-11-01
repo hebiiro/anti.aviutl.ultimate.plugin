@@ -10,7 +10,7 @@ namespace apn::ult_combobox::drop_down_list
 		//
 		// テーマハンドルです。
 		//
-		my::theme::unique_ptr<> theme = {};
+		my::theme::unique_ptr theme = {};
 
 		//
 		// マウスホバーしているときはTRUEになります。
@@ -119,7 +119,7 @@ namespace apn::ult_combobox::drop_down_list
 		void calc_body_height()
 		{
 			my::ClientDC dc(*this);
-			my::gdi::selector font_selector(dc, font);
+			my::gdi<HFONT>::selector font_selector(dc, font);
 
 			TEXTMETRICW tm = {};
 			::GetTextMetricsW(dc, &tm);
@@ -266,7 +266,7 @@ namespace apn::ult_combobox::drop_down_list
 			my::PaintDC pdc(hwnd);
 			auto rc = my::get_client_rect(hwnd);
 			my::DoubleBufferDC dc(pdc, &rc);
-			my::gdi::selector font_selector(dc, font);
+			my::gdi<HFONT>::selector font_selector(dc, font);
 
 			// 親ウィンドウからブラシを取得します。
 			auto edit_brush = fire_ctl_color(hwnd, dc, WM_CTLCOLOREDIT);
@@ -322,9 +322,9 @@ namespace apn::ult_combobox::drop_down_list
 #if 1
 				// 破線を描画するためのコスメティックペンを作成します。
 				LOGBRUSH lb = {};
-				my::gdi::unique_ptr<HPEN> pen(::ExtCreatePen(PS_COSMETIC | PS_DOT, 1, &lb, 0, 0));
-				my::gdi::selector pen_selector(dc, pen.get());
-				my::gdi::selector brush_selector(dc, ::GetStockObject(NULL_BRUSH));
+				my::gdi<HPEN>::unique_ptr pen(::ExtCreatePen(PS_COSMETIC | PS_DOT, 1, &lb, 0, 0));
+				my::gdi<HPEN>::selector pen_selector(dc, pen.get());
+				my::gdi<HBRUSH>::selector brush_selector(dc, ::GetStockObject(NULL_BRUSH));
 
 				// 破線を反転描画します。
 				auto old_rop2 = ::SetROP2(dc, R2_NOT);

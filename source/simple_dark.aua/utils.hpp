@@ -134,7 +134,7 @@ namespace apn::dark
 				auto rc = *rc_clip;
 				::LPtoDP(dc, (LPPOINT)&rc, 2);
 
-				my::gdi::unique_ptr<HRGN> rgn(
+				my::gdi<HRGN>::unique_ptr rgn(
 					::CreateRectRgnIndirect(&rc));
 
 				::ExtSelectClipRgn(dc, rgn.get(), RGN_COPY);

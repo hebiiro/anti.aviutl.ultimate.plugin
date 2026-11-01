@@ -22,7 +22,7 @@ namespace apn::dialog_size
 			auto pattern = folder_path / _T("*.exa");
 
 			WIN32_FIND_DATA ffd = {};
-			my::find_file::unique_ptr<> handle(
+			my::find_file::unique_ptr handle(
 				::FindFirstFile(pattern.c_str(), &ffd));
 
 			return handle.get() != INVALID_HANDLE_VALUE;
@@ -43,7 +43,7 @@ namespace apn::dialog_size
 			auto pattern = origin / _T("*.*");
 
 			WIN32_FIND_DATA ffd = {};
-			my::find_file::unique_ptr<> handle(
+			my::find_file::unique_ptr handle(
 				::FindFirstFile(pattern.c_str(), &ffd));
 
 			if (handle.get() == INVALID_HANDLE_VALUE)

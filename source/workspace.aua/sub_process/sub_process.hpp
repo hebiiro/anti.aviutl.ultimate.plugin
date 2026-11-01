@@ -42,7 +42,7 @@ namespace apn::workspace
 		//
 		// サブプロセスのプロセスハンドルです。
 		//
-		my::handle::unique_ptr<> process_handle;
+		my::handle::unique_ptr process_handle;
 
 		//
 		// サブプロセスのウィンドウです。

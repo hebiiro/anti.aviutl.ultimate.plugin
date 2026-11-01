@@ -7,7 +7,7 @@ namespace apn::workspace::hook::win_hook
 	//
 	inline struct GetMessage : Entity
 	{
-		my::win_hook::unique_ptr<> hook;
+		my::win_hook::unique_ptr hook;
 
 		//
 		// 初期化処理を実行します。

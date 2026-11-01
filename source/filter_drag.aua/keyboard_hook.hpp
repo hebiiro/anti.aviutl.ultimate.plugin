@@ -4,7 +4,7 @@ namespace apn::filter_drag
 {
 	inline struct KeyboardHook
 	{
-		HHOOK hook = nullptr; // キーボードフックのハンドルです。
+		my::win_hook::unique_ptr hook; // キーボードフックのハンドルです。
 		BOOL use_shift = FALSE; // ドラッグ開始にshiftキーを必須にします。
 		BOOL use_ctrl = FALSE; // ドラッグ開始にctrlキーを必須にします。
 		BOOL use_alt = FALSE; // ドラッグ開始にaltキーを必須にします。
@@ -17,7 +17,7 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			hook = ::SetWindowsHookEx(WH_KEYBOARD, hook_proc, nullptr, ::GetCurrentThreadId());
+			hook.reset(::SetWindowsHookEx(WH_KEYBOARD, hook_proc, nullptr, ::GetCurrentThreadId()));
 
 			return !!hook;
 		}
@@ -29,7 +29,7 @@ namespace apn::filter_drag
 		{
 			MY_TRACE_FUNC("");
 
-			::UnhookWindowsHookEx(hook), hook = nullptr;
+			hook.reset();
 
 			return TRUE;
 		}
@@ -84,14 +84,14 @@ namespace apn::filter_drag
 		//
 		// WH_KEYBOARDのフック関数です。
 		//
-		static LRESULT CALLBACK hook_proc(int code, WPARAM wParam, LPARAM lParam)
+		inline static LRESULT CALLBACK hook_proc(int code, WPARAM wParam, LPARAM lParam)
 		{
 			if (code != HC_ACTION)
-				return ::CallNextHookEx(keyboard_hook.hook, code, wParam, lParam);
+				return ::CallNextHookEx(nullptr, code, wParam, lParam);
 
 			keyboard_hook.set_cursor(wParam);
 
-			return ::CallNextHookEx(keyboard_hook.hook, code, wParam, lParam);
+			return ::CallNextHookEx(nullptr, code, wParam, lParam);
 		}
 	} keyboard_hook;
 }

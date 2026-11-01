@@ -63,7 +63,7 @@ namespace apn::editbox_tweaker
 			//
 			// フォントのハンドルです。
 			//
-			my::gdi::unique_ptr<HFONT> handle;
+			my::gdi<HFONT>::unique_ptr handle;
 		} font;
 
 		//

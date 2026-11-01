@@ -197,7 +197,7 @@ namespace apn::workspace
 		{
 			MY_TRACE_FUNC("");
 
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			if (hive.use_fullscreen_preview)
 				::AppendMenu(menu.get(), MF_STRING, c_command_id.c_fullscreen_preview, _T("再生時にプレビューを最大化"));
@@ -827,7 +827,7 @@ namespace apn::workspace
 							{
 								auto dis = (DRAWITEMSTRUCT*)lParam;
 
-								my::gdi::unique_ptr<HBRUSH> brush(
+								my::gdi<HBRUSH>::unique_ptr brush(
 									::CreateSolidBrush(get_uint(id)));
 								::FillRect(dis->hDC, &dis->rcItem, brush.get());
 

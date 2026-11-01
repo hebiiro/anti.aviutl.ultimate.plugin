@@ -342,7 +342,7 @@ namespace apn::ult_combobox::popup
 		LRESULT paint(HDC dc, const RECT& rc)
 		{
 			// デバイスコンテキストを初期化します。
-			my::gdi::selector font_selector(dc, core->font);
+			my::gdi<HFONT>::selector font_selector(dc, core->font);
 
 			// 親ウィンドウからブラシを取得します。
 			auto listbox_brush = fire_ctl_color(parent, hwnd, dc, WM_CTLCOLORLISTBOX);

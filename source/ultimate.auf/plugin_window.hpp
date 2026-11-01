@@ -117,7 +117,7 @@ namespace apn
 						MY_TRACE_STR(folder_name);
 						std::vector<BYTE> buffer(1024);
 						DWORD returned = 0;
-						my::handle::unique_ptr<> file(::CreateFile(
+						my::handle::unique_ptr file(::CreateFile(
 							folder_name.c_str(),
 							FILE_LIST_DIRECTORY,
 							FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
@@ -150,7 +150,7 @@ namespace apn
 
 								// 同じ通知が2回発生する場合があるので、
 								// ファイルサイズをチェックして回避します。
-								my::handle::unique_ptr<> file(::CreateFileW((folder_name / file_name).c_str(),
+								my::handle::unique_ptr file(::CreateFileW((folder_name / file_name).c_str(),
 									GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr));
 								auto file_size = ::GetFileSize(file.get(), nullptr);
 								if (file_size)

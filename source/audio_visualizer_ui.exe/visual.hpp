@@ -317,7 +317,7 @@ namespace apn::audio_visualizer::ui
 						wil::com_ptr<ICoreWebView2ContextMenuItemCollection> items;
 						args->get_MenuItems(&items);
 
-						my::menu::unique_ptr<> menu(::CreatePopupMenu());
+						my::menu::unique_ptr menu(::CreatePopupMenu());
 						add_menu_items(menu.get(), items);
 
 						auto point = my::get_cursor_pos();

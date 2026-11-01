@@ -45,7 +45,7 @@ namespace apn::settings_browser
 			constexpr uint32_t c_auto_get = 1;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			::AppendMenu(menu.get(), MF_STRING, c_auto_get, _T("自動的に取得"));
 			if (hive.auto_get)

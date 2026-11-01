@@ -7,8 +7,8 @@ namespace apn::text_split
 	//
 	struct dc_t : my::ClientDC
 	{
-		my::gdi::unique_ptr<HFONT> font;
-		my::gdi::selector font_selector;
+		my::gdi<HFONT>::unique_ptr font;
+		my::gdi<HFONT>::selector font_selector;
 
 		//
 		// コンストラクタです。

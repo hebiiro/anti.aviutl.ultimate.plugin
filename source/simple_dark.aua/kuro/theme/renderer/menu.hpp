@@ -96,7 +96,7 @@ namespace apn::dark::kuro::theme
 						auto hwnd = ::WindowFromDC(dc);
 						MY_TRACE_HWND(hwnd);
 
-						my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(RGB(255, 0, 0)));
+						my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(RGB(255, 0, 0)));
 
 						::FillRect(dc, rc, brush.get());
 

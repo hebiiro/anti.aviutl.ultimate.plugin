@@ -101,7 +101,7 @@ namespace apn::dark::skin::theme
 			if (!vsclass)
 			{
 				// テーマハンドルを開きます。
-				my::theme::unique_ptr<> theme(for_dpi ?
+				my::theme::unique_ptr theme(for_dpi ?
 					open_theme_data_for_dpi(vsclass_name) : open_theme_data(vsclass_name));
 
 				// まず既存のビジュアルスタイルクラスを検索します。

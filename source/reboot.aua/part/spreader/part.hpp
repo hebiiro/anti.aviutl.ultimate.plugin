@@ -187,7 +187,7 @@ namespace apn::reboot::spreader
 			constexpr uint32_t c_show_option_dialog = 4000;
 
 			// ポップアップメニューを作成します。
-			my::menu::unique_ptr<> menu(::CreatePopupMenu());
+			my::menu::unique_ptr menu(::CreatePopupMenu());
 
 			// play_select_frameを表示を追加します。
 			::AppendMenu(menu.get(), MF_STRING, c_play_select_frame, _T("選択範囲を再生"));

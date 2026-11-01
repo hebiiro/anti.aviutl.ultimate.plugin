@@ -524,7 +524,7 @@ namespace apn::dark::hook
 				auto state = skin::theme::manager.get_state(theme, WP_EXEDIT, state_id);
 				if (state && state->stuff.fill.color != CLR_NONE)
 				{
-					my::gdi::selector brush_selector(dc, state->get_fill_brush());
+					my::gdi<HBRUSH>::selector brush_selector(dc, state->get_fill_brush());
 
 					::PatBlt(dc, x, y, w, h, PATCOPY);
 				}

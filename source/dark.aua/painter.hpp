@@ -28,7 +28,7 @@ namespace apn::dark::painter
 	//
 	inline void clip_rect(HDC dc, LPCRECT rc, int mode = RGN_COPY)
 	{
-		my::gdi::unique_ptr<HRGN> rgn(::CreateRectRgnIndirect(rc));
+		my::gdi<HRGN>::unique_ptr rgn(::CreateRectRgnIndirect(rc));
 
 		::ExtSelectClipRgn(dc, rgn.get(), mode);
 	}
@@ -41,8 +41,8 @@ namespace apn::dark::painter
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(fill_color));
-		my::gdi::selector brush_selector(dc, brush.get());
+		my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(fill_color));
+		my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 		hive.orig.PatBlt(dc, rc->left, rc->top, w, h, PATCOPY);
 	}
@@ -55,8 +55,8 @@ namespace apn::dark::painter
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(edge_color));
-		my::gdi::selector brush_selector(dc, brush.get());
+		my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(edge_color));
+		my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 		hive.orig.PatBlt(dc, rc->left, rc->top, w, edge_width, PATCOPY);
 		hive.orig.PatBlt(dc, rc->left, rc->top, edge_width, h, PATCOPY);
@@ -74,16 +74,16 @@ namespace apn::dark::painter
 
 		if (fill_color != CLR_NONE)
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(fill_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(fill_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->top, w, h, PATCOPY);
 		}
 
 		if (edge_color != CLR_NONE && edge_width > 0)
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(edge_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(edge_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->top, w, edge_width, PATCOPY);
 			hive.orig.PatBlt(dc, rc->left, rc->bottom - edge_width, w, edge_width, PATCOPY);
@@ -101,9 +101,9 @@ namespace apn::dark::painter
 		auto h = my::get_height(*rc);
 
 		auto mem_rc = RECT { 0, 0, w, h };
-		my::dc::unique_ptr<> mem_dc(::CreateCompatibleDC(dc));
-		my::gdi::unique_ptr<HBITMAP> bitmap(::CreateCompatibleBitmap(dc, w, h));
-		my::gdi::selector bitmap_selector(mem_dc.get(), bitmap.get());
+		my::dc::unique_ptr mem_dc(::CreateCompatibleDC(dc));
+		my::gdi<HBITMAP>::unique_ptr bitmap(::CreateCompatibleBitmap(dc, w, h));
+		my::gdi<HBITMAP>::selector bitmap_selector(mem_dc.get(), bitmap.get());
 
 		draw_rect(mem_dc.get(), &mem_rc, fill_color, edge_color, edge_width);
 
@@ -124,12 +124,12 @@ namespace apn::dark::painter
 		auto w = my::get_width(*rc);
 		auto h = my::get_height(*rc);
 
-		my::gdi::unique_ptr<HBRUSH> brush;
-		my::gdi::selector brush_selector(dc, (fill_color != CLR_NONE) ?
+		my::gdi<HBRUSH>::unique_ptr brush;
+		my::gdi<HBRUSH>::selector brush_selector(dc, (fill_color != CLR_NONE) ?
 			brush.reset(::CreateSolidBrush(fill_color)), brush.get() : (HBRUSH)::GetStockObject(NULL_BRUSH));
 
-		my::gdi::unique_ptr<HPEN> pen;
-		my::gdi::selector pen_selector(dc, (edge_color != CLR_NONE && edge_width > 0) ?
+		my::gdi<HPEN>::unique_ptr pen;
+		my::gdi<HPEN>::selector pen_selector(dc, (edge_color != CLR_NONE && edge_width > 0) ?
 				pen.reset(::CreatePen(PS_INSIDEFRAME, edge_width, edge_color)), pen.get() : (HPEN)::GetStockObject(NULL_PEN));
 
 		::RoundRect(dc, rc->left, rc->top, rc->right, rc->bottom, round_width, round_height);
@@ -144,9 +144,9 @@ namespace apn::dark::painter
 		auto h = my::get_height(*rc);
 
 		auto mem_rc = RECT { 0, 0, w, h };
-		my::dc::unique_ptr<> mem_dc(::CreateCompatibleDC(dc));
-		my::gdi::unique_ptr<HBITMAP> bitmap(::CreateCompatibleBitmap(dc, w, h));
-		my::gdi::selector bitmap_selector(mem_dc.get(), bitmap.get());
+		my::dc::unique_ptr mem_dc(::CreateCompatibleDC(dc));
+		my::gdi<HBITMAP>::unique_ptr bitmap(::CreateCompatibleBitmap(dc, w, h));
+		my::gdi<HBITMAP>::selector bitmap_selector(mem_dc.get(), bitmap.get());
 
 		::BitBlt(mem_dc.get(), 0, 0, w, h, dc, rc->left, rc->top, SRCCOPY);
 
@@ -172,16 +172,16 @@ namespace apn::dark::painter
 		auto h = my::get_height(*rc);
 
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(top_left_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(top_left_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->top, w, edge_width, PATCOPY);
 			hive.orig.PatBlt(dc, rc->left, rc->top, edge_width, h, PATCOPY);
 		}
 
 		{
-			my::gdi::unique_ptr<HBRUSH> brush(::CreateSolidBrush(bottom_right_color));
-			my::gdi::selector brush_selector(dc, brush.get());
+			my::gdi<HBRUSH>::unique_ptr brush(::CreateSolidBrush(bottom_right_color));
+			my::gdi<HBRUSH>::selector brush_selector(dc, brush.get());
 
 			hive.orig.PatBlt(dc, rc->left, rc->bottom - edge_width, w, edge_width, PATCOPY);
 			hive.orig.PatBlt(dc, rc->right - edge_width, rc->top, edge_width, h, PATCOPY);
@@ -213,8 +213,8 @@ namespace apn::dark::painter
 		lb.lbHatch = 0;
 		DWORD pen_style[2] = { 0, 2 };
 
-		my::gdi::unique_ptr<HPEN> pen(::ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, 1, &lb, std::size(pen_style), pen_style));
-		my::gdi::selector pen_selector(dc, pen.get());
+		my::gdi<HPEN>::unique_ptr pen(::ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, 1, &lb, std::size(pen_style), pen_style));
+		my::gdi<HPEN>::selector pen_selector(dc, pen.get());
 
 		::MoveToEx(dc, rc_temp.left, rc_temp.top, 0);
 		::LineTo(dc, rc_temp.right, rc_temp.top);
