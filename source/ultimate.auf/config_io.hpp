@@ -33,7 +33,7 @@ namespace apn
 
 			// アドイン情報を登録します。
 
-			register_addin(L"L", L"simple_dark", L"簡易ダークモード化", TRUE, L"", {});
+			register_addin(L"L", L"simple_dark", L"簡易ダークモード化", FALSE, L"", {});
 			register_addin(L"L", L"dark", L"ダークモード化", FALSE, L"", { L"simple_dark.aua", L"DarkenWindow.aul" });
 			register_addin(L"L", L"workspace", L"ワークスペース化", TRUE, L"", { L"SplitWindow.aul" });
 			register_addin(L"L", L"filer", L"ファイラ", TRUE, L"", { L"ObjectExplorer.auf" });
@@ -57,6 +57,7 @@ namespace apn
 			register_addin(L"M", L"text_split", L"テキスト分解", FALSE, L"", { L"SplitText.auf" });
 			register_addin(L"M", L"item_align", L"アイテム整列", FALSE, L"", { L"BuildStairs.auf" });
 			register_addin(L"M", L"item_affine", L"アイテム位置変更", FALSE, L"", {});
+			register_addin(L"M", L"item_list", L"アイテム一覧", FALSE, L"", {});
 			register_addin(L"M", L"image_export", L"画像エクスポート", FALSE, L"", { L"SaveImage.auf" });
 			register_addin(L"M", L"scene_select", L"シーン選択", FALSE, L"", { L"SelectScene.auf" });
 			register_addin(L"M", L"ease_select", L"イージング選択", FALSE, L"", { L"SelectEasing.auf" });

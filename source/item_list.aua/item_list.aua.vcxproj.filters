@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="_">
+      <UniqueIdentifier>{e968ce07-2675-4029-ad52-281fe7c50fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_\resource">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="addin.hpp" />
+    <ClInclude Include="addin_dialog.hpp" />
+    <ClInclude Include="addin_window.hpp" />
+    <ClInclude Include="app.hpp" />
+    <ClInclude Include="app_interface.hpp" />
+    <ClInclude Include="config_io.hpp" />
+    <ClInclude Include="hive.hpp" />
+    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>_\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>_</Filter>
+    </ClInclude>
+    <ClInclude Include="lv.hpp" />
+    <ClInclude Include="finder.hpp" />
+    <ClInclude Include="list.hpp" />
+    <ClInclude Include="sort.hpp" />
+    <ClInclude Include="listview.hpp" />
+    <ClInclude Include="inplace_edit.hpp" />
+    <ClInclude Include="combobox_manager.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>_</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.def">
+      <Filter>_</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="recource.rc">
+      <Filter>_\resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

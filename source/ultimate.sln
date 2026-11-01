@@ -201,6 +201,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filter_relocate.aua", "filt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_dark.aua", "simple_dark.aua\simple_dark.aua.vcxproj", "{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "item_list.aua", "item_list.aua\item_list.aua.vcxproj", "{141EE8DD-DF94-48BE-9CFF-F479644DCF53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -625,6 +627,14 @@ Global
 		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x64.Build.0 = Release|x64
 		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x86.ActiveCfg = Release|Win32
 		{BE5ECADF-728B-4A36-A6A6-DC1725D63EE2}.Release|x86.Build.0 = Release|Win32
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Debug|x64.ActiveCfg = Debug|x64
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Debug|x64.Build.0 = Debug|x64
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Debug|x86.ActiveCfg = Debug|Win32
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Debug|x86.Build.0 = Debug|Win32
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Release|x64.ActiveCfg = Release|x64
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Release|x64.Build.0 = Release|x64
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Release|x86.ActiveCfg = Release|Win32
+		{141EE8DD-DF94-48BE-9CFF-F479644DCF53}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
