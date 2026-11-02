@@ -76,6 +76,8 @@ namespace apn::dark
 
 #ifdef _DEBUG // テスト用コードです。
 			{
+				MY_TRACE("システムカラーを列挙します\n");
+
 				for (int i = 0; i < 50; i++)
 					MY_TRACE("{/} => {/hex}\n", i, hive.orig.GetSysColor(i));
 

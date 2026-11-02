@@ -202,7 +202,7 @@ namespace apn::dark
 		{
 		case DLL_PROCESS_ATTACH:
 			{
-				my::tracer_to_file::init(instance);
+//				my::tracer_to_file::init(instance);
 
 				MY_TRACE_FUNC("DLL_PROCESS_ATTACH");
 
@@ -225,7 +225,7 @@ namespace apn::dark
 
 				prior_entry.exit();
 
-				my::tracer_to_file::exit();
+//				my::tracer_to_file::exit();
 
 				break;
 			}

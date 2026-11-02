@@ -15,7 +15,7 @@ namespace apn::dark::kuro::paint
 			MY_TRACE_FUNC("");
 
 			auto separator = create_pigment(L"ListView", L"Separator",
-				style_t::color_e::Border,
+				style_t::color_e::WindowSeparator,
 				{},
 				{});
 
@@ -44,7 +44,7 @@ namespace apn::dark::kuro::paint
 			palette.set(LVP_LISTITEM, LISS_DISABLED, item_disabled);
 			palette.set(LVP_LISTITEM, LISS_HOT, item_hot);
 			palette.set(LVP_LISTITEM, LISS_SELECTED, item_selected);
-			palette.set(LVP_LISTITEM, LISS_SELECTEDNOTFOCUS, item_selected);
+			palette.set(LVP_LISTITEM, LISS_SELECTEDNOTFOCUS, item_hot);
 			palette.set(LVP_LISTITEM, LISS_HOTSELECTED, item_selected);
 		}
 
