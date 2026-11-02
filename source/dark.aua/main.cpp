@@ -114,6 +114,10 @@ namespace apn::dark
 
 				::DisableThreadLibraryCalls(hive.instance = instance);
 
+				// 簡易ダークモード化アドインを使用中の場合は
+				// ダークモード化アドインの読み込みを失敗させます。
+				if (::GetModuleHandle(_T("simple_dark.aua"))) return FALSE;
+
 				if (!config_io.init()) return FALSE;
 				if (!assets_io.init()) return FALSE;
 				if (!act_ctx.init()) return FALSE;
