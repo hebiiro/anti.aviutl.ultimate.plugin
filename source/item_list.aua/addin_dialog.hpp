@@ -146,6 +146,9 @@ namespace apn::item_list
 			::AppendMenu(menu.get(), MF_STRING, k_refresh, _T("リフレッシュ"));
 			::AppendMenu(menu.get(), MF_STRING, k_reset_sort, _T("並び順をリセット"));
 
+			// 変数の状態に合わせて、ポップアップメニューの項目にチェックマークを入れます。
+			if (hive.flag_as_time) ::CheckMenuItem(menu.get(), k_flag_as_time, MF_CHECKED);
+
 			// ポップアップメニューを表示します。
 			auto point = my::get_cursor_pos();
 			auto id = ::TrackPopupMenuEx(menu.get(),
