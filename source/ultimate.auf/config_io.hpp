@@ -33,7 +33,7 @@ namespace apn
 
 			// アドイン情報を登録します。
 
-			register_addin(L"L", L"simple_dark", L"簡易ダークモード化", FALSE, L"", {});
+			register_addin(L"L", L"simple_dark", L"簡易ダークモード化", TRUE, L"", {});
 			register_addin(L"L", L"dark", L"ダークモード化", FALSE, L"", { L"simple_dark.aua", L"DarkenWindow.aul" });
 			register_addin(L"L", L"workspace", L"ワークスペース化", TRUE, L"", { L"SplitWindow.aul" });
 			register_addin(L"L", L"filer", L"ファイラ", TRUE, L"", { L"ObjectExplorer.auf" });

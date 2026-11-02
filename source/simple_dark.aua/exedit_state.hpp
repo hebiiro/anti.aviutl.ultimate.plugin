@@ -72,12 +72,13 @@ namespace apn::dark
 				const auto& palette = kuro::paint::button_material.palette;
 
 				// ボタンのピグメントを取得します。
-				auto pigment = palette.get(BP_PUSHBUTTON, PBS_NORMAL);
-
-				kuro::hook::icon.manager.clear();
-				kuro::hook::icon.editor.change_color(L"", RGB(0, 0, 0), pigment->text.get_win32_color());
-				kuro::hook::icon.editor.change_color(L"EXEDIT_ICON_MA", CLR_NONE, CLR_NONE); // マウスのアイコンは変更しません
-				kuro::hook::icon.editor.change_color(L"EXEDIT_ICON_SP", CLR_NONE, CLR_NONE); // スポイトのアイコンは変更しません
+				if (auto pigment = palette.get(BP_PUSHBUTTON, PBS_NORMAL))
+				{
+					kuro::hook::icon.manager.clear();
+					kuro::hook::icon.editor.change_color(L"", RGB(0, 0, 0), pigment->text.get_win32_color());
+					kuro::hook::icon.editor.change_color(L"EXEDIT_ICON_MA", CLR_NONE, CLR_NONE); // マウスのアイコンは変更しません
+					kuro::hook::icon.editor.change_color(L"EXEDIT_ICON_SP", CLR_NONE, CLR_NONE); // スポイトのアイコンは変更しません
+				}
 			}
 
 			// ボタンを走査します。
