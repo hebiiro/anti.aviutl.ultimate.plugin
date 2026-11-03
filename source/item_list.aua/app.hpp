@@ -216,6 +216,9 @@ namespace apn::item_list
 		{
 			MY_TRACE_FUNC("");
 
+			// ダイアログが表示されていない場合は何もしません。
+			if (!::IsWindowVisible(addin_dialog)) return FALSE;
+
 			// タイマーを開始します。
 			refresh_timer_id = ::SetTimer(nullptr, refresh_timer_id, hive.refresh_delay,
 				[](HWND hwnd, UINT message, UINT_PTR timer_id, DWORD time)
@@ -248,6 +251,9 @@ namespace apn::item_list
 		virtual BOOL reset_list() override
 		{
 			MY_TRACE_FUNC("");
+
+			// ダイアログが表示されていない場合は何もしません。
+			if (!::IsWindowVisible(addin_dialog)) return FALSE;
 
 			// コレクションをリセットします。
 			list.nodes.clear();
