@@ -286,5 +286,19 @@ namespace apn::item_list
 
 			return TRUE;
 		}
+
+		//
+		// アイテム一覧の絞り込みをリセットします。
+		//
+		virtual BOOL reset_finder() override
+		{
+			MY_TRACE_FUNC("");
+
+			// 絞り込みをリセットします。
+			combobox_manager.reset();
+
+			// アイテム一覧を絞り込みます。
+			return apply_finder();
+		}
 	} app_impl;
 }

@@ -136,6 +136,7 @@ namespace apn::item_list
 			constexpr uint32_t k_flag_as_time = 1000;
 			constexpr uint32_t k_refresh = 1100;
 			constexpr uint32_t k_reset_sort = 1101;
+			constexpr uint32_t k_reset_finder = 1102;
 
 			// ポップアップメニューを作成します。
 			my::menu::unique_ptr menu(::CreatePopupMenu());
@@ -145,6 +146,7 @@ namespace apn::item_list
 			::AppendMenu(menu.get(), MF_SEPARATOR, 0, nullptr);
 			::AppendMenu(menu.get(), MF_STRING, k_refresh, _T("リフレッシュ"));
 			::AppendMenu(menu.get(), MF_STRING, k_reset_sort, _T("並び順をリセット"));
+			::AppendMenu(menu.get(), MF_STRING, k_reset_finder, _T("絞り込みをリセット"));
 
 			// 変数の状態に合わせて、ポップアップメニューの項目にチェックマークを入れます。
 			if (hive.flag_as_time) ::CheckMenuItem(menu.get(), k_flag_as_time, MF_CHECKED);
@@ -178,6 +180,13 @@ namespace apn::item_list
 				{
 					// ソートをリセットします。
 					app->reset_sort();
+
+					break;
+				}
+			case k_reset_finder:
+				{
+					// 絞り込みをリセットします。
+					app->reset_finder();
 
 					break;
 				}

@@ -196,5 +196,28 @@ namespace apn::item_list
 
 			return TRUE;
 		}
+
+		//
+		// 絞り込み用コンボボックスをリセットします。
+		//
+		BOOL reset()
+		{
+			MY_TRACE_FUNC("");
+
+			// 行を走査します。
+			for (auto i = 0; i < list.k_column.k_max_size; i++)
+			{
+				// 絞り込み用コンボボックスを取得します。
+				auto combobox = ::GetDlgItem(dialog, first_id + i);
+
+				// 絞り込み用コンボボックスをリセットします。
+				::SetWindowText(combobox, L"");
+
+				// 絞り込み用テキストをリセットします。
+				finder.texts[i].clear();
+			}
+
+			return TRUE;
+		}
 	} combobox_manager;
 }

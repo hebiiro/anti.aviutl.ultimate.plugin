@@ -14,5 +14,6 @@ namespace apn::item_list
 		virtual BOOL refresh_list() = 0;
 		virtual BOOL reset_list() = 0;
 		virtual BOOL reset_sort() = 0;
+		virtual BOOL reset_finder() = 0;
 	} *app = nullptr;
 }
